@@ -1,6 +1,6 @@
 ﻿using System.Linq.Expressions;
 
-namespace Overmock.Verification.Internal
+namespace Overmock.Mocking.Internal
 {
     public class MethodCall : Verifiable, IMethodCall
     {
@@ -31,6 +31,23 @@ namespace Overmock.Verification.Internal
         void IMethodCall.Throws(Exception exception)
         {
             _exception = exception;
+        }
+
+        IEnumerable<MemberOverride> IMethodCall.GetOverrides()
+        {
+            var overrides = new List<MemberOverride>();
+
+            if (_exception != null)
+            {
+                overrides.Add(new MethodOverride( exception: _exception));
+            }
+
+            if (_method != null)
+            {
+                overrides.Add(new MethodOverride(overmock: _method));
+            }
+
+            return overrides;
         }
     }
 

@@ -4,11 +4,11 @@ namespace Overmock
 {
     public static partial class OvermockExtensions
     {
-        public static IOverride<T> Override<T>(this IOvermock<T> overmock, Expression<Action<T>> expression) where T : class
+        public static ISetupOvermock<T> Override<T>(this IOvermock<T> overmock, Expression<Action<T>> expression) where T : class
         {
             if (expression.Body is MethodCallExpression methodCall)
             {
-                return new Override<T>(
+                return new SetupOvermock<T>(
                     Overmocked.Register(overmock, new MethodCall<T>(methodCall))
                 );
             }
@@ -16,11 +16,11 @@ namespace Overmock
             throw new ArgumentException("Parameter must be a method call expression.");
         }
 
-        public static IOverride<T, TResult> Override<T, TResult>(this IOvermock<T> overmock, Expression<Func<T, TResult>> expression) where T : class
+        public static ISetupOvermock<T, TResult> Override<T, TResult>(this IOvermock<T> overmock, Expression<Func<T, TResult>> expression) where T : class
         {
             if (expression.Body is MethodCallExpression methodCall)
             {
-                return new Override<T, TResult>(
+                return new SetupOverride<T, TResult>(
                     Overmocked.Register(overmock, new MethodCall<T, TResult>(methodCall))
                 );
             }

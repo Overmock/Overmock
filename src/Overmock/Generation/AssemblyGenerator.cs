@@ -3,6 +3,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis;
 using System.Collections.Immutable;
 using System.Reflection;
+using System.Text;
 
 namespace Overmock.Generation
 {
@@ -89,14 +90,17 @@ namespace Overmock.Generation
         {
             foreach (var interfaceType in target.Type.GetInterfaces())
             {
-                classDeclaration = ImplementInterface(interfaceType, classDeclaration);
+                classDeclaration = ImplementInterface(target, interfaceType, classDeclaration);
             }
 
-            return ImplementInterface(target.Type, classDeclaration);
+            return ImplementInterface(target, target.Type, classDeclaration);
         }
 
-        private ClassDeclarationSyntax ImplementInterface(Type interfaceType, ClassDeclarationSyntax classDeclaration)
+        private ClassDeclarationSyntax ImplementInterface<T>(IOvermock<T> target, Type interfaceType, ClassDeclarationSyntax classDeclaration) where T : class
         {
+            // TODO: Mock properties
+
+
             // Add properties
             foreach (var property in interfaceType.GetProperties().Where(m => !m.IsSpecialName))
             {
@@ -104,8 +108,19 @@ namespace Overmock.Generation
                 classDeclaration = classDeclaration.AddMembers(propertyDeclaration);
             }
 
-            // Add methods
-            foreach (var method in interfaceType.GetMethods().Where(m => !m.IsSpecialName))
+            // Add overmock methods
+            var overmockedMethods = target.GetOvermockedMethods();
+            var interfaceMethods = interfaceType.GetMethods().Except(
+                overmockedMethods.Select(m => m.Expression.Method)
+            ).Where(m => !m.IsSpecialName);
+
+            foreach (var method in overmockedMethods)
+            {
+                classDeclaration = BuildOvermockedMethod(target, method, classDeclaration);
+            }
+
+            // Add other interface methods
+            foreach (var method in interfaceMethods)
             {
                 var methodDeclaration = BuildMethodSignature(method)
                     // TODO: Add method wrappers where needed.
@@ -130,18 +145,42 @@ namespace Overmock.Generation
                 );
             }
 
-            //foreach (MethodInfo method in target.GetMethods())
-            //{
-
-            //}
-
             //foreach (var property in target.GetProperties())
             //{
 
             //}
-            // TODO: methods/properties
+
+            foreach (var method in target.GetOvermockedMethods())
+            {
+                result = BuildOvermockedMethod(target, method, result);
+            }
 
             return result.NormalizeWhitespace();
+        }
+
+        private ClassDeclarationSyntax BuildOvermockedMethod<T>(IOvermock<T> target, IMethodCall method, ClassDeclarationSyntax result) where T : class
+        {
+            var overrides = method.GetOverrides();
+
+            if (overrides.Any())
+            {
+                var methodOvermocked = BuildMethodSignature(method.Expression.Method);
+
+                var exception = overrides.SingleOrDefault(o => o.Exception != null);
+
+                if (exception != default)
+                {
+                    var exceptionType = exception.Exception.GetType();
+
+                    return result.AddMembers(methodOvermocked.WithBody(
+                        sf.Block(sf.ParseStatement($"throw new {exceptionType.Namespace}.{exceptionType.Name}(\"{exception.Exception.Message}\");"))
+                    ));
+                }
+
+                result = result.AddMembers(methodOvermocked.WithBody(NotImplementedExceptionMethodBody));
+            }
+
+            return result;
         }
 
         private BlockSyntax BuildConstructorBody<T>(IOvermock<T> target, ConstructorInfo constructor) where T : class
@@ -177,10 +216,22 @@ namespace Overmock.Generation
 
         private MethodDeclarationSyntax BuildMethodSignature(MethodInfo method)
         {
-            // TODO: Handle Generic typed returns..they're type names are nasty..
-            var returnType = sf.ParseTypeName(method.ReturnParameter.ParameterType.Name ?? "void");
+            TypeSyntax returnType = GetSafeTypeName(method.ReturnParameter.ParameterType);
             var result = sf.MethodDeclaration(returnType, method.Name)
-                .AddModifiers(sf.Token(SyntaxKind.PublicKeyword));
+                .AddModifiers(method.IsPublic ? sf.Token(SyntaxKind.PublicKeyword) : sf.Token(SyntaxKind.InternalKeyword));
+
+            if (!method.DeclaringType.IsInterface)
+            {
+                if (method.IsVirtual)
+                {
+                    result = result.AddModifiers(sf.Token(SyntaxKind.OverrideKeyword));
+                }
+                else
+                {
+                    result = result.AddModifiers(sf.Token(SyntaxKind.NewKeyword));
+                }
+            }
+
             return BuildParameters(method.GetParameters(), result);
         }
 
@@ -210,6 +261,44 @@ namespace Overmock.Generation
             }
 
             return result;
+        }
+
+        private static TypeSyntax GetSafeTypeName(Type type)
+        {
+            // TODO: Handle Generic typed returns..they're type names are nasty..
+            if (!type.IsGenericType)
+            {
+                return sf.ParseTypeName(type.Name ?? "void");
+            }
+
+
+            return sf.ParseTypeName(
+                ParseGenericTypeName(type)
+            );
+        }
+
+        private static string ParseGenericTypeName(Type type)
+        {
+            const char open = '<';
+            const char close = '>';
+            const char tilde = '`';
+            const char comma = ',';
+
+            var result = new StringBuilder(type.Name[..type.Name.IndexOf(tilde)])
+                .Append(open);
+
+            foreach (var genericParameter in type.GetGenericArguments())
+            {
+                result.Append(genericParameter.IsGenericType
+                    ? ParseGenericTypeName(genericParameter)
+                    : genericParameter.Name);
+
+                result.Append(comma);
+            }
+
+            result = result.Remove(result.Length - 1, 1);
+
+            return result.Append(close).ToString();
         }
 
         private static PropertyDeclarationSyntax BuildProperty(Type type, PropertyInfo property, bool implementExplicitlyIfInterface = false)

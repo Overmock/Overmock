@@ -20,6 +20,9 @@ namespace Overmock
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         void SetCompiledType(Assembly assembly);
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        IEnumerable<IMethodCall> GetOvermockedMethods();
     }
 }
 

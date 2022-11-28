@@ -1,6 +1,6 @@
 ﻿using System.Linq.Expressions;
 
-namespace Overmock.Verification
+namespace Overmock.Mocking
 {
     public interface IPropertyCall<TReturn> : IVerifiable<TReturn>
     {

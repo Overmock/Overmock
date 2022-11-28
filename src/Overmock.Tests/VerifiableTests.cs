@@ -22,7 +22,7 @@ namespace Overmock.Tests
             });
 
 
-            _factory.Override(f => f.GoDoYourWork(/* o1 T.Val<T> */null))
+            _factory.Override(f => f.GoDoYourWork())
                 .ToThrow(new NullReferenceException());
 
             _factory.Override(f => f.GoDoWork()).Calls(c =>
@@ -40,6 +40,9 @@ namespace Overmock.Tests
                 // TODO: I don't know if we should allow them to return here?
                 return new Work("I overwrote the original result");
             });
+            
+            _provider.Override(i => i.GetName())
+                .ToThrow(new NullReferenceException());
 
             // TODO: Properties need handled
             //_interface.Override(i => i.Factory).Returns(() => _factory.Object);
@@ -52,10 +55,12 @@ namespace Overmock.Tests
             _controller = new Controller(_interface.Object, _factory.Object, _provider.Object);
 
             // Act
-            _controller.DoSomeWork();
+            var result = _controller.DoSomeWork();
+
+            Assert.AreEqual("Object reference not set to an instance of an object.", result.Result);
 
             // Assert
-            _factory.Verify();
+            Overmocked.Verify();
         }
     }
 }
@@ -69,47 +74,16 @@ namespace OvermockGenerated
     using System.Collections.Generic;
     using Overmock.Tests.Mocks;
 
-    public class ITestInterface_3cd5ea0857034688bc1499bc1a723cc0 : ITestInterface
+    public class Factory_710880f38eed445f9638bb8e77ce9580 : Factory
     {
-        public Factory Factory { get; }
-
-        public Model Create(Model model, String name)
+        public Factory_710880f38eed445f9638bb8e77ce9580(IProvider provider) : base(provider)
         {
-            throw new NotImplementedException();
-        }
-    }
-}
-namespace OvermockGenerated
-{
-    using System;
-    using System.Threading.Tasks;
-    using System.Collections.Generic;
-    using Overmock.Tests.Mocks;
-
-    public class IProvider_9f95308b45074301887ab450f0ab18e5 : IProvider
-    {
-        public String GetName()
-        {
-            throw new NotImplementedException();
         }
 
-        public IDisposable GetProperties()
+        internal new IDidWork<String> GoDoYourWork()
         {
-            throw new NotImplementedException();
-        }
-    }
-}
-namespace OvermockGenerated
-{
-    using System;
-    using System.Threading.Tasks;
-    using System.Collections.Generic;
-    using Overmock.Tests.Mocks;
-
-    public class Factory_23166c0f2e01421d8fb8985b8e67f591 : Factory
-    {
-        public Factory_23166c0f2e01421d8fb8985b8e67f591(IProvider provider) : base(provider)
-        {
+            base.GoDoYourWork();
+            throw new System.NullReferenceException("Object reference not set to an instance of an object.");
         }
     }
 }

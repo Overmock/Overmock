@@ -21,9 +21,23 @@ namespace Overmock.Tests
 
         internal IProvider Provider => _provider;
 
-        internal void DoSomeWork()
+        internal IDidWork<string> DoSomeWork()
         {
-            throw new NotImplementedException();
+            try
+            {
+                var result = _factory.GoDoYourWork();
+
+                if (result.Result != "testing")
+                {
+                    return new Work($"Original: '{result.Result}' with _provider.GetName(): {_provider.GetName()}.");
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return new Work(ex.Message);
+            }
         }
     }
 }

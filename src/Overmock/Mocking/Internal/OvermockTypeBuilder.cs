@@ -2,7 +2,7 @@
 using Microsoft.CodeAnalysis.CSharp;
 using System.Collections.Immutable;
 
-namespace Overmock.Verification.Internal
+namespace Overmock.Mocking.Internal
 {
     internal class OvermockTypeBuilder : ITypeBuilder
     {

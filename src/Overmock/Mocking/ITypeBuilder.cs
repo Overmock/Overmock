@@ -1,4 +1,4 @@
-﻿namespace Overmock.Verification
+﻿namespace Overmock.Mocking
 {
     public interface ITypeBuilder
     {

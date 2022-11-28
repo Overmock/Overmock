@@ -16,7 +16,7 @@ namespace Overmock.Tests.Mocks
 
         internal IDidWork<string> GoDoYourWork()
         {
-            throw new NotImplementedException();
+            return new Work("internal IDidWork<string> GoDoYourWork()");
         }
 
         internal IDidWork<string> GoDoYourWork(object o1)

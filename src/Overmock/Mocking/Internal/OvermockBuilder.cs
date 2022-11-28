@@ -1,4 +1,4 @@
-﻿namespace Overmock.Verification.Internal
+﻿namespace Overmock.Mocking.Internal
 {
     internal class OvermockBuilder : IOvermockBuilder
     {

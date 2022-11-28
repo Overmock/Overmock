@@ -20,9 +20,17 @@ namespace Overmock
         {
             var result = new Overmocked<T>(Builder.GetTypeBuilder(argsProvider));
 
-            _verifiables.Append(result);
+            _verifiables.Enqueue(result);
 
             return result;
+        }
+
+        public static void Verify()
+        {
+            while (_verifiables.TryDequeue(out var verifiable))
+            {
+                verifiable.Verify();
+            }
         }
 
         internal static TMethod Register<TMethod>(IOvermock overmock, TMethod methodCall) where TMethod : IMethodCall
@@ -67,6 +75,11 @@ namespace Overmock
         {
             Methods.Add(methodCall);
             return methodCall;
+        }
+
+        IEnumerable<IMethodCall> IOvermock<T>.GetOvermockedMethods()
+        {
+            return Methods.AsReadOnly();
         }
     }
 }

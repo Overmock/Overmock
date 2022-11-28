@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace Overmock.Verification
+namespace Overmock.Mocking
 {
     [EditorBrowsable(EditorBrowsableState.Never)]
     public interface IVerifiable : IFluentInterface

@@ -1,6 +1,6 @@
 ﻿using System.Linq.Expressions;
 
-namespace Overmock
+namespace Overmock.Mocking
 {
     public interface IMethodCall : IVerifiable
     {
@@ -9,6 +9,8 @@ namespace Overmock
         void Call(Action method);
 
         void Throws(Exception exception);
+
+        IEnumerable<MemberOverride> GetOverrides();
     }
 
     public interface IMethodCall<T> : IMethodCall where T : class

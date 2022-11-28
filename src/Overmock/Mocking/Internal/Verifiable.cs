@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace Overmock.Verification.Internal
+namespace Overmock.Mocking.Internal
 {
     public abstract class Verifiable : IVerifiable
     {
