@@ -29,14 +29,34 @@ namespace Overmock.Tests
 
                 if (result.Result != "testing")
                 {
-                    return new Work($"Original: '{result.Result}' with _provider.GetName(): {_provider.GetName()}.");
+                    return new WrittenWork($"Original: '{result.Result}' with _provider.GetName(): {_provider.GetName()}.");
                 }
 
                 return result;
             }
             catch (Exception ex)
             {
-                return new Work(ex.Message);
+                return new WrittenWork(ex.Message);
+            }
+        }
+
+        internal IDidWork<string> DoSomeWorkWithProperties()
+        {
+            try
+            {
+                var factory = _interface.Factory;
+                var result = factory.GoDoYourWork();
+
+                if (result.Result != "testing")
+                {
+                    return new WrittenWork($"Original: '{result.Result}' with _provider.GetName(): {_provider.GetName()}.");
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return new WrittenWork(ex.Message);
             }
         }
     }

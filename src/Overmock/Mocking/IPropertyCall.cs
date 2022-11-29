@@ -2,10 +2,12 @@
 
 namespace Overmock.Mocking
 {
-    public interface IPropertyCall<TReturn> : IVerifiable<TReturn>
+    public interface IPropertyCall : IMemberCall
     {
         MemberExpression Expression { get; }
+    }
 
-        void Return(TReturn value);
+    public interface IPropertyCall<TReturn> : IPropertyCall
+    {
     }
 }

@@ -14,7 +14,12 @@
             _methodCall.Call(callback);
         }
 
-        void ISetupOvermock<T>.ToThrow(Exception exception)
+        void ISetupOvermock<T>.Returns(Func<T> resultProvider)
+        {
+            _methodCall.Returns(resultProvider);
+        }
+
+        void ISetupOvermock.ToThrow(Exception exception)
         {
             _methodCall.Throws(exception ?? throw new ArgumentNullException(nameof(exception)));
         }

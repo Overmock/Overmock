@@ -99,10 +99,16 @@ namespace Overmock.Generation
         private ClassDeclarationSyntax ImplementInterface<T>(IOvermock<T> target, Type interfaceType, ClassDeclarationSyntax classDeclaration) where T : class
         {
             // TODO: Mock properties
+            var overmockedProperties = target.GetOvermockedProperties();
+            var interfaceProperties = interfaceType.GetProperties().Except(overmockedProperties.Select(p => (PropertyInfo)p.Expression.Member));
 
+            foreach (var property in target.GetOvermockedProperties())
+            {
+                classDeclaration = BuildOvermockedProperty(target, property, classDeclaration);
+            }
 
             // Add properties
-            foreach (var property in interfaceType.GetProperties().Where(m => !m.IsSpecialName))
+            foreach (var property in interfaceProperties)
             {
                 var propertyDeclaration = BuildProperty(interfaceType, property);
                 classDeclaration = classDeclaration.AddMembers(propertyDeclaration);
@@ -110,9 +116,7 @@ namespace Overmock.Generation
 
             // Add overmock methods
             var overmockedMethods = target.GetOvermockedMethods();
-            var interfaceMethods = interfaceType.GetMethods().Except(
-                overmockedMethods.Select(m => m.Expression.Method)
-            ).Where(m => !m.IsSpecialName);
+            var interfaceMethods = interfaceType.GetMethods().Except(overmockedMethods.Select(m => m.Expression.Method)).Where(m => !m.IsSpecialName);
 
             foreach (var method in overmockedMethods)
             {
@@ -145,10 +149,10 @@ namespace Overmock.Generation
                 );
             }
 
-            //foreach (var property in target.GetProperties())
-            //{
-
-            //}
+            foreach (var property in target.GetOvermockedProperties())
+            {
+                result = BuildOvermockedProperty(target, property, result);
+            }
 
             foreach (var method in target.GetOvermockedMethods())
             {
@@ -178,6 +182,41 @@ namespace Overmock.Generation
                 }
 
                 result = result.AddMembers(methodOvermocked.WithBody(NotImplementedExceptionMethodBody));
+            }
+
+            return result;
+        }
+
+        private ClassDeclarationSyntax BuildOvermockedProperty<T>(IOvermock<T> target, IPropertyCall property, ClassDeclarationSyntax result) where T : class
+        {
+            var overrides = property.GetOverrides();
+
+            if (overrides.Any())
+            {
+                var propertyInfo = (PropertyInfo)property.Expression.Member;
+                var propertyDeclaration = sf.PropertyDeclaration(GetSafeTypeName(propertyInfo.PropertyType), propertyInfo.Name)
+                    .AddModifiers(sf.Token(SyntaxKind.PublicKeyword));
+
+                var exception = overrides.SingleOrDefault(o => o.Exception != null);
+
+                if (exception != default)
+                {
+                    var exceptionType = exception.Exception.GetType();
+
+                    return result.AddMembers(propertyDeclaration.AddAccessorListAccessors(
+                        sf.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
+                            .WithBody(sf.Block(sf.ParseStatement($"throw new {exceptionType.Namespace}.{exceptionType.Name}(\"{exception.Exception.Message}\");"))),
+                        sf.AccessorDeclaration(SyntaxKind.SetAccessorDeclaration)
+                            .WithBody(NotImplementedExceptionMethodBody)
+                        ));
+                }
+
+                result = result.AddMembers(propertyDeclaration.AddAccessorListAccessors(
+                    sf.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
+                        .WithBody(NotImplementedExceptionMethodBody),
+                    sf.AccessorDeclaration(SyntaxKind.SetAccessorDeclaration)
+                        .WithBody(NotImplementedExceptionMethodBody)
+                ));
             }
 
             return result;
@@ -247,7 +286,7 @@ namespace Overmock.Generation
             return result;
         }
 
-        private IEnumerable<ParameterSyntax> BuildParameterList(IEnumerable<ParameterInfo> parameters)
+        private static IEnumerable<ParameterSyntax> BuildParameterList(IEnumerable<ParameterInfo> parameters)
         {
             var result = new List<ParameterSyntax>();
 
@@ -319,7 +358,7 @@ namespace Overmock.Generation
                     .WithSemicolonToken(sf.Token(SyntaxKind.SemicolonToken)));
             }
 
-            var result = sf.PropertyDeclaration(sf.ParseTypeName(property.PropertyType.Name), sf.Identifier(property.Name));
+            var result = sf.PropertyDeclaration(GetSafeTypeName(property.PropertyType), sf.Identifier(property.Name));
 
             if (type.IsInterface && implementExplicitlyIfInterface)
             {

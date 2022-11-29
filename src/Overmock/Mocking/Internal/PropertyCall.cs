@@ -2,25 +2,27 @@
 
 namespace Overmock.Mocking.Internal
 {
-    public class PropertyCall<TReturn> : Verifiable<TReturn>, IPropertyCall<TReturn>
+    public class PropertyCall : MemberCall, IPropertyCall, IVerifiable
     {
         private readonly MemberExpression _expression;
-        private TReturn? _return;
 
-        internal PropertyCall(MemberExpression expression)
+        public PropertyCall(MemberExpression expression) : base((Ex.Throw.IfDeclaringTypeNull(expression.Member.DeclaringType, expression.Member.Name)))
         {
-            _expression = expression;
+            _expression = expression ?? throw new ArgumentNullException(nameof(expression));
         }
-
-        public MemberExpression Expression { get; }
-
-        MemberExpression IPropertyCall<TReturn>.Expression => _expression;
 
         protected override void Verify()
         {
             throw new NotImplementedException();
         }
 
-        void IPropertyCall<TReturn>.Return(TReturn value) => _return = value;
+        MemberExpression IPropertyCall.Expression => _expression;
+    }
+
+    public class PropertyCall<TReturn> : PropertyCall, IPropertyCall<TReturn>
+    {
+        internal PropertyCall(MemberExpression expression) : base(expression)
+        {
+        }
     }
 }

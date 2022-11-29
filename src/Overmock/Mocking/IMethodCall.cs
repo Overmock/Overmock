@@ -2,15 +2,11 @@
 
 namespace Overmock.Mocking
 {
-    public interface IMethodCall : IVerifiable
+    public interface IMethodCall : IMemberCall
     {
         MethodCallExpression Expression { get; }
 
         void Call(Action method);
-
-        void Throws(Exception exception);
-
-        IEnumerable<MemberOverride> GetOverrides();
     }
 
     public interface IMethodCall<T> : IMethodCall where T : class

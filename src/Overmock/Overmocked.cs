@@ -33,16 +33,21 @@ namespace Overmock
             }
         }
 
-        internal static TMethod Register<TMethod>(IOvermock overmock, TMethod methodCall) where TMethod : IMethodCall
+        internal static TMethod RegisterMethod<TMethod>(IOvermock overmock, TMethod property) where TMethod : IMethodCall
         {
-            return overmock.AddMethod(methodCall);
+            return overmock.AddMethod(property);
+        }
+
+        internal static TProperty RegisterProperty<TProperty>(IOvermock overmock, TProperty property) where TProperty : IPropertyCall
+        {
+            return overmock.AddProperty(property);
         }
     }
 
     internal class Overmocked<T> : Verifiable<T>, IOvermock<T>, IVerifiable<T> where T : class
     {
         private readonly List<IMethodCall> Methods = new List<IMethodCall>();
-        //private readonly List<IVerifiable<T>> Properties = new List<IVerifiable<T>>();
+        private readonly List<IPropertyCall> Properties = new List<IPropertyCall>();
 
         private readonly Lazy<T> _lazyObject;
         private Type? _compiledType;
@@ -59,13 +64,18 @@ namespace Overmock
             _lazyObject = new Lazy<T>(() => builder.BuildType(this));
         }
 
+        public T Object => _lazyObject.Value;
+
         internal Type? GetCompiledType() => _compiledType;
 
         Type? IOvermock<T>.GetCompiledType() => _compiledType;
 
         string IOvermock<T>.TypeName => base.TypeName;
 
-        public T Object => _lazyObject.Value;
+        protected override void Verify()
+        {
+            throw new VerifyException(this);
+        }
 
         internal void SetCompiledType(Assembly assembly) => _compiledType = assembly.ExportedTypes.First(t => t.Name == TypeName);
 
@@ -77,9 +87,20 @@ namespace Overmock
             return methodCall;
         }
 
+        TProperty IOvermock.AddProperty<TProperty>(TProperty methodCall)
+        {
+            Properties.Add(methodCall);
+            return methodCall;
+        }
+
         IEnumerable<IMethodCall> IOvermock<T>.GetOvermockedMethods()
         {
             return Methods.AsReadOnly();
+        }
+
+        IEnumerable<IPropertyCall> IOvermock<T>.GetOvermockedProperties()
+        {
+            return Properties.AsReadOnly();
         }
     }
 }

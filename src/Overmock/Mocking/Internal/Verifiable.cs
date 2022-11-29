@@ -4,9 +4,16 @@ namespace Overmock.Mocking.Internal
 {
     public abstract class Verifiable : IVerifiable
     {
-        protected Verifiable()
+        internal readonly string TypeName;
+
+        protected Verifiable(Type type)
         {
+            // Look into how this name is generated for reading types back from disk.
+            TypeName = $"{type.Name}_{Guid.NewGuid():N}";
+            Type = type;
         }
+
+        public Type Type { get; }
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         void IVerifiable.Verify()
@@ -21,19 +28,8 @@ namespace Overmock.Mocking.Internal
     {
         private static readonly Type _type = typeof(T);
 
-        internal readonly string TypeName = $"{_type.Name}_{Guid.NewGuid():N}";
-
-        internal Verifiable() : base()
+        internal Verifiable() : base(typeof(T))
         {
-        }
-
-        protected ITypeBuilder Builder { get; } = Overmocked.Builder.GetTypeBuilder();
-
-        Type IVerifiable<T>.Type => _type;
-
-        protected override void Verify()
-        {
-            throw new NotImplementedException();
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Linq.Expressions;
+﻿using Overmock.Setup;
+using System.Linq.Expressions;
 
 namespace Overmock
 {
@@ -9,7 +10,7 @@ namespace Overmock
             if (expression.Body is MethodCallExpression methodCall)
             {
                 return new SetupOvermock<T>(
-                    Overmocked.Register(overmock, new MethodCall<T>(methodCall))
+                    Overmocked.RegisterMethod(overmock, new MethodCall<T>(methodCall))
                 );
             }
 
@@ -18,10 +19,17 @@ namespace Overmock
 
         public static ISetupOvermock<T, TResult> Override<T, TResult>(this IOvermock<T> overmock, Expression<Func<T, TResult>> expression) where T : class
         {
-            if (expression.Body is MethodCallExpression methodCall)
+            if (expression.Body is MethodCallExpression method)
             {
                 return new SetupOverride<T, TResult>(
-                    Overmocked.Register(overmock, new MethodCall<T, TResult>(methodCall))
+                    Overmocked.RegisterMethod(overmock, new MethodCall<T, TResult>(method))
+                );
+            }
+
+            if (expression.Body is MemberExpression property)
+            {
+                return new SetupPropertyOvermock<T, TResult>(
+                    Overmocked.RegisterProperty(overmock, new PropertyCall<TResult>(property))
                 );
             }
 
