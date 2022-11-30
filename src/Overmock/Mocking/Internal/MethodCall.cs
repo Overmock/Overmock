@@ -6,7 +6,7 @@ namespace Overmock.Mocking.Internal
     {
         private readonly MethodCallExpression _expression;
 
-        private Action? _method;
+        private Action<OverrideContext>? _method;
         private Exception? _exception;
 
         internal MethodCall(MethodCallExpression expression) : base(Ex.Throw.IfDeclaringTypeNull(expression.Method.DeclaringType, expression.Method.Name))
@@ -23,7 +23,7 @@ namespace Overmock.Mocking.Internal
             throw new NotImplementedException();
         }
 
-        void IMethodCall.Call(Action method)
+        void IMethodCall.Call(Action<OverrideContext> method)
         {
             _method = method;
         }
@@ -31,8 +31,7 @@ namespace Overmock.Mocking.Internal
 
     public class MethodCall<T> : MethodCall, IMethodCall<T> where T : class
     {
-        private Action<OverrideContext<T>>? _action;
-        private Func<OverrideContext<T>>? _method;
+        private Action<OverrideContext>? _action;
 
         internal MethodCall(MethodCallExpression expression) : base(expression)
         {
@@ -42,48 +41,32 @@ namespace Overmock.Mocking.Internal
         {
             var overrides = base.GetOverrides();
             
-            if (_method != null)
+            if (_action != null)
             {
-                overrides.Add(new MethodOverride(overmock: _method));
+                overrides.Add(new MethodOverride(overmock: _action));
             }
 
             return overrides;
 
         }
 
-        void IMethodCall<T>.Call(Action<OverrideContext<T>> action)
+        void IMethodCall.Call(Action<OverrideContext> action)
         {
             _action = action;
-        }
-
-        void IMethodCall.Call(Action method)
-        {
-            throw new NotImplementedException();
         }
     }
 
     internal class MethodCall<T, TReturn> : MethodCall<T>, IMethodCall<T, TReturn> where T : class
     {
-        private Action<OverrideContext<T, TReturn>>? _action;
-        private Func<OverrideContext<T, TReturn>, TReturn>? _func;
+        private Func<OverrideContext, TReturn>? _func;
 
         internal MethodCall(MethodCallExpression expression): base(expression)
         {
         }
 
-        void IMethodCall<T, TReturn>.Call(Action<OverrideContext<T, TReturn>> method)
-        {
-            throw new NotImplementedException();
-        }
-
-        void IMethodCall<T, TReturn>.Call(Func<OverrideContext<T, TReturn>, TReturn> method)
+        void IMethodCall<T, TReturn>.Call(Func<OverrideContext, TReturn> method)
         {
             _func = method;
-        }
-
-        void IMethodCall<T>.Call(Action<OverrideContext<T>> method)
-        {
-            _action = method;
         }
     }
 }

@@ -8,11 +8,6 @@ namespace Overmock
         TMethod AddMethod<TMethod>(TMethod method) where TMethod : IMethodCall;
 
         TProperty AddProperty<TProperty>(TProperty property) where TProperty : IPropertyCall;
-    }
-
-    public interface IOvermock<T> : IVerifiable<T>, IOvermock where T : class
-    {
-        T Object { get; }
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         string TypeName { get; }
@@ -28,5 +23,10 @@ namespace Overmock
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         IEnumerable<IPropertyCall> GetOvermockedProperties();
+    }
+
+    public interface IOvermock<T> : IVerifiable<T>, IOvermock where T : class
+    {
+        T Object { get; }
     }
 }

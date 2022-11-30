@@ -1,6 +1,4 @@
-﻿using System.Reflection;
-
-namespace Overmock.Mocking
+﻿namespace Overmock.Mocking
 {
     public interface IOverride
     {

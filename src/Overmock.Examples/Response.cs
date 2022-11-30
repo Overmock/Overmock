@@ -19,6 +19,7 @@ namespace Overmock.Examples
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public IEnumerable<T>? Results { get; set; }
 
+        public bool Success => ErrorDetails == null;
 
         public static implicit operator Response<T>(T? obj) => new(obj);
 

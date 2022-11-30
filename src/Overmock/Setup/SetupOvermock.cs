@@ -9,12 +9,12 @@
             _methodCall = methodCall;
         }
 
-        void ISetupOvermock<T>.Calls(Action<OverrideContext<T>> callback)
+        void ISetupOvermock<T>.ToCall(Action<OverrideContext> callback)
         {
             _methodCall.Call(callback);
         }
 
-        void ISetupOvermock<T>.Returns(Func<T> resultProvider)
+        void ISetupOvermock<T>.ToReturn(Func<T> resultProvider)
         {
             _methodCall.Returns(resultProvider);
         }
@@ -33,12 +33,12 @@
         {
         }
 
-        void ISetupOvermock<T, TReturn>.Calls(Func<OverrideContext<T, TReturn>, TReturn> callback)
+        void ISetupOvermock<T, TReturn>.ToCall(Func<OverrideContext, TReturn> callback)
         {
             ((IMethodCall<T, TReturn>)_methodCall).Call(callback);
         }
 
-        void ISetupOvermock<T, TReturn>.Returns(Func<TReturn> resultProvider)
+        void ISetupOvermock<T, TReturn>.ToReturn(Func<TReturn> resultProvider)
         {
             _valueProvider = resultProvider;
         }

@@ -7,16 +7,16 @@
 
     public interface ISetupOvermock<T> : ISetupOvermock where T : class
     {
-        void Calls(Action<OverrideContext<T>> callback);
+        void ToCall(Action<OverrideContext> callback);
 
-        void Returns(Func<T> resultProvider);
+        void ToReturn(Func<T> resultProvider);
 
     }
 
     public interface ISetupOvermock<T, TReturn> : ISetupOvermock<T> where T : class
     {
-        void Returns(Func<TReturn> resultProvider);
+        void ToCall(Func<OverrideContext, TReturn> callback);
 
-        void Calls(Func<OverrideContext<T, TReturn>, TReturn> callback);
+        void ToReturn(Func<TReturn> resultProvider);
     }
 }

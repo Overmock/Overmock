@@ -1,21 +1,14 @@
 ﻿namespace Overmock
 {
-    public record SetupArgs
+    public class SetupArgs
     {
-        private static readonly object[] DefaultValue = Array.Empty<object>();
+        private object[] _args = Array.Empty<object>();
 
-        private object _args = new object[0];
-
-        public object Args
+        public void Args(params object[] args)
         {
-            get
-            {
-                return _args;
-            }
-            set
-            {
-                _args = value ?? DefaultValue;
-            }
+            _args = args;
         }
+
+        internal object[] Parameters => _args;
     }
 }

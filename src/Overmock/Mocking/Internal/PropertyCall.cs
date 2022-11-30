@@ -21,8 +21,15 @@ namespace Overmock.Mocking.Internal
 
     public class PropertyCall<TReturn> : PropertyCall, IPropertyCall<TReturn>
     {
+        private Func<OverrideContext, TReturn>? _func;
+
         internal PropertyCall(MemberExpression expression) : base(expression)
         {
+        }
+
+        void IPropertyCall<TReturn>.Calls(Func<OverrideContext, TReturn> func)
+        {
+            _func = func;
         }
     }
 }

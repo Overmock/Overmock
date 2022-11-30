@@ -9,22 +9,27 @@
             this._propertyCall = propertyCall;
         }
 
-        void ISetupOvermock<T, TReturn>.Calls(Func<OverrideContext<T, TReturn>, TReturn> callback)
+        void ISetupOvermock<T, TReturn>.ToCall(Func<OverrideContext, TReturn> callback)
         {
-            throw new NotImplementedException();
+            _propertyCall.Calls(callback);
         }
 
-        void ISetupOvermock<T>.Calls(Action<OverrideContext<T>> callback)
+        void ISetupOvermock<T>.ToCall(Action<OverrideContext> callback)
         {
-            throw new NotImplementedException();
+            // TODO: Verify this works as I think it will.
+            _propertyCall.Calls(c =>
+            {
+                callback.Invoke(c);
+                return default;
+            });
         }
 
-        void ISetupOvermock<T, TReturn>.Returns(Func<TReturn> resultProvider)
+        void ISetupOvermock<T, TReturn>.ToReturn(Func<TReturn> resultProvider)
         {
             _propertyCall.Returns(() => resultProvider.Invoke());
         }
 
-        void ISetupOvermock<T>.Returns(Func<T> resultProvider)
+        void ISetupOvermock<T>.ToReturn(Func<T> resultProvider)
         {
             throw new NotImplementedException();
         }
