@@ -1,6 +1,5 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
-using System.Collections.Immutable;
 
 namespace Overmock.Mocking.Internal
 {
@@ -19,18 +18,11 @@ namespace Overmock.Mocking.Internal
         {
             if (target.GetCompiledType() == null)
             {
-                var classDeclaration = _assemblyGenerator.GetClassDeclaration(target);
-                var namespaceDeclaration = _assemblyGenerator.GetNamespaceDeclarations(target);
+                var generationContext = _assemblyGenerator.GetClassDeclaration(target);
 
-                var compilationUnit = SyntaxFactory.CompilationUnit()
-                    .AddMembers(namespaceDeclaration.AddMembers(classDeclaration.NormalizeWhitespace())
-                    .NormalizeWhitespace());
+                var compilationUnit = generationContext.BuildCompilationUnit();
 
-                var namespaces = namespaceDeclaration.Usings
-                    .Select(u => u.Name.ToFullString())
-                    .ToImmutableArray();
-
-                var compiler = _assemblyGenerator.CompileAssembly(target, compilationUnit, namespaces);
+                var compiler = _assemblyGenerator.CompileAssembly(generationContext, compilationUnit);
 
                 using (var stream = new MemoryStream())
                 {
@@ -38,7 +30,7 @@ namespace Overmock.Mocking.Internal
 
                     if (!result.Success)
                     {
-                        throw new Exception(result.ToString());
+                        throw new Exception(result.Diagnostics.ToString());
                     }
 
                     var assembly = AppDomain.CurrentDomain.Load(stream.ToArray());
@@ -57,7 +49,7 @@ namespace Overmock.Mocking.Internal
                 var args = new SetupArgs();
                 _constructorArguments.Invoke(args);
 
-                return Activator.CreateInstance(target.GetCompiledType(), args.Args) as T;
+                return Activator.CreateInstance(target.GetCompiledType(), args.Parameters) as T;
             }
 
             return Activator.CreateInstance(target.GetCompiledType()) as T;

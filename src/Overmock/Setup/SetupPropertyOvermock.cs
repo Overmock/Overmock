@@ -6,27 +6,18 @@
 
         internal SetupPropertyOvermock(PropertyCall<TReturn> propertyCall)
         {
-            this._propertyCall = propertyCall;
+            _propertyCall = propertyCall;
         }
 
-        void ISetupOvermock<T, TReturn>.Calls(Func<OverrideContext<T, TReturn>, TReturn> callback)
+        ISetupReturn<TReturn> ISetupOvermock<T, TReturn>.ToCall(Func<OverrideContext, TReturn> callback)
         {
-            throw new NotImplementedException();
+            _propertyCall.Calls(callback);
+            return this;
         }
 
-        void ISetupOvermock<T>.Calls(Action<OverrideContext<T>> callback)
-        {
-            throw new NotImplementedException();
-        }
-
-        void ISetupOvermock<T, TReturn>.Returns(Func<TReturn> resultProvider)
+        void ISetupReturn<TReturn>.ToReturn(Func<TReturn> resultProvider)
         {
             _propertyCall.Returns(() => resultProvider.Invoke());
-        }
-
-        void ISetupOvermock<T>.Returns(Func<T> resultProvider)
-        {
-            throw new NotImplementedException();
         }
 
         void ISetupOvermock.ToThrow(Exception exception)

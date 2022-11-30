@@ -14,6 +14,7 @@ namespace Overmock.Examples.Storage
         {
         }
         private static int NextId => Collection.Count;
+
         protected override UserStory Create(UserStory model)
         {
             lock (SyncRoot)
@@ -37,11 +38,18 @@ namespace Overmock.Examples.Storage
         IEnumerable<UserStory> GetAll();
         UserStory? Get(int id);
         UserStory Save(UserStory model);
+        UserStory Delete(UserStory model);
     }
     public class UserStoryService : IUserStoryService
     {
         private readonly EntityCollection<UserStory> _collection;
         public UserStoryService(EntityCollection<UserStory> collection) => _collection = collection;
+
+        public UserStory Delete(UserStory model)
+        {
+            return _collection.Delete(model);
+        }
+
         public UserStory? Get(int id) => _collection.Find(id);
         public IEnumerable<UserStory> GetAll() => _collection.AsQueryable();
         public UserStory Save(UserStory model) => _collection.Upsert(model, original =>

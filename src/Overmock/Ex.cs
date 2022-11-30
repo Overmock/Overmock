@@ -26,6 +26,14 @@
 
                 return declaringType;
             }
+
+            internal static void IfBuildComponentsAreNull(AssemblyGenerationContext context)
+            {
+                if (context.NamespaceDeclaration == null || context.ClassDeclaration == null)
+                {
+                    throw new InvalidOperationException("NamespaceDeclaration and ClassDeclaration are required to build a CompilationUnitSyntax");
+                }
+            }
         }
     }
 }

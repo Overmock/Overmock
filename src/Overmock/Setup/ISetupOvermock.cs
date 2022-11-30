@@ -1,22 +1,21 @@
 ﻿namespace Overmock.Setup
 {
+    public interface ISetupReturn<in TReturn>
+    {
+        void ToReturn(Func<TReturn> resultProvider);
+    }
+
     public interface ISetupOvermock
     {
         void ToThrow(Exception exception);
     }
 
-    public interface ISetupOvermock<T> : ISetupOvermock where T : class
+    public interface ISetupOvermock<in T> : ISetupOvermock where T : class
     {
-        void Calls(Action<OverrideContext<T>> callback);
-
-        void Returns(Func<T> resultProvider);
-
     }
 
-    public interface ISetupOvermock<T, TReturn> : ISetupOvermock<T> where T : class
+    public interface ISetupOvermock<in T, in TReturn> : ISetupOvermock<T>, ISetupReturn<TReturn> where T : class
     {
-        void Returns(Func<TReturn> resultProvider);
-
-        void Calls(Func<OverrideContext<T, TReturn>, TReturn> callback);
+        ISetupReturn<TReturn> ToCall(Func<OverrideContext, TReturn> callback);
     }
 }

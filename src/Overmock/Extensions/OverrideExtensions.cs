@@ -1,5 +1,4 @@
-﻿using Overmock.Setup;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 
 namespace Overmock
 {

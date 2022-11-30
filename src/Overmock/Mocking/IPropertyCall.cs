@@ -9,5 +9,6 @@ namespace Overmock.Mocking
 
     public interface IPropertyCall<TReturn> : IPropertyCall
     {
+        void Calls(Func<OverrideContext, TReturn> func);
     }
 }

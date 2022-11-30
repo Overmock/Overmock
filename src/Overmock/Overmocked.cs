@@ -66,11 +66,9 @@ namespace Overmock
 
         public T Object => _lazyObject.Value;
 
-        internal Type? GetCompiledType() => _compiledType;
+        Type? IOvermock.GetCompiledType() => _compiledType;
 
-        Type? IOvermock<T>.GetCompiledType() => _compiledType;
-
-        string IOvermock<T>.TypeName => base.TypeName;
+        string IOvermock.TypeName => base.TypeName;
 
         protected override void Verify()
         {
@@ -79,7 +77,7 @@ namespace Overmock
 
         internal void SetCompiledType(Assembly assembly) => _compiledType = assembly.ExportedTypes.First(t => t.Name == TypeName);
 
-        void IOvermock<T>.SetCompiledType(Assembly assembly) => SetCompiledType(assembly);
+        void IOvermock.SetCompiledType(Assembly assembly) => SetCompiledType(assembly);
 
         TMethod IOvermock.AddMethod<TMethod>(TMethod methodCall)
         {
@@ -93,12 +91,12 @@ namespace Overmock
             return methodCall;
         }
 
-        IEnumerable<IMethodCall> IOvermock<T>.GetOvermockedMethods()
+        IEnumerable<IMethodCall> IOvermock.GetOvermockedMethods()
         {
             return Methods.AsReadOnly();
         }
 
-        IEnumerable<IPropertyCall> IOvermock<T>.GetOvermockedProperties()
+        IEnumerable<IPropertyCall> IOvermock.GetOvermockedProperties()
         {
             return Properties.AsReadOnly();
         }

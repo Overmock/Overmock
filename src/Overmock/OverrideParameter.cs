@@ -1,6 +1,6 @@
-﻿namespace Overmock.Setup
+﻿namespace Overmock
 {
-    internal class OverrideParameter
+    public class OverrideParameter
     {
         public OverrideParameter(string name, object value, Type? type = default)
         {

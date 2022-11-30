@@ -1,4 +1,6 @@
-﻿namespace DataCompany.Framework
+﻿using Overmock.Examples.Storage;
+
+namespace DataCompany.Framework
 {
     public interface IDataConnection { }
     public class FrameworkDataConnection : IDataConnection { }
@@ -18,6 +20,17 @@
         protected static IList<T> Collection { get; } = new List<T>();
         protected IDataConnection Connection { get; }
         protected abstract T Create(T model);
+        public virtual T Delete(T model)
+        {
+            var result = Collection.FirstOrDefault(m => m.Id == model.Id);
+
+            if (result != null && Collection.Remove(result))
+            {
+                return result;
+            }
+
+            return model;
+        }
         public virtual IQueryable<T> AsQueryable() => Collection.AsQueryable();
         public virtual T? Find(int id) => Collection.ElementAtOrDefault(id);
         public virtual T Upsert(T model, Func<T, T> update)
