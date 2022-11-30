@@ -1,15 +1,15 @@
 ﻿using System.Linq.Expressions;
 
-namespace Overmock.Verification.Internal
+namespace Overmock.Mocking.Internal
 {
-    public class MethodCall : Verifiable, IMethodCall
+    public class MethodCall : MemberCall, IMethodCall
     {
         private readonly MethodCallExpression _expression;
 
         private Action? _method;
         private Exception? _exception;
 
-        internal MethodCall(MethodCallExpression expression)
+        internal MethodCall(MethodCallExpression expression) : base(Ex.Throw.IfDeclaringTypeNull(expression.Method.DeclaringType, expression.Method.Name))
         {
             _expression = expression;
         }
@@ -27,11 +27,6 @@ namespace Overmock.Verification.Internal
         {
             _method = method;
         }
-
-        void IMethodCall.Throws(Exception exception)
-        {
-            _exception = exception;
-        }
     }
 
     public class MethodCall<T> : MethodCall, IMethodCall<T> where T : class
@@ -41,6 +36,19 @@ namespace Overmock.Verification.Internal
 
         internal MethodCall(MethodCallExpression expression) : base(expression)
         {
+        }
+
+        protected override List<MemberOverride> GetOverrides()
+        {
+            var overrides = base.GetOverrides();
+            
+            if (_method != null)
+            {
+                overrides.Add(new MethodOverride(overmock: _method));
+            }
+
+            return overrides;
+
         }
 
         void IMethodCall<T>.Call(Action<OverrideContext<T>> action)

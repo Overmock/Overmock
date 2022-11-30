@@ -5,6 +5,6 @@ namespace Overmock.Tests.Mocks
     {
         string GetName();
 
-        IDisposable GetProperties();
+        IDictionary<string, object> GetProperties();
     }
 }

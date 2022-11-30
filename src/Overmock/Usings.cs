@@ -1,5 +1,5 @@
 ﻿global using Overmock.Generation;
 global using Overmock.Setup;
-global using Overmock.Verification;
-global using Overmock.Verification.Internal;
+global using Overmock.Mocking;
+global using Overmock.Mocking.Internal;
 
