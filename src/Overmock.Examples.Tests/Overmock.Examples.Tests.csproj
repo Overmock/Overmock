@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Overmock\Overmock.csproj" />
+    <ProjectReference Include="..\Overmock.Examples\Overmock.Examples.csproj" />
   </ItemGroup>
 
 </Project>
