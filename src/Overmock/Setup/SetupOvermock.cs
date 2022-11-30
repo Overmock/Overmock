@@ -2,26 +2,16 @@
 {
     internal class SetupOvermock<T> : ISetupOvermock<T> where T : class
     {
-        protected readonly IMethodCall<T> _methodCall;
+        protected readonly IMethodCall<T> MethodCall;
 
         internal SetupOvermock(MethodCall<T> methodCall)
         {
-            _methodCall = methodCall;
-        }
-
-        void ISetupOvermock<T>.ToCall(Action<OverrideContext> callback)
-        {
-            _methodCall.Call(callback);
-        }
-
-        void ISetupOvermock<T>.ToReturn(Func<T> resultProvider)
-        {
-            _methodCall.Returns(resultProvider);
+            MethodCall = methodCall;
         }
 
         void ISetupOvermock.ToThrow(Exception exception)
         {
-            _methodCall.Throws(exception ?? throw new ArgumentNullException(nameof(exception)));
+            MethodCall.Throws(exception ?? throw new ArgumentNullException(nameof(exception)));
         }
     }
 
@@ -33,12 +23,13 @@
         {
         }
 
-        void ISetupOvermock<T, TReturn>.ToCall(Func<OverrideContext, TReturn> callback)
+        ISetupReturn<TReturn> ISetupOvermock<T, TReturn>.ToCall(Func<OverrideContext, TReturn> callback)
         {
-            ((IMethodCall<T, TReturn>)_methodCall).Call(callback);
+            ((IMethodCall<T, TReturn>)MethodCall).Call(callback);
+            return this;
         }
 
-        void ISetupOvermock<T, TReturn>.ToReturn(Func<TReturn> resultProvider)
+        void ISetupReturn<TReturn>.ToReturn(Func<TReturn> resultProvider)
         {
             _valueProvider = resultProvider;
         }

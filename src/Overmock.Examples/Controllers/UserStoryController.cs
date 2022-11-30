@@ -24,7 +24,7 @@ namespace Overmock.Examples.Controllers
             }
         }
 
-        [HttpGet("/{id}")]
+        [HttpGet("{id:int}")]
         public Response<UserStory> Get(int id)
         {
             try
@@ -43,6 +43,19 @@ namespace Overmock.Examples.Controllers
             try
             {
                 return _service.Save(model);
+            }
+            catch (Exception e)
+            {
+                return e;
+            }
+        }
+
+        [HttpDelete]
+        public Response<UserStory> Delete(UserStory model)
+        {
+            try
+            {
+                return _service.Delete(model);
             }
             catch (Exception e)
             {
