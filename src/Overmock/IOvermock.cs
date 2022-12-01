@@ -3,24 +3,62 @@ using System.Reflection;
 
 namespace Overmock
 {
+    /// <summary>
+    /// An interface that represents an overmocked type.
+    /// </summary>
+    /// <seealso cref="Overmock.Mocking.IVerifiable" />
     public interface IOvermock : IVerifiable
     {
+        /// <summary>
+        /// Adds the method.
+        /// </summary>
+        /// <typeparam name="TMethod">The type of the method.</typeparam>
+        /// <param name="method">The method.</param>
+        /// <returns></returns>
         TMethod AddMethod<TMethod>(TMethod method) where TMethod : IMethodCall;
 
+        /// <summary>
+        /// Adds the property.
+        /// </summary>
+        /// <typeparam name="TProperty">The type of the property.</typeparam>
+        /// <param name="property">The property.</param>
+        /// <returns></returns>
         TProperty AddProperty<TProperty>(TProperty property) where TProperty : IPropertyCall;
 
+        /// <summary>
+        /// Gets the name of the type.
+        /// </summary>
+        /// <value>
+        /// The name of the type.
+        /// </value>
         [EditorBrowsable(EditorBrowsableState.Never)]
         string TypeName { get; }
 
+        /// <summary>
+        /// Gets the type of the compiled.
+        /// </summary>
+        /// <returns></returns>
         [EditorBrowsable(EditorBrowsableState.Never)]
         Type? GetCompiledType();
 
+        /// <summary>
+        /// Sets the type of the compiled mock.
+        /// </summary>
+        /// <param name="assembly">The assembly.</param>
         [EditorBrowsable(EditorBrowsableState.Never)]
         void SetCompiledType(Assembly assembly);
 
+        /// <summary>
+        /// Gets the overmocked methods.
+        /// </summary>
+        /// <returns></returns>
         [EditorBrowsable(EditorBrowsableState.Never)]
         IEnumerable<IMethodCall> GetOvermockedMethods();
 
+        /// <summary>
+        /// Gets the overmocked properties.
+        /// </summary>
+        /// <returns></returns>
         [EditorBrowsable(EditorBrowsableState.Never)]
         IEnumerable<IPropertyCall> GetOvermockedProperties();
     }

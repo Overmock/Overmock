@@ -23,6 +23,11 @@ public class Overmock<T> : Verifiable<T>, IOvermock<T> where T : class
         Overmocked.Register(this);
     }
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="Overmock{T}"/> class.
+    /// </summary>
+    /// <param name="builder">The builder.</param>
+    /// <exception cref="System.InvalidOperationException">Type '{type.Name}' must be a non sealed/enum class.</exception>
     public Overmock(ITypeBuilder builder)
     {
         var type = typeof(T);
@@ -45,6 +50,7 @@ public class Overmock<T> : Verifiable<T>, IOvermock<T> where T : class
 
     string IOvermock.TypeName => base.TypeName;
 
+    /// <inheritdoc/>
     protected override void Verify()
     {
         throw new VerifyException(this);
