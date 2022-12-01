@@ -31,7 +31,7 @@
 
         void ISetupReturn<TReturn>.ToReturn(Func<TReturn> resultProvider)
         {
-            _valueProvider = resultProvider;
+            MethodCall.Returns(() => resultProvider()!);
         }
     }
 }
