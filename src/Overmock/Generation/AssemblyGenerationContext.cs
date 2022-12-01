@@ -69,7 +69,7 @@ namespace Overmock.Generation
 
         public CompilationUnitSyntax BuildCompilationUnit()
         {
-            Ex.Throw.IfBuildComponentsAreNull(this);
+            Ex.Throw.If.BuildComponentsAreNull(this);
 
             var namespaceDeclaration = NamespaceDeclaration!.AddUsings(_namespaces.Select(n =>
                     SyntaxFactory.UsingDirective(SyntaxFactory.ParseName(n))

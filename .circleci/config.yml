@@ -17,7 +17,7 @@ jobs:
   pack:
     docker:
       - image: mcr.microsoft.com/dotnet/sdk:6.0
-    parallelism: 3
+    parallelism: 1 # figure out later if needed.
     steps:
       - checkout
       - run:
@@ -29,7 +29,7 @@ jobs:
           path: ./src/Overmock/bin/Release/
           destination: ./pack
 workflows:
-  sample:
+  build-test-and-pack:
     jobs:
       - build-and-test
       - pack
