@@ -6,7 +6,7 @@ jobs:
       - image: mcr.microsoft.com/dotnet/sdk:6.0
     steps:
       - store_test_results:
-          path: ./bin/
+          path: ./test-results/
       - checkout
       - run:
           working_directory: ./src/Overmock.Examples.Tests/
@@ -24,11 +24,12 @@ jobs:
           working_directory: ./src/Overmock/
           name: Run build
           command: |
-            dotnet build
+            ls -la && dotnet build
       - store_artifacts:
-          path: ./bin/
+          path: ./
           destination: ./artifacts
 workflows:
   sample:
     jobs:
+      - build
       - build-and-test
