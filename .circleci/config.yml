@@ -14,7 +14,7 @@ jobs:
           command: |
             dotnet test
 
-  build:
+  pack:
     docker:
       - image: mcr.microsoft.com/dotnet/sdk:6.0
     parallelism: 3
@@ -24,12 +24,12 @@ jobs:
           working_directory: ./src/Overmock/
           name: Run build
           command: |
-            ls -la && dotnet build
+            dotnet pack --configuration Release
       - store_artifacts:
-          path: ./
+          path: ./src/Overmock/bin/Release/*.nupkg
           destination: ./artifacts
 workflows:
   sample:
     jobs:
-      - build
+      - pack
       - build-and-test
