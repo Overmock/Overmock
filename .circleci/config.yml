@@ -31,5 +31,5 @@ jobs:
 workflows:
   sample:
     jobs:
-      - pack
       - build-and-test
+      - pack
