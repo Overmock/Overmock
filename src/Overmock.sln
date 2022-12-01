@@ -19,6 +19,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Overmock.Examples", "Overmock.Examples\Overmock.Examples.csproj", "{0634BB8A-BF33-4878-889B-0E8FAC343C83}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".circleci", ".circleci", "{9FE16D9A-24BA-4136-A2E7-CEE7918C214E}"
+	ProjectSection(SolutionItems) = preProject
+		..\.circleci\config.yml = ..\.circleci\config.yml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -40,6 +45,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{9FE16D9A-24BA-4136-A2E7-CEE7918C214E} = {C0BFD13F-48EE-40EA-8AF1-FB2055D0C416}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9E57E1B2-F049-44D1-8E22-4869356F66D9}
