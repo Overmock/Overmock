@@ -26,8 +26,8 @@ jobs:
           command: |
             dotnet pack --configuration Release
       - store_artifacts:
-          path: ./src/Overmock/bin/Release/*.nupkg
-          destination: ./artifacts
+          path: ./src/Overmock/bin/Release/
+          destination: ./pack
 workflows:
   sample:
     jobs:
