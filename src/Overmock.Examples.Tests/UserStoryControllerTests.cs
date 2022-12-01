@@ -7,7 +7,7 @@ namespace Overmock.Examples.Tests
     [TestClass]
     public class UserStoryControllerTests
     {
-        private IOvermock<IDataConnection> _connection;
+        private IOvermock<IDataConnection> _connection = new Overmock<IDataConnection>();
         private IOvermock<UserStoryFactory> _factory;
         private IOvermock<IUserStoryService> _service;
 

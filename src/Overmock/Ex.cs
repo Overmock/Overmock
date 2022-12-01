@@ -17,21 +17,24 @@
 
         internal static class Throw
         {
-            public static Type IfDeclaringTypeNull(Type? declaringType, string childName, Exception? innerException = default)
+            public static class If
             {
-                if (declaringType == null)
+                public static Type DeclaringTypeNull(Type? declaringType, string childName, Exception? innerException = default)
                 {
-                    throw new ArgumentNullException($"Member: '{childName}' must have a declaring type.", innerException);
+                    if (declaringType == null)
+                    {
+                        throw new ArgumentNullException($"Member: '{childName}' must have a declaring type.", innerException);
+                    }
+
+                    return declaringType;
                 }
 
-                return declaringType;
-            }
-
-            internal static void IfBuildComponentsAreNull(AssemblyGenerationContext context)
-            {
-                if (context.NamespaceDeclaration == null || context.ClassDeclaration == null)
+                internal static void BuildComponentsAreNull(AssemblyGenerationContext context)
                 {
-                    throw new InvalidOperationException("NamespaceDeclaration and ClassDeclaration are required to build a CompilationUnitSyntax");
+                    if (context.NamespaceDeclaration == null || context.ClassDeclaration == null)
+                    {
+                        throw new InvalidOperationException("NamespaceDeclaration and ClassDeclaration are required to build a CompilationUnitSyntax");
+                    }
                 }
             }
         }

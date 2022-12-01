@@ -6,7 +6,7 @@ namespace Overmock.Mocking.Internal
     {
         private readonly MemberExpression _expression;
 
-        public PropertyCall(MemberExpression expression) : base((Ex.Throw.IfDeclaringTypeNull(expression.Member.DeclaringType, expression.Member.Name)))
+        public PropertyCall(MemberExpression expression) : base((Ex.Throw.If.DeclaringTypeNull(expression.Member.DeclaringType, expression.Member.Name)))
         {
             _expression = expression ?? throw new ArgumentNullException(nameof(expression));
         }

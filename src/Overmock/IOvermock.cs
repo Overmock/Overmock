@@ -25,8 +25,17 @@ namespace Overmock
         IEnumerable<IPropertyCall> GetOvermockedProperties();
     }
 
+    /// <summary>
+    /// Represents a mocked type who's members can be overridden.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <seealso cref="Overmock.Mocking.IVerifiable" />
     public interface IOvermock<T> : IVerifiable<T>, IOvermock where T : class
     {
-        T Object { get; }
+        /// <summary>
+        /// Gets the mocked object.
+        /// </summary>
+        /// <value>The mocked object.</value>
+        T? Object { get; }
     }
 }
