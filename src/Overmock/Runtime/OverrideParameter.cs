@@ -1,4 +1,4 @@
-﻿namespace Overmock
+﻿namespace Overmock.Runtime
 {
     /// <summary>
     /// Represents an overridden parameter.

@@ -1,8 +1,9 @@
 ﻿using System.Linq.Expressions;
+using Overmock.Runtime;
 
 namespace Overmock.Mocking.Internal
 {
-    public class PropertyCall : MemberCall, IPropertyCall, IVerifiable
+    internal class PropertyCall : MemberCall, IPropertyCall, IVerifiable
     {
         private readonly MemberExpression _expression;
 
@@ -19,7 +20,7 @@ namespace Overmock.Mocking.Internal
         MemberExpression IPropertyCall.Expression => _expression;
     }
 
-    public class PropertyCall<TReturn> : PropertyCall, IPropertyCall<TReturn>
+    internal class PropertyCall<TReturn> : PropertyCall, IPropertyCall<TReturn>
     {
         private Func<OverrideContext, TReturn>? _func;
 

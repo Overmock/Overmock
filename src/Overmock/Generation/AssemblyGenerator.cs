@@ -11,18 +11,18 @@ namespace Overmock.Generation
 
     internal class AssemblyGenerator : IAssemblyGenerator
     {
-        private static readonly BlockSyntax NotImplementedExceptionMethodBody = sf.Block(
+        private static readonly BlockSyntax _notImplementedExceptionMethodBody = sf.Block(
             sf.ParseStatement("throw new NotImplementedException();")
         );
 
-        private static readonly IEnumerable<MetadataReference> DefaultReferences = new[]
+        private static readonly IEnumerable<MetadataReference> _defaultReferences = new[]
         {
             MetadataReference.CreateFromFile(typeof(object).GetTypeInfo().Assembly.Location),
             MetadataReference.CreateFromFile(typeof(Task).GetTypeInfo().Assembly.Location),
             MetadataReference.CreateFromFile(typeof(IList<>).GetTypeInfo().Assembly.Location)
         };
 
-        internal static readonly IAssemblyGenerator Instance = new AssemblyGenerator();
+        internal static readonly IAssemblyGenerator _instance = new AssemblyGenerator();
 
         public AssemblyGenerationContext GetClassDeclaration(IOvermock target)
         {
@@ -63,9 +63,9 @@ namespace Overmock.Generation
             return sf.NamespaceDeclaration(sf.ParseName("OvermockGenerated"));
         }
 
-        public IEnumerable<MetadataReference> LoadAssemblyReferences(AssemblyGenerationContext context)
+        public static IEnumerable<MetadataReference> LoadAssemblyReferences(AssemblyGenerationContext context)
         {
-            var references = DefaultReferences.Append(MetadataReference.CreateFromFile(context.Target.Type.Assembly.Location)).ToList();
+            var references = _defaultReferences.Append(MetadataReference.CreateFromFile(context.Target.Type.Assembly.Location)).ToList();
 
             references.AddRange(context.Target.Type.Assembly.GetReferencedAssemblies().Select(assemblyName =>
             {
@@ -77,7 +77,7 @@ namespace Overmock.Generation
 
         }
 
-        public void ImplementInterfaces(AssemblyGenerationContext context)
+        public static void ImplementInterfaces(AssemblyGenerationContext context)
         {
             if (context.Target.Type.IsInterface)
             {
@@ -121,13 +121,13 @@ namespace Overmock.Generation
             {
                 var methodDeclaration = BuildMethodSignature(method, context)
                     // TODO: Add method wrappers where needed.
-                    .WithBody(NotImplementedExceptionMethodBody);
+                    .WithBody(_notImplementedExceptionMethodBody);
 
                 context.AddMembers(methodDeclaration);
             }
         }
 
-        private void InheritClass(AssemblyGenerationContext context)
+        private static void InheritClass(AssemblyGenerationContext context)
         {
             foreach (var constructor in context.Target.Type.GetConstructors())
             {
@@ -169,7 +169,7 @@ namespace Overmock.Generation
                     return;
                 }
 
-                context.AddMembers(methodOvermocked.WithBody(NotImplementedExceptionMethodBody));
+                context.AddMembers(methodOvermocked.WithBody(_notImplementedExceptionMethodBody));
             }
         }
 
@@ -193,7 +193,7 @@ namespace Overmock.Generation
                         sf.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
                             .WithBody(sf.Block(sf.ParseStatement($"throw new {exceptionType.Namespace}.{exceptionType.Name}(\"{exception.Exception.Message}\");"))),
                         sf.AccessorDeclaration(SyntaxKind.SetAccessorDeclaration)
-                            .WithBody(NotImplementedExceptionMethodBody)
+                            .WithBody(_notImplementedExceptionMethodBody)
                         ));
 
                     return;
@@ -201,9 +201,9 @@ namespace Overmock.Generation
 
                 context.AddMembers(propertyDeclaration.AddAccessorListAccessors(
                     sf.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
-                        .WithBody(NotImplementedExceptionMethodBody),
+                        .WithBody(_notImplementedExceptionMethodBody),
                     sf.AccessorDeclaration(SyntaxKind.SetAccessorDeclaration)
-                        .WithBody(NotImplementedExceptionMethodBody)
+                        .WithBody(_notImplementedExceptionMethodBody)
                 ));
             }
         }
@@ -233,7 +233,7 @@ namespace Overmock.Generation
                 parameters.Select(p =>
                 {
                     context.AddNamespace(p.ParameterType.Namespace);
-                    return sf.Argument(sf.IdentifierName(p.Name));
+                    return sf.Argument(sf.IdentifierName(p.Name!));
                 })
             );
 
@@ -283,7 +283,7 @@ namespace Overmock.Generation
             foreach (var parameter in parameters)
             {
                 result.Add(sf.Parameter(
-                    sf.Identifier(parameter.Name))
+                    sf.Identifier(parameter.Name!))
                         .WithType(sf.ParseTypeName(parameter.ParameterType.Name))
                         .NormalizeWhitespace()
                 );

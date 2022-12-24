@@ -5,6 +5,9 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Overmock.Generation
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class AssemblyGenerationContext
     {
         private readonly List<MemberDeclarationSyntax> _members = new List<MemberDeclarationSyntax>();
@@ -15,6 +18,10 @@ namespace Overmock.Generation
             "System.Collections.Generic",
         };
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="target"></param>
         public AssemblyGenerationContext(IOvermock target)
         {
             Target = target;
@@ -26,20 +33,42 @@ namespace Overmock.Generation
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public Type TargetType { get; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public IOvermock Target { get; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public ClassDeclarationSyntax? ClassDeclaration { get; private set; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public NamespaceDeclarationSyntax? NamespaceDeclaration { get; private set; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="members"></param>
+        /// <returns></returns>
         public AssemblyGenerationContext AddMembers(params MemberDeclarationSyntax[] members)
         {
             _members.AddRange(members);
             return this;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="namespace"></param>
+        /// <returns></returns>
         public AssemblyGenerationContext AddNamespace(string? @namespace)
         {
             if (!string.IsNullOrWhiteSpace(@namespace) && !_namespaces.Contains(@namespace))
@@ -50,23 +79,41 @@ namespace Overmock.Generation
             return this;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public ImmutableArray<string> GetNamespaces()
         {
             return _namespaces.ToImmutableArray();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="namespaceDeclaration"></param>
+        /// <returns></returns>
         public AssemblyGenerationContext SetNamespaceDeclaration(NamespaceDeclarationSyntax namespaceDeclaration)
         {
             NamespaceDeclaration = namespaceDeclaration;
             return this;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="classDeclaration"></param>
+        /// <returns></returns>
         public AssemblyGenerationContext SetClassDeclaration(ClassDeclarationSyntax classDeclaration)
         {
             ClassDeclaration = classDeclaration;
             return this;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public CompilationUnitSyntax BuildCompilationUnit()
         {
             Ex.Throw.If.BuildComponentsAreNull(this);
