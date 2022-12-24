@@ -21,9 +21,9 @@ namespace Overmock
         /// Adds the property.
         /// </summary>
         /// <typeparam name="TProperty">The type of the property.</typeparam>
-        /// <param name="property">The property.</param>
+        /// <param name="propertyCall">The property.</param>
         /// <returns></returns>
-        TProperty AddProperty<TProperty>(TProperty property) where TProperty : IPropertyCall;
+        TProperty AddProperty<TProperty>(TProperty propertyCall) where TProperty : IPropertyCall;
 
         /// <summary>
         /// Gets the name of the type.
@@ -74,6 +74,6 @@ namespace Overmock
         /// Gets the mocked object.
         /// </summary>
         /// <value>The mocked object.</value>
-        T? Object { get; }
+        T? Target { get; }
     }
 }

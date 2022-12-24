@@ -8,7 +8,7 @@ namespace Overmock.Mocking.Internal
         private readonly MethodCallExpression _expression;
 
         private Action<OverrideContext>? _method;
-        private Exception? _exception;
+        //private Exception? _exception;
 
         internal MethodCall(MethodCallExpression expression) : base(Ex.Throw.If.DeclaringTypeNull(expression.Method.DeclaringType, expression.Method.Name))
         {
@@ -28,7 +28,7 @@ namespace Overmock.Mocking.Internal
             throw new NotImplementedException();
         }
 
-        void IMethodCall.Call(Action<OverrideContext> method)
+        void IMethodCall.Calls(Action<OverrideContext> method)
         {
             _method = method;
         }
@@ -55,7 +55,7 @@ namespace Overmock.Mocking.Internal
 
         }
 
-        void IMethodCall.Call(Action<OverrideContext> action)
+        void IMethodCall.Calls(Action<OverrideContext> action)
         {
             _action = action;
         }
@@ -69,7 +69,7 @@ namespace Overmock.Mocking.Internal
         {
         }
 
-        void IMethodCall<T, TReturn>.Call(Func<OverrideContext, TReturn> method)
+        void IMethodCall<T, TReturn>.Calls(Func<OverrideContext, TReturn> method)
         {
             _func = method;
         }

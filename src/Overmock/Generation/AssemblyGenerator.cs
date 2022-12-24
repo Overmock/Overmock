@@ -233,7 +233,7 @@ namespace Overmock.Generation
                 parameters.Select(p =>
                 {
                     context.AddNamespace(p.ParameterType.Namespace);
-                    return sf.Argument(sf.IdentifierName(p.Name));
+                    return sf.Argument(sf.IdentifierName(p.Name!));
                 })
             );
 
@@ -283,7 +283,7 @@ namespace Overmock.Generation
             foreach (var parameter in parameters)
             {
                 result.Add(sf.Parameter(
-                    sf.Identifier(parameter.Name))
+                    sf.Identifier(parameter.Name!))
                         .WithType(sf.ParseTypeName(parameter.ParameterType.Name))
                         .NormalizeWhitespace()
                 );

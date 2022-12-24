@@ -22,7 +22,7 @@ jobs:
       - checkout
       - run:
           working_directory: ./src/Overmock/
-          name: Run build
+          name: Run dotnet pack
           command: |
             dotnet pack --configuration Release
       - store_artifacts:

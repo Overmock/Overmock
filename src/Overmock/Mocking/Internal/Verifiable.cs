@@ -7,12 +7,16 @@ namespace Overmock.Mocking.Internal
     /// </summary>
     public abstract class Verifiable : IVerifiable
     {
-        internal readonly string TypeName;
+        internal readonly string _typeName;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Verifiable"/> class.
+        /// </summary>
+        /// <param name="type"></param>
         protected Verifiable(Type type)
         {
             // Look into how this name is generated for reading types back from disk.
-            TypeName = $"{type.Name}_{Guid.NewGuid():N}";
+            _typeName = $"{type.Name}_{Guid.NewGuid():N}";
             Type = type;
         }
 

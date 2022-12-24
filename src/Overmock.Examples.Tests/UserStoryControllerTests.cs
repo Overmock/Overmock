@@ -18,7 +18,7 @@ namespace Overmock.Examples.Tests
         {
             _connection = Overmocked.Setup<IDataConnection>();
             _factory = Overmocked.Setup<UserStoryFactory>(args => 
-                args.Args(_connection.Object));
+                args.Args(_connection.Target));
             _service = Overmocked.Setup<IUserStoryService>();
         }
 
@@ -28,7 +28,7 @@ namespace Overmock.Examples.Tests
             // Arrange
             _service.Override(s => s.Get(0)).ToThrow(new Exception("testing"));
 
-            _controller = new UserStoryController(_service.Object);
+            _controller = new UserStoryController(_service.Target);
 
             // Act
             var response = _controller.Get();
@@ -49,7 +49,7 @@ namespace Overmock.Examples.Tests
 
             }).ToReturn(Enumerable.Empty<UserStory>);
 
-            _controller = new UserStoryController(_service.Object);
+            _controller = new UserStoryController(_service.Target);
 
             // Act
             var response = _controller.Get();

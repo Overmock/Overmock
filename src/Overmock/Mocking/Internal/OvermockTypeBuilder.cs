@@ -30,7 +30,7 @@ namespace Overmock.Mocking.Internal
 
                     if (!result.Success)
                     {
-                        throw new Exception(result.Diagnostics.ToString());
+                        throw new OvermockException(result.Diagnostics.ToString());
                     }
 
                     var assembly = AppDomain.CurrentDomain.Load(stream.ToArray());
@@ -39,7 +39,7 @@ namespace Overmock.Mocking.Internal
 
                     if (target.GetCompiledType() == null)
                     {
-                        throw new ApplicationException($"Failed to generate type for: '{target.TypeName}'");
+                        throw new OvermockException($"Failed to generate type for: '{target.TypeName}'");
                     }
                 }
             }
@@ -49,10 +49,10 @@ namespace Overmock.Mocking.Internal
                 var args = new SetupArgs();
                 _constructorArguments.Invoke(args);
 
-                return Activator.CreateInstance(target.GetCompiledType(), args.Parameters) as T;
+                return Activator.CreateInstance(target.GetCompiledType()!, args.Parameters) as T;
             }
 
-            return Activator.CreateInstance(target.GetCompiledType()) as T;
+            return Activator.CreateInstance(target.GetCompiledType()!) as T;
         }
     }
 }

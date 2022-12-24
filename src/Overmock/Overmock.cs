@@ -18,9 +18,9 @@ public class Overmock<T> : Verifiable<T>, IOvermock<T> where T : class
     /// Initializes a new instance of the <see cref="Overmock{T}"/> class.
     /// </summary>
     /// <param name="argsProvider">The delegate used to get arguments to pass when constructing <typeparamref name="T" />.</param>
-    public Overmock(Action<SetupArgs>? argsProvider = default) : this(Overmocked.Builder.GetTypeBuilder(argsProvider))
+    public Overmock(Action<SetupArgs>? argsProvider = default) : this(Overmock.Overmocked.Builder.GetTypeBuilder(argsProvider))
     {
-        Overmocked.Register(this);
+        Overmock.Overmocked.Register(this);
     }
 
     /// <summary>
@@ -44,11 +44,11 @@ public class Overmock<T> : Verifiable<T>, IOvermock<T> where T : class
     /// Gets the object.
     /// </summary>
     /// <value>The mocked object.</value>
-    public T? Object => _lazyObject.Value;
+    public T? Target => _lazyObject.Value;
 
     Type? IOvermock.GetCompiledType() => _compiledType;
 
-    string IOvermock.TypeName => base.TypeName;
+    string IOvermock.TypeName => base._typeName;
 
     /// <inheritdoc/>
     protected override void Verify()
@@ -56,7 +56,7 @@ public class Overmock<T> : Verifiable<T>, IOvermock<T> where T : class
         throw new VerifyException(this);
     }
 
-    internal void SetCompiledType(Assembly assembly) => _compiledType = assembly.ExportedTypes.First(t => t.Name == TypeName);
+    internal void SetCompiledType(Assembly assembly) => _compiledType = assembly.ExportedTypes.First(t => t.Name == _typeName);
 
     void IOvermock.SetCompiledType(Assembly assembly) => SetCompiledType(assembly);
 
