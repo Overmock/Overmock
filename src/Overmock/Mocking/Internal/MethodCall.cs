@@ -1,8 +1,9 @@
 ﻿using System.Linq.Expressions;
+using Overmock.Runtime;
 
 namespace Overmock.Mocking.Internal
 {
-    public class MethodCall : MemberCall, IMethodCall
+    internal class MethodCall : MemberCall, IMethodCall
     {
         private readonly MethodCallExpression _expression;
 
@@ -18,6 +19,10 @@ namespace Overmock.Mocking.Internal
 
         MethodCallExpression IMethodCall.Expression => Expression;
 
+        /// <summary>
+        /// Verifies that the overmock was executed as expected
+        /// </summary>
+        /// <exception cref="NotImplementedException"></exception>
         protected override void Verify()
         {
             throw new NotImplementedException();
@@ -29,7 +34,7 @@ namespace Overmock.Mocking.Internal
         }
     }
 
-    public class MethodCall<T> : MethodCall, IMethodCall<T> where T : class
+    internal class MethodCall<T> : MethodCall, IMethodCall<T> where T : class
     {
         private Action<OverrideContext>? _action;
 

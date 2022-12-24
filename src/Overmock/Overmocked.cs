@@ -4,7 +4,7 @@ namespace Overmock
 {
     public static class Overmocked
     {
-        private static readonly ConcurrentQueue<IVerifiable> Verifiables = new ConcurrentQueue<IVerifiable>();
+        private static readonly ConcurrentQueue<IVerifiable> Overmocks = new ConcurrentQueue<IVerifiable>();
 
         static Overmocked()
         {
@@ -22,7 +22,7 @@ namespace Overmock
         {
             var result = new Overmock<T>(Builder.GetTypeBuilder(argsProvider));
 
-            Verifiables.Enqueue(result);
+            Overmocks.Enqueue(result);
 
             return result;
         }
@@ -32,7 +32,7 @@ namespace Overmock
         /// </summary>
         public static void Verify()
         {
-            while (Verifiables.TryDequeue(out var verifiable))
+            while (Overmocks.TryDequeue(out var verifiable))
             {
                 verifiable.Verify();
             }
@@ -40,7 +40,7 @@ namespace Overmock
 
         internal static void Register<T>(IOvermock<T> overmock) where T : class
         {
-            Verifiables.Enqueue(overmock);
+            Overmocks.Enqueue(overmock);
         }
 
         internal static TMethod RegisterMethod<TMethod>(IOvermock overmock, TMethod property) where TMethod : IMethodCall

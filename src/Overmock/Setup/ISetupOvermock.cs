@@ -1,4 +1,6 @@
-﻿namespace Overmock.Setup
+﻿using Overmock.Runtime;
+
+namespace Overmock.Setup
 {
     public interface ISetupReturn<in TReturn>
     {

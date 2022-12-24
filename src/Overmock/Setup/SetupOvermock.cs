@@ -1,4 +1,6 @@
-﻿namespace Overmock.Setup
+﻿using Overmock.Runtime;
+
+namespace Overmock.Setup
 {
     internal class SetupOvermock<T> : ISetupOvermock<T> where T : class
     {
@@ -17,8 +19,6 @@
 
     internal class SetupOverride<T, TReturn> : SetupOvermock<T>, ISetupOvermock<T, TReturn> where T : class
     {
-        private Func<TReturn?> _valueProvider = () => default;
-
         internal SetupOverride(MethodCall<T, TReturn> methodCall) : base(methodCall)
         {
         }
