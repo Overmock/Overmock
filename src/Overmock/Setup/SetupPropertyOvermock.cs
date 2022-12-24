@@ -1,4 +1,6 @@
-﻿namespace Overmock.Setup
+﻿using Overmock.Runtime;
+
+namespace Overmock.Setup
 {
     internal class SetupPropertyOvermock<T, TReturn> : ISetupOvermock<T, TReturn> where T : class
     {
@@ -17,7 +19,7 @@
 
         void ISetupReturn<TReturn>.ToReturn(Func<TReturn> resultProvider)
         {
-            _propertyCall.Returns(() => resultProvider.Invoke());
+            _propertyCall.Returns(() => resultProvider()!);
         }
 
         void ISetupOvermock.ToThrow(Exception exception)

@@ -1,29 +1,39 @@
-﻿namespace Overmock
+﻿using System.Reflection;
+
+namespace Overmock.Runtime
 {
     /// <summary>
     /// The context for an overridden member.
     /// </summary>
     public class OverrideContext
     {
+        private readonly MemberInfo _overmock;
         private readonly List<OverrideParameter> _parameters = new List<OverrideParameter>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="OverrideContext"/> class.
         /// </summary>
+        /// <param name="overmock"></param>
         /// <param name="parameters">The parameters.</param>
-        public OverrideContext(IEnumerable<OverrideParameter> parameters)
+        public OverrideContext(MemberInfo overmock, IEnumerable<OverrideParameter> parameters)
         {
+            _overmock = overmock;
             _parameters.AddRange(parameters);
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="OverrideContext"/> class.
         /// </summary>
+        /// <param name="overmock"></param>
         /// <param name="parameters">The parameters.</param>
-        public OverrideContext(params OverrideParameter[] parameters) : this(parameters.AsEnumerable())
+        public OverrideContext(MemberInfo overmock, params OverrideParameter[] parameters) : this(overmock, parameters.AsEnumerable())
         {
-            _parameters.AddRange(parameters);
         }
+
+        /// <summary>
+        /// Gets the name of the Override.
+        /// </summary>
+        public string MemberName => _overmock.Name;
 
         /// <summary>
         /// Gets the specified name.

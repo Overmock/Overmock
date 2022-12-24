@@ -2,9 +2,12 @@
 
 namespace Overmock
 {
+    /// <summary>
+    /// Contains methods used for configuring an overmock.
+    /// </summary>
     public static class Overmocked
     {
-        private static readonly ConcurrentQueue<IVerifiable> Verifiables = new ConcurrentQueue<IVerifiable>();
+        private static readonly ConcurrentQueue<IVerifiable> _overmocks = new ConcurrentQueue<IVerifiable>();
 
         static Overmocked()
         {
@@ -13,16 +16,16 @@ namespace Overmock
         internal static IOvermockBuilder Builder => OvermockBuilder.Instance;
 
         /// <summary>
-        /// Setups the specified <typeparamref name="T" /> up with overmock using the constructor arguments.
+        /// Sets up the specified <typeparamref name="T" /> type with overmock using the constructor arguments.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="argsProvider">The arguments provider.</param>
-        /// <returns></returns>
+        /// <returns>An object used to configure overmocks</returns>
         public static IOvermock<T> Setup<T>(Action<SetupArgs>? argsProvider = null) where T : class
         {
             var result = new Overmock<T>(Builder.GetTypeBuilder(argsProvider));
 
-            Verifiables.Enqueue(result);
+            _overmocks.Enqueue(result);
 
             return result;
         }
@@ -32,7 +35,7 @@ namespace Overmock
         /// </summary>
         public static void Verify()
         {
-            while (Verifiables.TryDequeue(out var verifiable))
+            while (_overmocks.TryDequeue(out var verifiable))
             {
                 verifiable.Verify();
             }
@@ -40,7 +43,7 @@ namespace Overmock
 
         internal static void Register<T>(IOvermock<T> overmock) where T : class
         {
-            Verifiables.Enqueue(overmock);
+            _overmocks.Enqueue(overmock);
         }
 
         internal static TMethod RegisterMethod<TMethod>(IOvermock overmock, TMethod property) where TMethod : IMethodCall

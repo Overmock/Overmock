@@ -1,6 +1,6 @@
 ﻿namespace Overmock.Mocking.Internal
 {
-    public abstract class MemberCall : Verifiable, IMemberCall
+    internal abstract class MemberCall : Verifiable, IMemberCall
     {
         private Exception? _exception;
         private Func<object>? _valueProvider;

@@ -1,17 +1,33 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Version>1.0.0</Version>
-    <VersionSuffix>RC1</VersionSuffix>
+    <Version>0.0.1-RC01</Version>
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <IsPackable>true</IsPackable>
+	<PackageLicenseFile>..\..\LICENSE</PackageLicenseFile>
+	<PackageId>Overmock</PackageId>
+	<PackageProjectUrl>https://github.com/Overmock</PackageProjectUrl>
+	<Title>Overmock</Title>
+	<Description>Overmock is a mocking framework that allows for very robust mocking configuration and validation</Description>
+	<PackageReadmeFile>README.md</PackageReadmeFile>
+	<RepositoryUrl>https://github.com/Overmock</RepositoryUrl>
+	<RepositoryType>git</RepositoryType>
+	<PackageTags>mocking;mock;unit tests;unit testing;unittesting;unittest;mocking framework;overmock;overmocked;</PackageTags>
+	<AnalysisLevel>6.0-recommended</AnalysisLevel>
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="..\..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="IFluentInterface" Version="2.1.0" />
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.SourceGenerators.Testing" Version="1.1.1" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.4.0" />
   </ItemGroup>
 </Project>
