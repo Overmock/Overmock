@@ -1,7 +1,7 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 
-namespace Overmock.Mocking.Internal
+namespace Overmock.Generation
 {
     internal class OvermockTypeBuilder : ITypeBuilder
     {

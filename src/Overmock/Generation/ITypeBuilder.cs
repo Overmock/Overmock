@@ -1,4 +1,4 @@
-﻿namespace Overmock.Mocking
+﻿namespace Overmock.Generation
 {
     /// <summary>
     /// Represents a builder for types
