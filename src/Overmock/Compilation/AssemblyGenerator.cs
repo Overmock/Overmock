@@ -4,7 +4,7 @@ using Microsoft.CodeAnalysis;
 using System.Reflection;
 using System.Text;
 
-namespace Overmock.Generation
+namespace Overmock.Compilation
 {
     // INFO: I really don't like this but it is what it is.
     using sf = SyntaxFactory;

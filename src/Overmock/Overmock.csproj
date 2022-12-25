@@ -7,16 +7,22 @@
     <Nullable>enable</Nullable>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <IsPackable>true</IsPackable>
-	<PackageLicenseFile>..\..\LICENSE</PackageLicenseFile>
+	<!--<PackageLicenseFile>..\..\LICENSE</PackageLicenseFile>-->
 	<PackageId>Overmock</PackageId>
 	<PackageProjectUrl>https://github.com/Overmock</PackageProjectUrl>
 	<Title>Overmock</Title>
-	<Description>Overmock is a mocking framework that allows for very robust mocking configuration and validation</Description>
-	<PackageReadmeFile>README.md</PackageReadmeFile>
+	<Description>Overmock is a mocking framework that allows for very robust mocking configuration and validation.</Description>
+	<!--<PackageReadmeFile>\README.md</PackageReadmeFile>-->
 	<RepositoryUrl>https://github.com/Overmock</RepositoryUrl>
 	<RepositoryType>git</RepositoryType>
 	<PackageTags>mocking;mock;unit tests;unit testing;unittesting;unittest;mocking framework;overmock;overmocked;</PackageTags>
 	<AnalysisLevel>6.0-recommended</AnalysisLevel>
+	<PackageLicenseExpression>MIT</PackageLicenseExpression>
+	<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+	<IncludeSymbols>True</IncludeSymbols>
+	<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+	<PackageReadmeFile>README.md</PackageReadmeFile>
+	<PackageReleaseNotes>This is a first release and is meant for internal usages until further notice.</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>

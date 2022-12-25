@@ -1,7 +1,7 @@
 ﻿using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace Overmock.Generation
+namespace Overmock.Compilation
 {
     /// <summary>
     /// 
