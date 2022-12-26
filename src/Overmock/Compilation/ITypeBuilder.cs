@@ -1,9 +1,9 @@
 ﻿namespace Overmock.Compilation
 {
-    /// <summary>
-    /// Represents a builder for types
-    /// </summary>
-    public interface ITypeBuilder
+	/// <summary>
+	/// Represents a builder for types
+	/// </summary>
+	public interface ITypeBuilder
     {
         /// <summary>
         /// Attempts to build the specified overmock's represented type.

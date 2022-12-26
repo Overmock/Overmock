@@ -1,4 +1,4 @@
-﻿namespace Overmock.Compilation
+﻿namespace Overmock
 {
     /// <summary>
     /// Used to generate a builder for types.

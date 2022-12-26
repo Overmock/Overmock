@@ -10,7 +10,7 @@ namespace Overmock.Mocking.Internal
         private Action<OverrideContext>? _method;
         //private Exception? _exception;
 
-        internal MethodCall(MethodCallExpression expression) : base(Ex.Throw.If.DeclaringTypeNull(expression.Method.DeclaringType, expression.Method.Name))
+        internal MethodCall(MethodCallExpression expression) : base(Throw.If.DeclaringTypeNull(expression.Method.DeclaringType, expression.Method.Name))
         {
             _expression = expression;
         }
