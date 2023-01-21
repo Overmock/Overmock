@@ -36,23 +36,7 @@ namespace Overmock.Compilation.IL
 				var parameters = methodInfo.GetParameters();
 				var overmockedMethod = typeBuilder.DefineMethod(methodInfo.Name, MethodAttributes.Public, methodInfo.ReturnType, parameters.Select(p => p.ParameterType).ToArray());
 
-				var emitter = overmockedMethod.GetILGenerator();
-
-				emitter.Emit(OpCodes.Ldarg_0);
-				emitter.Emit(OpCodes.Ldarg_1);
-
-				// TODO: emit the following snippet.
-				//{
-				//	var handle = _context.Get((MethodInfo)MethodBase.GetCurrentMethod()!);
-				//	var result = handle.Handle(name); // multiple parameters
-
-				//	if (result.Result != null)
-				//	{
-				//		return (string)result.Result;
-				//	}
-
-				//	throw new OvermockException("oops, didn't handle this method call.");
-				//}
+				CopyMethod(overmockedMethod, methodInfo);
 
 				overmockContext.Add(methodInfo, new OverrideContext(methodInfo,
 					overmock.GetOverrides(),
@@ -77,6 +61,86 @@ namespace Overmock.Compilation.IL
 			}
 
 			return moduleBuilder.DefineType(target.TypeName, TypeAttributes.Class | TypeAttributes.Public, typeof(T));
+		}
+
+		public static void CopyMethod(MethodBuilder methodBuilder, MethodInfo methodInfo)
+		{
+			var methodBody = methodInfo.GetMethodBody();
+			var methodBodyIl = methodBody.GetILAsByteArray()!;
+			var emitter = methodBuilder.GetILGenerator();
+			var opCodes = GetOpCodes(methodBodyIl);
+
+			foreach (var local in methodBody.LocalVariables)
+			{
+				emitter.DeclareLocal(local.LocalType);
+			}
+
+			for (var i = 1; i <= opCodes.Length; i++)
+			{
+				var opCode = opCodes[i];
+
+				if (opCode.Code.OperandType == OperandType.InlineBrTarget)
+				{
+					emitter.Emit(opCode.Code, BitConverter.ToInt32(methodBodyIl, i));
+					i += 4;
+					continue;
+				}
+				
+				if (opCode.Code.OperandType == OperandType.ShortInlineBrTarget)
+				{
+					emitter.Emit(opCode.Code, methodBodyIl[i]);
+					++i;
+					continue;
+				}
+				
+				if (opCode.Code.OperandType == OperandType.InlineType)
+				{
+					Type tp = methodInfo.Module.ResolveType(BitConverter.ToInt32(methodBodyIl, i), methodInfo.DeclaringType.GetGenericArguments(), methodBuilder.GetGenericArguments());
+					emitter.Emit(opCode.Code, tp);
+					i += 4;
+					continue;
+				}
+
+				if (opCode.Code.FlowControl == FlowControl.Call)
+				{
+					MethodInfo? mi = methodInfo.Module.ResolveMethod(BitConverter.ToInt32(methodBodyIl, i + 1)) as MethodInfo;
+					if (mi == methodBuilder)
+					{
+						emitter.Emit(opCode.Code, methodBuilder);
+					}
+					else
+					{
+						emitter.Emit(opCode.Code, mi!);
+					}
+					
+					i += 4;
+					
+					continue;
+				}
+				emitter.Emit(opCode.Code);
+			}
+		}
+
+		public static OpCodeContainer[] GetOpCodes(byte[] data)
+		{
+			return data.Select(opCodeByte => new OpCodeContainer(opCodeByte)).ToArray();
+		}
+
+		public class OpCodeContainer
+		{
+			private static readonly OpCode[] _opCodeFields = typeof(OpCodes).GetFields().Select(f => (OpCode)f.GetValue(null)!).ToArray();
+			private readonly OpCode _code;
+
+			public OpCodeContainer(byte opCode)
+			{
+				try
+				{
+					_code = _opCodeFields.First(f => f.Value == opCode);
+				}
+				catch { }
+			}
+
+			public OpCode Code => _code;
 		}
 	}
 }
