@@ -48,11 +48,18 @@ namespace Overmock
         [EditorBrowsable(EditorBrowsableState.Never)]
         void SetCompiledType(Assembly assembly);
 
-        /// <summary>
-        /// Gets the overmocked methods.
-        /// </summary>
-        /// <returns></returns>
-        [EditorBrowsable(EditorBrowsableState.Never)]
+		/// <summary>
+		/// Sets the type of the compiled mock.
+		/// </summary>
+		/// <param name="compiledType">The compiled Type.</param>
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		void SetCompiledType(Type compiledType);
+
+		/// <summary>
+		/// Gets the overmocked methods.
+		/// </summary>
+		/// <returns></returns>
+		[EditorBrowsable(EditorBrowsableState.Never)]
         IEnumerable<IMethodCall> GetOvermockedMethods();
 
         /// <summary>
@@ -74,6 +81,6 @@ namespace Overmock
         /// Gets the mocked object.
         /// </summary>
         /// <value>The mocked object.</value>
-        T? Target { get; }
+        T Target { get; }
     }
 }

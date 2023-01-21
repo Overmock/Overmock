@@ -1,4 +1,6 @@
-﻿namespace Overmock
+﻿using Overmock.Compilation.Roslyn;
+
+namespace Overmock
 {
     internal static class Ex
     {
@@ -13,30 +15,33 @@
 
                 return message;
             }
-        }
 
-        internal static class Throw
-        {
-            public static class If
-            {
-                public static Type DeclaringTypeNull(Type? declaringType, string childName, Exception? innerException = default)
-                {
-                    if (declaringType == null)
-                    {
-                        throw new ArgumentNullException($"Member: '{childName}' must have a declaring type.", innerException);
-                    }
+			public const string NamespaceAndClassAreRequiredToBuild = "NamespaceDeclaration and ClassDeclaration are required to build a CompilationUnitSyntax";
+			public const string NumberOfParameterMismatch = "The number of parameters supplied doesn't not match the method's signature.";
+		}
+	}
 
-                    return declaringType;
-                }
+	internal static class Throw
+	{
+		public static class If
+		{
+			public static Type DeclaringTypeNull(Type? declaringType, string childName, Exception? innerException = default)
+			{
+				if (declaringType == null)
+				{
+					throw new ArgumentNullException($"Member: '{childName}' must have a declaring type.", innerException);
+				}
 
-                internal static void BuildComponentsAreNull(AssemblyGenerationContext context)
-                {
-                    if (context.NamespaceDeclaration == null || context.ClassDeclaration == null)
-                    {
-                        throw new InvalidOperationException("NamespaceDeclaration and ClassDeclaration are required to build a CompilationUnitSyntax");
-                    }
-                }
-            }
-        }
-    }
+				return declaringType;
+			}
+
+			internal static void BuildComponentsAreNull(RoslynAssemblyGenerationContext context)
+			{
+				if (context.NamespaceDeclaration == null || context.ClassDeclaration == null)
+				{
+					throw new InvalidOperationException(Ex.Message.NamespaceAndClassAreRequiredToBuild);
+				}
+			}
+		}
+	}
 }

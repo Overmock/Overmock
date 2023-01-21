@@ -11,13 +11,13 @@
         /// <param name="name">The name.</param>
         /// <param name="value">The value.</param>
         /// <param name="type">The type.</param>
-        public OverrideParameter(string name, object value, Type? type = default)
+        public OverrideParameter(string name, object? value = default, Type? type = default)
         {
-            Type GetValueType(object val) =>
+            Type GetValueType(object? val) =>
                 type ?? value?.GetType() ?? typeof(object);
 
             Name = name;
-            Value = value;
+            Value = value!;
             Type = GetValueType(value);
         }
 

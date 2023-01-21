@@ -13,8 +13,6 @@ namespace Overmock
         {
         }
 
-        internal static IOvermockBuilder Builder => OvermockBuilder.Instance;
-
         /// <summary>
         /// Sets up the specified <typeparamref name="T" /> type with overmock using the constructor arguments.
         /// </summary>
@@ -23,7 +21,9 @@ namespace Overmock
         /// <returns>An object used to configure overmocks</returns>
         public static IOvermock<T> Setup<T>(Action<SetupArgs>? argsProvider = null) where T : class
         {
-            var result = new Overmock<T>(Builder.GetTypeBuilder(argsProvider));
+            var result = new Overmock<T>(
+                OvermockBuilder.GetTypeBuilder(argsProvider)
+            );
 
             _overmocks.Enqueue(result);
 
