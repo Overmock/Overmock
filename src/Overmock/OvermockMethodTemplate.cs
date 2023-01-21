@@ -1,23 +1,30 @@
-# Overmock
-
-using System;
+﻿using Overmock.Runtime;
 using System.Reflection;
 
-public class C {
-    public void M() {
-    }
-}
 namespace Overmock
 {
+    /// <summary>
+    /// Do not use. Used for testing.
+    /// </summary>
     public class OvermockMethodTemplate
     {
-        private OvermockContext _context;
+        private OvermockContext? _context;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="context"></param>
         public void InitializeOvermock(OvermockContext context)
         {
             _context = context;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        /// <exception cref="OvermockException"></exception>
         public string TestMethod(string name)
         {
             var handle = _context.Get((MethodInfo)MethodBase.GetCurrentMethod()!);
@@ -28,25 +35,7 @@ namespace Overmock
                 return (string)result.Result;
             }
 
-            throw new Exception("oops, didn't handle this method call.");
+            throw new OvermockException("oops, didn't handle this method call.");
         }
-    }
-    
-    public class OvermockContext
-    {
-        public IHandler Get(MethodInfo method)
-        {
-            return null;
-        }
-    }
-    
-    public interface IHandler
-    {
-        IResult Handle(params object[] parameters);
-    }
-    
-    public interface IResult
-    {
-        Object Result { get; }
     }
 }
