@@ -37,7 +37,7 @@ namespace Overmock.Examples.Tests
         {
             _template.Override(t => t.TestMethod(Its.Any<string>())).ToThrow(new Exception("Test"));
 
-			var target = _template.Target;
+			      var target = _template.Target;
         }
 
         [TestMethod]

@@ -1,6 +1,7 @@
 ﻿using Overmock.Runtime;
 using System.Reflection;
 using System.Reflection.Emit;
+using System.Security.AccessControl;
 using System.Xml.Linq;
 
 namespace Overmock.Compilation.IL
@@ -22,7 +23,9 @@ namespace Overmock.Compilation.IL
 			var typeBuilder = GetTypeBuilder(target, assemblyBuilder);
 			var contextField = typeBuilder.DefineField("___context___", typeof(OvermockContext), FieldAttributes.Private);
 			var defaultConstructor = typeBuilder.DefineConstructor(MethodAttributes.Public, CallingConventions.Standard, new[] { typeof(OvermockContext) });
+			
 			var overmockContext = new OvermockContext();
+
 			var constructorBody = defaultConstructor.GetILGenerator();
 			constructorBody.Emit(OpCodes.Ldarg_0);
 			constructorBody.Emit(OpCodes.Ldarg_1);
@@ -51,12 +54,23 @@ namespace Overmock.Compilation.IL
 
 		private static TypeBuilder GetTypeBuilder<T>(IOvermock<T> target, AssemblyBuilder assemblyBuilder) where T : class
 		{
-			var moduleBuilder = assemblyBuilder.DefineDynamicModule($"{target.TypeName}_module");
+			var moduleBuilder = assemblyBuilder.DefineDynamicModule(
+				GetDynamicTypeName(target.Type, suffix: "_Module"));
 
 			if (target.Type.IsInterface)
 			{
 				var typeBuilder = moduleBuilder.DefineType(target.TypeName, TypeAttributes.Public);
 				typeBuilder.AddInterfaceImplementation(typeof(T));
+
+				DefineMethods(target.Type, typeBuilder);
+				DefineProperties(target.Type, typeBuilder);
+
+				foreach (Type baseType in target.Type.GetInterfaces())
+				{
+					DefineProperties(target.Type, typeBuilder);
+					DefineMethods(target.Type, typeBuilder);
+				}
+
 				return typeBuilder;
 			}
 
@@ -66,7 +80,7 @@ namespace Overmock.Compilation.IL
 		public static void CopyMethod(MethodBuilder methodBuilder, MethodInfo methodInfo)
 		{
 			var methodBody = methodInfo.GetMethodBody();
-			var methodBodyIl = methodBody.GetILAsByteArray()!;
+			var methodBodyIl = methodBody.GetILAsByteArray();
 			var emitter = methodBuilder.GetILGenerator();
 			var opCodes = GetOpCodes(methodBodyIl);
 
@@ -88,8 +102,7 @@ namespace Overmock.Compilation.IL
 				
 				if (opCode.Code.OperandType == OperandType.ShortInlineBrTarget)
 				{
-					emitter.Emit(opCode.Code, methodBodyIl[i]);
-					++i;
+					emitter.Emit(opCode.Code, methodBodyIl[i++]);
 					continue;
 				}
 				
@@ -104,6 +117,9 @@ namespace Overmock.Compilation.IL
 				if (opCode.Code.FlowControl == FlowControl.Call)
 				{
 					MethodInfo? mi = methodInfo.Module.ResolveMethod(BitConverter.ToInt32(methodBodyIl, i + 1)) as MethodInfo;
+
+					if (mi == null) { continue; }
+
 					if (mi == methodBuilder)
 					{
 						emitter.Emit(opCode.Code, methodBuilder);
@@ -120,6 +136,76 @@ namespace Overmock.Compilation.IL
 				emitter.Emit(opCode.Code);
 			}
 		}
+
+		protected static void DefineMethods(Type baseType, TypeBuilder dynamicType)
+		{
+			foreach (MethodInfo methodInfo in baseType.GetMethods().Where<MethodInfo>(m => !m.IsSpecialName))
+			{
+				CreateMethods(methodInfo, dynamicType);
+			}
+		}
+
+		protected static void CreateMethods(MethodInfo methodInfo, TypeBuilder dynamicType) =>
+			dynamicType.DefineMethod(methodInfo.Name, MethodAttributes.Public | MethodAttributes.Virtual, CallingConventions.HasThis,
+				methodInfo.ReturnType,
+				methodInfo.GetParameters().Select<ParameterInfo, Type>(p => p.ParameterType).ToArray<Type>()
+			).GetILGenerator().ThrowException(typeof(NotImplementedException));
+
+		protected static void DefineProperties(Type baseType, TypeBuilder dynamicType)
+		{
+			foreach (PropertyInfo property in baseType.GetProperties())
+				CreateProperty(property, dynamicType);
+		}
+
+		protected static TypeBuilder CreateProperty(PropertyInfo propertyInfo, TypeBuilder typeBuilder)
+		{
+			PropertyBuilder property = typeBuilder.DefineProperty(propertyInfo.Name, PropertyAttributes.HasDefault, CallingConventions.HasThis, propertyInfo.PropertyType, new Type[1]
+			{
+		propertyInfo.PropertyType
+			});
+			FieldBuilder field = typeBuilder.DefineField("_" + propertyInfo.Name.ToLower(), propertyInfo.PropertyType, FieldAttributes.Private);
+			if (propertyInfo.CanRead)
+				CreateGetMethod(typeBuilder, property, propertyInfo.GetGetMethod(), field, MethodAttributes.Public | MethodAttributes.Virtual | MethodAttributes.SpecialName);
+			if (propertyInfo.CanWrite)
+				CreateSetMethod(typeBuilder, property, propertyInfo.GetSetMethod(), field, MethodAttributes.Public | MethodAttributes.Virtual | MethodAttributes.SpecialName);
+			return typeBuilder;
+		}
+
+		protected static void CreateGetMethod(
+		  TypeBuilder baseType,
+		  PropertyBuilder property,
+		  MethodInfo method,
+		  FieldInfo field,
+		  MethodAttributes getAttrs)
+		{
+			MethodBuilder mdBuilder = baseType.DefineMethod(method.Name, getAttrs, method.ReturnType, Type.EmptyTypes);
+			ILGenerator ilGenerator = mdBuilder.GetILGenerator();
+			ilGenerator.Emit(OpCodes.Ldarg_0);
+			ilGenerator.Emit(OpCodes.Ldfld, field);
+			ilGenerator.Emit(OpCodes.Ret);
+			property.SetGetMethod(mdBuilder);
+		}
+
+		protected static void CreateSetMethod(
+		  TypeBuilder baseType,
+		  PropertyBuilder property,
+		  MethodInfo method,
+		  FieldInfo field,
+		  MethodAttributes setAttrs)
+		{
+			MethodBuilder mdBuilder = baseType.DefineMethod(method.Name, setAttrs, method.ReturnType, new Type[1]
+			{
+		field.FieldType
+			});
+			ILGenerator ilGenerator = mdBuilder.GetILGenerator();
+			ilGenerator.Emit(OpCodes.Ldarg_0);
+			ilGenerator.Emit(OpCodes.Ldarg_1);
+			ilGenerator.Emit(OpCodes.Stfld, field);
+			ilGenerator.Emit(OpCodes.Ret);
+			property.SetSetMethod(mdBuilder);
+		}
+
+		protected static string GetDynamicTypeName(Type baseType, string prefix = "", string suffix = "") => $"{prefix}{baseType.FullName}{suffix}";
 
 		public static OpCodeContainer[] GetOpCodes(byte[] data)
 		{

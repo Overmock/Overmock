@@ -51,7 +51,7 @@ namespace Overmock
                 );
             }
 
-            throw new ArgumentException("Parameter must be a method call expression.");
+            throw new ArgumentException("Parameter must be a method or property call expression.");
         }
     }
 }
