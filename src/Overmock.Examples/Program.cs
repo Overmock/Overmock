@@ -12,16 +12,16 @@ builder.Services.AddSwaggerGen();
 
 // Add services to the container.
 builder.Services.AddTransient<IDataConnection, FrameworkDataConnection>()
-    .AddTransient<EntityCollection<UserStory>, UserStoryFactory>()
-    .AddTransient<IUserStoryService, UserStoryService>();
+	.AddTransient<EntityCollection<UserStory>, UserStoryFactory>()
+	.AddTransient<IUserStoryService, UserStoryService>();
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+	app.UseSwagger();
+	app.UseSwaggerUI();
 }
 
 app.UseAuthorization();

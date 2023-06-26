@@ -1,44 +1,44 @@
 ﻿namespace Overmock.Mocking.Internal
 {
-    internal abstract class MemberCall : Verifiable, IMemberCall
-    {
-        private Exception? _exception;
-        private Func<object>? _valueProvider;
+	internal abstract class MemberCall : Verifiable, IMemberCall
+	{
+		private Exception? _exception;
+		private Func<object>? _valueProvider;
 
-        protected MemberCall(Type type) : base(type)
-        {
-        }
+		protected MemberCall(Type type) : base(type)
+		{
+		}
 
-        protected virtual List<MemberOverride> GetOverrides()
-        {
-            var overrides = new List<MemberOverride>();
+		protected virtual List<MemberOverride> GetOverrides()
+		{
+			var overrides = new List<MemberOverride>();
 
-            if (_exception != null)
-            {
-                overrides.Add(new MethodOverride(exception: _exception));
-            }
+			if (_exception != null)
+			{
+				overrides.Add(new MethodOverride(exception: _exception));
+			}
 
-            if (_valueProvider != null)
-            {
-                overrides.Add(new MemberOverride(returnProvider: _valueProvider));
-            }
+			if (_valueProvider != null)
+			{
+				overrides.Add(new MemberOverride(returnProvider: _valueProvider));
+			}
 
-            return overrides;
-        }
+			return overrides;
+		}
 
-        void IMemberCall.Returns(Func<object> valueProvider)
-        {
-            _valueProvider = valueProvider;
-        }
+		void IMemberCall.Returns(Func<object> valueProvider)
+		{
+			_valueProvider = valueProvider;
+		}
 
-        IEnumerable<MemberOverride> IMemberCall.GetOverrides()
-        {
-            return GetOverrides().AsReadOnly();
-        }
+		IEnumerable<MemberOverride> IMemberCall.GetOverrides()
+		{
+			return GetOverrides().AsReadOnly();
+		}
 
-        void IMemberCall.Throws(Exception exception)
-        {
-            _exception = exception;
-        }
-    }
+		void IMemberCall.Throws(Exception exception)
+		{
+			_exception = exception;
+		}
+	}
 }

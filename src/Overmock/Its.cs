@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Overmock
 {
@@ -65,6 +61,10 @@ namespace Overmock
 	/// <typeparam name="T"></typeparam>
 	public interface IAny<T> : IFluentInterface
 	{
+		/// <summary>
+		/// 
+		/// </summary>
+		T Value { get; }
 	}
 
 	/// <summary>
@@ -76,8 +76,17 @@ namespace Overmock
 		/// <summary>
 		/// 
 		/// </summary>
+#pragma warning disable CA1000 // Do not declare static members on generic types
+		public static T Value { get; } = new Any<T>();
+#pragma warning restore CA1000 // Do not declare static members on generic types
+
+		/// <summary>
+		/// 
+		/// </summary>
 		/// <param name="any"></param>
-		public static implicit operator T(Any<T> any) => default!;
+		public static implicit operator T(Any<T> any) => any.ThisValue!;
+
+		T IAny<T>.Value => this;
 
 		/// <summary>
 		/// 
@@ -98,13 +107,18 @@ namespace Overmock
 		{
 			return true;
 		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		protected T ThisValue => this;
 	}
 
 	/// <summary>
 	/// 
 	/// </summary>
 	/// <typeparam name="T"></typeparam>
-	public interface IAm<T> : IFluentInterface
+	public interface IAm<T> : IAny<T>, IFluentInterface
 	{
 	}
 
@@ -112,7 +126,7 @@ namespace Overmock
 	/// 
 	/// </summary>
 	/// <typeparam name="T"></typeparam>
-	public class This<T> : Its, IAm<T>, IEquatable<T>
+	public class This<T> : Any<T>, IAm<T>, IEquatable<T>
 	{
 		private readonly T? _value;
 
@@ -120,6 +134,8 @@ namespace Overmock
 		{
 			_value = value;
 		}
+
+		T IAny<T>.Value => this;
 
 		/// <summary>
 		/// 

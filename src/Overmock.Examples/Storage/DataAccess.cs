@@ -52,8 +52,7 @@ namespace Overmock.Examples.Storage
 
         public UserStory? Get(int id) => _collection.Find(id);
         public IEnumerable<UserStory> GetAll() => _collection.AsQueryable();
-        public UserStory Save(UserStory model) => _collection.Upsert(model, original =>
-        {
+        public UserStory Save(UserStory model) => _collection.Upsert(model, original => {
             original.Title = model.Title;
             original.Description = model.Description;
             original.Points = model.Points;

@@ -12,7 +12,7 @@ namespace Overmock.Runtime
 		internal OvermockContext Add(MethodInfo method, OverrideContext context)
 		{
 			_overrides.Add(method, context);
-			
+
 			return this;
 		}
 

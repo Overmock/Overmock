@@ -4,10 +4,10 @@
 	/// 
 	/// </summary>
 	public interface IAssemblyCompilerContext : IFluentInterface
-    {
-        /// <summary>
-        /// 
-        /// </summary>
+	{
+		/// <summary>
+		/// 
+		/// </summary>
 		IOvermock Target { get; }
 	}
 }

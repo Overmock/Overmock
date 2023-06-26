@@ -2,78 +2,80 @@ using DataCompany.Framework;
 using Overmock.Compilation.IL;
 using Overmock.Examples.Controllers;
 using Overmock.Examples.Storage;
-using System.Reflection;
-using System.Reflection.Emit;
 
 namespace Overmock.Examples.Tests
 {
-    [TestClass]
-    public class UserStoryControllerTests
-    {
+	[TestClass]
+	public class UserStoryControllerTests
+	{
 		private IOvermock<OvermockMethodTemplate> _template;
 		private IOvermock<IDataConnection> _connection = new Overmock<IDataConnection>();
-        private IOvermock<UserStoryFactory> _factory;
-        private IOvermock<IUserStoryService> _service;
+		private IOvermock<UserStoryFactory> _factory;
+		private IOvermock<IUserStoryService> _service;
 
-        private UserStoryController _controller;
+		private UserStoryController _controller;
 
-        public UserStoryControllerTests()
-        {
-            OvermockBuilder.UseBuilder(new ILOvermockBuilder());
-        }
+		public UserStoryControllerTests()
+		{
+			OvermockBuilder.UseBuilder(new ILOvermockBuilder());
+		}
 
-        [TestInitialize]
-        public void Initialize()
-        {
-            _template = Overmocked.Setup<OvermockMethodTemplate>();
-            _connection = Overmocked.Setup<IDataConnection>();
-            _factory = Overmocked.Setup<UserStoryFactory>(args => 
-                args.Args(_connection.Target));
-            _service = Overmocked.Setup<IUserStoryService>();
-        }
+		[TestInitialize]
+		public void Initialize()
+		{
+			_template = Overmocked.Setup<OvermockMethodTemplate>();
+			_connection = Overmocked.Setup<IDataConnection>();
+			_factory = Overmocked.Setup<UserStoryFactory>(args =>
+				args.Args(_connection.Target));
+			_service = Overmocked.Setup<IUserStoryService>();
+		}
 
-        [TestMethod]
-        public void TemplateTest()
-        {
-            _template.Override(t => t.TestMethod(Its.Any<string>())).ToThrow(new Exception("Test"));
+		[TestMethod]
+		public void TemplateTest()
+		{
+			_template.Override(t => t.TestMethod(Its.Any<string>())).ToThrow(new Exception("Test"));
 
-			      var target = _template.Target;
-        }
+			var target = _template.Target;
 
-        [TestMethod]
-        public void GetReturnsTheCorrectErrorDetailsWhenAnExceptionHappens()
-        {
-            // Arrange
-            _service.Override(s => s.Get(0)).ToThrow(new Exception("testing"));
+			Assert.IsNotNull(target);
 
-            _controller = new UserStoryController(_service.Target);
+			var test = target.TestMethod("parameter");
+		}
 
-            // Act
-            var response = _controller.Get();
+		[TestMethod]
+		public void GetReturnsTheCorrectErrorDetailsWhenAnExceptionHappens()
+		{
+			// Arrange
+			_service.Override(s => s.Get(Any<int>.Value))
+				.ToThrow(new Exception("testing"));
 
-            // Assert
-            //Assert.AreEqual(response.ErrorDetails, "testing");
-        }
+			_controller = new UserStoryController(_service.Target);
 
-        [TestMethod]
-        public void GetReturnsTheResultsWhenPassedTheRightParameters()
-        {
-            // Arrange
-            _service.Override(s => s.GetAll()).ToCall(c =>
-            {
-                var id = c.Get<int>("id");
+			// Act
+			var response = _controller.Get(2);
 
-                return Enumerable.Empty<UserStory>();
+			// Assert
+			//Assert.AreEqual(response.ErrorDetails, "testing");
+		}
 
-            }).ToReturn(Enumerable.Empty<UserStory>);
+		[TestMethod]
+		public void GetReturnsTheResultsWhenPassedTheRightParameters()
+		{
+			// Arrange
+			_service.Override(s => s.GetAll()).ToCall(c => {
+				var id = c.Get<int>("id");
 
-            _controller = new UserStoryController(_service.Target);
+				return Enumerable.Empty<UserStory>();
 
-            // Act
-            var response = _controller.Get();
+			}).ToReturn(Enumerable.Empty<UserStory>);
 
-            // Assert
-            //Assert.AreEqual(response.ErrorDetails, "testing");
-        }
-    }
+			_controller = new UserStoryController(_service.Target);
+
+			// Act
+			var response = _controller.Get();
+
+			// Assert
+			//Assert.AreEqual(response.ErrorDetails, "testing");
+		}
+	}
 }

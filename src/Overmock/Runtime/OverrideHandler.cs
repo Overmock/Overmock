@@ -21,9 +21,16 @@
 		/// </summary>
 		/// <param name="parameters">The parameters used to call the overridden member.</param>
 		/// <returns>An IDisposable object that handles the result of the method call.</returns>
-		/// <exception cref="NotImplementedException"></exception>
+		/// <exception cref="OvermockException"></exception>
 		public OverrideHandlerResult Handle(params object[] parameters)
 		{
+			var exception = _context.Overrides.First();
+
+			if (exception.Exception != null)
+			{
+				throw exception.Exception;
+			}
+
 			if (_context.ParameterCount != parameters.Length)
 			{
 				throw new OvermockException(Ex.Message.NumberOfParameterMismatch);
@@ -34,8 +41,9 @@
 				_context.SetParameterValue(i, parameters[i]);
 			}
 
+
 			// TODO: run through all the options and call what's needed.
-			throw new NotImplementedException();
+			throw new OvermockException();
 		}
 	}
 }

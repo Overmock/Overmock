@@ -1,36 +1,34 @@
-﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
+﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using System.Collections.Immutable;
 using System.Reflection;
 using System.Text;
-using System.Xml.Linq;
-using System.Linq;
-using System.Collections.Immutable;
 
 namespace Overmock.Compilation.Roslyn
 {
-    // INFO: I really don't like this but it is what it is.
-    using sf = SyntaxFactory;
+	// INFO: I really don't like this but it is what it is.
+	using sf = SyntaxFactory;
 
-    internal class RoslynAssemblyGenerator : IRoslynAssemblyGenerator
-    {
-        private static readonly BlockSyntax _notImplementedExceptionMethodBody = sf.Block(
-            sf.ParseStatement("throw new NotImplementedException();")
-        );
+	internal class RoslynAssemblyGenerator : IRoslynAssemblyGenerator
+	{
+		private static readonly BlockSyntax _notImplementedExceptionMethodBody = sf.Block(
+			sf.ParseStatement("throw new NotImplementedException();")
+		);
 
-        private readonly List<string> _namespaces = new List<string>
-        {
-            "System",
-            "System.Threading.Tasks",
-            "System.Collections.Generic",
-        };
+		private readonly List<string> _namespaces = new List<string>
+		{
+			"System",
+			"System.Threading.Tasks",
+			"System.Collections.Generic",
+		};
 
-        private static readonly IEnumerable<MetadataReference> _defaultReferences = new[]
-        {
-            MetadataReference.CreateFromFile(typeof(object).GetTypeInfo().Assembly.Location),
-            MetadataReference.CreateFromFile(typeof(Task).GetTypeInfo().Assembly.Location),
-            MetadataReference.CreateFromFile(typeof(IList<>).GetTypeInfo().Assembly.Location)
-        };
+		private static readonly IEnumerable<MetadataReference> _defaultReferences = new[]
+		{
+			MetadataReference.CreateFromFile(typeof(object).GetTypeInfo().Assembly.Location),
+			MetadataReference.CreateFromFile(typeof(Task).GetTypeInfo().Assembly.Location),
+			MetadataReference.CreateFromFile(typeof(IList<>).GetTypeInfo().Assembly.Location)
+		};
 
 		public ImmutableArray<string> GetNamespaces()
 		{
@@ -84,57 +82,57 @@ namespace Overmock.Compilation.Roslyn
 		}
 
 		public void GetClassDeclaration(RoslynAssemblyGenerationContext context)
-        {
-            if (context.TargetType.Namespace != null && !_namespaces.Contains(context.TargetType.Namespace))
-            {
-                _namespaces.Add(context.TargetType.Namespace);
-            }
+		{
+			if (context.TargetType.Namespace != null && !_namespaces.Contains(context.TargetType.Namespace))
+			{
+				_namespaces.Add(context.TargetType.Namespace);
+			}
 
-            context.SetClassDeclaration(sf.ClassDeclaration(context.Target.TypeName)
-                .AddModifiers(sf.Token(SyntaxKind.PublicKeyword))
-                .AddBaseListTypes(
-                    sf.SimpleBaseType(sf.ParseTypeName(context.TargetType.Name))
-                ));
+			context.SetClassDeclaration(sf.ClassDeclaration(context.Target.TypeName)
+				.AddModifiers(sf.Token(SyntaxKind.PublicKeyword))
+				.AddBaseListTypes(
+					sf.SimpleBaseType(sf.ParseTypeName(context.TargetType.Name))
+				));
 
-            if (context.TargetType.IsInterface)
-            {
-                ImplementInterfaces(context);
-            }
+			if (context.TargetType.IsInterface)
+			{
+				ImplementInterfaces(context);
+			}
 
-            if (context.TargetType.IsClass && !context.TargetType.IsSealed)
-            {
-                InheritClass(context);
-            }
+			if (context.TargetType.IsClass && !context.TargetType.IsSealed)
+			{
+				InheritClass(context);
+			}
 
-            context.SetNamespaceDeclaration(GetNamespaceDeclaration(context));
-        }
+			context.SetNamespaceDeclaration(GetNamespaceDeclaration(context));
+		}
 
-        public CSharpCompilation GenerateCompilation(RoslynAssemblyGenerationContext context, CompilationUnitSyntax compilation)
-        {
-            return CSharpCompilation.Create($"{context.Target.TypeName}.dll",
-                syntaxTrees: new[] { compilation.SyntaxTree },
-                references: LoadAssemblyReferences(context),
-                options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary, metadataImportOptions: MetadataImportOptions.All)
-                    .WithOptimizationLevel(OptimizationLevel.Release)
-                    .WithOverflowChecks(true)
-                    .WithUsings(GetNamespaces())
-            );
-        }
+		public CSharpCompilation GenerateCompilation(RoslynAssemblyGenerationContext context, CompilationUnitSyntax compilation)
+		{
+			return CSharpCompilation.Create($"{context.Target.TypeName}.dll",
+				syntaxTrees: new[] { compilation.SyntaxTree },
+				references: LoadAssemblyReferences(context),
+				options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary, metadataImportOptions: MetadataImportOptions.All)
+					.WithOptimizationLevel(OptimizationLevel.Release)
+					.WithOverflowChecks(true)
+					.WithUsings(GetNamespaces())
+			);
+		}
 
-        public CompilationUnitSyntax BuildCompilationUnit(RoslynAssemblyGenerationContext context)
-        {
-            Throw.If.BuildComponentsAreNull(context);
+		public CompilationUnitSyntax BuildCompilationUnit(RoslynAssemblyGenerationContext context)
+		{
+			Throw.If.BuildComponentsAreNull(context);
 
-            var namespaceDeclaration = context.NamespaceDeclaration!.AddUsings(_namespaces.Select(n =>
-                    sf.UsingDirective(sf.ParseName(n))
-                ).ToArray());
+			var namespaceDeclaration = context.NamespaceDeclaration!.AddUsings(_namespaces.Select(n =>
+					sf.UsingDirective(sf.ParseName(n))
+				).ToArray());
 
-            var classDeclaration = context.GetClassDeclaration();
+			var classDeclaration = context.GetClassDeclaration();
 
-            return sf.CompilationUnit().AddMembers(
-                namespaceDeclaration!.AddMembers(
-                        classDeclaration.NormalizeWhitespace())
-                    .NormalizeWhitespace());
+			return sf.CompilationUnit().AddMembers(
+				namespaceDeclaration!.AddMembers(
+						classDeclaration.NormalizeWhitespace())
+					.NormalizeWhitespace());
 		}
 
 		private void AddNamespace(string? @namespace)
@@ -146,153 +144,153 @@ namespace Overmock.Compilation.Roslyn
 		}
 
 		public NamespaceDeclarationSyntax GetNamespaceDeclaration(RoslynAssemblyGenerationContext context)
-        {
-            return sf.NamespaceDeclaration(sf.ParseName("OvermockGenerated"));
-        }
+		{
+			return sf.NamespaceDeclaration(sf.ParseName("OvermockGenerated"));
+		}
 
-        public void ImplementInterfaces(RoslynAssemblyGenerationContext context)
-        {
-            if (context.Target.Type.IsInterface)
-            {
-                foreach (var interfaceType in context.Target.Type.GetInterfaces())
-                {
-                    ImplementInterface(context, interfaceType);
-                }
+		public void ImplementInterfaces(RoslynAssemblyGenerationContext context)
+		{
+			if (context.Target.Type.IsInterface)
+			{
+				foreach (var interfaceType in context.Target.Type.GetInterfaces())
+				{
+					ImplementInterface(context, interfaceType);
+				}
 
-                ImplementInterface(context, context.Target.Type);
-            }
-        }
+				ImplementInterface(context, context.Target.Type);
+			}
+		}
 
-        private void ImplementInterface(RoslynAssemblyGenerationContext context, Type interfaceType)
-        {
-            // TODO: Mock properties
-            var overmockedProperties = context.Target.GetOvermockedProperties().ToArray();
-            var interfaceProperties = interfaceType.GetProperties().Except(overmockedProperties.Select(p => (PropertyInfo)p.Expression.Member));
+		private void ImplementInterface(RoslynAssemblyGenerationContext context, Type interfaceType)
+		{
+			// TODO: Mock properties
+			var overmockedProperties = context.Target.GetOvermockedProperties().ToArray();
+			var interfaceProperties = interfaceType.GetProperties().Except(overmockedProperties.Select(p => (PropertyInfo)p.Expression.Member));
 
-            foreach (var property in overmockedProperties)
-            {
-                BuildOvermockedProperty(property, context);
-            }
+			foreach (var property in overmockedProperties)
+			{
+				BuildOvermockedProperty(property, context);
+			}
 
-            // Add properties
-            foreach (var property in interfaceProperties)
-            {
-                BuildProperty(context, interfaceType, property);
-            }
+			// Add properties
+			foreach (var property in interfaceProperties)
+			{
+				BuildProperty(context, interfaceType, property);
+			}
 
-            // Add overmock methods
-            var overmockedMethods = context.Target.GetOvermockedMethods().ToArray();
-            var interfaceMethods = interfaceType.GetMethods().Except(overmockedMethods.Select(m => m.Expression.Method)).Where(m => !m.IsSpecialName);
+			// Add overmock methods
+			var overmockedMethods = context.Target.GetOvermockedMethods().ToArray();
+			var interfaceMethods = interfaceType.GetMethods().Except(overmockedMethods.Select(m => m.Expression.Method)).Where(m => !m.IsSpecialName);
 
-            foreach (var method in overmockedMethods)
-            {
-                BuildOvermockedMethod(method, context);
-            }
+			foreach (var method in overmockedMethods)
+			{
+				BuildOvermockedMethod(method, context);
+			}
 
-            // Add other interface methods
-            foreach (var method in interfaceMethods)
-            {
-                var methodDeclaration = BuildMethodSignature(method, context)
-                    // TODO: Add method wrappers where needed.
-                    .WithBody(_notImplementedExceptionMethodBody);
+			// Add other interface methods
+			foreach (var method in interfaceMethods)
+			{
+				var methodDeclaration = BuildMethodSignature(method, context)
+					// TODO: Add method wrappers where needed.
+					.WithBody(_notImplementedExceptionMethodBody);
 
-                context.AddMembers(methodDeclaration);
-            }
-        }
+				context.AddMembers(methodDeclaration);
+			}
+		}
 
-        private void InheritClass(RoslynAssemblyGenerationContext context)
-        {
-            foreach (var constructor in context.Target.Type.GetConstructors())
-            {
-                var constructorDeclaration = BuildConstructorSignature(constructor, context);
+		private void InheritClass(RoslynAssemblyGenerationContext context)
+		{
+			foreach (var constructor in context.Target.Type.GetConstructors())
+			{
+				var constructorDeclaration = BuildConstructorSignature(constructor, context);
 
-                context.AddMembers(constructorDeclaration
-                    .WithBody(BuildConstructorBody(constructor, context))
-                );
-            }
+				context.AddMembers(constructorDeclaration
+					.WithBody(BuildConstructorBody(constructor, context))
+				);
+			}
 
-            foreach (var property in context.Target.GetOvermockedProperties())
-            {
-                BuildOvermockedProperty(property, context);
-            }
+			foreach (var property in context.Target.GetOvermockedProperties())
+			{
+				BuildOvermockedProperty(property, context);
+			}
 
-            foreach (var method in context.Target.GetOvermockedMethods())
-            {
-                BuildOvermockedMethod(method, context);
-            }
-        }
+			foreach (var method in context.Target.GetOvermockedMethods())
+			{
+				BuildOvermockedMethod(method, context);
+			}
+		}
 
-        private void BuildOvermockedMethod(IMethodCall method, RoslynAssemblyGenerationContext context)
-        {
-            var overrides = method.GetOverrides().ToArray();
+		private void BuildOvermockedMethod(IMethodCall method, RoslynAssemblyGenerationContext context)
+		{
+			var overrides = method.GetOverrides().ToArray();
 
-            if (overrides.Any())
-            {
-                var methodOvermocked = BuildMethodSignature(method.Expression.Method, context);
+			if (overrides.Any())
+			{
+				var methodOvermocked = BuildMethodSignature(method.Expression.Method, context);
 
-                var exception = overrides.SingleOrDefault(o => o.Exception != null);
+				var exception = overrides.SingleOrDefault(o => o.Exception != null);
 
-                if (exception != default)
-                {
-                    var exceptionType = exception.Exception.GetType();
+				if (exception != default)
+				{
+					var exceptionType = exception.Exception.GetType();
 
-                    context.AddMembers(methodOvermocked.WithBody(
-                        sf.Block(sf.ParseStatement($"throw new {exceptionType.Namespace}.{exceptionType.Name}(\"{exception.Exception.Message}\");"))
-                    ));
-                    return;
-                }
+					context.AddMembers(methodOvermocked.WithBody(
+						sf.Block(sf.ParseStatement($"throw new {exceptionType.Namespace}.{exceptionType.Name}(\"{exception.Exception.Message}\");"))
+					));
+					return;
+				}
 
-                context.AddMembers(methodOvermocked.WithBody(_notImplementedExceptionMethodBody));
-            }
-        }
+				context.AddMembers(methodOvermocked.WithBody(_notImplementedExceptionMethodBody));
+			}
+		}
 
-        private void BuildOvermockedProperty(IPropertyCall property, RoslynAssemblyGenerationContext context)
-        {
-            var overrides = property.GetOverrides();
+		private void BuildOvermockedProperty(IPropertyCall property, RoslynAssemblyGenerationContext context)
+		{
+			var overrides = property.GetOverrides();
 
-            if (overrides.Any())
-            {
-                var propertyInfo = (PropertyInfo)property.Expression.Member;
-                var propertyDeclaration = sf.PropertyDeclaration(GetSafeTypeName(propertyInfo.PropertyType, context), propertyInfo.Name)
-                    .AddModifiers(sf.Token(SyntaxKind.PublicKeyword));
+			if (overrides.Any())
+			{
+				var propertyInfo = (PropertyInfo)property.Expression.Member;
+				var propertyDeclaration = sf.PropertyDeclaration(GetSafeTypeName(propertyInfo.PropertyType, context), propertyInfo.Name)
+					.AddModifiers(sf.Token(SyntaxKind.PublicKeyword));
 
-                var exception = overrides.SingleOrDefault(o => o.Exception != null);
+				var exception = overrides.SingleOrDefault(o => o.Exception != null);
 
-                if (exception != default)
-                {
-                    var exceptionType = exception.Exception.GetType();
+				if (exception != default)
+				{
+					var exceptionType = exception.Exception.GetType();
 
-                    context.AddMembers(propertyDeclaration.AddAccessorListAccessors(
-                        sf.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
-                            .WithBody(sf.Block(sf.ParseStatement($"throw new {exceptionType.Namespace}.{exceptionType.Name}(\"{exception.Exception.Message}\");"))),
-                        sf.AccessorDeclaration(SyntaxKind.SetAccessorDeclaration)
-                            .WithBody(_notImplementedExceptionMethodBody)
-                        ));
+					context.AddMembers(propertyDeclaration.AddAccessorListAccessors(
+						sf.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
+							.WithBody(sf.Block(sf.ParseStatement($"throw new {exceptionType.Namespace}.{exceptionType.Name}(\"{exception.Exception.Message}\");"))),
+						sf.AccessorDeclaration(SyntaxKind.SetAccessorDeclaration)
+							.WithBody(_notImplementedExceptionMethodBody)
+						));
 
-                    return;
-                }
+					return;
+				}
 
-                context.AddMembers(propertyDeclaration.AddAccessorListAccessors(
-                    sf.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
-                        .WithBody(_notImplementedExceptionMethodBody),
-                    sf.AccessorDeclaration(SyntaxKind.SetAccessorDeclaration)
-                        .WithBody(_notImplementedExceptionMethodBody)
-                ));
-            }
-        }
+				context.AddMembers(propertyDeclaration.AddAccessorListAccessors(
+					sf.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
+						.WithBody(_notImplementedExceptionMethodBody),
+					sf.AccessorDeclaration(SyntaxKind.SetAccessorDeclaration)
+						.WithBody(_notImplementedExceptionMethodBody)
+				));
+			}
+		}
 
-        private ConstructorDeclarationSyntax BuildConstructorSignature(MethodBase constructor, RoslynAssemblyGenerationContext context)
-        {
-            var parameters = constructor.GetParameters();
-            var methodDeclaration = sf.ConstructorDeclaration(sf.Identifier(context.Target.TypeName))
-                .AddModifiers(sf.Token(SyntaxKind.PublicKeyword));
+		private ConstructorDeclarationSyntax BuildConstructorSignature(MethodBase constructor, RoslynAssemblyGenerationContext context)
+		{
+			var parameters = constructor.GetParameters();
+			var methodDeclaration = sf.ConstructorDeclaration(sf.Identifier(context.Target.TypeName))
+				.AddModifiers(sf.Token(SyntaxKind.PublicKeyword));
 
-            if (parameters.Any())
-            {
-                methodDeclaration = BuildBaseInitializer(context, parameters, methodDeclaration);
-            }
+			if (parameters.Any())
+			{
+				methodDeclaration = BuildBaseInitializer(context, parameters, methodDeclaration);
+			}
 
-            return BuildParameters(parameters, methodDeclaration);
+			return BuildParameters(parameters, methodDeclaration);
 		}
 
 		private ConstructorDeclarationSyntax BuildBaseInitializer(RoslynAssemblyGenerationContext context, IEnumerable<ParameterInfo> parameters, ConstructorDeclarationSyntax methodDeclaration)
@@ -398,5 +396,5 @@ namespace Overmock.Compilation.Roslyn
 
 			context.AddMembers(result.AddAccessorListAccessors(accessorList.ToArray()));
 		}
-    }
+	}
 }
