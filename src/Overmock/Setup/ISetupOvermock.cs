@@ -47,6 +47,6 @@ namespace Overmock.Setup
 		/// </summary>
 		/// <param name="callback"></param>
 		/// <returns></returns>
-		ISetupReturn<TReturn> ToCall(Func<OverrideContext, TReturn> callback);
+		void ToCall(Func<OverrideContext, TReturn> callback);
 	}
 }

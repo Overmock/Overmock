@@ -69,6 +69,18 @@ namespace Overmock.Mocking.Internal
 		{
 		}
 
+		protected override List<MemberOverride> GetOverrides()
+		{
+			var overrides =  base.GetOverrides();
+
+			if (_func != null)
+			{
+				overrides.Add(new MethodOverride(overmock: _func));
+			}
+
+			return overrides;
+		}
+
 		void IMethodCall<T, TReturn>.Calls(Func<OverrideContext, TReturn> method)
 		{
 			_func = method;

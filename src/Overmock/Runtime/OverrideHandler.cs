@@ -24,11 +24,16 @@
 		/// <exception cref="OvermockException"></exception>
 		public OverrideHandlerResult Handle(params object[] parameters)
 		{
-			var exception = _context.Overrides.First();
+			var overmock = _context.Overrides.First();
 
-			if (exception.Exception != null)
+			if (overmock.Exception != null)
 			{
-				throw exception.Exception;
+				throw overmock.Exception;
+			}
+
+			if (overmock.ReturnProvider != null)
+			{
+				return new OverrideHandlerResult(overmock.ReturnProvider.Invoke());
 			}
 
 			if (_context.ParameterCount != parameters.Length)
@@ -41,9 +46,14 @@
 				_context.SetParameterValue(i, parameters[i]);
 			}
 
+			if (overmock is MethodOverride methodOverride && methodOverride.Overmock != null)
+			{
+				var invokeResult = methodOverride.Overmock.DynamicInvoke(_context);
 
-			// TODO: run through all the options and call what's needed.
-			throw new OvermockException();
+				return new OverrideHandlerResult(invokeResult);
+			}
+
+			throw new NotImplementedException("This needs more work...I guess?");
 		}
 	}
 }

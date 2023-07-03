@@ -26,6 +26,18 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Compilation\IL\IProxyGenerator.cs" />
+    <Compile Remove="Compilation\IL\IProxyTypeGenerator.cs" />
+    <Compile Remove="Compilation\IL\MethodBodyStreamWriter.cs" />
+    <Compile Remove="Compilation\IL\MethodUtils.cs" />
+    <Compile Remove="Compilation\IL\ProxyGenerator.cs" />
+    <Compile Remove="Compilation\IL\ProxyGeneratorBuilder.cs" />
+    <Compile Remove="Compilation\IL\ProxyGeneratorUtils.cs" />
+    <Compile Remove="Compilation\IL\ProxyTypeGenerator.cs" />
+    <Compile Remove="Compilation\IL\ReflectionUtils.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Include="..\..\README.md">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
@@ -34,6 +46,7 @@
 
   <ItemGroup>
     <PackageReference Include="IFluentInterface" Version="2.1.0" />
+    <PackageReference Include="Lokad.ILPack" Version="0.2.0" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.4.0" />
   </ItemGroup>
 </Project>

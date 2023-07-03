@@ -1,5 +1,7 @@
-﻿using Overmock.Runtime;
+﻿using Overmock.Compilation.IL;
+using Overmock.Runtime;
 using System.Reflection;
+using System.Xml.Linq;
 
 namespace Overmock
 {
@@ -9,7 +11,7 @@ namespace Overmock
 	public class OvermockMethodTemplate
 	{
 #pragma warning disable IDE1006 // Naming Styles
-		private OvermockContext? ___context___;
+		private OvermockContext? ___context;
 #pragma warning restore IDE1006 // Naming Styles
 
 		/// <summary>
@@ -18,7 +20,7 @@ namespace Overmock
 		/// <param name="context"></param>
 		public void InitializeOvermockContext(OvermockContext context)
 		{
-			___context___ = context;
+			___context = context;
 		}
 
 		/// <summary>
@@ -27,11 +29,25 @@ namespace Overmock
 		/// <param name="name"></param>
 		/// <returns></returns>
 		/// <exception cref="OvermockException"></exception>
+		[Overmock("71a8440c-ba80-472c-bc31-a3736c3e5b4c")]
 		public object TestMethod(string name)
 		{
-			var handle = ___context___.Get((MethodInfo)MethodBase.GetCurrentMethod()!);
+			var handle = ___context.Get((MethodInfo)MethodBase.GetCurrentMethod()!);
 			var result = handle.Handle(name);
-			return result.Result;
+			return (Type)result.Result;
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="handler"></param>
+		/// <returns></returns>
+		/// <exception cref="OvermockException"></exception>
+		[Overmock("17a8440c-ba80-472c-bc31-a3736c3e5b4c")]
+		public object TestMethod2(IOverrideHandler handler)
+		{
+			var result = handler.Handle();
+			return (Type)result.Result;
 		}
 	}
 }

@@ -1,10 +1,16 @@
-﻿using Overmock.Runtime;
+﻿using AspectCore.Extensions.Reflection;
+using Lokad.ILPack;
+using Lokad.ILPack.IL;
+using Overmock.Runtime;
 using System.Reflection;
 using System.Reflection.Emit;
+using System.Reflection.Metadata;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace Overmock.Compilation.IL
 {
-	internal class ILTypeBuilder : ITypeBuilder
+    internal class ILTypeBuilder : ITypeBuilder
 	{
 		private static readonly Type MethodBaseType = typeof(MethodBase);
 		private static readonly Type MethodInfoType = typeof(MethodInfo);
@@ -21,7 +27,7 @@ namespace Overmock.Compilation.IL
 		public T? BuildType<T>(IOvermock<T> target) where T : class
 		{
 			var overmockContextType = typeof(OvermockContext);
-			var assemblyName = new AssemblyName($"{target.TypeName}.dll");
+			var assemblyName = new AssemblyName($"Overmocked.Generated.dll");
 			var assemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(assemblyName, AssemblyBuilderAccess.RunAndCollect);
 
 			var overmockedMethods = target.GetOvermockedMethods().ToList();
@@ -49,19 +55,31 @@ namespace Overmock.Compilation.IL
 			{
 				var methodInfo = overmock.Expression.Method;
 
-				CreateMethod(methodInfo, typeBuilder, contextField);
+				var methodBuilder = CreateMethod(methodInfo, typeBuilder, contextField);
 
-				var overrides = overmock.GetOverrides();
+				var methodId = Guid.NewGuid();
+				methodBuilder.SetCustomAttribute(new CustomAttributeBuilder(
+					typeof(OvermockAttribute).GetConstructors().First(),
+					new object[] { methodId.ToString() }
+				));
 
-				overmockContext.Add(methodInfo, new OverrideContext(methodInfo,
-					overrides,
+				overmockContext.Add(methodId, new OverrideContext(methodInfo,
+					overmock.GetOverrides(),
 					methodInfo.GetParameters().Select(p => new OverrideParameter(p.Name!, type: p.ParameterType)))
 				);
 			}
 
 			var targetType = typeBuilder.CreateType()!;
 
-			//assemblyBuilder.s
+			// Write the assembly to disc for testing
+			var generator = new AssemblyGenerator();
+			var fileName = assemblyBuilder.GetName().Name!;
+			if (File.Exists(fileName))
+			{
+				File.Delete(fileName);
+			}
+			File.WriteAllBytes(fileName, generator.GenerateAssemblyBytes(assemblyBuilder));
+			// Write the assembly to disc for testing
 
 			target.SetCompiledType(targetType);
 
@@ -75,32 +93,88 @@ namespace Overmock.Compilation.IL
 
 		private static TypeBuilder GetTypeBuilder<T>(IOvermock<T> target, AssemblyBuilder assemblyBuilder, IReadOnlyList<IMethodCall> overmockedMethods) where T : class
 		{
+			static string getFullTypeName(string typeName)
+			{
+				return $"OvermockGenerated.{typeName}";
+			}
+
 			var moduleBuilder = assemblyBuilder.DefineDynamicModule(
 				GetDynamicTypeName(target.Type, suffix: "_Module"));
 
 			if (target.Type.IsInterface)
 			{
-				var typeBuilder = moduleBuilder.DefineType(target.TypeName, TypeAttributes.Public);
+				var typeBuilder = moduleBuilder.DefineType(getFullTypeName(target.TypeName), TypeAttributes.Public);
 				typeBuilder.AddInterfaceImplementation(typeof(T));
-
-				//var excludedMethods = overmockedMethods.Select(m => m.Expression.Method).ToList();
-
-				//DefineMethods(target, typeBuilder, excludedMethods);
-				//DefineProperties(target, typeBuilder);
-
-				//foreach (Type baseType in target.Type.GetInterfaces())
-				//{
-				//	DefineProperties(baseType, typeBuilder);
-				//	DefineMethods(baseType, typeBuilder, excludedMethods);
-				//}
-
 				return typeBuilder;
 			}
 
-			return moduleBuilder.DefineType(target.TypeName, TypeAttributes.Class | TypeAttributes.Public, typeof(T));
+			return moduleBuilder.DefineType(getFullTypeName(target.TypeName), TypeAttributes.Class | TypeAttributes.Public, typeof(T));
 		}
 
-		public static void CopyMethod(MethodBuilder methodBuilder, FieldBuilder contextField, ParameterInfo[] parameters)
+		protected static void DefineMethods(IOvermock target, TypeBuilder dynamicType, FieldBuilder contextField, IReadOnlyList<MethodInfo> excludedMethods)
+		{
+			DefineMethods(target.Type, dynamicType, contextField, excludedMethods);
+		}
+
+		protected static void DefineMethods(Type target, TypeBuilder dynamicType, FieldBuilder contextField, IReadOnlyList<MethodInfo> excludedMethods)
+		{
+			var methods = target.GetMethods()
+				.Where(m => !m.IsSpecialName && !excludedMethods.Contains(m));
+
+			foreach (MethodInfo methodInfo in methods)
+			{
+				CreateMethod(methodInfo, dynamicType, contextField);
+			}
+		}
+
+		protected static MethodBuilder CreateMethod(MethodInfo methodInfo, TypeBuilder dynamicType, FieldBuilder contextField)
+		{
+			object methodToCopy(IOverrideHandler handler, params object[] parameters)
+			{
+				var result = handler.Handle();
+				return result.Result;
+			}
+
+			var parameterTypes = methodInfo.GetParameters()
+				.Select(p => p.ParameterType).ToArray();
+
+			var methodBuilder = dynamicType.DefineMethod(
+				methodInfo.Name,
+				methodInfo.Attributes ^ (MethodAttributes.Abstract | MethodAttributes.Virtual),
+				methodInfo.ReturnType,
+				parameterTypes
+			);
+
+			//CopyMethod(methodBuilder, contextField, parameterTypes);
+
+			//dynamicType.DefineMethodOverride(methodBuilder, typeof(OvermockMethodTemplate).GetMethod("TestMethod", BindingFlags.Public | BindingFlags.Instance)!);
+
+			var dynamicMethod = new DynamicMethod(methodInfo.Name,
+				methodInfo.ReturnType,
+				new[] { HandlerType, typeof(object[]) },
+				dynamicType.Module);
+
+			var dynamicIL = dynamicMethod.GetDynamicILInfo();
+
+			var delegateType = (Func<IOverrideHandler, object[], object>)methodToCopy;
+			var delegateBody = delegateType.Method.GetMethodBody();
+
+			dynamicIL.SetCode(delegateBody.GetILAsByteArray(), delegateBody.MaxStackSize);
+
+			var overrideMethod = dynamicMethod.CreateDelegate(delegateType.GetType());
+			var overrideMethodHandle = delegateType.Method.MethodHandle;
+			//
+
+			//dynamicType.DefineMethodOverride(methodBuilder, dynamicMethod);
+			RuntimeHelpers.PrepareMethod(methodInfo.MethodHandle);
+			RuntimeHelpers.PrepareMethod(overrideMethod.Method.MethodHandle);
+
+			Marshal.WriteIntPtr(methodBuilder.MethodHandle.Value, delegateType.Method.MethodHandle.Value);
+
+			return methodBuilder;
+		}
+
+		protected static void CopyMethod(MethodBuilder methodBuilder, FieldBuilder contextField, Type[] parameters)
 		{
 			var emitter = methodBuilder.GetILGenerator();
 
@@ -108,11 +182,8 @@ namespace Overmock.Compilation.IL
 			emitter.DeclareLocal(typeof(OverrideHandlerResult));
 			emitter.DeclareLocal(typeof(object));
 
-			var label = emitter.DefineLabel();
-			emitter.Emit(OpCodes.Ldloc_2);
-			emitter.Emit(OpCodes.Ret);
+			var retrunLabel = emitter.DefineLabel();
 
-			// new
 			emitter.Emit(OpCodes.Nop);
 			emitter.Emit(OpCodes.Ldarg_0);
 
@@ -125,7 +196,7 @@ namespace Overmock.Compilation.IL
 				Type.EmptyTypes
 			);
 
-			emitter.Emit(OpCodes.Castclass, MethodBaseType);
+			emitter.Emit(OpCodes.Castclass, MethodInfoType);
 
 			//emitter.Emit(OpCodes.callvirt instance class Overmock.Runtime.IOverrideHandler Overmock.Runtime.OvermockContext::Get(class [System.Runtime] System.Reflection.MethodInfo)
 			emitter.EmitCall(OpCodes.Callvirt,
@@ -150,42 +221,21 @@ namespace Overmock.Compilation.IL
 
 			emitter.Emit(OpCodes.Stloc_1);
 			emitter.Emit(OpCodes.Ldloc_1);
-			emitter.EmitCall(OpCodes.Callvirt, typeof(OverrideHandlerResult).GetProperty("Result",
-				BindingFlags.Public | BindingFlags.Instance).GetGetMethod()!,
+			emitter.EmitCall(OpCodes.Callvirt,
+				typeof(OverrideHandlerResult).GetProperty("Result",
+					BindingFlags.Public | BindingFlags.Instance)
+				.GetGetMethod()!,
 				Type.EmptyTypes
 			);
+
+			emitter.Emit(OpCodes.Castclass, methodBuilder.ReturnType);
+
 			emitter.Emit(OpCodes.Stloc_2);
-			emitter.MarkLabel(label);
-		}
+			emitter.Emit(OpCodes.Br_S, retrunLabel);
 
-		protected static void DefineMethods(IOvermock target, TypeBuilder dynamicType, FieldBuilder contextField, IReadOnlyList<MethodInfo> excludedMethods)
-		{
-			DefineMethods(target.Type, dynamicType, contextField, excludedMethods);
-		}
-
-		protected static void DefineMethods(Type target, TypeBuilder dynamicType, FieldBuilder contextField, IReadOnlyList<MethodInfo> excludedMethods)
-		{
-			var methods = target.GetMethods()
-				.Where(m => !m.IsSpecialName && !excludedMethods.Contains(m));
-
-			foreach (MethodInfo methodInfo in methods)
-			{
-				CreateMethod(methodInfo, dynamicType, contextField);
-			}
-		}
-
-		protected static void CreateMethod(MethodInfo methodInfo, TypeBuilder dynamicType, FieldBuilder contextField)
-		{
-			var parameterTypes = methodInfo.GetParameters();
-
-			var methodBuilder = dynamicType.DefineMethod(
-				methodInfo.Name,
-				MethodAttributes.Public | MethodAttributes.Virtual, CallingConventions.HasThis,
-				methodInfo.ReturnType,
-				parameterTypes.Select(p => p.ParameterType).ToArray()
-			);
-
-			CopyMethod(methodBuilder, contextField, parameterTypes);
+			emitter.MarkLabel(retrunLabel);
+			emitter.Emit(OpCodes.Ldloc_2);
+			emitter.Emit(OpCodes.Ret);
 		}
 
 		protected static void DefineProperties(IOvermock target, TypeBuilder dynamicType)
@@ -252,125 +302,125 @@ namespace Overmock.Compilation.IL
 		protected static string GetDynamicTypeName(Type baseType, string prefix = "", string suffix = "") =>
 			$"{prefix}{baseType.FullName}{suffix}";
 
-		public static void CopyMethod2(MethodBuilder methodBuilder, MethodInfo methodInfo)
-		{
-			//emitter.Emit(OpCodes.Nop);
-			//emitter.Emit(OpCodes.Ldarg_0);
-			//emitter.Emit(OpCodes.Ldfld, contextField);
+		//public static void CopyMethod2(MethodBuilder methodBuilder, MethodInfo methodInfo)
+		//{
+		//	//emitter.Emit(OpCodes.Nop);
+		//	//emitter.Emit(OpCodes.Ldarg_0);
+		//	//emitter.Emit(OpCodes.Ldfld, contextField);
 
-			//emitter.EmitWriteLine("I got to here");
+		//	//emitter.EmitWriteLine("I got to here");
 
-			//emitter.EmitCall(OpCodes.Call,
-			//	MethodBaseType.GetMethod("GetCurrentMethod", BindingFlags.Static | BindingFlags.Public)!,
-			//	Type.EmptyTypes
-			//);
+		//	//emitter.EmitCall(OpCodes.Call,
+		//	//	MethodBaseType.GetMethod("GetCurrentMethod", BindingFlags.Static | BindingFlags.Public)!,
+		//	//	Type.EmptyTypes
+		//	//);
 
-			//emitter.Emit(OpCodes.Castclass, MethodInfoType);
+		//	//emitter.Emit(OpCodes.Castclass, MethodInfoType);
 
-			//emitter.EmitCall(OpCodes.Callvirt,
-			//	ContextType.GetMethod("Get", BindingFlags.Instance | BindingFlags.Public)!,
-			//	new[] { MethodInfoType }
-			//);
+		//	//emitter.EmitCall(OpCodes.Callvirt,
+		//	//	ContextType.GetMethod("Get", BindingFlags.Instance | BindingFlags.Public)!,
+		//	//	new[] { MethodInfoType }
+		//	//);
 
-			//emitter.Emit(OpCodes.Stloc_0);
-			//emitter.Emit(OpCodes.Ldloc_0);
-			//emitter.Emit(OpCodes.Ldc_I4_1);
+		//	//emitter.Emit(OpCodes.Stloc_0);
+		//	//emitter.Emit(OpCodes.Ldloc_0);
+		//	//emitter.Emit(OpCodes.Ldc_I4_1);
 
-			////TODO: Loop through all the parameters and set the params array parameters
-			//emitter.Emit(OpCodes.Newarr, typeof(object));
-			//emitter.Emit(OpCodes.Dup);
-			//emitter.Emit(OpCodes.Ldc_I4_0);
-			//emitter.Emit(OpCodes.Ldarg_1);
-			//emitter.Emit(OpCodes.Stelem_Ref);
-			//emitter.EmitCall(OpCodes.Callvirt, HandlerType.GetMethod("Handle",
-			//	BindingFlags.Instance | BindingFlags.Public)!,
-			//	new[] { typeof(object[]) }
-			//);
-			//emitter.Emit(OpCodes.Stloc_1);
-			//emitter.Emit(OpCodes.Ldloc_1);
-			//emitter.Emit(OpCodes.Castclass, methodBuilder.ReturnType);
-			//emitter.Emit(OpCodes.Stloc_2);
-			//emitter.Emit(OpCodes.Ldloc_2);
-			//emitter.Emit(OpCodes.Ret);
+		//	////TODO: Loop through all the parameters and set the params array parameters
+		//	//emitter.Emit(OpCodes.Newarr, typeof(object));
+		//	//emitter.Emit(OpCodes.Dup);
+		//	//emitter.Emit(OpCodes.Ldc_I4_0);
+		//	//emitter.Emit(OpCodes.Ldarg_1);
+		//	//emitter.Emit(OpCodes.Stelem_Ref);
+		//	//emitter.EmitCall(OpCodes.Callvirt, HandlerType.GetMethod("Handle",
+		//	//	BindingFlags.Instance | BindingFlags.Public)!,
+		//	//	new[] { typeof(object[]) }
+		//	//);
+		//	//emitter.Emit(OpCodes.Stloc_1);
+		//	//emitter.Emit(OpCodes.Ldloc_1);
+		//	//emitter.Emit(OpCodes.Castclass, methodBuilder.ReturnType);
+		//	//emitter.Emit(OpCodes.Stloc_2);
+		//	//emitter.Emit(OpCodes.Ldloc_2);
+		//	//emitter.Emit(OpCodes.Ret);
 
-			var methodBody = methodInfo.GetMethodBody();
-			var methodBodyIl = methodBody.GetILAsByteArray();
-			var emitter = methodBuilder.GetILGenerator();
-			var opCodes = GetOpCodes(methodBodyIl);
+		//	var methodBody = methodInfo.GetMethodBody();
+		//	var methodBodyIl = methodBody.GetILAsByteArray();
+		//	var emitter = methodBuilder.GetILGenerator();
+		//	var opCodes = GetOpCodes(methodBodyIl);
 
-			foreach (var local in methodBody.LocalVariables)
-			{
-				emitter.DeclareLocal(local.LocalType);
-			}
+		//	foreach (var local in methodBody.LocalVariables)
+		//	{
+		//		emitter.DeclareLocal(local.LocalType);
+		//	}
 
-			for (var i = 1; i <= opCodes.Length; i++)
-			{
-				var opCode = opCodes[i];
+		//	for (var i = 1; i <= opCodes.Length; i++)
+		//	{
+		//		var opCode = opCodes[i];
 
-				if (opCode.Code.OperandType == OperandType.InlineBrTarget)
-				{
-					emitter.Emit(opCode.Code, BitConverter.ToInt32(methodBodyIl, i));
-					i += 4;
-					continue;
-				}
+		//		if (opCode.Code.OperandType == OperandType.InlineBrTarget)
+		//		{
+		//			emitter.Emit(opCode.Code, BitConverter.ToInt32(methodBodyIl, i));
+		//			i += 4;
+		//			continue;
+		//		}
 
-				if (opCode.Code.OperandType == OperandType.ShortInlineBrTarget)
-				{
-					emitter.Emit(opCode.Code, methodBodyIl[i++]);
-					continue;
-				}
+		//		if (opCode.Code.OperandType == OperandType.ShortInlineBrTarget)
+		//		{
+		//			emitter.Emit(opCode.Code, methodBodyIl[i++]);
+		//			continue;
+		//		}
 
-				if (opCode.Code.OperandType == OperandType.InlineType)
-				{
-					Type tp = methodInfo.Module.ResolveType(BitConverter.ToInt32(methodBodyIl, i), methodInfo.DeclaringType.GetGenericArguments(), methodBuilder.GetGenericArguments());
-					emitter.Emit(opCode.Code, tp);
-					i += 4;
-					continue;
-				}
+		//		if (opCode.Code.OperandType == OperandType.InlineType)
+		//		{
+		//			Type tp = methodInfo.Module.ResolveType(BitConverter.ToInt32(methodBodyIl, i), methodInfo.DeclaringType.GetGenericArguments(), methodBuilder.GetGenericArguments());
+		//			emitter.Emit(opCode.Code, tp);
+		//			i += 4;
+		//			continue;
+		//		}
 
-				if (opCode.Code.FlowControl == FlowControl.Call)
-				{
-					MethodInfo? mi = methodInfo.Module.ResolveMethod(BitConverter.ToInt32(methodBodyIl, i + 1)) as MethodInfo;
+		//		if (opCode.Code.FlowControl == FlowControl.Call)
+		//		{
+		//			MethodInfo? mi = methodInfo.Module.ResolveMethod(BitConverter.ToInt32(methodBodyIl, i + 1)) as MethodInfo;
 
-					if (mi == null) { continue; }
+		//			if (mi == null) { continue; }
 
-					if (mi == methodBuilder)
-					{
-						emitter.Emit(opCode.Code, methodBuilder);
-					}
-					else
-					{
-						emitter.Emit(opCode.Code, mi!);
-					}
+		//			if (mi == methodBuilder)
+		//			{
+		//				emitter.Emit(opCode.Code, methodBuilder);
+		//			}
+		//			else
+		//			{
+		//				emitter.Emit(opCode.Code, mi!);
+		//			}
 
-					i += 4;
+		//			i += 4;
 
-					continue;
-				}
-				emitter.Emit(opCode.Code);
-			}
-		}
+		//			continue;
+		//		}
+		//		emitter.Emit(opCode.Code);
+		//	}
+		//}
 
-		public static OpCodeContainer[] GetOpCodes(byte[] data)
-		{
-			return data.Select(opCodeByte => new OpCodeContainer(opCodeByte)).ToArray();
-		}
+		//public static OpCodeContainer[] GetOpCodes(byte[] data)
+		//{
+		//	return data.Select(opCodeByte => new OpCodeContainer(opCodeByte)).ToArray();
+		//}
 
-		public class OpCodeContainer
-		{
-			private static readonly OpCode[] _opCodeFields = typeof(OpCodes).GetFields().Select(f => (OpCode)f.GetValue(null)!).ToArray();
-			private readonly OpCode _code;
+		//public class OpCodeContainer
+		//{
+		//	private static readonly OpCode[] _opCodeFields = typeof(OpCodes).GetFields().Select(f => (OpCode)f.GetValue(null)!).ToArray();
+		//	private readonly OpCode _code;
 
-			public OpCodeContainer(byte opCode)
-			{
-				try
-				{
-					_code = _opCodeFields.First(f => f.Value == opCode);
-				}
-				catch { }
-			}
+		//	public OpCodeContainer(byte opCode)
+		//	{
+		//		try
+		//		{
+		//			_code = _opCodeFields.First(f => f.Value == opCode);
+		//		}
+		//		catch { }
+		//	}
 
-			public OpCode Code => _code;
-		}
+		//	public OpCode Code => _code;
+		//}
 	}
 }

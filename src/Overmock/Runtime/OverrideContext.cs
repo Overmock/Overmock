@@ -9,6 +9,8 @@ namespace Overmock.Runtime
 	{
 		private readonly MemberInfo _overmock;
 		private readonly IEnumerable<MemberOverride> _overrides;
+
+		// TODO: This needs to handle more that one override.
 		private readonly List<OverrideParameter> _parameters = new List<OverrideParameter>();
 
 		/// <summary>

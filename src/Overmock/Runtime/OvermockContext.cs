@@ -2,16 +2,16 @@
 
 namespace Overmock.Runtime
 {
-	/// <summary>
-	/// 
-	/// </summary>
-	public class OvermockContext
+    /// <summary>
+    /// 
+    /// </summary>
+    public class OvermockContext
 	{
-		private readonly IDictionary<MethodInfo, OverrideContext> _overrides = new Dictionary<MethodInfo, OverrideContext>();
+		private readonly IDictionary<Guid, OverrideContext> _overrides = new Dictionary<Guid, OverrideContext>();
 
-		internal OvermockContext Add(MethodInfo method, OverrideContext context)
+		internal OvermockContext Add(Guid methodId, OverrideContext context)
 		{
-			_overrides.Add(method, context);
+			_overrides.Add(methodId, context);
 
 			return this;
 		}
@@ -23,13 +23,14 @@ namespace Overmock.Runtime
 		/// <returns>The <see cref="OverrideContext" />.</returns>
 		public IOverrideHandler Get(MethodInfo method)
 		{
-			if (!_overrides.ContainsKey(method))
+			var attributeValue = method.GetCustomAttribute<OvermockAttribute>()?.Value as string;
+
+			if (!Guid.TryParse(attributeValue, out Guid methodId) || !_overrides.ContainsKey(methodId))
 			{
 				return new UnregisteredOverrideHandler(method);
 			}
 
-			return new OverrideHandler(_overrides[method]);
+			return new OverrideHandler(_overrides[methodId]);
 		}
-
 	}
 }

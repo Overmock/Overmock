@@ -23,10 +23,9 @@ namespace Overmock.Setup
 		{
 		}
 
-		ISetupReturn<TReturn> ISetupOvermock<T, TReturn>.ToCall(Func<OverrideContext, TReturn> callback)
+		void ISetupOvermock<T, TReturn>.ToCall(Func<OverrideContext, TReturn> callback)
 		{
 			((IMethodCall<T, TReturn>)MethodCall).Calls(callback);
-			return this;
 		}
 
 		void ISetupReturn<TReturn>.ToReturn(Func<TReturn> resultProvider)

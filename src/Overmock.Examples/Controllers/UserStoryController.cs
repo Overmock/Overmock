@@ -12,7 +12,7 @@ namespace Overmock.Examples.Controllers
 		public UserStoryController(IUserStoryService service) => _service = service;
 
 		[HttpGet]
-		public Response<UserStory> Get()
+		public EnumerableResponse<UserStory> Get()
 		{
 			try
 			{
