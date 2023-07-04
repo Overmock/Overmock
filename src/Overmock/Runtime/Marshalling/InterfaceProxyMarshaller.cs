@@ -350,7 +350,6 @@ namespace Overmock.Runtime.Marshalling
 		private static string GetDynamicTypeName(Type baseType, string prefix = "", string suffix = "") =>
 			$"{prefix}{baseType.FullName}{suffix}";
 
-
 		private class MarshallerContext : IMarshallerContext
 		{
 			public MarshallerContext(IOvermock target, TypeBuilder typeBuilder)

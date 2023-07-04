@@ -9,7 +9,7 @@ namespace Overmock
 	/// <summary>
 	/// Do not use. Used for testing.
 	/// </summary>
-	public class OvermockTemplate : IUserStoryService
+	public class OvermockTemplate 
 	{
 #pragma warning disable IDE1006 // Naming Styles
 		private OvermockContext? ___context;
@@ -37,28 +37,5 @@ namespace Overmock
 		//	var result = handle.Handle(name);
 		//	return (Type)result.Result;
 		//}
-
-		[Overmock("71a8440c-ba80-472c-bc31-a3736c3e5b4c")]
-		public UserStory Get(int id)
-		{
-			var handle = ___context.Get((MethodInfo)MethodBase.GetCurrentMethod()!);
-			var result = handle.Handle(id);
-			return (UserStory)result.Result;
-		}
-
-		UserStory IUserStoryService.Delete(UserStory model)
-		{
-			throw new NotImplementedException();
-		}
-
-		IEnumerable<UserStory> IUserStoryService.GetAll()
-		{
-			throw new NotImplementedException();
-		}
-
-		UserStory IUserStoryService.Save(UserStory model)
-		{
-			throw new NotImplementedException();
-		}
 	}
 }

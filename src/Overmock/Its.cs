@@ -3,9 +3,22 @@
 namespace Overmock
 {
 	/// <summary>
+	/// 
+	/// </summary>
+	public abstract class Value<T> : IEquatable<T>, IFluentInterface
+	{
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="other"></param>
+		/// <returns></returns>
+		public abstract bool Equals(T? other);
+	}
+
+	/// <summary>
 	/// Represents values for mocked methods.
 	/// </summary>
-	public abstract class Its : IEquatable<Its>, IFluentInterface
+	public abstract class Its : Value<Its>, IFluentInterface
 	{
 		/// <summary>
 		/// 
@@ -23,17 +36,10 @@ namespace Overmock
 		/// <typeparam name="T"></typeparam>
 		/// <param name="value"></param>
 		/// <returns></returns>
-		public static Its This<T>(T value)
+		public static This<T> This<T>(T value)
 		{
 			return new This<T>(value);
 		}
-
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="other"></param>
-		/// <returns></returns>
-		public abstract bool Equals(Its? other);
 
 		/// <summary>
 		/// 
@@ -71,7 +77,7 @@ namespace Overmock
 	/// 
 	/// </summary>
 	/// <typeparam name="T"></typeparam>
-	public class Any<T> : Its, IAny<T>, IEquatable<T>
+	public class Any<T> : Value<T>, IAny<T>, IEquatable<Any<T>>
 	{
 		/// <summary>
 		/// 
@@ -93,7 +99,7 @@ namespace Overmock
 		/// </summary>
 		/// <param name="other"></param>
 		/// <returns></returns>
-		public bool Equals(T? other)
+		public bool Equals(Its? other)
 		{
 			return true;
 		}
@@ -103,7 +109,18 @@ namespace Overmock
 		/// </summary>
 		/// <param name="other"></param>
 		/// <returns></returns>
-		public override bool Equals(Its? other)
+		/// <exception cref="NotImplementedException"></exception>
+		public override bool Equals(T? other)
+		{
+			throw new NotImplementedException();
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="other"></param>
+		/// <returns></returns>
+		public bool Equals(Any<T>? other)
 		{
 			return true;
 		}
@@ -142,20 +159,10 @@ namespace Overmock
 		/// </summary>
 		/// <param name="other"></param>
 		/// <returns></returns>
-		public override bool Equals(Its? other)
-		{
-			return _value?.Equals(other) ?? other == null;
-		}
-
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="other"></param>
-		/// <returns></returns>
 		/// <exception cref="NotImplementedException"></exception>
 		bool IEquatable<T>.Equals(T? other)
 		{
-			throw new NotImplementedException();
+			return other != null && other.Equals(this);
 		}
 	}
 }

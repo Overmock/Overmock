@@ -1,3 +1,4 @@
+using Castle.Components.DictionaryAdapter.Xml;
 using DataCompany.Framework;
 using Overmock.Compilation;
 using Overmock.Compilation.IL;
@@ -53,13 +54,33 @@ namespace Overmock.Examples.Tests
 		{
 			var stories = new List<UserStory> { new UserStory() };
 			_service.Override(t => t.GetAll())
-				.ToReturn(stories);
+				.ToCall(c =>
+				{
+					return stories;
+				});
 
 			var target = _service.Target;
 
 			Assert.IsNotNull(target);
 
 			var test = target.GetAll();
+
+			Assert.IsNotNull(test);
+			Assert.AreEqual(test, stories);
+		}
+
+		[TestMethod]
+		public void SaveTest()
+		{
+			var stories = new List<UserStory> { new UserStory() };
+			_service.Override(t => t.SaveAll(Any<IEnumerable<UserStory>>.Value))
+				.ToReturn(stories);
+
+			var target = _service.Target;
+
+			Assert.IsNotNull(target);
+
+			var test = target.SaveAll(stories);
 
 			Assert.IsNotNull(test);
 			Assert.AreEqual(test, stories);

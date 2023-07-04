@@ -40,7 +40,8 @@ namespace Overmock.Examples.Storage
         UserStory? Get(int id);
         UserStory Save(UserStory model);
         UserStory Delete(UserStory model);
-    }
+		IEnumerable<UserStory> SaveAll(IEnumerable<UserStory> value);
+	}
     public class UserStoryService : IUserStoryService
     {
         private readonly EntityCollection<UserStory> _collection;
@@ -59,5 +60,10 @@ namespace Overmock.Examples.Storage
             original.Points = model.Points;
             return original;
         });
-    }
+
+		public IEnumerable<UserStory> SaveAll(IEnumerable<UserStory> value)
+		{
+            return value;
+		}
+	}
 }

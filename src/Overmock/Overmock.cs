@@ -37,6 +37,29 @@ public class Overmock<T> : Verifiable<T>, IOvermock<T> where T : class
     }
 
 	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="overmock"></param>
+	public static implicit operator T(Overmock<T> overmock)
+	{
+		return overmock.Target;
+	}
+
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="target"></param>
+	public static implicit operator Overmock<T>(T target)
+	{
+		if (target is Overmock<T> overmock)
+		{
+			return overmock;
+		}
+
+		return new Overmock<T>();
+	}
+
+	/// <summary>
 	/// Gets the object.
 	/// </summary>
 	/// <value>The mocked object.</value>
