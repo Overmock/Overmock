@@ -8,9 +8,8 @@ namespace Overmock.Runtime
 	public class OverrideContext
 	{
 		private readonly MemberInfo _overmock;
-		private readonly IEnumerable<MemberOverride> _overrides;
 
-		// TODO: This needs to handle more that one override.
+        // TODO: This needs to handle more that one override.
 		private readonly List<OverrideParameter> _parameters = new List<OverrideParameter>();
 
 		/// <summary>
@@ -22,7 +21,7 @@ namespace Overmock.Runtime
 		public OverrideContext(MemberInfo overmock, IEnumerable<MemberOverride> overrides, IEnumerable<OverrideParameter> parameters)
 		{
 			_overmock = overmock;
-			_overrides = overrides;
+			Overrides = overrides;
 			_parameters.AddRange(parameters);
 		}
 
@@ -49,9 +48,9 @@ namespace Overmock.Runtime
 		/// <summary>
 		/// The overrides for the current Overmock.
 		/// </summary>
-		public IEnumerable<MemberOverride> Overrides => _overrides;
+		public IEnumerable<MemberOverride> Overrides { get; }
 
-		/// <summary>
+        /// <summary>
 		/// Gets the specified name.
 		/// </summary>
 		/// <typeparam name="TParameter">The type of the parameter.</typeparam>

@@ -24,10 +24,10 @@ namespace Overmock.Examples.Tests
 		[TestInitialize]
 		public void Initialize()
 		{
-			_template = Overmocked.Setup<OvermockTemplate>();
-			_connection = Overmocked.Setup<IDataConnection>();
-			_factory = Overmocked.Setup<UserStoryFactory>(args =>
-				args.Args(_connection.Target));
+			//_template = Overmocked.Setup<OvermockTemplate>();
+			//_connection = Overmocked.Setup<IDataConnection>();
+			//_factory = Overmocked.Setup<UserStoryFactory>(args =>
+			//	args.Args(_connection.Target));
 			_service = Overmocked.Setup<IUserStoryService>();
 		}
 

@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using Overmock.Runtime.Marshalling;
 
 namespace Overmock;
 
@@ -8,37 +9,32 @@ namespace Overmock;
 /// <typeparam name="T">The type going to be mocked.</typeparam>
 public class Overmock<T> : Verifiable<T>, IOvermock<T> where T : class
 {
-	private readonly List<IMethodCall> _methods = new List<IMethodCall>();
+    private readonly List<IMethodCall> _methods = new List<IMethodCall>();
 	private readonly List<IPropertyCall> _properties = new List<IPropertyCall>();
 	private readonly Lazy<T> _lazyObject;
 
 	private Type? _compiledType;
 
-	/// <summary>
-	/// Initializes a new instance of the <see cref="Overmock{T}"/> class.
-	/// </summary>
-	/// <param name="argsProvider">The delegate used to get arguments to pass when constructing <typeparamref name="T" />.</param>
-	public Overmock(Action<SetupArgs>? argsProvider = default) : this(OvermockBuilder.GetTypeBuilder(argsProvider))
-	{
-		Overmocked.Register(this);
-	}
+    /// <summary>
+    /// Initializes a new instance of the <see cref="Overmock{T}"/> class.
+    /// </summary>
+    /// <param name="factory"></param>
+    /// <param name="argsProvider">The delegate used to get arguments to pass when constructing <typeparamref name="T" />.</param>
+    public Overmock(IMarshallerFactory? factory = null, Action<SetupArgs>? argsProvider = default)
+    {
+        Overmocked.Register(this);
+		
+        if (Type.IsSealed || Type.IsEnum)
+        {
+            throw new InvalidOperationException($"Type '{Type.Name}' must be a non sealed/enum class.");
+        }
 
-	/// <summary>
-	/// Initializes a new instance of the <see cref="Overmock{T}"/> class.
-	/// </summary>
-	/// <param name="builder">The builder.</param>
-	/// <exception cref="InvalidOperationException">Type '{type.Name}' must be a non sealed/enum class.</exception>
-	public Overmock(ITypeBuilder builder)
-	{
-		var type = typeof(T);
-
-		if (type.IsSealed || type.IsEnum)
-		{
-			throw new InvalidOperationException($"Type '{type.Name}' must be a non sealed/enum class.");
-		}
-
-		_lazyObject = new Lazy<T>(() => builder.BuildType(this) ?? throw new OvermockException("Can't believe this happened right now."));
-	}
+        _lazyObject = new Lazy<T>(() =>
+        {
+            var marshaller = (factory ?? Overmocked.GetMarshallerFactory()).Create(this);
+            return marshaller.Marshal<T>() ?? throw new OvermockException("Can't believe this happened right now.");
+        });
+    }
 
 	/// <summary>
 	/// Gets the object.

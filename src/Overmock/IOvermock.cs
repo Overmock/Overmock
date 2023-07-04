@@ -68,7 +68,7 @@ namespace Overmock
 		/// <returns></returns>
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		IEnumerable<IPropertyCall> GetOvermockedProperties();
-	}
+    }
 
 	/// <summary>
 	/// Represents a mocked type who's members can be overridden.
@@ -82,5 +82,5 @@ namespace Overmock
 		/// </summary>
 		/// <value>The mocked object.</value>
 		T Target { get; }
-	}
+    }
 }

@@ -2,11 +2,11 @@
 
 namespace Overmock.Setup
 {
-	internal class SetupOvermock<T> : ISetupOvermock<T> where T : class
+	internal class SetupMethodOvermock<T> : ISetupOvermock<T> where T : class
 	{
 		protected readonly IMethodCall<T> MethodCall;
 
-		internal SetupOvermock(MethodCall<T> methodCall)
+		internal SetupMethodOvermock(IMethodCall<T> methodCall)
 		{
 			MethodCall = methodCall;
 		}
@@ -17,9 +17,9 @@ namespace Overmock.Setup
 		}
 	}
 
-	internal class SetupOverride<T, TReturn> : SetupOvermock<T>, ISetupOvermock<T, TReturn> where T : class
+	internal class SetupMethodOvermock<T, TReturn> : SetupMethodOvermock<T>, ISetupOvermock<T, TReturn> where T : class
 	{
-		internal SetupOverride(MethodCall<T, TReturn> methodCall) : base(methodCall)
+		internal SetupMethodOvermock(IMethodCall<T, TReturn> methodCall) : base(methodCall)
 		{
 		}
 

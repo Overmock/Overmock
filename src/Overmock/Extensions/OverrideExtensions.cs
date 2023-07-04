@@ -18,7 +18,7 @@ namespace Overmock
 		{
 			if (expression.Body is MethodCallExpression methodCall)
 			{
-				return new SetupOvermock<T>(
+				return new SetupMethodOvermock<T>(
 					Overmocked.RegisterMethod(overmock, new MethodCall<T>(methodCall))
 				);
 			}
@@ -39,7 +39,7 @@ namespace Overmock
 		{
 			if (expression.Body is MethodCallExpression method)
 			{
-				return new SetupOverride<T, TResult>(
+				return new SetupMethodOvermock<T, TResult>(
 					Overmocked.RegisterMethod(overmock, new MethodCall<T, TResult>(method))
 				);
 			}

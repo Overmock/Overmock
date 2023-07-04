@@ -1,10 +1,7 @@
-﻿using AspectCore.Extensions.Reflection;
-using Lokad.ILPack;
-using Lokad.ILPack.IL;
+﻿using Lokad.ILPack;
 using Overmock.Runtime;
 using System.Reflection;
 using System.Reflection.Emit;
-using System.Reflection.Metadata;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -12,86 +9,100 @@ namespace Overmock.Compilation.IL
 {
     internal class ILTypeBuilder : ITypeBuilder
 	{
-		private static readonly Type MethodBaseType = typeof(MethodBase);
+        private static readonly Type MethodBaseType = typeof(MethodBase);
 		private static readonly Type MethodInfoType = typeof(MethodInfo);
 		private static readonly Type HandlerType = typeof(IOverrideHandler);
 		private static readonly Type ContextType = typeof(OvermockContext);
 
 		private readonly Action<SetupArgs>? _argsProvider;
+        private readonly IlAssemblyCompiler _compiler;
 
-		public ILTypeBuilder(Action<SetupArgs>? argsProvider)
-		{
-			_argsProvider = argsProvider;
-		}
+        public ILTypeBuilder(IlAssemblyCompiler compiler, Action<SetupArgs>? argsProvider)
+        {
+            _compiler = compiler;
+            _argsProvider = argsProvider;
+        }
 
-		public T? BuildType<T>(IOvermock<T> target) where T : class
-		{
-			var overmockContextType = typeof(OvermockContext);
-			var assemblyName = new AssemblyName($"Overmocked.Generated.dll");
-			var assemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(assemblyName, AssemblyBuilderAccess.RunAndCollect);
+        public T? BuildType<T>(IOvermock<T> target) where T : class
+        {
+            var overmockContextType = typeof(OvermockContext);
+            var assemblyName = new AssemblyName($"Overmocked.Generated.dll");
+            var assemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(assemblyName, AssemblyBuilderAccess.RunAndCollect);
 
-			var overmockedMethods = target.GetOvermockedMethods().ToList();
-			var typeBuilder = GetTypeBuilder(target, assemblyBuilder, overmockedMethods);
-			var contextField = typeBuilder.DefineField("___context", overmockContextType, FieldAttributes.Private);
+            var overmockedMethods = target.GetOvermockedMethods().ToList();
+            var typeBuilder = GetTypeBuilder(target, assemblyBuilder, overmockedMethods);
+            var contextField = typeBuilder.DefineField("___context", overmockContextType, FieldAttributes.Private);
 
-			var defaultConstructor = typeBuilder.DefineConstructor(MethodAttributes.Public, CallingConventions.Standard, Type.EmptyTypes);
-			defaultConstructor.GetILGenerator().Emit(OpCodes.Ret);
+            DefineConstructor(typeBuilder);
 
-			var overmockContext = new OvermockContext();
+            var overmockContext = DefineOvermockInitMethod<T>(typeBuilder, contextField);
 
-			var initContextMethod = typeBuilder.DefineMethod("InitializeOvermockContext",
-				MethodAttributes.Public, CallingConventions.HasThis, typeof(void),
-				new[] { contextField.FieldType }
-			);
-			var initContextMethodBody = initContextMethod.GetILGenerator();
-			initContextMethodBody.Emit(OpCodes.Ldarg_0);
-			initContextMethodBody.Emit(OpCodes.Ldarg_1);
-			initContextMethodBody.Emit(OpCodes.Stfld, contextField);
-			initContextMethodBody.Emit(OpCodes.Ret);
+            DefineMethods(target, typeBuilder, contextField, overmockedMethods.Select(m => m.Expression.Method).ToList());
 
-			DefineMethods(target, typeBuilder, contextField, overmockedMethods.Select(m => m.Expression.Method).ToList());
+            foreach (var overmock in overmockedMethods)
+            {
+                var methodInfo = overmock.Expression.Method;
 
-			foreach (var overmock in overmockedMethods)
-			{
-				var methodInfo = overmock.Expression.Method;
+                var methodBuilder = CreateMethod(methodInfo, typeBuilder, contextField);
 
-				var methodBuilder = CreateMethod(methodInfo, typeBuilder, contextField);
+                var methodId = Guid.NewGuid();
+                methodBuilder.SetCustomAttribute(new CustomAttributeBuilder(
+                    typeof(OvermockAttribute).GetConstructors().First(),
+                    new object[] { methodId.ToString() }
+                ));
 
-				var methodId = Guid.NewGuid();
-				methodBuilder.SetCustomAttribute(new CustomAttributeBuilder(
-					typeof(OvermockAttribute).GetConstructors().First(),
-					new object[] { methodId.ToString() }
-				));
+                overmockContext.Add(methodId, new OverrideContext(methodInfo,
+                    overmock.GetOverrides(),
+                    methodInfo.GetParameters().Select(p => new OverrideParameter(p.Name!, type: p.ParameterType)))
+                );
+            }
+            
+            var targetType = typeBuilder.CreateType()!;
 
-				overmockContext.Add(methodId, new OverrideContext(methodInfo,
-					overmock.GetOverrides(),
-					methodInfo.GetParameters().Select(p => new OverrideParameter(p.Name!, type: p.ParameterType)))
-				);
-			}
+            // Write the assembly to disc for testing
+            var generator = new AssemblyGenerator();
+            var fileName = assemblyBuilder.GetName().Name!;
+            if (File.Exists(fileName))
+            {
+                File.Delete(fileName);
+            }
+            File.WriteAllBytes(fileName, generator.GenerateAssemblyBytes(assemblyBuilder));
+            // Write the assembly to disc for testing
 
-			var targetType = typeBuilder.CreateType()!;
+            target.SetCompiledType(targetType);
 
-			// Write the assembly to disc for testing
-			var generator = new AssemblyGenerator();
-			var fileName = assemblyBuilder.GetName().Name!;
-			if (File.Exists(fileName))
-			{
-				File.Delete(fileName);
-			}
-			File.WriteAllBytes(fileName, generator.GenerateAssemblyBytes(assemblyBuilder));
-			// Write the assembly to disc for testing
+            var instance = (T)Activator.CreateInstance(targetType)!;
 
-			target.SetCompiledType(targetType);
+            targetType.GetMethod("InitializeOvermockContext", new[] { overmockContextType })!
+                .Invoke(instance, new object?[] { overmockContext });
+			
+            return instance;
+        }
 
-			var instance = (T)Activator.CreateInstance(targetType)!;
+        private static void DefineConstructor(TypeBuilder typeBuilder)
+        {
+            var defaultConstructor = typeBuilder.DefineConstructor(MethodAttributes.Public, CallingConventions.Standard, Type.EmptyTypes);
+            defaultConstructor.GetILGenerator().Emit(OpCodes.Ret);
+        }
 
-			targetType.GetMethod("InitializeOvermockContext", new[] { overmockContextType })
-				.Invoke(instance, new[] { overmockContext });
+        private static OvermockContext DefineOvermockInitMethod<T>(TypeBuilder typeBuilder, FieldBuilder contextField)
+            where T : class
+        {
+            var overmockContext = new OvermockContext();
 
-			return instance;
-		}
+            var initContextMethod = typeBuilder.DefineMethod("InitializeOvermockContext",
+                MethodAttributes.Public, CallingConventions.HasThis, typeof(void),
+                new[] { contextField.FieldType }
+            );
+            var initContextMethodBody = initContextMethod.GetILGenerator();
+            initContextMethodBody.Emit(OpCodes.Ldarg_0);
+            initContextMethodBody.Emit(OpCodes.Ldarg_1);
+            initContextMethodBody.Emit(OpCodes.Stfld, contextField);
+            initContextMethodBody.Emit(OpCodes.Ret);
+            return overmockContext;
+        }
 
-		private static TypeBuilder GetTypeBuilder<T>(IOvermock<T> target, AssemblyBuilder assemblyBuilder, IReadOnlyList<IMethodCall> overmockedMethods) where T : class
+        private static TypeBuilder GetTypeBuilder<T>(IOvermock<T> target, AssemblyBuilder assemblyBuilder, IReadOnlyList<IMethodCall> overmockedMethods) where T : class
 		{
 			static string getFullTypeName(string typeName)
 			{
@@ -103,7 +114,7 @@ namespace Overmock.Compilation.IL
 
 			if (target.Type.IsInterface)
 			{
-				var typeBuilder = moduleBuilder.DefineType(getFullTypeName(target.TypeName), TypeAttributes.Public);
+				var typeBuilder = moduleBuilder.DefineType(getFullTypeName(target.TypeName), TypeAttributes.Class | TypeAttributes.Public);
 				typeBuilder.AddInterfaceImplementation(typeof(T));
 				return typeBuilder;
 			}
@@ -145,31 +156,31 @@ namespace Overmock.Compilation.IL
 				parameterTypes
 			);
 
-			//CopyMethod(methodBuilder, contextField, parameterTypes);
+			CopyMethod(methodBuilder, contextField, parameterTypes);
 
 			//dynamicType.DefineMethodOverride(methodBuilder, typeof(OvermockMethodTemplate).GetMethod("TestMethod", BindingFlags.Public | BindingFlags.Instance)!);
 
-			var dynamicMethod = new DynamicMethod(methodInfo.Name,
-				methodInfo.ReturnType,
-				new[] { HandlerType, typeof(object[]) },
-				dynamicType.Module);
+			//var dynamicMethod = new DynamicMethod(methodInfo.Name,
+			//	methodInfo.ReturnType,
+			//	new[] { HandlerType, typeof(object[]) },
+			//	dynamicType.Module);
 
-			var dynamicIL = dynamicMethod.GetDynamicILInfo();
+			//var dynamicIL = dynamicMethod.GetDynamicILInfo();
 
-			var delegateType = (Func<IOverrideHandler, object[], object>)methodToCopy;
-			var delegateBody = delegateType.Method.GetMethodBody();
+			//var delegateType = (Func<IOverrideHandler, object[], object>)methodToCopy;
+			//var delegateBody = delegateType.Method.GetMethodBody();
 
-			dynamicIL.SetCode(delegateBody.GetILAsByteArray(), delegateBody.MaxStackSize);
+			//dynamicIL.SetCode(delegateBody.GetILAsByteArray(), delegateBody.MaxStackSize);
 
-			var overrideMethod = dynamicMethod.CreateDelegate(delegateType.GetType());
-			var overrideMethodHandle = delegateType.Method.MethodHandle;
-			//
+			//var overrideMethod = dynamicMethod.CreateDelegate(delegateType.GetType());
+			//var overrideMethodHandle = delegateType.Method.MethodHandle;
+			////
 
-			//dynamicType.DefineMethodOverride(methodBuilder, dynamicMethod);
-			RuntimeHelpers.PrepareMethod(methodInfo.MethodHandle);
-			RuntimeHelpers.PrepareMethod(overrideMethod.Method.MethodHandle);
+			////dynamicType.DefineMethodOverride(methodBuilder, dynamicMethod);
+			//RuntimeHelpers.PrepareMethod(methodInfo.MethodHandle);
+			//RuntimeHelpers.PrepareMethod(overrideMethod.Method.MethodHandle);
 
-			Marshal.WriteIntPtr(methodBuilder.MethodHandle.Value, delegateType.Method.MethodHandle.Value);
+			//Marshal.WriteIntPtr(methodBuilder.MethodHandle.Value, delegateType.Method.MethodHandle.Value);
 
 			return methodBuilder;
 		}
@@ -178,11 +189,16 @@ namespace Overmock.Compilation.IL
 		{
 			var emitter = methodBuilder.GetILGenerator();
 
-			emitter.DeclareLocal(HandlerType);
+            if (methodBuilder.ReturnType != typeof(void))
+            {
+                emitter.DeclareLocal(methodBuilder.ReturnType);
+            }
+
+            emitter.DeclareLocal(HandlerType);
 			emitter.DeclareLocal(typeof(OverrideHandlerResult));
 			emitter.DeclareLocal(typeof(object));
 
-			var retrunLabel = emitter.DefineLabel();
+			var returnLabel = emitter.DefineLabel();
 
 			emitter.Emit(OpCodes.Nop);
 			emitter.Emit(OpCodes.Ldarg_0);
@@ -223,7 +239,7 @@ namespace Overmock.Compilation.IL
 			emitter.Emit(OpCodes.Ldloc_1);
 			emitter.EmitCall(OpCodes.Callvirt,
 				typeof(OverrideHandlerResult).GetProperty("Result",
-					BindingFlags.Public | BindingFlags.Instance)
+					BindingFlags.Public | BindingFlags.Instance)!
 				.GetGetMethod()!,
 				Type.EmptyTypes
 			);
@@ -231,9 +247,9 @@ namespace Overmock.Compilation.IL
 			emitter.Emit(OpCodes.Castclass, methodBuilder.ReturnType);
 
 			emitter.Emit(OpCodes.Stloc_2);
-			emitter.Emit(OpCodes.Br_S, retrunLabel);
+			emitter.Emit(OpCodes.Br_S, returnLabel);
 
-			emitter.MarkLabel(retrunLabel);
+			emitter.MarkLabel(returnLabel);
 			emitter.Emit(OpCodes.Ldloc_2);
 			emitter.Emit(OpCodes.Ret);
 		}

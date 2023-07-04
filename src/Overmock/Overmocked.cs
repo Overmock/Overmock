@@ -1,4 +1,5 @@
 ﻿using System.Collections.Concurrent;
+using Overmock.Runtime.Marshalling;
 
 namespace Overmock
 {
@@ -8,6 +9,8 @@ namespace Overmock
 	public static class Overmocked
 	{
 		private static readonly ConcurrentQueue<IVerifiable> _overmocks = new ConcurrentQueue<IVerifiable>();
+
+        private static readonly IMarshallerFactory _marshallerFactory = new MarshallerFactory();
 
 		static Overmocked()
 		{
@@ -21,9 +24,7 @@ namespace Overmock
 		/// <returns>An object used to configure overmocks</returns>
 		public static IOvermock<T> Setup<T>(Action<SetupArgs>? argsProvider = null) where T : class
 		{
-			var result = new Overmock<T>(
-				OvermockBuilder.GetTypeBuilder(argsProvider)
-			);
+			var result = new Overmock<T>();
 
 			_overmocks.Enqueue(result);
 
@@ -35,16 +36,21 @@ namespace Overmock
 		/// </summary>
 		public static void Verify()
 		{
-			while (_overmocks.TryDequeue(out var verifiable))
-			{
-				verifiable.Verify();
-			}
-		}
+            foreach (var verifiable in _overmocks)
+            {
+                verifiable.Verify();
+            }
+        }
 
-		internal static void Register<T>(IOvermock<T> overmock) where T : class
-		{
-			_overmocks.Enqueue(overmock);
-		}
+        internal static void Register<T>(IOvermock<T> overmock) where T : class
+        {
+            _overmocks.Enqueue(overmock);
+        }
+		
+        internal static IMarshallerFactory GetMarshallerFactory()
+        {
+            return _marshallerFactory;
+        }
 
 		internal static TMethod RegisterMethod<TMethod>(IOvermock overmock, TMethod property) where TMethod : IMethodCall
 		{

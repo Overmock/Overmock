@@ -7,7 +7,7 @@
 	{
 		ITypeBuilder IOvermockBuilder.GetTypeBuilder(Action<SetupArgs>? argsProvider)
 		{
-			return new ILTypeBuilder(argsProvider);
+			return new ILTypeBuilder(new IlAssemblyCompiler(new IlOvermockMethodBuilder()), argsProvider);
 		}
 	}
 }

@@ -5,20 +5,23 @@ namespace Overmock
 	internal static class Ex
 	{
 		public static class Message
-		{
-			public static string General(IVerifiable verifiable, string? message = null, Exception? innerException = default)
-			{
-				if (string.IsNullOrWhiteSpace(message))
-				{
-					return $"{verifiable.Type} failed with generic message: {innerException?.Message ?? "innerException is null"}";
-				}
+        {
 
-				return message;
-			}
+            public const string NamespaceAndClassAreRequiredToBuild = "NamespaceDeclaration and ClassDeclaration are required to build a CompilationUnitSyntax";
+            public const string NumberOfParameterMismatch = "The number of parameters supplied doesn't not match the method's signature.";
 
-			public const string NamespaceAndClassAreRequiredToBuild = "NamespaceDeclaration and ClassDeclaration are required to build a CompilationUnitSyntax";
-			public const string NumberOfParameterMismatch = "The number of parameters supplied doesn't not match the method's signature.";
-		}
+            public static string General(IVerifiable verifiable, string? message = null, Exception? innerException = default)
+            {
+                return string.IsNullOrWhiteSpace(message)
+                    ? $"{verifiable.Type} failed with generic message: {innerException?.Message ?? "innerException is null"}"
+                    : message;
+            }
+
+            public static string NotAnInterfaceType(IOvermock target)
+            {
+                return $"Type is not an interface: {target.Type.FullName}";
+            }
+        }
 	}
 
 	internal static class Throw

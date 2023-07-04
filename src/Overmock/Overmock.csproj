@@ -49,4 +49,9 @@
     <PackageReference Include="Lokad.ILPack" Version="0.2.0" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.4.0" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Runtime\Extensions\" />
+    <Folder Include="Runtime\Proxies\" />
+  </ItemGroup>
 </Project>

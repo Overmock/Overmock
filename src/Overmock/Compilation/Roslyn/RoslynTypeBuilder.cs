@@ -53,8 +53,8 @@ namespace Overmock.Compilation.Roslyn
 		{
 			private readonly CSharpCompilation _csharpCompiler;
 
-			public RoslynAssemblyCompiler(CSharpCompilation csharpCompiler)
-			{
+			public RoslynAssemblyCompiler(CSharpCompilation csharpCompiler) : base(null)
+            {
 				_csharpCompiler = csharpCompiler;
 			}
 

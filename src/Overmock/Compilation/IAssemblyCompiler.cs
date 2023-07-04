@@ -5,13 +5,18 @@ namespace Overmock.Compilation
 	/// <summary>
 	/// 
 	/// </summary>
-	public interface IAssemblyCompiler<TContext> where TContext : IAssemblyCompilerContext
+	public interface IAssemblyCompiler<in TContext> where TContext : IAssemblyCompilerContext
 	{
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="context"></param>
-		/// <returns></returns>
-		Assembly CompileAssembly(TContext context);
+        /// <summary>
+        /// 
+        /// </summary>
+        IOvermockMethodBuilder MethodBuilder { get; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        Assembly CompileAssembly(TContext context);
 	}
 }
