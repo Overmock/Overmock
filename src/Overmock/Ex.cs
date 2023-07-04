@@ -1,6 +1,4 @@
-﻿using Overmock.Compilation.Roslyn;
-
-namespace Overmock
+﻿namespace Overmock
 {
 	internal static class Ex
 	{
@@ -36,14 +34,6 @@ namespace Overmock
 				}
 
 				return declaringType;
-			}
-
-			internal static void BuildComponentsAreNull(RoslynAssemblyGenerationContext context)
-			{
-				if (context.NamespaceDeclaration == null || context.ClassDeclaration == null)
-				{
-					throw new InvalidOperationException(Ex.Message.NamespaceAndClassAreRequiredToBuild);
-				}
 			}
 		}
 	}

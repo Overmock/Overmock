@@ -1,9 +1,15 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Overmock.Mocking;
+using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Overmock.Compilation.Roslyn
 {
@@ -121,8 +127,6 @@ namespace Overmock.Compilation.Roslyn
 
 		public CompilationUnitSyntax BuildCompilationUnit(RoslynAssemblyGenerationContext context)
 		{
-			Throw.If.BuildComponentsAreNull(context);
-
 			var namespaceDeclaration = context.NamespaceDeclaration!.AddUsings(_namespaces.Select(n =>
 					sf.UsingDirective(sf.ParseName(n))
 				).ToArray());

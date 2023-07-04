@@ -1,4 +1,6 @@
-﻿namespace Overmock.Compilation.CodeDom
+﻿using System;
+
+namespace Overmock.Compilation.CodeDom
 {
 	/// <summary>
 	/// 

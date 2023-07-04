@@ -26,18 +26,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Compilation\IL\IProxyGenerator.cs" />
-    <Compile Remove="Compilation\IL\IProxyTypeGenerator.cs" />
-    <Compile Remove="Compilation\IL\MethodBodyStreamWriter.cs" />
-    <Compile Remove="Compilation\IL\MethodUtils.cs" />
-    <Compile Remove="Compilation\IL\ProxyGenerator.cs" />
-    <Compile Remove="Compilation\IL\ProxyGeneratorBuilder.cs" />
-    <Compile Remove="Compilation\IL\ProxyGeneratorUtils.cs" />
-    <Compile Remove="Compilation\IL\ProxyTypeGenerator.cs" />
-    <Compile Remove="Compilation\IL\ReflectionUtils.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Include="..\..\README.md">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
@@ -52,5 +40,11 @@
 
   <ItemGroup>
     <Folder Include="Runtime\Extensions\" />
+  </ItemGroup>
+	
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>$(AssemblyName).Compilation</_Parameter1>
+    </AssemblyAttribute>
   </ItemGroup>
 </Project>

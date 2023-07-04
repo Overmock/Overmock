@@ -1,4 +1,6 @@
-﻿namespace Overmock.Compilation.IL
+﻿using System;
+
+namespace Overmock.Compilation.IL
 {
 	/// <summary>
 	/// 

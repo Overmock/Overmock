@@ -347,7 +347,7 @@ namespace Overmock.Runtime.Marshalling
 			property.SetSetMethod(mdBuilder);
 		}
 
-		protected static string GetDynamicTypeName(Type baseType, string prefix = "", string suffix = "") =>
+		private static string GetDynamicTypeName(Type baseType, string prefix = "", string suffix = "") =>
 			$"{prefix}{baseType.FullName}{suffix}";
 
 

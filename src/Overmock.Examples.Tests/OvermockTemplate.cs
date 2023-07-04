@@ -1,5 +1,4 @@
-﻿using Overmock.Compilation.IL;
-using Overmock.Runtime;
+﻿using Overmock.Runtime;
 using System.Reflection;
 using Overmock.Examples.Controllers;
 using Overmock.Examples.Storage;

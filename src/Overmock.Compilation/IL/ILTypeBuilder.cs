@@ -1,5 +1,10 @@
 ﻿using Lokad.ILPack;
+using Overmock.Mocking;
 using Overmock.Runtime;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.CompilerServices;

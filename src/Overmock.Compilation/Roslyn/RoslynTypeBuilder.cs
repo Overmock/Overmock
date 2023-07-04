@@ -1,4 +1,6 @@
 ﻿using Microsoft.CodeAnalysis.CSharp;
+using System;
+using System.IO;
 using System.Reflection;
 
 namespace Overmock.Compilation.Roslyn

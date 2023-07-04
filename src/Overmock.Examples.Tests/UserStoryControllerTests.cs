@@ -32,7 +32,7 @@ namespace Overmock.Examples.Tests
 		}
 
 		[TestMethod]
-		public void TemplateTest()
+		public void GetTest()
 		{
 			var story = new UserStory();
 			_service.Override(t => t.Get(Its.Any<int>()))
@@ -46,6 +46,23 @@ namespace Overmock.Examples.Tests
 
 			Assert.IsNotNull(test);
 			Assert.AreEqual(test, story);
+		}
+
+		[TestMethod]
+		public void GetAllTest()
+		{
+			var stories = new List<UserStory> { new UserStory() };
+			_service.Override(t => t.GetAll())
+				.ToReturn(stories);
+
+			var target = _service.Target;
+
+			Assert.IsNotNull(target);
+
+			var test = target.GetAll();
+
+			Assert.IsNotNull(test);
+			Assert.AreEqual(test, stories);
 		}
 
 		[TestMethod]

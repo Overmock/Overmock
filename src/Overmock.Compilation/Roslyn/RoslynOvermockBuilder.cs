@@ -1,4 +1,6 @@
-﻿namespace Overmock.Compilation.Roslyn
+﻿using System;
+
+namespace Overmock.Compilation.Roslyn
 {
 	/// <summary>
 	/// 

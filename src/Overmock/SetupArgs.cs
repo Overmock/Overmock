@@ -16,6 +16,6 @@
 			_args = args;
 		}
 
-		internal object?[] Parameters => _args;
+		public object?[] Parameters => _args;
 	}
 }

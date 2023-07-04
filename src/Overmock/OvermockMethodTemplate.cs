@@ -1,7 +1,5 @@
-﻿using Overmock.Compilation.IL;
-using Overmock.Runtime;
+﻿using Overmock.Runtime;
 using System.Reflection;
-using System.Xml.Linq;
 
 namespace Overmock
 {
