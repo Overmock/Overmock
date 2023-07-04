@@ -32,7 +32,7 @@ public class Overmock<T> : Verifiable<T>, IOvermock<T> where T : class
         _lazyObject = new Lazy<T>(() =>
         {
             var marshaller = (factory ?? Overmocked.GetMarshallerFactory()).Create(this);
-            return marshaller.Marshal<T>() ?? throw new OvermockException("Can't believe this happened right now.");
+            return (T)marshaller.Marshal() ?? throw new OvermockException("Can't believe this happened right now.");
         });
     }
 

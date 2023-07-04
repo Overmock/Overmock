@@ -32,5 +32,10 @@ namespace Overmock.Setup
 		{
 			MethodCall.Returns(() => resultProvider()!);
 		}
+
+		void ISetupReturn<TReturn>.ToReturn(TReturn result)
+		{
+			MethodCall.Returns(() => result!);
+		}
 	}
 }

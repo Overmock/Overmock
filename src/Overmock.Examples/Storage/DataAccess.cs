@@ -12,6 +12,7 @@ namespace Overmock.Examples.Storage
     {
         public UserStoryFactory(IDataConnection connection) : base(connection)
         {
+            connection.Connect("user", "secret");
         }
         private static int NextId => Collection.Count;
 

@@ -1,4 +1,6 @@
-﻿using System.Reflection;
+﻿using System.Globalization;
+using System.Reflection;
+using System.Reflection.Emit;
 
 namespace Overmock.Runtime.Marshalling
 {
@@ -21,40 +23,83 @@ namespace Overmock.Runtime.Marshalling
         /// <summary>
         /// 
         /// </summary>
-        public IOvermock Target { get; }
-
-        /// <summary>
-        /// 
-        /// </summary>
         public Action<SetupArgs>? ArgsProvider { get; }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
-        public abstract T? Marshal<T>() where T : class;
+		/// <summary>
+		/// 
+		/// </summary>
+		protected IOvermock Target { get; }
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <returns></returns>
+		public T Marshal<T>() where T : class
+        {
+			return (T)Marshal();
+		}
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="target"></param>
         /// <returns></returns>
-        protected static string GetAssemblyName(IOvermock target)
-        {
-            return string.Format(RuntimeConstants.AssemblyNameFormat, target.TypeName);
-        }
+		public object Marshal()
+		{
+			var context = CreateContext();
+			return MarshalCore(context);
+		}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="target"></param>
-        /// <returns></returns>
-        protected static AssemblyName GetAssemblyDllName(IOvermock target)
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <returns></returns>
+		protected abstract IMarshallerContext CreateContext();
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="marshallerContext"></param>
+		/// <returns></returns>
+		protected abstract object MarshalCore(IMarshallerContext marshallerContext);
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="target"></param>
+		/// <returns></returns>
+		protected static string GetName(IOvermock target) =>
+			RuntimeConstants.Format(() => RuntimeConstants.AssemblyNameFormat, target.TypeName);
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="target"></param>
+		/// <returns></returns>
+		protected static AssemblyName GetAssemblyName(IOvermock target)
         {
-            return new AssemblyName(
-                string.Format(RuntimeConstants.AssemblyDllNameFormat, GetAssemblyName(target))
-            );
-        }
-    }
+            return new AssemblyName(RuntimeConstants.Format(() => RuntimeConstants.AssemblyDllNameFormat, GetName(target)));
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		protected interface IMarshallerContext
+		{
+            /// <summary>
+            /// 
+            /// </summary>
+			IOvermock Target { get; }
+
+            /// <summary>
+            /// 
+            /// </summary>
+			TypeBuilder TypeBuilder { get; }
+
+            /// <summary>
+            /// 
+            /// </summary>
+            OvermockContext OvermockContext { get; }
+		}
+	}
 }

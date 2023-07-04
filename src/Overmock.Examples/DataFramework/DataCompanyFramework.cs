@@ -1,7 +1,16 @@
 ﻿namespace DataCompany.Framework
 {
-	public interface IDataConnection { }
-	public class FrameworkDataConnection : IDataConnection { }
+	public interface IDataConnection
+	{
+		bool Connect(string username, string password);
+	}
+	public class FrameworkDataConnection : IDataConnection
+	{
+		public bool Connect(string username, string password)
+		{
+			throw new NotImplementedException();
+		}
+	}
 	public interface IIdentifiable
 	{
 		int Id { get; }

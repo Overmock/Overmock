@@ -1,5 +1,6 @@
 ﻿using Overmock.Runtime;
 using System.Linq.Expressions;
+using System.Reflection;
 
 namespace Overmock.Mocking.Internal
 {
@@ -14,6 +15,8 @@ namespace Overmock.Mocking.Internal
 		{
 			_expression = expression;
 		}
+
+		public MethodInfo Method => _expression.Method;
 
 		internal MethodCallExpression Expression => _expression;
 

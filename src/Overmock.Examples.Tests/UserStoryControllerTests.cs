@@ -25,24 +25,28 @@ namespace Overmock.Examples.Tests
 		public void Initialize()
 		{
 			//_template = Overmocked.Setup<OvermockTemplate>();
-			//_connection = Overmocked.Setup<IDataConnection>();
+			_connection = Overmocked.Setup<IDataConnection>();
 			//_factory = Overmocked.Setup<UserStoryFactory>(args =>
 			//	args.Args(_connection.Target));
 			_service = Overmocked.Setup<IUserStoryService>();
 		}
 
-		//[TestMethod]
-		//public void TemplateTest()
-		//{
-		//	_service.Override(t => t.Get(Its.Any<int>()))
-		//		.ToThrow(new Exception("Test"));
+		[TestMethod]
+		public void TemplateTest()
+		{
+			var story = new UserStory();
+			_service.Override(t => t.Get(Its.Any<int>()))
+				.ToReturn(story);
 
-		//	var target = _template.Target;
+			var target = _service.Target;
 
-		//	Assert.IsNotNull(target);
+			Assert.IsNotNull(target);
 
-		//	var test = target.Get(123);
-		//}
+			var test = target.Get(123);
+
+			Assert.IsNotNull(test);
+			Assert.AreEqual(test, story);
+		}
 
 		[TestMethod]
 		public void GetReturnsTheCorrectErrorDetailsWhenAnExceptionHappens()
@@ -60,24 +64,24 @@ namespace Overmock.Examples.Tests
 			Assert.AreEqual(response.ErrorDetails, "testing");
 		}
 
-		//[TestMethod]
-		//public void GetReturnsTheResultsWhenPassedTheRightParameters()
-		//{
-		//	// Arrange
-		//	_service.Override(s => s.GetAll()).ToCall(c => {
-		//		var id = c.Get<int>("id");
+		[TestMethod]
+		public void GetReturnsTheResultsWhenPassedTheRightParameters()
+		{
+			// Arrange
+			_connection.Override(s => s.Connect(Its.Any<string>(), Its.Any<string>())).ToCall(c =>
+			{
+				var user = c.Get<string>("username");
+				var password = c.Get<string>(1);
 
-		//		return Enumerable.Empty<UserStory>();
+				return true;
 
-		//	});//.ToReturn(Enumerable.Empty<UserStory>);
+			});//.ToReturn(Enumerable.Empty<UserStory>);
 
-		//	_controller = new UserStoryController(_service.Target);
+			var factory = new UserStoryFactory(_connection.Target);
 
-		//	// Act
-		//	var response = _controller.Get();
+			// Act;
 
-		//	// Assert
-		//	Assert.AreEqual(response.Results, Enumerable.Empty<UserStory>());
-		//}
+			// Assert
+		}
 	}
 }

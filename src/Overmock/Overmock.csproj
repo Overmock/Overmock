@@ -52,6 +52,5 @@
 
   <ItemGroup>
     <Folder Include="Runtime\Extensions\" />
-    <Folder Include="Runtime\Proxies\" />
   </ItemGroup>
 </Project>

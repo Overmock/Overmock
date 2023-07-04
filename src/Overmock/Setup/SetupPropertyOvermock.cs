@@ -21,6 +21,11 @@ namespace Overmock.Setup
 			_propertyCall.Returns(() => resultProvider()!);
 		}
 
+		void ISetupReturn<TReturn>.ToReturn(TReturn result)
+		{
+			_propertyCall.Returns(() => result!);
+		}
+
 		void ISetupOvermock.ToThrow(Exception exception)
 		{
 			_propertyCall.Throws(exception);
