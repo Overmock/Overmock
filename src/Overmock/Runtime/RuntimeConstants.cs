@@ -74,7 +74,7 @@ namespace Overmock.Runtime
         /// <summary>
         /// 
         /// </summary>
-		public static readonly Type OvermockContextType = typeof(OvermockContext);
+		public static readonly Type OvermockContextType = typeof(OvermockRuntimeContext);
 
         /// <summary>
         /// 

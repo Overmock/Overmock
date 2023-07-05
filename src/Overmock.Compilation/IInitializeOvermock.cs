@@ -11,6 +11,6 @@ namespace Overmock.Compilation
 		/// 
 		/// </summary>
 		/// <param name="context"></param>
-		void InitializeOvermock(OvermockContext context);
+		void InitializeOvermock(OvermockRuntimeContext context);
 	}
 }

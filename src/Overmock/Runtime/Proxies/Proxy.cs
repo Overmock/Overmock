@@ -11,7 +11,7 @@ namespace Overmock.Runtime.Proxies
         /// </summary>
 #pragma warning disable CA1051 // Do not declare visible instance fields
         // ReSharper disable once InconsistentNaming
-        protected OvermockContext? ___context;
+        protected OvermockRuntimeContext? ___context;
 #pragma warning restore CA1051 // Do not declare visible instance fields
 
         /// <summary>
@@ -30,7 +30,7 @@ namespace Overmock.Runtime.Proxies
         /// 
         /// </summary>
         /// <param name="context"></param>
-        public void InitializeOvermockContext(OvermockContext context)
+        public void InitializeOvermockContext(OvermockRuntimeContext context)
         {
             ___context = context;
         }

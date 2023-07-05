@@ -99,7 +99,7 @@ namespace Overmock.Runtime.Marshalling
             /// <summary>
             /// 
             /// </summary>
-            OvermockContext OvermockContext { get; }
+            OvermockRuntimeContext OvermockContext { get; }
 		}
 	}
 }

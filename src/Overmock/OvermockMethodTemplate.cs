@@ -9,14 +9,14 @@ namespace Overmock
 	public class OvermockMethodTemplate
 	{
 #pragma warning disable IDE1006 // Naming Styles
-		private OvermockContext? ___context;
+		private OvermockRuntimeContext? ___context;
 #pragma warning restore IDE1006 // Naming Styles
 
 		/// <summary>
 		/// 
 		/// </summary>
 		/// <param name="context"></param>
-		public void InitializeOvermockContext(OvermockContext context)
+		public void InitializeOvermockContext(OvermockRuntimeContext context)
 		{
 			___context = context;
 		}

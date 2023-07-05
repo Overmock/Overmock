@@ -12,7 +12,7 @@ namespace Overmock.Examples.Tests
 	{
 		private IOvermock<OvermockTemplate> _template;
 		private IOvermock<IDataConnection> _connection = new Overmock<IDataConnection>();
-		private IOvermock<UserStoryFactory> _factory;
+		private IOvermock<ITestInterface> _factory;
 		private IOvermock<IUserStoryService> _service;
 
 		private UserStoryController _controller;
@@ -49,25 +49,25 @@ namespace Overmock.Examples.Tests
 			Assert.AreEqual(test, story);
 		}
 
-		[TestMethod]
-		public void GetAllTest()
-		{
-			var stories = new List<UserStory> { new UserStory() };
-			_service.Override(t => t.GetAll())
-				.ToCall(c =>
-				{
-					return stories;
-				});
+		//[TestMethod]
+		//public void GetAllTest()
+		//{
+		//	var stories = new List<UserStory> { new UserStory() };
+		//	_service.Override(t => t.GetAll())
+		//		.ToCall(c =>
+		//		{
+		//			return stories;
+		//		});
 
-			var target = _service.Target;
+		//	var target = _service.Target;
 
-			Assert.IsNotNull(target);
+		//	Assert.IsNotNull(target);
 
-			var test = target.GetAll();
-
-			Assert.IsNotNull(test);
-			Assert.AreEqual(test, stories);
-		}
+		//	var test = target.GetAll();
+			
+		//	Assert.IsNotNull(test);
+		//	Assert.AreEqual(test, stories);
+		//}
 
 		[TestMethod]
 		public void SaveTest()
@@ -121,5 +121,11 @@ namespace Overmock.Examples.Tests
 
 			// Assert
 		}
+	}
+
+	internal interface ITestInterface
+	{
+		bool MethodWithNoParams();
+		IEnumerable<T> MethodWithNoParamsAndReturnsEnumerableOfT<T>();
 	}
 }

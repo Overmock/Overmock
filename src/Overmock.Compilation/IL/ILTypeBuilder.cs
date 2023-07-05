@@ -17,7 +17,7 @@ namespace Overmock.Compilation.IL
         private static readonly Type MethodBaseType = typeof(MethodBase);
 		private static readonly Type MethodInfoType = typeof(MethodInfo);
 		private static readonly Type HandlerType = typeof(IOverrideHandler);
-		private static readonly Type ContextType = typeof(OvermockContext);
+		private static readonly Type ContextType = typeof(OvermockRuntimeContext);
 
 		private readonly Action<SetupArgs>? _argsProvider;
         private readonly IlAssemblyCompiler _compiler;
@@ -30,7 +30,7 @@ namespace Overmock.Compilation.IL
 
         public T? BuildType<T>(IOvermock<T> target) where T : class
         {
-            var overmockContextType = typeof(OvermockContext);
+            var overmockContextType = typeof(OvermockRuntimeContext);
             var assemblyName = new AssemblyName($"Overmocked.Generated.dll");
             var assemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(assemblyName, AssemblyBuilderAccess.RunAndCollect);
 
@@ -90,10 +90,10 @@ namespace Overmock.Compilation.IL
             defaultConstructor.GetILGenerator().Emit(OpCodes.Ret);
         }
 
-        private static OvermockContext DefineOvermockInitMethod<T>(TypeBuilder typeBuilder, FieldBuilder contextField)
+        private static OvermockRuntimeContext DefineOvermockInitMethod<T>(TypeBuilder typeBuilder, FieldBuilder contextField)
             where T : class
         {
-            var overmockContext = new OvermockContext();
+            var overmockContext = new OvermockRuntimeContext();
 
             var initContextMethod = typeBuilder.DefineMethod("InitializeOvermockContext",
                 MethodAttributes.Public, CallingConventions.HasThis, typeof(void),

@@ -357,14 +357,14 @@ namespace Overmock.Runtime.Marshalling
 				Target = target;
 				TypeBuilder = typeBuilder;
 				Interfaces = new List<Type>();
-				OvermockContext = new OvermockContext();
+				OvermockContext = new OvermockRuntimeContext();
 			}
 
 			public IOvermock Target { get; }
 
 			public TypeBuilder TypeBuilder { get; }
 
-			public OvermockContext OvermockContext { get; }
+			public OvermockRuntimeContext OvermockContext { get; }
 
 			private List<Type> Interfaces { get; set; }
 

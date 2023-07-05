@@ -5,7 +5,7 @@ namespace Overmock.Runtime
     /// <summary>
     /// 
     /// </summary>
-    public class OvermockContext
+    public class OvermockRuntimeContext
 	{
 		private readonly IDictionary<Guid, OverrideContext> _overrides = new Dictionary<Guid, OverrideContext>();
 
@@ -15,7 +15,7 @@ namespace Overmock.Runtime
 		/// <param name="methodId"></param>
 		/// <param name="context"></param>
 		/// <returns></returns>
-		public OvermockContext Add(Guid methodId, OverrideContext context)
+		public OvermockRuntimeContext Add(Guid methodId, OverrideContext context)
 		{
 			_overrides.Add(methodId, context);
 

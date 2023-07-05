@@ -11,8 +11,8 @@ public class Overmock<T> : Verifiable<T>, IOvermock<T> where T : class
 {
     private readonly List<IMethodCall> _methods = new List<IMethodCall>();
 	private readonly List<IPropertyCall> _properties = new List<IPropertyCall>();
-	private readonly Lazy<T> _lazyObject;
-
+	
+	private Lazy<T>? _lazyObject;
 	private Type? _compiledType;
 
     /// <summary>
@@ -26,14 +26,10 @@ public class Overmock<T> : Verifiable<T>, IOvermock<T> where T : class
 		
         if (Type.IsSealed || Type.IsEnum)
         {
-            throw new InvalidOperationException($"Type '{Type.Name}' must be a non sealed/enum class.");
+            throw new InvalidOperationException($"Type '{Type.Name}' cannot be a sealed class or enum.");
         }
 
-        _lazyObject = new Lazy<T>(() =>
-        {
-            var marshaller = (factory ?? Overmocked.GetMarshallerFactory()).Create(this);
-            return (T)marshaller.Marshal() ?? throw new OvermockException("Can't believe this happened right now.");
-        });
+		InitializeLazyHandler(factory, argsProvider);
     }
 
 	/// <summary>
@@ -73,6 +69,14 @@ public class Overmock<T> : Verifiable<T>, IOvermock<T> where T : class
 	protected override void Verify()
 	{
 		throw new VerifyException(this);
+	}
+
+	private void InitializeLazyHandler(IMarshallerFactory? factory = null, Action<SetupArgs>? argsProvider = default)
+	{
+		_lazyObject = new Lazy<T>(() => {
+			var marshaller = (factory ?? Overmocked.GetMarshallerFactory()).Create(this, argsProvider);
+			return (T)marshaller.Marshal() ?? throw new OvermockException("Can't believe this happened right now.");
+		});
 	}
 
 	internal void SetCompiledType(Type? compiledType) => _compiledType = compiledType;
