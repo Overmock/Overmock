@@ -1,5 +1,8 @@
 ﻿namespace Overmock.Runtime
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public static class OvermockExtensions
     {
         /// <summary>

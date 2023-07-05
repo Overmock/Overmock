@@ -1,20 +1,16 @@
-using System.Reflection;
-using Castle.Components.DictionaryAdapter.Xml;
 using DataCompany.Framework;
-using Overmock.Compilation;
-using Overmock.Compilation.IL;
 using Overmock.Examples.Controllers;
 using Overmock.Examples.Storage;
-using Overmock.Runtime.Proxies;
+using Overmock.Examples.Tests.TestCode;
 
 namespace Overmock.Examples.Tests
 {
-	[TestClass]
+    [TestClass]
 	public class UserStoryControllerTests
 	{
 		private IOvermock<IDataConnection> _connection = new Overmock<IDataConnection>();
-		private IOvermock<ITestInterface>? _testInterface;
-		private IOvermock<IUserStoryService>? _service;
+		private IOvermock<ITestInterface> _testInterface = null!;
+		private IOvermock<IUserStoryService> _service = null!;
         private UserStoryController? _controller;
 
 		[TestInitialize]
@@ -123,62 +119,4 @@ namespace Overmock.Examples.Tests
 			// Assert
 		}
 	}
-
-	public interface ITestInterface
-	{
-		void VoidMethodWithNoParams();
-        bool BoolMethodWithNoParams();
-        //IEnumerable<T> MethodWithNoParamsAndReturnsEnumerableOfT<T>();
-    }
-
-    public class TestProxyInterface : Proxy<ITestInterface>, ITestInterface
-    {
-        public TestProxyInterface(IOvermock target) : base(target)
-        {
-        }
-
-        public void VoidMethodWithNoParams()
-        {
-            HandleMethodCall((MethodInfo)MethodBase.GetCurrentMethod());
-        }
-
-        public bool BoolMethodWithNoParams()
-        {
-            return (bool)HandleMethodCall((MethodInfo)MethodBase.GetCurrentMethod());
-        }
-
-        //IEnumerable<T> MethodWithNoParamsAndReturnsEnumerableOfT<T>();
-    }
-
-    public class TestUserStoryService : Proxy<IUserStoryService>, IUserStoryService
-    {
-        public TestUserStoryService(IOvermock target) : base(target)
-        {
-        }
-
-        public IEnumerable<UserStory> GetAll()
-        {
-            return (IEnumerable<UserStory>)HandleMethodCall((MethodInfo)MethodBase.GetCurrentMethod());
-        }
-
-        public UserStory? Get(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public UserStory Save(UserStory model)
-        {
-            throw new NotImplementedException();
-        }
-
-        public UserStory Delete(UserStory model)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<UserStory> SaveAll(IEnumerable<UserStory> value)
-        {
-			throw new NotImplementedException();
-        }
-    }
 }

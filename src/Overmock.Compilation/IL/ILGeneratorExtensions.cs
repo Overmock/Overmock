@@ -1,5 +1,4 @@
-﻿using Overmock;
-using Overmock.Compilation;
+﻿using Overmock.Compilation;
 using System;
 using System.Reflection;
 using System.Reflection.Emit;

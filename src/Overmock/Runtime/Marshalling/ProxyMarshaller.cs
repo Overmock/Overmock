@@ -1,5 +1,4 @@
-﻿using Overmock;
-using Overmock.Runtime.Proxies;
+﻿using Overmock.Runtime.Proxies;
 using System.Reflection;
 using System.Reflection.Emit;
 

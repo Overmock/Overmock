@@ -1,6 +1,4 @@
-﻿using System.Xml;
-
-namespace Overmock.Runtime
+﻿namespace Overmock.Runtime
 {
 	/// <summary>
 	/// 

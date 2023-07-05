@@ -1,5 +1,4 @@
 ﻿using Lokad.ILPack;
-using Microsoft.CodeAnalysis;
 using Overmock.Runtime.Proxies;
 using System.Reflection;
 using System.Reflection.Emit;
