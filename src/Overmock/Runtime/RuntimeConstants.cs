@@ -69,7 +69,12 @@ namespace Overmock.Runtime
         /// <summary>
         /// 
         /// </summary>
-		public static readonly Type IOverrideHandlerType = typeof(IOverrideHandler);
+		public static readonly Type OverrideHandlerType = typeof(IOverrideHandler);
+
+        /// <summary>
+        /// 
+        /// </summary>
+		public static readonly Type ArrayType = typeof(Array);
 
         /// <summary>
         /// 
@@ -79,13 +84,26 @@ namespace Overmock.Runtime
         /// <summary>
         /// 
         /// </summary>
+        public static readonly MethodInfo EmptyObjectArrayMethod = EmptyArrayMethod(ObjectType);
+
+        /// <summary>
+        /// 
+        /// </summary>
         public static readonly MethodInfo IOverrideHandlerTypeHandleMethod = 
-            IOverrideHandlerType.GetMethod("Handle", BindingFlags.Instance | BindingFlags.Public)!;
+            OverrideHandlerType.GetMethod("Handle", BindingFlags.Instance | BindingFlags.Public)!;
 
         /// <summary>
         /// 
         /// </summary>
         public static readonly MethodInfo MethodBaseTypeGetCurrentMethod = MethodBaseType.GetMethod("GetCurrentMethod", BindingFlags.Static | BindingFlags.Public)!;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="genericTypeArg"></param>
+        /// <returns></returns>
+        public static MethodInfo EmptyArrayMethod(Type genericTypeArg) =>
+            ArrayType.GetMethod("Empty", BindingFlags.Static | BindingFlags.Public)!.MakeGenericMethod(genericTypeArg)!;
 
         /// <summary>
         /// 
