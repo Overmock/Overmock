@@ -1,15 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Overmock
 {
 	/// <summary>
+	/// 
+	/// </summary>
+	public abstract class Value<T> : IEquatable<T>, IFluentInterface
+	{
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="other"></param>
+		/// <returns></returns>
+		public abstract bool Equals(T? other);
+	}
+
+	/// <summary>
 	/// Represents values for mocked methods.
 	/// </summary>
-	public abstract class Its : IEquatable<Its>, IFluentInterface
+	public abstract class Its : Value<Its>, IFluentInterface
 	{
 		/// <summary>
 		/// 
@@ -27,17 +36,10 @@ namespace Overmock
 		/// <typeparam name="T"></typeparam>
 		/// <param name="value"></param>
 		/// <returns></returns>
-		public static Its This<T>(T value)
+		public static This<T> This<T>(T value)
 		{
 			return new This<T>(value);
 		}
-
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="other"></param>
-		/// <returns></returns>
-		public abstract bool Equals(Its? other);
 
 		/// <summary>
 		/// 
@@ -65,26 +67,39 @@ namespace Overmock
 	/// <typeparam name="T"></typeparam>
 	public interface IAny<T> : IFluentInterface
 	{
+		/// <summary>
+		/// 
+		/// </summary>
+		T Value { get; }
 	}
 
 	/// <summary>
 	/// 
 	/// </summary>
 	/// <typeparam name="T"></typeparam>
-	public class Any<T> : Its, IAny<T>, IEquatable<T>
+	public class Any<T> : Value<T>, IAny<T>, IEquatable<Any<T>>
 	{
+		/// <summary>
+		/// 
+		/// </summary>
+#pragma warning disable CA1000 // Do not declare static members on generic types
+		public static T Value { get; } = new Any<T>();
+#pragma warning restore CA1000 // Do not declare static members on generic types
+
 		/// <summary>
 		/// 
 		/// </summary>
 		/// <param name="any"></param>
-		public static implicit operator T(Any<T> any) => default!;
+		public static implicit operator T(Any<T> any) => any.ThisValue!;
+
+		T IAny<T>.Value => this;
 
 		/// <summary>
 		/// 
 		/// </summary>
 		/// <param name="other"></param>
 		/// <returns></returns>
-		public bool Equals(T? other)
+		public bool Equals(Its? other)
 		{
 			return true;
 		}
@@ -94,17 +109,33 @@ namespace Overmock
 		/// </summary>
 		/// <param name="other"></param>
 		/// <returns></returns>
-		public override bool Equals(Its? other)
+		/// <exception cref="NotImplementedException"></exception>
+		public override bool Equals(T? other)
+		{
+			throw new NotImplementedException();
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="other"></param>
+		/// <returns></returns>
+		public bool Equals(Any<T>? other)
 		{
 			return true;
 		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		protected T ThisValue => this;
 	}
 
 	/// <summary>
 	/// 
 	/// </summary>
 	/// <typeparam name="T"></typeparam>
-	public interface IAm<T> : IFluentInterface
+	public interface IAm<T> : IAny<T>, IFluentInterface
 	{
 	}
 
@@ -112,7 +143,7 @@ namespace Overmock
 	/// 
 	/// </summary>
 	/// <typeparam name="T"></typeparam>
-	public class This<T> : Its, IAm<T>, IEquatable<T>
+	public class This<T> : Any<T>, IAm<T>, IEquatable<T>
 	{
 		private readonly T? _value;
 
@@ -121,15 +152,7 @@ namespace Overmock
 			_value = value;
 		}
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="other"></param>
-		/// <returns></returns>
-		public override bool Equals(Its? other)
-		{
-			return _value?.Equals(other) ?? other == null;
-		}
+		T IAny<T>.Value => this;
 
 		/// <summary>
 		/// 
@@ -139,7 +162,7 @@ namespace Overmock
 		/// <exception cref="NotImplementedException"></exception>
 		bool IEquatable<T>.Equals(T? other)
 		{
-			throw new NotImplementedException();
+			return other != null && other.Equals(this);
 		}
 	}
 }

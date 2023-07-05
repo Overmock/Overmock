@@ -13,7 +13,7 @@ namespace Overmock.Runtime
 
 		public OverrideHandlerResult Handle(params object[] parameters)
 		{
-			throw new OvermockException($"No override specified for the given method: ");
+			throw new OvermockException($"No override specified for the given method: {_method}");
 		}
 	}
 }

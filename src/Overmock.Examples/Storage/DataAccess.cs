@@ -12,6 +12,7 @@ namespace Overmock.Examples.Storage
     {
         public UserStoryFactory(IDataConnection connection) : base(connection)
         {
+            connection.Connect("user", "secret");
         }
         private static int NextId => Collection.Count;
 
@@ -39,7 +40,8 @@ namespace Overmock.Examples.Storage
         UserStory? Get(int id);
         UserStory Save(UserStory model);
         UserStory Delete(UserStory model);
-    }
+		IEnumerable<UserStory> SaveAll(IEnumerable<UserStory> value);
+	}
     public class UserStoryService : IUserStoryService
     {
         private readonly EntityCollection<UserStory> _collection;
@@ -52,12 +54,16 @@ namespace Overmock.Examples.Storage
 
         public UserStory? Get(int id) => _collection.Find(id);
         public IEnumerable<UserStory> GetAll() => _collection.AsQueryable();
-        public UserStory Save(UserStory model) => _collection.Upsert(model, original =>
-        {
+        public UserStory Save(UserStory model) => _collection.Upsert(model, original => {
             original.Title = model.Title;
             original.Description = model.Description;
             original.Points = model.Points;
             return original;
         });
-    }
+
+		public IEnumerable<UserStory> SaveAll(IEnumerable<UserStory> value)
+		{
+            return value;
+		}
+	}
 }

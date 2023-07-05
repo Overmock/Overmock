@@ -1,18 +1,18 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Version>0.0.1-RC01</Version>
-    <TargetFramework>net6.0</TargetFramework>
+    <Version>0.0.1-RC02</Version>
+    <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <IsPackable>true</IsPackable>
-	<!--<PackageLicenseFile>..\..\LICENSE</PackageLicenseFile>-->
+	<PackageLicenseFile>..\..\LICENSE</PackageLicenseFile>
 	<PackageId>Overmock</PackageId>
 	<PackageProjectUrl>https://github.com/Overmock</PackageProjectUrl>
 	<Title>Overmock</Title>
 	<Description>Overmock is a mocking framework that allows for very robust mocking configuration and validation.</Description>
-	<!--<PackageReadmeFile>\README.md</PackageReadmeFile>-->
+	<PackageReadmeFile>\README.md</PackageReadmeFile>
 	<RepositoryUrl>https://github.com/Overmock</RepositoryUrl>
 	<RepositoryType>git</RepositoryType>
 	<PackageTags>mocking;mock;unit tests;unit testing;unittesting;unittest;mocking framework;overmock;overmocked;</PackageTags>
@@ -34,6 +34,17 @@
 
   <ItemGroup>
     <PackageReference Include="IFluentInterface" Version="2.1.0" />
+    <PackageReference Include="Lokad.ILPack" Version="0.2.0" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.4.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Runtime\Extensions\" />
+  </ItemGroup>
+	
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>$(AssemblyName).Compilation</_Parameter1>
+    </AssemblyAttribute>
   </ItemGroup>
 </Project>
