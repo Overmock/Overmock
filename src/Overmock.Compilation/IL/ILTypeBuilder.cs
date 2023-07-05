@@ -1,6 +1,7 @@
 ﻿using Lokad.ILPack;
 using Overmock.Mocking;
 using Overmock.Runtime;
+using Overmock.Runtime.Proxies;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -16,8 +17,8 @@ namespace Overmock.Compilation.IL
 	{
         private static readonly Type MethodBaseType = typeof(MethodBase);
 		private static readonly Type MethodInfoType = typeof(MethodInfo);
-		private static readonly Type HandlerType = typeof(IOverrideHandler);
-		private static readonly Type ContextType = typeof(OvermockRuntimeContext);
+		private static readonly Type HandlerType = typeof(IRuntimeHandler);
+		private static readonly Type ContextType = typeof(ProxyOverrideContext);
 
 		private readonly Action<SetupArgs>? _argsProvider;
         private readonly IlAssemblyCompiler _compiler;
@@ -30,7 +31,7 @@ namespace Overmock.Compilation.IL
 
         public T? BuildType<T>(IOvermock<T> target) where T : class
         {
-            var overmockContextType = typeof(OvermockRuntimeContext);
+            var overmockContextType = typeof(ProxyOverrideContext);
             var assemblyName = new AssemblyName($"Overmocked.Generated.dll");
             var assemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(assemblyName, AssemblyBuilderAccess.RunAndCollect);
 
@@ -56,9 +57,9 @@ namespace Overmock.Compilation.IL
                     new object[] { methodId.ToString() }
                 ));
 
-                overmockContext.Add(methodId, new OverrideContext(methodInfo,
+                overmockContext.Add(methodId, new RuntimeContext(methodInfo,
                     overmock.GetOverrides(),
-                    methodInfo.GetParameters().Select(p => new OverrideParameter(p.Name!, type: p.ParameterType)))
+                    methodInfo.GetParameters().Select(p => new RuntimeParameter(p.Name!, type: p.ParameterType)))
                 );
             }
             
@@ -90,10 +91,10 @@ namespace Overmock.Compilation.IL
             defaultConstructor.GetILGenerator().Emit(OpCodes.Ret);
         }
 
-        private static OvermockRuntimeContext DefineOvermockInitMethod<T>(TypeBuilder typeBuilder, FieldBuilder contextField)
+        private static ProxyOverrideContext DefineOvermockInitMethod<T>(TypeBuilder typeBuilder, FieldBuilder contextField)
             where T : class
         {
-            var overmockContext = new OvermockRuntimeContext();
+            var overmockContext = new ProxyOverrideContext();
 
             var initContextMethod = typeBuilder.DefineMethod("InitializeOvermockContext",
                 MethodAttributes.Public, CallingConventions.HasThis, typeof(void),
@@ -145,7 +146,7 @@ namespace Overmock.Compilation.IL
 
 		protected static MethodBuilder CreateMethod(MethodInfo methodInfo, TypeBuilder dynamicType, FieldBuilder contextField)
 		{
-			object methodToCopy(IOverrideHandler handler, params object[] parameters)
+			object methodToCopy(IRuntimeHandler handler, params object[] parameters)
 			{
 				var result = handler.Handle();
 				return result.Result;
@@ -200,7 +201,7 @@ namespace Overmock.Compilation.IL
             }
 
             emitter.DeclareLocal(HandlerType);
-			emitter.DeclareLocal(typeof(OverrideHandlerResult));
+			emitter.DeclareLocal(typeof(RuntimeHandlerResult));
 			emitter.DeclareLocal(typeof(object));
 
 			var returnLabel = emitter.DefineLabel();
@@ -243,7 +244,7 @@ namespace Overmock.Compilation.IL
 			emitter.Emit(OpCodes.Stloc_1);
 			emitter.Emit(OpCodes.Ldloc_1);
 			emitter.EmitCall(OpCodes.Callvirt,
-				typeof(OverrideHandlerResult).GetProperty("Result",
+				typeof(RuntimeHandlerResult).GetProperty("Result",
 					BindingFlags.Public | BindingFlags.Instance)!
 				.GetGetMethod()!,
 				Type.EmptyTypes

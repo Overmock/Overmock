@@ -8,7 +8,7 @@ namespace Overmock.Mocking.Internal
 	{
 		private readonly MethodCallExpression _expression;
 
-		private Action<OverrideContext>? _method;
+		private Action<RuntimeContext>? _method;
 		//private Exception? _exception;
 
 		internal MethodCall(MethodCallExpression expression) : base(Throw.If.DeclaringTypeNull(expression.Method.DeclaringType, expression.Method.Name))
@@ -31,7 +31,7 @@ namespace Overmock.Mocking.Internal
 			throw new NotImplementedException();
 		}
 
-		void IMethodCall.Calls(Action<OverrideContext> method)
+		void IMethodCall.Calls(Action<RuntimeContext> method)
 		{
 			_method = method;
 		}
@@ -39,7 +39,7 @@ namespace Overmock.Mocking.Internal
 
 	internal class MethodCall<T> : MethodCall, IMethodCall<T> where T : class
 	{
-		private Action<OverrideContext>? _action;
+		private Action<RuntimeContext>? _action;
 
 		internal MethodCall(MethodCallExpression expression) : base(expression)
 		{
@@ -58,7 +58,7 @@ namespace Overmock.Mocking.Internal
 
 		}
 
-		void IMethodCall.Calls(Action<OverrideContext> action)
+		void IMethodCall.Calls(Action<RuntimeContext> action)
 		{
 			_action = action;
 		}
@@ -66,7 +66,7 @@ namespace Overmock.Mocking.Internal
 
 	internal class MethodCall<T, TReturn> : MethodCall<T>, IMethodCall<T, TReturn> where T : class
 	{
-		private Func<OverrideContext, TReturn>? _func;
+		private Func<RuntimeContext, TReturn>? _func;
 
 		internal MethodCall(MethodCallExpression expression) : base(expression)
 		{
@@ -84,7 +84,7 @@ namespace Overmock.Mocking.Internal
 			return overrides;
 		}
 
-		void IMethodCall<T, TReturn>.Calls(Func<OverrideContext, TReturn> method)
+		void IMethodCall<T, TReturn>.Calls(Func<RuntimeContext, TReturn> method)
 		{
 			_func = method;
 		}

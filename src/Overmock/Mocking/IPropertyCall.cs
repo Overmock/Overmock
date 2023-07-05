@@ -24,6 +24,6 @@ namespace Overmock.Mocking
 		/// An <see cref="Func{OverrideContext, TReturn}"/> delegate to call in place of this override's property.
 		/// </summary>
 		/// <param name="func"></param>
-		void Calls(Func<OverrideContext, TReturn> func);
+		void Calls(Func<RuntimeContext, TReturn> func);
 	}
 }

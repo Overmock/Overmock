@@ -24,7 +24,7 @@ namespace Overmock.Runtime.Proxies
 		/// 
 		/// </summary>
 		/// <param name="context"></param>
-		void InitializeOvermockContext(OvermockRuntimeContext context);
+		void InitializeOvermockContext(ProxyOverrideContext context);
 
 		/// <summary>
 		/// 

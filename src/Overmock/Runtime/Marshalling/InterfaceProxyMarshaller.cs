@@ -24,7 +24,7 @@ namespace Overmock.Runtime.Marshalling
 			);
 
 			DynamicModule = DynamicAssembly.DefineDynamicModule(Name);
-			ProxyType = RuntimeConstants.ProxyType.MakeGenericType(Target.Type);
+			ProxyType = Constants.ProxyType.MakeGenericType(Target.Type);
 		}
 
 		/// <summary>
@@ -59,7 +59,7 @@ namespace Overmock.Runtime.Marshalling
 
 			var context = (MarshallerContext)marshallerContext;
 
-			ImplementConstructor(context, ProxyType.GetConstructor(bindingFlags, new Type[] { RuntimeConstants.IOvermockType })!);
+			ImplementConstructor(context, ProxyType.GetConstructor(bindingFlags, new Type[] { Constants.OvermockType })!);
 
 			var overmockedMethods = Target.GetOvermockedMethods();
 			var overrides = overmockedMethods.Select(m => m.Method).ToArray();
@@ -105,7 +105,7 @@ namespace Overmock.Runtime.Marshalling
 		{
 			const TypeAttributes attributes = TypeAttributes.Class | TypeAttributes.Public;
 
-			var typeBuilder = DynamicModule.DefineType(Target.TypeName, attributes, ProxyType);
+			var typeBuilder = DynamicModule.DefineType(Constants.AssemblyAndTypeNameFormat.ApplyFormat(Target.TypeName), attributes, ProxyType);
 
 			return new MarshallerContext(Target, typeBuilder);
 		}
@@ -162,7 +162,7 @@ namespace Overmock.Runtime.Marshalling
         {
             if (context.Target.IsDelegate())
             {
-                return new[] { context.Target.Type.GetMethod(RuntimeConstants.InvokeMethodName)! };
+                return new[] { context.Target.Type.GetMethod(Constants.InvokeMethodName)! };
             }
 
             return typeof(object).GetMethods().Where(method => method.IsVirtual);
@@ -170,7 +170,7 @@ namespace Overmock.Runtime.Marshalling
 
 		private static void DefineOvermockInitMethod(TypeBuilder typeBuilder, FieldBuilder contextField)
 		{
-			var initContextMethod = typeBuilder.DefineMethod(RuntimeConstants.InitializeOvermockContextMethodName,
+			var initContextMethod = typeBuilder.DefineMethod(Constants.InitializeOvermockContextMethodName,
 				MethodAttributes.Public, CallingConventions.HasThis, typeof(void),
 				new[] { contextField.FieldType }
 			);
@@ -198,9 +198,9 @@ namespace Overmock.Runtime.Marshalling
 					new object[] { methodId.ToString() }
 				));
 
-				context.OvermockContext.Add(methodId, new OverrideContext(mock.Method,
+				context.OvermockContext.Add(methodId, new RuntimeContext(mock.Method,
 					mock.GetOverrides(),
-					mock.Method.GetParameters().Select(p => new OverrideParameter(p.Name!, type: p.ParameterType)))
+					mock.Method.GetParameters().Select(p => new RuntimeParameter(p.Name!, type: p.ParameterType)))
 				);
 			}
 		}
@@ -240,13 +240,13 @@ namespace Overmock.Runtime.Marshalling
 			emitter.Emit(OpCodes.Nop);
 			emitter.Emit(OpCodes.Ldarg_0);
 
-			emitter.Emit(OpCodes.Call, RuntimeConstants.MethodBaseTypeGetCurrentMethod);
-			emitter.Emit(OpCodes.Castclass, RuntimeConstants.MethodInfoType);
+			emitter.Emit(OpCodes.Call, Constants.MethodBaseTypeGetCurrentMethod);
+			emitter.Emit(OpCodes.Castclass, Constants.MethodInfoType);
 
 			if (parameters.Length > 0)
 			{
 				emitter.Emit(OpCodes.Ldc_I4, parameters.Length);
-				emitter.Emit(OpCodes.Newarr, RuntimeConstants.ObjectType);
+				emitter.Emit(OpCodes.Newarr, Constants.ObjectType);
 
 				for (int i = 0; i < parameters.Length - 1; i++)
 				{
@@ -270,10 +270,10 @@ namespace Overmock.Runtime.Marshalling
 			}
             else
             {
-				emitter.EmitCall(OpCodes.Call, RuntimeConstants.EmptyObjectArrayMethod, null);
+				emitter.EmitCall(OpCodes.Call, Constants.EmptyObjectArrayMethod, null);
             }
 
-			emitter.EmitCall(OpCodes.Callvirt, RuntimeConstants.GetProxyTypeHandleMethodCallMethod(context.Target.Type), null);
+			emitter.EmitCall(OpCodes.Callvirt, Constants.GetProxyTypeHandleMethodCallMethod(context.Target.Type), null);
 
 			if (returnIsNotVoid)
 			{
@@ -285,6 +285,10 @@ namespace Overmock.Runtime.Marshalling
 				emitter.MarkLabel(returnLabel);
 				emitter.Emit(OpCodes.Ldloc_0);
 			}
+            else
+            {
+                emitter.Emit(OpCodes.Pop);
+            }
 
 			emitter.Emit(OpCodes.Ret);
 		}
@@ -360,14 +364,14 @@ namespace Overmock.Runtime.Marshalling
 				Target = target;
 				TypeBuilder = typeBuilder;
 				Interfaces = new List<Type>();
-				OvermockContext = new OvermockRuntimeContext();
+				OvermockContext = new ProxyOverrideContext();
 			}
 
 			public IOvermock Target { get; }
 
 			public TypeBuilder TypeBuilder { get; }
 
-			public OvermockRuntimeContext OvermockContext { get; }
+			public ProxyOverrideContext OvermockContext { get; }
 
 			private List<Type> Interfaces { get; set; }
 

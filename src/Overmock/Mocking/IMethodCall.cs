@@ -23,7 +23,7 @@ namespace Overmock.Mocking
 		/// An <see cref="Action"/> delegate to call in place of this override's method.
 		/// </summary>
 		/// <param name="method">The method to call.</param>
-		void Calls(Action<OverrideContext> method);
+		void Calls(Action<RuntimeContext> method);
 	}
 
 	/// <summary>
@@ -45,6 +45,6 @@ namespace Overmock.Mocking
 		/// An <see cref="Func{OverrideContext, TReturn}"/> delegate to call in place of this override's method.
 		/// </summary>
 		/// <param name="method">The method to call.</param>
-		void Calls(Func<OverrideContext, TReturn> method);
+		void Calls(Func<RuntimeContext, TReturn> method);
 	}
 }

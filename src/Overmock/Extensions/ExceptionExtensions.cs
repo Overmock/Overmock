@@ -1,7 +1,7 @@
 ﻿
-namespace Overmock.Extensions
+namespace Overmock
 {
-	internal static partial class OvermockExtensions
+	public static partial class OvermockExtensions
 	{
 	}
 }

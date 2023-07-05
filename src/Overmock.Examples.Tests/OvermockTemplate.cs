@@ -1,25 +1,25 @@
-﻿using Overmock.Runtime;
-using System.Reflection;
+﻿using System.Reflection;
 using Overmock.Examples.Controllers;
 using Overmock.Examples.Storage;
 using System.Xml.Linq;
+using Overmock.Runtime.Proxies;
 
 namespace Overmock
 {
-	/// <summary>
-	/// Do not use. Used for testing.
-	/// </summary>
-	public class OvermockTemplate 
+    /// <summary>
+    /// Do not use. Used for testing.
+    /// </summary>
+    public class OvermockTemplate 
 	{
 #pragma warning disable IDE1006 // Naming Styles
-		private OvermockRuntimeContext? ___context;
+		private ProxyOverrideContext? ___context;
 #pragma warning restore IDE1006 // Naming Styles
 
 		/// <summary>
 		/// 
 		/// </summary>
 		/// <param name="context"></param>
-		public void InitializeOvermockContext(OvermockRuntimeContext context)
+		public void InitializeOvermockContext(ProxyOverrideContext context)
 		{
 			___context = context;
 		}

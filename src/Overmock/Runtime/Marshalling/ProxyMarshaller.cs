@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using Overmock;
+using Overmock.Runtime.Proxies;
 using System.Reflection;
 using System.Reflection.Emit;
 
@@ -68,20 +69,16 @@ namespace Overmock.Runtime.Marshalling
 		/// </summary>
 		/// <param name="target"></param>
 		/// <returns></returns>
-		protected static string GetName(IOvermock target) =>
-			RuntimeConstants.Format(() => RuntimeConstants.AssemblyNameFormat, target.TypeName);
+		protected static string GetName(IOvermock target) => Constants.AssemblyAndTypeNameFormat.ApplyFormat(target.TypeName);
 
 		/// <summary>
 		/// 
 		/// </summary>
 		/// <param name="target"></param>
 		/// <returns></returns>
-		protected static AssemblyName GetAssemblyName(IOvermock target)
-        {
-            return new AssemblyName(RuntimeConstants.Format(() => RuntimeConstants.AssemblyDllNameFormat, GetName(target)));
-		}
+		protected static AssemblyName GetAssemblyName(IOvermock target) => new(Constants.AssemblyDllNameFormat.ApplyFormat(GetName(target)));
 
-		/// <summary>
+        /// <summary>
 		/// 
 		/// </summary>
 		protected interface IMarshallerContext
@@ -99,7 +96,7 @@ namespace Overmock.Runtime.Marshalling
             /// <summary>
             /// 
             /// </summary>
-            OvermockRuntimeContext OvermockContext { get; }
+            ProxyOverrideContext OvermockContext { get; }
 		}
 	}
 }

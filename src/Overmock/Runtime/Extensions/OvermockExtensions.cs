@@ -39,7 +39,7 @@
         /// <returns></returns>
         public static bool IsDelegate(this Type target)
         {
-            return RuntimeConstants.DelegateType.IsAssignableFrom(target);
+            return Constants.DelegateType.IsAssignableFrom(target);
         }
     }
 }

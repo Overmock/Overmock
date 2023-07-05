@@ -27,21 +27,33 @@ namespace Overmock.Examples.Tests
 		}
 
 		[TestMethod]
-		public void MethodWithNoParamsTest()
+		public void VoidMethodWithNoParamsTest()
 		{
-            _testInterface.Override(t => t.MethodWithNoParams())
-				.ToReturn(true);
+            _testInterface.Override(t => t.VoidMethodWithNoParams());
 
 			var target = _testInterface.Target;
 
 			Assert.IsNotNull(target);
 
-			var test = target.MethodWithNoParams();
-
-			Assert.IsNotNull(test);
+			target.VoidMethodWithNoParams();
 		}
+		
+        [TestMethod]
+        public void BoolMethodWithNoParamsTest()
+        {
+            _testInterface.Override(t => t.BoolMethodWithNoParams())
+                .ToReturn(true);
 
-		[TestMethod]
+            var target = _testInterface.Target;
+
+            Assert.IsNotNull(target);
+
+            var test = target.BoolMethodWithNoParams();
+
+            Assert.IsTrue(test);
+        }
+
+        [TestMethod]
 		public void GetAllTest()
 		{
 			var stories = new List<UserStory> { new UserStory() };
@@ -114,11 +126,31 @@ namespace Overmock.Examples.Tests
 
 	public interface ITestInterface
 	{
-		bool MethodWithNoParams();
-		//IEnumerable<T> MethodWithNoParamsAndReturnsEnumerableOfT<T>();
-	}
+		void VoidMethodWithNoParams();
+        bool BoolMethodWithNoParams();
+        //IEnumerable<T> MethodWithNoParamsAndReturnsEnumerableOfT<T>();
+    }
 
-	public class TestUserStoryService : Proxy<TestUserStoryService>, IUserStoryService
+    public class TestProxyInterface : Proxy<ITestInterface>, ITestInterface
+    {
+        public TestProxyInterface(IOvermock target) : base(target)
+        {
+        }
+
+        public void VoidMethodWithNoParams()
+        {
+            HandleMethodCall((MethodInfo)MethodBase.GetCurrentMethod());
+        }
+
+        public bool BoolMethodWithNoParams()
+        {
+            return (bool)HandleMethodCall((MethodInfo)MethodBase.GetCurrentMethod());
+        }
+
+        //IEnumerable<T> MethodWithNoParamsAndReturnsEnumerableOfT<T>();
+    }
+
+    public class TestUserStoryService : Proxy<IUserStoryService>, IUserStoryService
     {
         public TestUserStoryService(IOvermock target) : base(target)
         {

@@ -1,22 +1,23 @@
 ﻿using Overmock.Runtime;
+using Overmock.Runtime.Proxies;
 using System.Reflection;
 
 namespace Overmock
 {
-	/// <summary>
-	/// Do not use. Used for testing.
-	/// </summary>
-	public class OvermockMethodTemplate
+    /// <summary>
+    /// Do not use. Used for testing.
+    /// </summary>
+    public class OvermockMethodTemplate
 	{
 #pragma warning disable IDE1006 // Naming Styles
-		private OvermockRuntimeContext? ___context;
+		private ProxyOverrideContext? ___context;
 #pragma warning restore IDE1006 // Naming Styles
 
 		/// <summary>
 		/// 
 		/// </summary>
 		/// <param name="context"></param>
-		public void InitializeOvermockContext(OvermockRuntimeContext context)
+		public void InitializeOvermockContext(ProxyOverrideContext context)
 		{
 			___context = context;
 		}
@@ -42,7 +43,7 @@ namespace Overmock
 		/// <returns></returns>
 		/// <exception cref="OvermockException"></exception>
 		[Overmock("17a8440c-ba80-472c-bc31-a3736c3e5b4c")]
-		public object TestMethod2(IOverrideHandler handler)
+		public object TestMethod2(IRuntimeHandler handler)
 		{
 			var result = handler.Handle();
 			return (Type)result.Result;
