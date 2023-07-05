@@ -221,19 +221,18 @@ namespace Overmock.Runtime.Marshalling
 				parameterTypes
 			);
 
-			CopyMethod(context, methodBuilder, parameterTypes);
+            EmitMethodBody(context, methodBuilder.GetILGenerator(), methodBuilder.ReturnType, parameterTypes);
 
 			return methodBuilder;
 		}
 
-		private static void CopyMethod(MarshallerContext context, MethodBuilder methodBuilder, Type[] parameters)
+		private static void EmitMethodBody(MarshallerContext context, ILGenerator emitter, Type returnType, Type[] parameters)
 		{
-			var emitter = methodBuilder.GetILGenerator();
-			var returnIsNotVoid = methodBuilder.ReturnType != typeof(void);
+			var returnIsNotVoid = returnType != typeof(void);
 
 			if (returnIsNotVoid)
 			{
-				emitter.DeclareLocal(methodBuilder.ReturnType);
+				emitter.DeclareLocal(returnType);
 			}
 
 			var returnLabel = emitter.DefineLabel();
@@ -269,12 +268,16 @@ namespace Overmock.Runtime.Marshalling
 				//emitter.Emit(OpCodes.Ldarg_S, parameters.Last().Name);
 				emitter.Emit(OpCodes.Stelem_Ref);
 			}
+            else
+            {
+				emitter.EmitCall(OpCodes.Call, RuntimeConstants.EmptyObjectArrayMethod, null);
+            }
 
 			emitter.EmitCall(OpCodes.Callvirt, RuntimeConstants.GetProxyTypeHandleMethodCallMethod(context.Target.Type), null);
 
 			if (returnIsNotVoid)
 			{
-				emitter.Emit(OpCodes.Castclass, methodBuilder.ReturnType);
+				emitter.Emit(OpCodes.Castclass, returnType);
 
 				emitter.Emit(OpCodes.Stloc_0);
 				emitter.Emit(OpCodes.Br_S, returnLabel);

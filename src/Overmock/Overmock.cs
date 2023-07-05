@@ -59,9 +59,20 @@ public class Overmock<T> : Verifiable<T>, IOvermock<T> where T : class
 	/// Gets the object.
 	/// </summary>
 	/// <value>The mocked object.</value>
-	public T Target => _lazyObject.Value;
+	public T Target
+    {
+		get
+		{
+			if (_lazyObject == null)
+			{
+				InitializeLazyHandler();
+			}
 
-	Type? IOvermock.GetCompiledType() => _compiledType;
+			return _lazyObject!.Value;
+        }
+    }
+
+    Type? IOvermock.GetCompiledType() => _compiledType;
 
 	string IOvermock.TypeName => base._typeName;
 
