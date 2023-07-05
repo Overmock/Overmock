@@ -1,73 +1,62 @@
+using System.Reflection;
 using Castle.Components.DictionaryAdapter.Xml;
 using DataCompany.Framework;
 using Overmock.Compilation;
 using Overmock.Compilation.IL;
 using Overmock.Examples.Controllers;
 using Overmock.Examples.Storage;
+using Overmock.Runtime.Proxies;
 
 namespace Overmock.Examples.Tests
 {
 	[TestClass]
 	public class UserStoryControllerTests
 	{
-		private IOvermock<OvermockTemplate> _template;
 		private IOvermock<IDataConnection> _connection = new Overmock<IDataConnection>();
-		private IOvermock<ITestInterface> _factory;
-		private IOvermock<IUserStoryService> _service;
-
-		private UserStoryController _controller;
-
-		public UserStoryControllerTests()
-		{
-			OvermockSetup.UseIlBuilder();
-		}
+		private IOvermock<ITestInterface>? _testInterface;
+		private IOvermock<IUserStoryService>? _service;
+        private UserStoryController? _controller;
 
 		[TestInitialize]
 		public void Initialize()
 		{
 			//_template = Overmocked.Setup<OvermockTemplate>();
 			_connection = Overmocked.Setup<IDataConnection>();
-			//_factory = Overmocked.Setup<UserStoryFactory>(args =>
-			//	args.Args(_connection.Target));
+            _testInterface = Overmocked.Setup<ITestInterface>();
 			_service = Overmocked.Setup<IUserStoryService>();
 		}
 
 		[TestMethod]
-		public void GetTest()
+		public void MethodWithNoParamsTest()
 		{
-			var story = new UserStory();
-			_service.Override(t => t.Get(Its.Any<int>()))
-				.ToReturn(story);
+            _testInterface.Override(t => t.MethodWithNoParams())
+				.ToReturn(true);
+
+			var target = _testInterface.Target;
+
+			Assert.IsNotNull(target);
+
+			var test = target.MethodWithNoParams();
+
+			Assert.IsNotNull(test);
+		}
+
+		[TestMethod]
+		public void GetAllTest()
+		{
+			var stories = new List<UserStory> { new UserStory() };
+			_service.Override(t => t.GetAll())
+				.ToCall(c => stories);
 
 			var target = _service.Target;
 
 			Assert.IsNotNull(target);
 
-			var test = target.Get(123);
+			var test = target.GetAll();
 
 			Assert.IsNotNull(test);
-			Assert.AreEqual(test, story);
+			Assert.AreEqual(test, stories);
 		}
-
-		//[TestMethod]
-		//public void GetAllTest()
-		//{
-		//	var stories = new List<UserStory> { new UserStory() };
-		//	_service.Override(t => t.GetAll())
-		//		.ToCall(c =>
-		//		{
-		//			return stories;
-		//		});
-
-		//	var target = _service.Target;
-
-		//	Assert.IsNotNull(target);
-
-		//	var test = target.GetAll();
-			
-		//	Assert.IsNotNull(test);
-		//	Assert.AreEqual(test, stories);
-		//}
 
 		[TestMethod]
 		public void SaveTest()
@@ -123,9 +112,41 @@ namespace Overmock.Examples.Tests
 		}
 	}
 
-	internal interface ITestInterface
+	public interface ITestInterface
 	{
 		bool MethodWithNoParams();
-		IEnumerable<T> MethodWithNoParamsAndReturnsEnumerableOfT<T>();
+		//IEnumerable<T> MethodWithNoParamsAndReturnsEnumerableOfT<T>();
 	}
+
+	public class TestUserStoryService : Proxy<TestUserStoryService>, IUserStoryService
+    {
+        public TestUserStoryService(IOvermock target) : base(target)
+        {
+        }
+
+        public IEnumerable<UserStory> GetAll()
+        {
+            return (IEnumerable<UserStory>)HandleMethodCall((MethodInfo)MethodBase.GetCurrentMethod());
+        }
+
+        public UserStory? Get(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public UserStory Save(UserStory model)
+        {
+            throw new NotImplementedException();
+        }
+
+        public UserStory Delete(UserStory model)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<UserStory> SaveAll(IEnumerable<UserStory> value)
+        {
+			throw new NotImplementedException();
+        }
+    }
 }
