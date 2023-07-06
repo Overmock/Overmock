@@ -1,4 +1,4 @@
-﻿namespace Overmock.Runtime.Expectations
+﻿namespace Overmock.Runtime.Constraints
 {
     /// <summary>
     /// 

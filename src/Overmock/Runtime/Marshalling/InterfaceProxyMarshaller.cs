@@ -227,8 +227,6 @@ namespace Overmock.Runtime.Marshalling
 
 		private static MethodBuilder CreateMethod(MarshallerContext context, MethodInfo methodInfo)
 		{
-			//const MethodAttributes attributes = MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.Virtual | MethodAttributes.NewSlot;
-
 			var parameterTypes = methodInfo.GetParameters()
 				.Select(p => p.ParameterType).ToArray();
 
