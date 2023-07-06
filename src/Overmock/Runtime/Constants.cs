@@ -79,6 +79,11 @@ namespace Overmock.Runtime
         /// <summary>
         /// 
         /// </summary>
+		public static readonly Type TypeType = typeof(Type);
+
+        /// <summary>
+        /// 
+        /// </summary>
 		public static readonly Type OvermockContextType = typeof(ProxyOverrideContext);
 
         /// <summary>
@@ -89,7 +94,12 @@ namespace Overmock.Runtime
         /// <summary>
         /// 
         /// </summary>
-        public static readonly MethodInfo OverrideHandlerTypeHandleMethod = OverrideHandlerType.GetMethod("Handle", BindingFlags.Instance | BindingFlags.Public)!;
+        public static readonly MethodInfo GetTypeFromHandleMethod = TypeType.GetMethod("GetTypeFromHandle", BindingFlags.Static | BindingFlags.Public)!;
+
+		/// <summary>
+		/// 
+		/// </summary>
+		public static readonly MethodInfo OverrideHandlerTypeHandleMethod = OverrideHandlerType.GetMethod("Handle", BindingFlags.Instance | BindingFlags.Public)!;
 
         /// <summary>
         /// 

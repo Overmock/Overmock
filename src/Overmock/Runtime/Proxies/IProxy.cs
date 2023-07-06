@@ -32,6 +32,6 @@ namespace Overmock.Runtime.Proxies
 		/// <param name="method"></param>
 		/// <param name="parameters"></param>
 		/// <returns></returns>
-		object HandleMethodCall(MethodInfo method, params object[] parameters);
+		object? HandleMethodCall(MethodInfo method, params object[] parameters);
 	}
 }

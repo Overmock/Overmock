@@ -61,10 +61,19 @@ namespace Overmock.Runtime.Marshalling
 			ImplementConstructor(context, ProxyType.GetConstructor(bindingFlags, new Type[] { Constants.OvermockType })!);
 
 			var overmockedMethods = Target.GetOvermockedMethods().ToList();
-			var methodOverrides = overmockedMethods.Select(m => m.Method).ToArray();
+			var methodOverrides = overmockedMethods.Select(m =>
+			{
+				if (m.Method.IsGenericMethod)
+				{
+					return m.Method.GetGenericMethodDefinition();
+				}
 
-			var methods = AddInterfaceImplementations(context).Item1
-				.Concat(GetBaseMethods(context))
+				return m.Method;
+			}).ToArray();
+
+			(var methods, var properties) = AddInterfaceImplementations(context);
+
+			methods = methods.Concat(GetBaseMethods(context))
 				.Where(m => !methodOverrides.Contains(m))
 				.Distinct();
 
@@ -73,7 +82,7 @@ namespace Overmock.Runtime.Marshalling
             var overmockedProperties = Target.GetOvermockedProperties().ToList();
             var propertyOverrides = overmockedProperties.Select(m => m.Expression.Member).ToArray();
 
-            var properties = AddInterfaceImplementations(context).Item2
+            properties = properties
                 .Where(p => !propertyOverrides.Contains(p))
                 .Distinct();
 
@@ -253,9 +262,57 @@ namespace Overmock.Runtime.Marshalling
 				parameterTypes
 			);
 
-            EmitMethodBody(context, methodBuilder.GetILGenerator(), methodBuilder.ReturnType, parameterTypes);
+
+			if (methodInfo.IsGenericMethod)
+			{
+				var baseGenericArguments = methodInfo.GetGenericMethodDefinition().GetGenericArguments();
+				var genericParameterBuilders = methodBuilder.DefineGenericParameters(baseGenericArguments.Select(type => type.Name).ToArray());
+
+				for (int i = 0; i < genericParameterBuilders.Length; i++)
+				{
+					var baseGenericArgument = baseGenericArguments[i];
+					var genericParameterBuilder = genericParameterBuilders[i];
+
+					foreach (var baseTypeConstraint in baseGenericArgument.GetGenericParameterConstraints())
+					{
+						if (baseTypeConstraint.IsInterface)
+						{
+							genericParameterBuilder.SetInterfaceConstraints(baseTypeConstraint);
+						}
+						else
+						{
+							genericParameterBuilder.SetBaseTypeConstraint(baseTypeConstraint);
+						}
+					}
+				}
+			}
+
+			//EmitGenericArguements(context, methodInfo, methodBuilder.GetILGenerator());
+
+			EmitMethodBody(context, methodBuilder.GetILGenerator(), methodInfo.ReturnType, parameterTypes);
 
 			return methodBuilder;
+		}
+
+		private static void EmitGenericArguements(MarshallerContext context, MethodInfo method, ILGenerator emitter)
+		{
+			if (method.IsGenericMethodDefinition)
+			{
+				var genericMethodArguments = method.GetGenericArguments();
+
+				emitter.Emit(OpCodes.Ldc_I4, genericMethodArguments.Length);
+				emitter.Emit(OpCodes.Newarr, typeof(Type));
+				emitter.Emit(OpCodes.Stloc_1);
+
+				for (int i = 0; i < genericMethodArguments.Length; i++)
+				{
+					emitter.Emit(OpCodes.Ldloc_1);
+					emitter.Emit(OpCodes.Ldc_I4, i);
+					emitter.Emit(OpCodes.Ldtoken, genericMethodArguments[i]);
+					emitter.Emit(OpCodes.Call, Constants.GetTypeFromHandleMethod);
+					emitter.Emit(OpCodes.Stelem_Ref);
+				}
+			}
 		}
 
 		private static void EmitMethodBody(MarshallerContext context, ILGenerator emitter, Type returnType, Type[] parameters)

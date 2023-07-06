@@ -104,10 +104,10 @@ public class Overmock<T> : Verifiable<T>, IOvermock<T> where T : class
 		return methodCall;
 	}
 
-	TProperty IOvermock.AddProperty<TProperty>(TProperty methodCall)
+	TProperty IOvermock.AddProperty<TProperty>(TProperty propertyCall)
 	{
-		_properties.Add(methodCall);
-		return methodCall;
+		_properties.Add(propertyCall);
+		return propertyCall;
 	}
 
 	IEnumerable<IMethodCall> IOvermock.GetOvermockedMethods()

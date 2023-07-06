@@ -24,7 +24,7 @@
         /// </summary>
         /// <param name="parameters"></param>
         /// <returns></returns>
-        public virtual RuntimeHandlerResult Handle(params object[] parameters)
+        public RuntimeHandlerResult Handle(params object[] parameters)
         {
             return HandleCore(parameters);
         }
