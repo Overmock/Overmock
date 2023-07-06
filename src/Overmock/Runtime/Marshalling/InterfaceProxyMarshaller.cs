@@ -262,15 +262,24 @@ namespace Overmock.Runtime.Marshalling
 				parameterTypes
 			);
 
+			DefineGenericParameters(methodInfo, methodBuilder);
 
+
+			EmitMethodBody(context, methodBuilder.GetILGenerator(), methodInfo.ReturnType, parameterTypes);
+
+			return methodBuilder;
+		}
+
+		private static void DefineGenericParameters(MethodInfo methodInfo, MethodBuilder methodBuilder)
+		{
 			if (methodInfo.IsGenericMethod)
 			{
-				var baseGenericArguments = methodInfo.GetGenericMethodDefinition().GetGenericArguments();
-				var genericParameterBuilders = methodBuilder.DefineGenericParameters(baseGenericArguments.Select(type => type.Name).ToArray());
+				var genericParameters = methodInfo.GetGenericMethodDefinition().GetGenericArguments();
+				var genericParameterBuilders = methodBuilder.DefineGenericParameters(genericParameters.Select(t => t.Name).ToArray());
 
 				for (int i = 0; i < genericParameterBuilders.Length; i++)
 				{
-					var baseGenericArgument = baseGenericArguments[i];
+					var baseGenericArgument = genericParameters[i];
 					var genericParameterBuilder = genericParameterBuilders[i];
 
 					foreach (var baseTypeConstraint in baseGenericArgument.GetGenericParameterConstraints())
@@ -286,12 +295,6 @@ namespace Overmock.Runtime.Marshalling
 					}
 				}
 			}
-
-			//EmitGenericArguements(context, methodInfo, methodBuilder.GetILGenerator());
-
-			EmitMethodBody(context, methodBuilder.GetILGenerator(), methodInfo.ReturnType, parameterTypes);
-
-			return methodBuilder;
 		}
 
 		private static void EmitGenericArguements(MarshallerContext context, MethodInfo method, ILGenerator emitter)
@@ -354,7 +357,6 @@ namespace Overmock.Runtime.Marshalling
 				emitter.Emit(OpCodes.Dup);
 				emitter.Emit(OpCodes.Ldc_I4, parameters.Length - 1);
 				emitter.Emit(OpCodes.Ldarg, parameters.Length - 1);
-				//emitter.Emit(OpCodes.Ldarg_S, parameters.Last().Name);
 				emitter.Emit(OpCodes.Stelem_Ref);
 			}
             else
