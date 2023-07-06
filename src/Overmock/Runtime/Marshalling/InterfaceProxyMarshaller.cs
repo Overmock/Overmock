@@ -92,19 +92,6 @@ namespace Overmock.Runtime.Marshalling
 			return instance;
 		}
 
-		private void WriteAssembly()
-		{
-			var generator = new AssemblyGenerator();
-			var fileName = DynamicAssembly.GetName().Name!;
-
-			if (File.Exists(fileName))
-			{
-				File.Delete(fileName);
-			}
-
-			File.WriteAllBytes(fileName, generator.GenerateAssemblyBytes(DynamicAssembly));
-		}
-
 		/// <summary>
 		/// 
 		/// </summary>
@@ -116,6 +103,19 @@ namespace Overmock.Runtime.Marshalling
 			var typeBuilder = DynamicModule.DefineType(Constants.AssemblyAndTypeNameFormat.ApplyFormat(Target.TypeName), attributes, ProxyType);
 
 			return new MarshallerContext(Target, typeBuilder);
+		}
+
+		private void WriteAssembly()
+		{
+			var generator = new AssemblyGenerator();
+			var fileName = DynamicAssembly.GetName().Name!;
+
+			if (File.Exists(fileName))
+			{
+				File.Delete(fileName);
+			}
+
+			File.WriteAllBytes(fileName, generator.GenerateAssemblyBytes(DynamicAssembly));
 		}
 
 		private static void ImplementConstructor(MarshallerContext context, ConstructorInfo baseConstructor)
@@ -147,14 +147,28 @@ namespace Overmock.Runtime.Marshalling
                 throw new OvermockException(Ex.Message.NotAnInterfaceType(context.Target));
             }
 
-            context.TypeBuilder.AddInterfaceImplementation(context.Target.Type);
-
-            context.AddInterfaces(context.Target.Type);
-
-            return (AddMethodsRecursive(context, context.Target.Type),AddPropertiesRecursive(context, context.Target.Type));
+            return AddMembersRecursive(context, context.Target.Type);
         }
 
-        private static IEnumerable<MethodInfo> AddMethodsRecursive(MarshallerContext context, Type interfaceType)
+		private static (IEnumerable<MethodInfo>, IEnumerable<PropertyInfo>) AddMembersRecursive(MarshallerContext context, Type interfaceType)
+		{
+			context.TypeBuilder.AddInterfaceImplementation(interfaceType);
+
+			context.AddInterfaces(interfaceType);
+
+			var methods = interfaceType.GetMethods().AsEnumerable();
+			var properties = interfaceType.GetProperties().AsEnumerable();
+
+			foreach (Type type in interfaceType.GetInterfaces())
+            {
+                methods = AddMethodsRecursive(context, type).Concat(methods);
+				properties = AddPropertiesRecursive(context, type).Concat(properties);
+			}
+
+			return (methods.Distinct(), properties.Distinct());
+		}
+
+		private static IEnumerable<MethodInfo> AddMethodsRecursive(MarshallerContext context, Type interfaceType)
         {
             var methods = interfaceType.GetMethods().AsEnumerable();
 
@@ -311,9 +325,29 @@ namespace Overmock.Runtime.Marshalling
 			emitter.Emit(OpCodes.Ret);
 		}
 
-		private static void ImplementProperties(MarshallerContext context, IEnumerable<IPropertyCall> overmockedProperties, IEnumerable<PropertyInfo> properties)
+		private static void ImplementProperties(MarshallerContext context, IEnumerable<IPropertyCall> overmocks, IEnumerable<PropertyInfo> properties)
 		{
-			DefineProperties(context);
+			foreach (var method in properties)
+			{
+				CreateMethod(context, method.GetGetMethod()!);
+			}
+
+			foreach (var mock in overmocks)
+			{
+				var propertyGetter = mock.PropertyInfo.GetGetMethod();
+				var methodBuilder = CreateMethod(context, propertyGetter!);
+
+				var methodId = Guid.NewGuid();
+				methodBuilder.SetCustomAttribute(new CustomAttributeBuilder(
+					typeof(OvermockAttribute).GetConstructors().First(),
+					new object[] { methodId.ToString() }
+				));
+
+				context.OvermockContext.Add(methodId, new RuntimeContext(propertyGetter,
+					mock.GetOverrides(),
+					Enumerable.Empty<RuntimeParameter>())
+				);
+			}
 		}
 
 		private static void DefineProperties(MarshallerContext context)
