@@ -5,6 +5,8 @@ namespace Overmock.Examples.Tests.TestCode
 {
     public class TestProxyInterface : Proxy<ITestInterface>, ITestInterface
     {
+        public string Name { get; set; }
+
         public TestProxyInterface(IOvermock target) : base(target)
         {
         }

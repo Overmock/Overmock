@@ -50,6 +50,21 @@ namespace Overmock.Examples.Tests
         }
 
         [TestMethod]
+        public void PropertyTest()
+        {
+            _testInterface.Override(t => t.Name)
+                .ToReturn("testing-name");
+
+            var target = _testInterface.Target;
+
+            Assert.IsNotNull(target);
+
+            var test = target.Name;
+
+            Assert.AreEqual("testing-name", test);
+        }
+
+        [TestMethod]
 		public void GetAllTest()
 		{
 			var stories = new List<UserStory> { new UserStory() };
