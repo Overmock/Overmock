@@ -32,7 +32,7 @@ namespace Overmock.Examples.Tests.TestCode
 
 	public interface IGenericMethodsTestInterface
 	{
-		IEnumerable<T> MethodWithNoParamsAndReturnsEnumerableOfT<T>();
+		IEnumerable<T> MethodWithNoParamsAndReturnsEnumerableOfT<T>() where T : class;
 	}
 
 	public class GenericMethodsTestInterface : Proxy<IGenericMethodsTestInterface>, IGenericMethodsTestInterface
@@ -41,9 +41,16 @@ namespace Overmock.Examples.Tests.TestCode
 		{
 		}
 
-		public IEnumerable<T> MethodWithNoParamsAndReturnsEnumerableOfT<T>()
+		public IEnumerable<T> MethodWithNoParamsAndReturnsEnumerableOfT<T>() where T : class
 		{
-			return (IEnumerable<T>)HandleMethodCall((MethodInfo)MethodBase.GetCurrentMethod());
+			return default;
+			//return (IEnumerable<T>)HandleMethodCall((MethodInfo)MethodBase.GetCurrentMethod()!)!;
+		}
+
+		public IEnumerable<object> MethodWithNoParamsAndReturnsEnumerableOfT()
+		{
+			return default;
+			//return (IEnumerable<T>)HandleMethodCall((MethodInfo)MethodBase.GetCurrentMethod()!)!;
 		}
 	}
 }

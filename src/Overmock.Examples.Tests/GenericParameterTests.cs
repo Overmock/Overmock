@@ -30,12 +30,12 @@ namespace Overmock.Examples.Tests
 			_genericMethodsTestInterface.Override(m => m.MethodWithNoParamsAndReturnsEnumerableOfT<UserStory>())
 				.ToReturn(expected);
 
-			//var target = _genericMethodsTestInterface.Target;
+			var target = _genericMethodsTestInterface.Target;
 
-			//var actual = target.MethodWithNoParamsAndReturnsEnumerableOfT<UserStory>();
+			var actual = target.MethodWithNoParamsAndReturnsEnumerableOfT<UserStory>();
 			Assert.IsTrue(true);
-			//Assert.IsNotNull(target);
-			//CollectionAssert.AreEqual(expected, actual.ToList());
+			Assert.IsNotNull(target);
+			CollectionAssert.AreEqual(expected, actual.ToList());
 		}
 	}
 }
