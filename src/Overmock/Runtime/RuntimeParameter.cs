@@ -3,15 +3,15 @@
 	/// <summary>
 	/// Represents an overridden parameter.
 	/// </summary>
-	public class OverrideParameter
+	public class RuntimeParameter
 	{
 		/// <summary>
-		/// Initializes a new instance of the <see cref="OverrideParameter"/> class.
+		/// Initializes a new instance of the <see cref="RuntimeParameter"/> class.
 		/// </summary>
 		/// <param name="name">The name.</param>
 		/// <param name="value">The value.</param>
 		/// <param name="type">The type.</param>
-		public OverrideParameter(string name, object? value = default, Type? type = default)
+		public RuntimeParameter(string name, object? value = default, Type? type = default)
 		{
 			Type GetValueType(object? val) =>
 				type ?? value?.GetType() ?? typeof(object);

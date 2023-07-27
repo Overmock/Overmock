@@ -1,6 +1,6 @@
 ﻿using Lokad.ILPack;
-using Microsoft.CodeAnalysis;
 using Overmock.Runtime.Proxies;
+using System.Diagnostics;
 using System.Reflection;
 using System.Reflection.Emit;
 
@@ -9,7 +9,7 @@ namespace Overmock.Runtime.Marshalling
     /// <summary>
     /// 
     /// </summary>
-    public class InterfaceProxyMarshaller : ProxyMarshaller
+    internal class InterfaceProxyMarshaller : ProxyMarshaller
     {
         /// <summary>
         /// 
@@ -24,7 +24,7 @@ namespace Overmock.Runtime.Marshalling
 			);
 
 			DynamicModule = DynamicAssembly.DefineDynamicModule(Name);
-			ProxyType = RuntimeConstants.ProxyType.MakeGenericType(Target.Type);
+			ProxyType = Constants.ProxyType.MakeGenericType(Target.Type);
 		}
 
 		/// <summary>
@@ -59,29 +59,59 @@ namespace Overmock.Runtime.Marshalling
 
 			var context = (MarshallerContext)marshallerContext;
 
-			ImplementConstructor(context, ProxyType.GetConstructor(bindingFlags, new Type[] { RuntimeConstants.IOvermockType })!);
+			ImplementConstructor(context, ProxyType.GetConstructor(bindingFlags, new Type[] { Constants.OvermockType })!);
 
-			var overmockedMethods = Target.GetOvermockedMethods();
-			var overrides = overmockedMethods.Select(m => m.Method).ToArray();
+			var overmockedMethods = Target.GetOvermockedMethods().ToList();
+			var methodOverrides = overmockedMethods.Select(m =>
+				m.Method.IsGenericMethod
+					? m.Method.GetGenericMethodDefinition()
+					: m.Method
+			).ToArray();
 
-			var methods = AddInterfaceImplementations(context)
-				.Concat(GetBaseMethods(context))
-				.Where(m => !overrides.Contains(m))
+			(var methods, var properties) = AddInterfaceImplementations(context);
+
+			methods = methods.Concat(GetBaseMethods(context))
+				.Where(m => !methodOverrides.Contains(m))
 				.Distinct();
 
 			ImplementMethods(context, overmockedMethods, methods);
 
+            var overmockedProperties = Target.GetOvermockedProperties().ToList();
+            var propertyOverrides = overmockedProperties.Select(m => m.Expression.Member).ToArray();
+
+            properties = properties
+                .Where(p => !propertyOverrides.Contains(p))
+                .Distinct();
+
+            ImplementProperties(context, overmockedProperties, properties);
+
 			var dynamicType = context.TypeBuilder.CreateType();
 
 			// Write the assembly to disc for testing
-			WriteAssembly();
+			if (Debugger.IsAttached)
+			{
+				WriteAssembly();
+			}
 			// Write the assembly to disc for testing
-			
+
 			var instance = Activator.CreateInstance(dynamicType, Target)!;
 
 			((IProxy)instance).InitializeOvermockContext(context.OvermockContext);
 
 			return instance;
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <returns></returns>
+		protected override IMarshallerContext CreateContext()
+		{
+			const TypeAttributes attributes = TypeAttributes.Class | TypeAttributes.Public;
+
+			var typeBuilder = DynamicModule.DefineType(Constants.AssemblyAndTypeNameFormat.ApplyFormat(Target.TypeName), attributes, ProxyType);
+
+			return new MarshallerContext(Target, typeBuilder);
 		}
 
 		private void WriteAssembly()
@@ -95,19 +125,6 @@ namespace Overmock.Runtime.Marshalling
 			}
 
 			File.WriteAllBytes(fileName, generator.GenerateAssemblyBytes(DynamicAssembly));
-		}
-
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <returns></returns>
-		protected override IMarshallerContext CreateContext()
-		{
-			const TypeAttributes attributes = TypeAttributes.Class | TypeAttributes.Public;
-
-			var typeBuilder = DynamicModule.DefineType(Target.TypeName, attributes, ProxyType);
-
-			return new MarshallerContext(Target, typeBuilder);
 		}
 
 		private static void ImplementConstructor(MarshallerContext context, ConstructorInfo baseConstructor)
@@ -132,37 +149,63 @@ namespace Overmock.Runtime.Marshalling
 			ilGenerator.Emit(OpCodes.Ret);
 		}
 
-		private static IEnumerable<MethodInfo> AddInterfaceImplementations(MarshallerContext context)
+		private static (IEnumerable<MethodInfo>, IEnumerable<PropertyInfo>) AddInterfaceImplementations(MarshallerContext context)
         {
             if (!context.Target.IsInterface())
             {
                 throw new OvermockException(Ex.Message.NotAnInterfaceType(context.Target));
             }
 
-            return AddInterfacesRecursive(context, context.Target.Type);
+            return AddMembersRecursive(context, context.Target.Type);
         }
 
-        private static IEnumerable<MethodInfo> AddInterfacesRecursive(MarshallerContext context, Type interfaceType)
+		private static (IEnumerable<MethodInfo>, IEnumerable<PropertyInfo>) AddMembersRecursive(MarshallerContext context, Type interfaceType)
+		{
+			context.TypeBuilder.AddInterfaceImplementation(interfaceType);
+
+			context.AddInterfaces(interfaceType);
+
+			var methods = interfaceType.GetMethods().AsEnumerable();
+			var properties = interfaceType.GetProperties().AsEnumerable();
+
+			foreach (Type type in interfaceType.GetInterfaces())
+            {
+                methods = AddMethodsRecursive(context, type).Concat(methods);
+				properties = AddPropertiesRecursive(context, type).Concat(properties);
+			}
+
+			return (methods.Distinct(), properties.Distinct());
+		}
+
+		private static IEnumerable<MethodInfo> AddMethodsRecursive(MarshallerContext context, Type interfaceType)
         {
-            context.TypeBuilder.AddInterfaceImplementation(interfaceType);
-
-            context.AddInterfaces(interfaceType);
-
             var methods = interfaceType.GetMethods().AsEnumerable();
 
             foreach (Type type in interfaceType.GetInterfaces())
             {
-                methods = AddInterfacesRecursive(context, type).Concat(methods);
+                methods = AddMethodsRecursive(context, type).Concat(methods);
             }
 
             return methods.Distinct();
+        }
+
+        private static IEnumerable<PropertyInfo> AddPropertiesRecursive(MarshallerContext context, Type interfaceType)
+        {
+            var properties = interfaceType.GetProperties().AsEnumerable();
+
+            foreach (Type type in interfaceType.GetInterfaces())
+            {
+                properties = AddPropertiesRecursive(context, type).Concat(properties);
+            }
+
+            return properties.Distinct();
         }
 
         private static IEnumerable<MethodInfo> GetBaseMethods(MarshallerContext context)
         {
             if (context.Target.IsDelegate())
             {
-                return new[] { context.Target.Type.GetMethod(RuntimeConstants.InvokeMethodName)! };
+                return new[] { context.Target.Type.GetMethod(Constants.InvokeMethodName)! };
             }
 
             return typeof(object).GetMethods().Where(method => method.IsVirtual);
@@ -170,7 +213,7 @@ namespace Overmock.Runtime.Marshalling
 
 		private static void DefineOvermockInitMethod(TypeBuilder typeBuilder, FieldBuilder contextField)
 		{
-			var initContextMethod = typeBuilder.DefineMethod(RuntimeConstants.InitializeOvermockContextMethodName,
+			var initContextMethod = typeBuilder.DefineMethod(Constants.InitializeOvermockContextMethodName,
 				MethodAttributes.Public, CallingConventions.HasThis, typeof(void),
 				new[] { contextField.FieldType }
 			);
@@ -190,7 +233,11 @@ namespace Overmock.Runtime.Marshalling
 
 			foreach (var mock in overmocks)
 			{
-				var methodBuilder = CreateMethod(context, mock.Method);
+				var methodBuilder = CreateMethod(context,
+					mock.Method.IsGenericMethod
+						? mock.Method.GetGenericMethodDefinition()
+						: mock.Method
+				);
 
 				var methodId = Guid.NewGuid();
 				methodBuilder.SetCustomAttribute(new CustomAttributeBuilder(
@@ -198,17 +245,15 @@ namespace Overmock.Runtime.Marshalling
 					new object[] { methodId.ToString() }
 				));
 
-				context.OvermockContext.Add(methodId, new OverrideContext(mock.Method,
+				context.OvermockContext.Add(methodId, new RuntimeContext(mock.Method,
 					mock.GetOverrides(),
-					mock.Method.GetParameters().Select(p => new OverrideParameter(p.Name!, type: p.ParameterType)))
+					mock.Method.GetParameters().Select(p => new RuntimeParameter(p.Name!, type: p.ParameterType)))
 				);
 			}
 		}
 
 		private static MethodBuilder CreateMethod(MarshallerContext context, MethodInfo methodInfo)
 		{
-			//const MethodAttributes attributes = MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.Virtual | MethodAttributes.NewSlot;
-
 			var parameterTypes = methodInfo.GetParameters()
 				.Select(p => p.ParameterType).ToArray();
 
@@ -221,9 +266,43 @@ namespace Overmock.Runtime.Marshalling
 				parameterTypes
 			);
 
-            EmitMethodBody(context, methodBuilder.GetILGenerator(), methodBuilder.ReturnType, parameterTypes);
+			var iLGenerator = methodBuilder.GetILGenerator();
+			var returnType = methodInfo.ReturnType;
+
+			if (methodInfo.IsGenericMethod)
+			{
+				DefineGenericParameters(methodInfo, methodBuilder);
+			}
+
+			EmitMethodBody(context, iLGenerator, returnType, parameterTypes);
 
 			return methodBuilder;
+		}
+
+		private static void DefineGenericParameters(MethodInfo methodInfo, MethodBuilder methodBuilder)
+		{
+			var genericParameters = methodInfo.GetGenericArguments();
+			var genericParameterBuilders = methodBuilder.DefineGenericParameters(genericParameters.Select(t => t.Name).ToArray());
+
+			for (int i = 0; i < genericParameterBuilders.Length; i++)
+			{
+				var baseGenericArgument = genericParameters[i];
+				var genericParameterBuilder = genericParameterBuilders[i];
+
+				genericParameterBuilder.SetGenericParameterAttributes(baseGenericArgument.GenericParameterAttributes);
+
+				foreach (var baseTypeConstraint in baseGenericArgument.GetGenericParameterConstraints())
+				{
+					if (baseTypeConstraint.IsInterface)
+					{
+						genericParameterBuilder.SetInterfaceConstraints(baseTypeConstraint);
+					}
+					else
+					{
+						genericParameterBuilder.SetBaseTypeConstraint(baseTypeConstraint);
+					}
+				}
+			}
 		}
 
 		private static void EmitMethodBody(MarshallerContext context, ILGenerator emitter, Type returnType, Type[] parameters)
@@ -240,13 +319,13 @@ namespace Overmock.Runtime.Marshalling
 			emitter.Emit(OpCodes.Nop);
 			emitter.Emit(OpCodes.Ldarg_0);
 
-			emitter.Emit(OpCodes.Call, RuntimeConstants.MethodBaseTypeGetCurrentMethod);
-			emitter.Emit(OpCodes.Castclass, RuntimeConstants.MethodInfoType);
+			emitter.Emit(OpCodes.Call, Constants.MethodBaseTypeGetCurrentMethod);
+			emitter.Emit(OpCodes.Castclass, Constants.MethodInfoType);
 
 			if (parameters.Length > 0)
 			{
 				emitter.Emit(OpCodes.Ldc_I4, parameters.Length);
-				emitter.Emit(OpCodes.Newarr, RuntimeConstants.ObjectType);
+				emitter.Emit(OpCodes.Newarr, Constants.ObjectType);
 
 				for (int i = 0; i < parameters.Length - 1; i++)
 				{
@@ -265,15 +344,14 @@ namespace Overmock.Runtime.Marshalling
 				emitter.Emit(OpCodes.Dup);
 				emitter.Emit(OpCodes.Ldc_I4, parameters.Length - 1);
 				emitter.Emit(OpCodes.Ldarg, parameters.Length - 1);
-				//emitter.Emit(OpCodes.Ldarg_S, parameters.Last().Name);
 				emitter.Emit(OpCodes.Stelem_Ref);
 			}
             else
             {
-				emitter.EmitCall(OpCodes.Call, RuntimeConstants.EmptyObjectArrayMethod, null);
+				emitter.EmitCall(OpCodes.Call, Constants.EmptyObjectArrayMethod, null);
             }
 
-			emitter.EmitCall(OpCodes.Callvirt, RuntimeConstants.GetProxyTypeHandleMethodCallMethod(context.Target.Type), null);
+			emitter.EmitCall(OpCodes.Callvirt, Constants.GetProxyTypeHandleMethodCallMethod(context.Target.Type), null);
 
 			if (returnIsNotVoid)
 			{
@@ -285,50 +363,88 @@ namespace Overmock.Runtime.Marshalling
 				emitter.MarkLabel(returnLabel);
 				emitter.Emit(OpCodes.Ldloc_0);
 			}
+            else
+            {
+                emitter.Emit(OpCodes.Pop);
+            }
 
 			emitter.Emit(OpCodes.Ret);
 		}
 
-		private static void DefineProperties(IOvermock target, TypeBuilder dynamicType)
+		private static void ImplementProperties(MarshallerContext context, IEnumerable<IPropertyCall> overmocks, IEnumerable<PropertyInfo> properties)
 		{
-			DefineProperties(target.Type, dynamicType);
-		}
-
-		private static void DefineProperties(Type target, TypeBuilder dynamicType)
-		{
-			foreach (PropertyInfo property in target.GetProperties())
+			foreach (var method in properties)
 			{
-				CreateProperty(property, dynamicType);
+				CreateMethod(context, method.GetGetMethod()!);
+			}
+
+			foreach (var mock in overmocks)
+			{
+				var propertyGetter = mock.PropertyInfo.GetGetMethod();
+				var methodBuilder = CreateMethod(context, propertyGetter!);
+
+				var methodId = Guid.NewGuid();
+				methodBuilder.SetCustomAttribute(new CustomAttributeBuilder(
+					typeof(OvermockAttribute).GetConstructors().First(),
+					new object[] { methodId.ToString() }
+				));
+
+				context.OvermockContext.Add(methodId, new RuntimeContext(propertyGetter,
+					mock.GetOverrides(),
+					Enumerable.Empty<RuntimeParameter>())
+				);
 			}
 		}
 
-		private static TypeBuilder CreateProperty(PropertyInfo propertyInfo, TypeBuilder typeBuilder)
+		private static void DefineProperties(MarshallerContext context)
 		{
-			PropertyBuilder property = typeBuilder.DefineProperty(propertyInfo.Name, PropertyAttributes.HasDefault, CallingConventions.HasThis, propertyInfo.PropertyType, new Type[1]
+			foreach (PropertyInfo property in context.Target.Type.GetProperties())
 			{
-		propertyInfo.PropertyType
+				CreateProperty(context, property);
+			}
+		}
+
+		private static TypeBuilder CreateProperty(MarshallerContext context, PropertyInfo propertyInfo)
+		{
+			var typeBuilder = context.TypeBuilder;
+
+            PropertyBuilder property = typeBuilder.DefineProperty(propertyInfo.Name, PropertyAttributes.HasDefault, CallingConventions.HasThis, propertyInfo.PropertyType, new Type[1]
+			{
+		        propertyInfo.PropertyType
 			});
+
 			FieldBuilder field = typeBuilder.DefineField("_" + propertyInfo.Name.ToLower(), propertyInfo.PropertyType, FieldAttributes.Private);
-			if (propertyInfo.CanRead)
-				CreateGetMethod(typeBuilder, property, propertyInfo.GetGetMethod(), field, MethodAttributes.Public | MethodAttributes.Virtual | MethodAttributes.SpecialName);
-			if (propertyInfo.CanWrite)
-				CreateSetMethod(typeBuilder, property, propertyInfo.GetSetMethod(), field, MethodAttributes.Public | MethodAttributes.Virtual | MethodAttributes.SpecialName);
+
+            if (propertyInfo.CanRead)
+            {
+                CreateGetMethod(context, property, propertyInfo.GetGetMethod()!, field, MethodAttributes.Public | MethodAttributes.Virtual | MethodAttributes.SpecialName);
+            }
+
+            //if (propertyInfo.CanWrite)
+            //{
+            //    CreateSetMethod(typeBuilder, property, propertyInfo.GetSetMethod()!, field, MethodAttributes.Public | MethodAttributes.Virtual | MethodAttributes.SpecialName);
+            //}
+
 			return typeBuilder;
 		}
 
 		private static void CreateGetMethod(
-			TypeBuilder baseType,
-			PropertyBuilder property,
+            MarshallerContext context,
+            PropertyBuilder property,
 			MethodInfo method,
 			FieldInfo field,
 			MethodAttributes getAttrs)
 		{
-			MethodBuilder mdBuilder = baseType.DefineMethod(method.Name, getAttrs, method.ReturnType, Type.EmptyTypes);
-			ILGenerator ilGenerator = mdBuilder.GetILGenerator();
-			ilGenerator.Emit(OpCodes.Ldarg_0);
-			ilGenerator.Emit(OpCodes.Ldfld, field);
-			ilGenerator.Emit(OpCodes.Ret);
-			property.SetGetMethod(mdBuilder);
+			MethodBuilder mdBuilder = context.TypeBuilder.DefineMethod(method.Name, getAttrs, method.ReturnType, Type.EmptyTypes);
+			
+			EmitMethodBody(context, mdBuilder.GetILGenerator(), property.PropertyType, Type.EmptyTypes);
+
+            //ILGenerator ilGenerator = mdBuilder.GetILGenerator();
+			//ilGenerator.Emit(OpCodes.Ldarg_0);
+			//ilGenerator.Emit(OpCodes.Ldfld, field);
+			//ilGenerator.Emit(OpCodes.Ret);
+			
+            property.SetGetMethod(mdBuilder);
 		}
 
 		private static void CreateSetMethod(
@@ -360,14 +476,14 @@ namespace Overmock.Runtime.Marshalling
 				Target = target;
 				TypeBuilder = typeBuilder;
 				Interfaces = new List<Type>();
-				OvermockContext = new OvermockRuntimeContext();
+				OvermockContext = new ProxyOverrideContext();
 			}
 
 			public IOvermock Target { get; }
 
 			public TypeBuilder TypeBuilder { get; }
 
-			public OvermockRuntimeContext OvermockContext { get; }
+			public ProxyOverrideContext OvermockContext { get; }
 
 			private List<Type> Interfaces { get; set; }
 

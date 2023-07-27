@@ -4,7 +4,7 @@ using System.Reflection;
 
 namespace Overmock.Runtime
 {
-    internal static class RuntimeConstants
+    internal static class Constants
     {
         /// <summary>
         /// 
@@ -19,7 +19,7 @@ namespace Overmock.Runtime
         /// <summary>
         /// 
         /// </summary>
-        public const string AssemblyNameFormat = "Overmocked.Proxies.{0}";
+        public const string AssemblyAndTypeNameFormat = "Overmocked.Proxies.{0}";
 
         /// <summary>
         /// 
@@ -34,7 +34,7 @@ namespace Overmock.Runtime
 		/// <summary>
 		/// 
 		/// </summary>
-		public static readonly Type IOvermockType = typeof(IOvermock);
+		public static readonly Type OvermockType = typeof(IOvermock);
 
 		/// <summary>
 		/// 
@@ -69,7 +69,7 @@ namespace Overmock.Runtime
         /// <summary>
         /// 
         /// </summary>
-		public static readonly Type OverrideHandlerType = typeof(IOverrideHandler);
+		public static readonly Type OverrideHandlerType = typeof(IRuntimeHandler);
 
         /// <summary>
         /// 
@@ -79,7 +79,12 @@ namespace Overmock.Runtime
         /// <summary>
         /// 
         /// </summary>
-		public static readonly Type OvermockContextType = typeof(OvermockRuntimeContext);
+		public static readonly Type TypeType = typeof(Type);
+
+        /// <summary>
+        /// 
+        /// </summary>
+		public static readonly Type OvermockContextType = typeof(ProxyOverrideContext);
 
         /// <summary>
         /// 
@@ -89,8 +94,12 @@ namespace Overmock.Runtime
         /// <summary>
         /// 
         /// </summary>
-        public static readonly MethodInfo IOverrideHandlerTypeHandleMethod = 
-            OverrideHandlerType.GetMethod("Handle", BindingFlags.Instance | BindingFlags.Public)!;
+        public static readonly MethodInfo GetTypeFromHandleMethod = TypeType.GetMethod("GetTypeFromHandle", BindingFlags.Static | BindingFlags.Public)!;
+
+		/// <summary>
+		/// 
+		/// </summary>
+		public static readonly MethodInfo OverrideHandlerTypeHandleMethod = OverrideHandlerType.GetMethod("Handle", BindingFlags.Instance | BindingFlags.Public)!;
 
         /// <summary>
         /// 
@@ -102,8 +111,7 @@ namespace Overmock.Runtime
         /// </summary>
         /// <param name="genericTypeArg"></param>
         /// <returns></returns>
-        public static MethodInfo EmptyArrayMethod(Type genericTypeArg) =>
-            ArrayType.GetMethod("Empty", BindingFlags.Static | BindingFlags.Public)!.MakeGenericMethod(genericTypeArg)!;
+        public static MethodInfo EmptyArrayMethod(Type genericTypeArg) => ArrayType.GetMethod("Empty", BindingFlags.Static | BindingFlags.Public)!.MakeGenericMethod(genericTypeArg)!;
 
         /// <summary>
         /// 

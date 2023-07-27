@@ -53,6 +53,6 @@ namespace Overmock.Setup
 		/// </summary>
 		/// <param name="callback"></param>
 		/// <returns></returns>
-		void ToCall(Func<OverrideContext, TReturn> callback);
+		void ToCall(Func<RuntimeContext, TReturn> callback);
 	}
 }

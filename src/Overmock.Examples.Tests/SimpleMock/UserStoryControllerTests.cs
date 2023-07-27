@@ -1,4 +1,3 @@
-using Overmock.Compilation;
 using Overmock.Examples.Controllers;
 using Overmock.Examples.Storage;
 using Simple.Mocking;

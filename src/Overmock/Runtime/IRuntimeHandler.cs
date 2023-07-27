@@ -1,15 +1,15 @@
 ﻿namespace Overmock.Runtime
 {
 	/// <summary>
-	/// Handles a specific <see cref="OverrideContext" />.
+	/// Handles a specific <see cref="RuntimeContext" />.
 	/// </summary>
-	public interface IOverrideHandler
+	public interface IRuntimeHandler
 	{
 		/// <summary>
 		/// 
 		/// </summary>
 		/// <returns></returns>
 		/// <exception cref="OvermockException"></exception>
-		public OverrideHandlerResult Handle(params object[] parameters);
+		public RuntimeHandlerResult Handle(params object[] parameters);
 	}
 }
