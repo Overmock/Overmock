@@ -1,5 +1,8 @@
 ﻿namespace Overmock.Runtime
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public static class OvermockExtensions
     {
         /// <summary>
@@ -39,7 +42,7 @@
         /// <returns></returns>
         public static bool IsDelegate(this Type target)
         {
-            return RuntimeConstants.DelegateType.IsAssignableFrom(target);
+            return Constants.DelegateType.IsAssignableFrom(target);
         }
     }
 }

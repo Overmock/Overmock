@@ -1,5 +1,6 @@
 ﻿using Overmock.Runtime;
 using System.Linq.Expressions;
+using System.Reflection;
 
 namespace Overmock.Mocking.Internal
 {
@@ -18,17 +19,19 @@ namespace Overmock.Mocking.Internal
 		}
 
 		MemberExpression IPropertyCall.Expression => _expression;
+
+		PropertyInfo IPropertyCall.PropertyInfo => (PropertyInfo)_expression.Member;
 	}
 
 	internal class PropertyCall<TReturn> : PropertyCall, IPropertyCall<TReturn>
 	{
-		private Func<OverrideContext, TReturn>? _func;
+		private Func<RuntimeContext, TReturn>? _func;
 
 		internal PropertyCall(MemberExpression expression) : base(expression)
 		{
 		}
 
-		void IPropertyCall<TReturn>.Calls(Func<OverrideContext, TReturn> func)
+		void IPropertyCall<TReturn>.Calls(Func<RuntimeContext, TReturn> func)
 		{
 			_func = func;
 		}

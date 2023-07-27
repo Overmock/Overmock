@@ -1,6 +1,4 @@
 ﻿
-using Overmock.Runtime;
-
 namespace Overmock.Mocking.Internal
 {
 	/// <summary>

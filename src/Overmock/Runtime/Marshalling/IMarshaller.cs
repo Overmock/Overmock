@@ -1,6 +1,4 @@
-﻿using Overmock.Runtime.Proxies;
-
-namespace Overmock.Runtime.Marshalling
+﻿namespace Overmock.Runtime.Marshalling
 {
     /// <summary>
     /// Represents a builder for types

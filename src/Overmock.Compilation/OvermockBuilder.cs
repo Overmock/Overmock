@@ -1,6 +1,5 @@
 ﻿using Overmock.Compilation;
 using Overmock.Compilation.Roslyn;
-using Overmock.Runtime.Marshalling;
 using System;
 
 namespace Overmock

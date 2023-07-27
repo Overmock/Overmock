@@ -1,5 +1,6 @@
 ﻿using Overmock.Runtime;
 using System.Linq.Expressions;
+using System.Reflection;
 
 namespace Overmock.Mocking
 {
@@ -12,6 +13,11 @@ namespace Overmock.Mocking
 		/// The <see cref="System.Linq.Expressions.Expression"/> used to select this member.
 		/// </summary>
 		MemberExpression Expression { get; }
+
+		/// <summary>
+		/// 
+		/// </summary>
+		PropertyInfo PropertyInfo { get; }
 	}
 
 	/// <summary>
@@ -24,6 +30,6 @@ namespace Overmock.Mocking
 		/// An <see cref="Func{OverrideContext, TReturn}"/> delegate to call in place of this override's property.
 		/// </summary>
 		/// <param name="func"></param>
-		void Calls(Func<OverrideContext, TReturn> func);
+		void Calls(Func<RuntimeContext, TReturn> func);
 	}
 }

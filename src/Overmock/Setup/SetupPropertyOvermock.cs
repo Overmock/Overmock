@@ -11,7 +11,7 @@ namespace Overmock.Setup
 			_propertyCall = propertyCall;
 		}
 
-		void ISetupOvermock<T, TReturn>.ToCall(Func<OverrideContext, TReturn> callback)
+		void ISetupOvermock<T, TReturn>.ToCall(Func<RuntimeContext, TReturn> callback)
 		{
 			_propertyCall.Calls(callback);
 		}

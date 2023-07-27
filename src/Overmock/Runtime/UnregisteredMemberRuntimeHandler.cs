@@ -2,16 +2,16 @@
 
 namespace Overmock.Runtime
 {
-	internal class UnregisteredOverrideHandler : IOverrideHandler
+	internal class UnregisteredMemberRuntimeHandler : IRuntimeHandler
 	{
 		private readonly MethodInfo _method;
 
-		public UnregisteredOverrideHandler(MethodInfo method)
+		public UnregisteredMemberRuntimeHandler(MethodInfo method)
 		{
 			_method = method;
 		}
 
-		public OverrideHandlerResult Handle(params object[] parameters)
+		public RuntimeHandlerResult Handle(params object[] parameters)
 		{
 			throw new OvermockException($"No override specified for the given method: {_method}");
 		}

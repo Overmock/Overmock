@@ -20,7 +20,7 @@ public class Overmock<T> : Verifiable<T>, IOvermock<T> where T : class
     /// </summary>
     /// <param name="factory"></param>
     /// <param name="argsProvider">The delegate used to get arguments to pass when constructing <typeparamref name="T" />.</param>
-    public Overmock(IMarshallerFactory? factory = null, Action<SetupArgs>? argsProvider = default)
+    public Overmock(IMarshallerFactory? factory = default, Action<SetupArgs>? argsProvider = default)
     {
         Overmocked.Register(this);
 		
@@ -104,10 +104,10 @@ public class Overmock<T> : Verifiable<T>, IOvermock<T> where T : class
 		return methodCall;
 	}
 
-	TProperty IOvermock.AddProperty<TProperty>(TProperty methodCall)
+	TProperty IOvermock.AddProperty<TProperty>(TProperty propertyCall)
 	{
-		_properties.Add(methodCall);
-		return methodCall;
+		_properties.Add(propertyCall);
+		return propertyCall;
 	}
 
 	IEnumerable<IMethodCall> IOvermock.GetOvermockedMethods()

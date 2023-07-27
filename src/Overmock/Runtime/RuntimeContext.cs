@@ -5,40 +5,40 @@ namespace Overmock.Runtime
 	/// <summary>
 	/// The context for an overridden member.
 	/// </summary>
-	public class OverrideContext
+	public class RuntimeContext
 	{
-		private readonly MemberInfo _overmock;
+		private readonly MemberInfo _target;
 
         // TODO: This needs to handle more that one override.
-		private readonly List<OverrideParameter> _parameters = new List<OverrideParameter>();
+		private readonly List<RuntimeParameter> _parameters = new List<RuntimeParameter>();
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="OverrideContext"/> class.
+		/// Initializes a new instance of the <see cref="RuntimeContext"/> class.
 		/// </summary>
 		/// <param name="overmock"></param>
 		/// <param name="overrides"></param>
 		/// <param name="parameters">The parameters.</param>
-		public OverrideContext(MemberInfo overmock, IEnumerable<MemberOverride> overrides, IEnumerable<OverrideParameter> parameters)
+		public RuntimeContext(MemberInfo overmock, IEnumerable<MemberOverride> overrides, IEnumerable<RuntimeParameter> parameters)
 		{
-			_overmock = overmock;
+			_target = overmock;
 			Overrides = overrides;
 			_parameters.AddRange(parameters);
 		}
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="OverrideContext"/> class.
+		/// Initializes a new instance of the <see cref="RuntimeContext"/> class.
 		/// </summary>
 		/// <param name="overmock"></param>
 		/// <param name="overrides"></param>
 		/// <param name="parameters">The parameters.</param>
-		public OverrideContext(MemberInfo overmock, IEnumerable<MemberOverride> overrides, params OverrideParameter[] parameters) : this(overmock, overrides, parameters.AsEnumerable())
+		public RuntimeContext(MemberInfo overmock, IEnumerable<MemberOverride> overrides, params RuntimeParameter[] parameters) : this(overmock, overrides, parameters.AsEnumerable())
 		{
 		}
 
 		/// <summary>
 		/// Gets the name of the Override.
 		/// </summary>
-		public string MemberName => _overmock.Name;
+		public string MemberName => _target.Name;
 
 		/// <summary>
 		/// Gets the number of parameters for this overmock.

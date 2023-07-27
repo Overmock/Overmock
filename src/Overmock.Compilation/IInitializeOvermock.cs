@@ -1,16 +1,16 @@
-﻿using Overmock.Runtime;
+﻿using Overmock.Runtime.Proxies;
 
 namespace Overmock.Compilation
 {
-	/// <summary>
-	/// 
-	/// </summary>
-	public interface IInitializeOvermock
+    /// <summary>
+    /// 
+    /// </summary>
+    public interface IInitializeOvermock
 	{
 		/// <summary>
 		/// 
 		/// </summary>
 		/// <param name="context"></param>
-		void InitializeOvermock(OvermockRuntimeContext context);
+		void InitializeOvermock(ProxyOverrideContext context);
 	}
 }
