@@ -1,9 +1,9 @@
 ﻿using Overmock.Examples.Storage;
-using Overmock.Examples.Tests.Methods;
+using Overmock.Tests.Mocks.Methods;
 
 namespace Overmock.Examples.Tests
 {
-	[TestClass]
+    [TestClass]
 	public class GenericMethodNoParametersTests
 	{
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
@@ -19,7 +19,7 @@ namespace Overmock.Examples.Tests
 		[TestInitialize]
 		public void Initialize()
 		{
-			_genericMethodsTestInterface = Overmocked.Setup<IGenericMethodsTestInterface>();
+			_genericMethodsTestInterface = Overmocked.Interface<IGenericMethodsTestInterface>();
 		}
 
 		[TestMethod]

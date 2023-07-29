@@ -1,7 +1,7 @@
 using DataCompany.Framework;
 using Overmock.Examples.Controllers;
 using Overmock.Examples.Storage;
-using Overmock.Examples.Tests.Methods;
+using Overmock.Tests.Mocks.Methods;
 
 namespace Overmock.Examples.Tests
 {
@@ -13,7 +13,7 @@ namespace Overmock.Examples.Tests
 		[TestInitialize]
 		public void Initialize()
 		{
-			_testInterface = Overmocked.Setup<IMethodsWithNoParameters>();
+			_testInterface = Overmocked.Interface<IMethodsWithNoParameters>();
 		}
 
 		[TestMethod]

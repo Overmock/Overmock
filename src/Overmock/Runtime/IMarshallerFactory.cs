@@ -1,4 +1,4 @@
-﻿namespace Overmock.Runtime.Marshalling
+﻿namespace Overmock.Runtime
 {
     /// <summary>
     /// 

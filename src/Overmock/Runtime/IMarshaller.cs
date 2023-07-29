@@ -1,4 +1,4 @@
-﻿namespace Overmock.Runtime.Marshalling
+﻿namespace Overmock.Runtime
 {
     /// <summary>
     /// Represents a builder for types
@@ -22,5 +22,5 @@
         /// </summary>
         /// <returns></returns>
 		object Marshal();
-	}
+    }
 }

@@ -1,46 +1,68 @@
 using DataCompany.Framework;
 using Overmock.Examples.Controllers;
 using Overmock.Examples.Storage;
-using Overmock.Examples.Tests.Methods;
+using Overmock.Tests.Mocks.Methods;
+using System;
 
 namespace Overmock.Examples.Tests
 {
     [TestClass]
-	public class UserStoryControllerTests
+	public class MethodWithNoParamsToThrowTests
 	{
 		private IOvermock<IMethodsWithNoParameters> _testInterface = null!;
 
 		[TestInitialize]
 		public void Initialize()
 		{
-            _testInterface = Overmocked.Setup<IMethodsWithNoParameters>();
+            _testInterface = Overmocked.Interface<IMethodsWithNoParameters>();
 		}
 
 		[TestMethod]
 		public void VoidMethodWithNoParamsTest()
 		{
-            _testInterface.Override(t => t.VoidMethodWithNoParams());
+			var exception = new Exception();
+
+			_testInterface.Override(t => t.VoidMethodWithNoParams())
+				.ToThrow(exception);
 
 			var target = _testInterface.Target;
 
 			Assert.IsNotNull(target);
 
-			target.VoidMethodWithNoParams();
+			try
+			{
+				target.VoidMethodWithNoParams();
+
+				Assert.Fail();
+			}
+			catch (Exception ex)
+			{
+				Assert.AreEqual(exception, ex);
+			}
 		}
 		
         [TestMethod]
         public void BoolMethodWithNoParamsTest()
-        {
-            _testInterface.Override(t => t.BoolMethodWithNoParams())
-                .ToReturn(true);
+		{
+			var exception = new Exception();
 
-            var target = _testInterface.Target;
+			_testInterface.Override(t => t.BoolMethodWithNoParams())
+				.ToThrow(exception);
 
-            Assert.IsNotNull(target);
+			var target = _testInterface.Target;
 
-            var test = target.BoolMethodWithNoParams();
+			Assert.IsNotNull(target);
 
-            Assert.IsTrue(test);
-        }
+			try
+			{
+				target.BoolMethodWithNoParams();
+
+				Assert.Fail();
+			}
+			catch (Exception ex)
+			{
+				Assert.AreEqual(exception, ex);
+			}
+		}
 	}
 }

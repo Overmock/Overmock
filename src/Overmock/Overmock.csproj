@@ -40,6 +40,7 @@
 
   <ItemGroup>
     <Folder Include="Runtime\Extensions\" />
+    <Folder Include="Runtime\Marshalling\" />
     <Folder Include="Setup\" />
   </ItemGroup>
 	

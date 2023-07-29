@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Overmock.Runtime.Marshalling
+namespace Overmock.Runtime.Proxies
 {
     internal class DelegateProxyMarshaller : ProxyMarshaller
     {

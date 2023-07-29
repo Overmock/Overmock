@@ -17,7 +17,7 @@
 		/// 
 		/// </summary>
 		/// <param name="parameters">The parameters used to call the overridden member.</param>
-		/// <returns>An IDisposable object that handles the result of the method call.</returns>
+		/// <returns>An object that handles the result of the method call.</returns>
 		/// <exception cref="OvermockException"></exception>
 		protected override RuntimeHandlerResult HandleCore(params object[] parameters)
 		{

@@ -1,12 +1,12 @@
-﻿using Overmock.Examples.Tests.Methods;
-using Overmock.Examples.Tests.Properties;
+﻿using Overmock.Tests.Mocks.Methods;
+using Overmock.Tests.Mocks.Properties;
 
 namespace Overmock.Examples.Tests
 {
     [TestClass]
     public class PropertyGetToReturnTests
 	{
-		private readonly IOvermock<IPropertiesWithGet> _overmock = Overmocked.Setup<IPropertiesWithGet>();
+		private readonly IOvermock<IPropertiesWithGet> _overmock = Overmocked.Interface<IPropertiesWithGet>();
 
 		private readonly Model _model1 = new Model();
 		private readonly Model _model2 = new Model();
