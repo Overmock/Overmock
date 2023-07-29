@@ -1,4 +1,6 @@
-﻿namespace Overmock.Mocking
+﻿using System.Reflection;
+
+namespace Overmock.Mocking
 {
 	/// <summary>
 	/// 
@@ -10,5 +12,11 @@
 		/// </summary>
 		/// <returns></returns>
 		IEnumerable<IOverride> GetOverrides();
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <returns></returns>
+		MemberInfo GetTarget();
 	}
 }

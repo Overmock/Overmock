@@ -8,31 +8,24 @@ namespace Overmock.Runtime
 	public class RuntimeContext
 	{
 		private readonly MemberInfo _target;
+		private readonly object? _defaultReturnValue;
 
-        // TODO: This needs to handle more that one override.
+		// TODO: This needs to handle more that one override.
 		private readonly List<RuntimeParameter> _parameters = new List<RuntimeParameter>();
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="RuntimeContext"/> class.
 		/// </summary>
 		/// <param name="overmock"></param>
-		/// <param name="overrides"></param>
+		/// <param name="target"></param>
 		/// <param name="parameters">The parameters.</param>
-		public RuntimeContext(MemberInfo overmock, IEnumerable<IOverride> overrides, IEnumerable<RuntimeParameter> parameters)
+		public RuntimeContext(ICallable overmock, MethodInfo? target, IEnumerable<RuntimeParameter> parameters)
 		{
-			_target = overmock;
-			Overrides = overrides;
+			_target = target ?? overmock.GetTarget();
 			_parameters.AddRange(parameters);
-		}
+			_defaultReturnValue = overmock.GetDefaultReturnValue();
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="RuntimeContext"/> class.
-		/// </summary>
-		/// <param name="overmock"></param>
-		/// <param name="overrides"></param>
-		/// <param name="parameters">The parameters.</param>
-		public RuntimeContext(MemberInfo overmock, IEnumerable<IOverride> overrides, params RuntimeParameter[] parameters) : this(overmock, overrides, parameters.AsEnumerable())
-		{
+			Overrides = overmock.GetOverrides();
 		}
 
 		/// <summary>
@@ -84,6 +77,26 @@ namespace Overmock.Runtime
 			}
 
 			return (TParameter)param.Value;
+		}
+
+		internal object? GetDefaultValueTypeValue()
+		{
+			return _defaultReturnValue;
+		}
+
+		internal bool IsValueType()
+		{
+			if (_target is MethodInfo method)
+			{
+				return method.ReturnType.IsValueType;
+			}
+
+			if (_target is PropertyInfo property)
+			{
+				return property.PropertyType.IsValueType;
+			}
+
+			return false;
 		}
 
 		internal void SetParameterValue(int i, object value)

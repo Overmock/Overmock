@@ -1,4 +1,6 @@
-﻿namespace Overmock.Mocking.Internal
+﻿using System.Reflection;
+
+namespace Overmock.Mocking.Internal
 {
 	internal abstract class Overridable : IOverridable
 	{
@@ -10,6 +12,8 @@
 
 			return overrides.AsReadOnly();
 		}
+
+		public abstract MemberInfo GetTarget();
 
 		protected abstract void AddOverridesTo(List<IOverride> overrides);
 	}

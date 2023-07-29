@@ -244,8 +244,8 @@ namespace Overmock.Runtime.Proxies
                     new object[] { methodId.ToString() }
                 ));
 
-                context.OvermockContext.Add(methodId, new RuntimeContext(mock.Method,
-                    mock.GetOverrides(),
+                context.OvermockContext.Add(methodId, new RuntimeContext(mock,
+                    mock.Method,
                     mock.Method.GetParameters().Select(p => new RuntimeParameter(p.Name!, type: p.ParameterType)))
                 );
             }
@@ -395,8 +395,8 @@ namespace Overmock.Runtime.Proxies
                     new object[] { methodId.ToString() }
                 ));
 
-                context.OvermockContext.Add(methodId, new RuntimeContext(propertyGetter,
-                    mock.GetOverrides(),
+                context.OvermockContext.Add(methodId, new RuntimeContext(mock,
+                    propertyGetter,
                     Enumerable.Empty<RuntimeParameter>())
                 );
             }

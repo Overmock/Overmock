@@ -1,68 +1,77 @@
 ﻿using Overmock.Tests.Mocks;
 using Overmock.Tests.Mocks.Properties;
+using System;
 
 namespace Overmock.Tests
 {
     public partial class PropertyGetTests
 	{
 		[TestMethod]
-		public void IntPropertyToReturnTest()
+		public void IntPropertyToCallTest()
 		{
+			var called = false;
+
 			_overmock.Override(t => t.Int)
-				.ToReturn(20);
+				.ToCall(c => called = true);
 
 			var target = _overmock.Target;
 
 			Assert.IsNotNull(target);
 
-			var test = target.Int;
+			var model = target.Int;
 
-			Assert.AreEqual(20, test);
+			Assert.IsTrue(called);
 		}
 
 		[TestMethod]
-		public void StringPropertyToReturnTest()
+		public void StringPropertyToCallTest()
 		{
+			var called = false;
+
 			_overmock.Override(t => t.String)
-				.ToReturn("testing-name");
+				.ToCall(c => called = true);
 
 			var target = _overmock.Target;
 
 			Assert.IsNotNull(target);
 
-			var test = target.String;
+			var model = target.String;
 
-			Assert.AreEqual("testing-name", test);
+			Assert.IsTrue(called);
 		}
 
 		[TestMethod]
-		public void ModelPropertyToReturnTest()
+		public void ModelPropertyToCallTest()
 		{
+			var called = false;
+
 			_overmock.Override(t => t.Model)
-				.ToReturn(_model1);
+				.ToCall(c => called = true);
 
 			var target = _overmock.Target;
 
 			Assert.IsNotNull(target);
 
-			var test = target.Model;
+			var model = target.Model;
 
-			Assert.AreEqual(_model1, test);
+			Assert.IsTrue(called);
 		}
 
 		[TestMethod]
-		public void ListOfModelPropertyToReturnTest()
+		public void ListOfModelPropertyToCallTest()
 		{
+			var called = false;
+
 			_overmock.Override(t => t.ListOfModels)
-				.ToReturn(_models);
+				.ToCall(c => called = true);
 
 			var target = _overmock.Target;
 
 			Assert.IsNotNull(target);
 
-			var test = target.ListOfModels;
+			var model = target.ListOfModels;
 
-			Assert.AreEqual(_models, test);
+			Assert.IsTrue(called);
 		}
 	}
 }

@@ -1,8 +1,7 @@
-﻿using Overmock.Examples.Tests;
-
+﻿
 namespace Overmock.Tests.Mocks.Methods
 {
-	public class IMethodsWith2ParametersImpl : IMethodsWith2Parameters
+    public class IMethodsWith2ParametersImpl : IMethodsWith2Parameters
 	{
 		public bool BoolMethodWithStringAndModel(string name, Model model)
 		{

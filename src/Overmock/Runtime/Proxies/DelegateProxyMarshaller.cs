@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Overmock.Runtime.Proxies
+﻿namespace Overmock.Runtime.Proxies
 {
-    internal class DelegateProxyMarshaller : ProxyMarshaller
+	internal class DelegateProxyMarshaller : ProxyMarshaller
     {
         public DelegateProxyMarshaller(IOvermock target, Action<SetupArgs>? argsProvider) : base(target, argsProvider)
         {

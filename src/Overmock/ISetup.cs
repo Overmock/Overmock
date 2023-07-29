@@ -5,19 +5,13 @@ namespace Overmock
     /// <summary>
     /// Represents a member that can setup an Exception to throw when calling the overmock.
     /// </summary>
-    public interface ISetup
+    public interface ISetup : IFluentInterface
     {
         /// <summary>
         /// Specifies the exception to throw when the overmocked member is called.
         /// </summary>
         /// <param name="exception">The exception to throw.</param>
         void ToThrow(Exception exception);
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="action"></param>
-        void ToCall(Action<RuntimeContext> action);
     }
 
     /// <summary>
@@ -25,8 +19,13 @@ namespace Overmock
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public interface ISetup<in T> : ISetup where T : class
-    {
-    }
+	{
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="action"></param>
+		void ToCall(Action<RuntimeContext> action);
+	}
 
     /// <summary>
     /// Represents a member that can setup a return value.

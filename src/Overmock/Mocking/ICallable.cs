@@ -12,6 +12,13 @@ namespace Overmock.Mocking
 		/// </summary>
 		/// <param name="action"></param>
 		void Calls(Action<RuntimeContext> action);
+
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <returns></returns>
+		object? GetDefaultReturnValue();
 	}
 
 	/// <summary>

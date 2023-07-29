@@ -6,6 +6,8 @@ namespace Overmock.Mocking.Internal
 	{
 		public Action<RuntimeContext>? Action { get; private set; }
 
+		public abstract object? GetDefaultReturnValue();
+
 		public void Calls(Action<RuntimeContext> action)
 		{
 			Action = action;
@@ -22,7 +24,7 @@ namespace Overmock.Mocking.Internal
 		}
 	}
 
-	internal class Callable<T> : Callable, ICallable<T>
+	internal abstract class Callable<T> : Callable, ICallable<T>
 	{
 	}
 }

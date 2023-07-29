@@ -1,5 +1,4 @@
-﻿using Overmock.Examples.Tests;
-using Overmock.Runtime.Proxies;
+﻿using Overmock.Runtime.Proxies;
 using System.Reflection;
 
 namespace Overmock.Tests.Mocks.Properties

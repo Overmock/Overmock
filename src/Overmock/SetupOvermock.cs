@@ -1,10 +1,8 @@
-﻿using Overmock.Mocking;
-using Overmock.Mocking.Internal;
-using Overmock.Runtime;
+﻿using Overmock.Runtime;
 
 namespace Overmock
 {
-    internal class SetupOvermock : ISetup
+	internal class SetupOvermock : ISetup
     {
         private readonly ICallable _callable;
 
@@ -44,7 +42,7 @@ namespace Overmock
             _returnable.Calls(callback);
         }
 
-        void ISetup.ToCall(Action<RuntimeContext> action)
+        void ISetup<T>.ToCall(Action<RuntimeContext> action)
         {
             _returnable.Calls(action);
         }

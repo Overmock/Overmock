@@ -1,8 +1,7 @@
-using Overmock.Examples.Tests;
 
 namespace Overmock.Tests.Mocks.Methods
 {
-	public interface IMethodsWithNoParameters
+    public interface IMethodsWithNoParameters
     {
         void VoidMethodWithNoParams();
 

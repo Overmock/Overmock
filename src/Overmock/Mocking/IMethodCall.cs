@@ -1,5 +1,4 @@
-﻿using Overmock.Runtime;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 using System.Reflection;
 
 namespace Overmock.Mocking
@@ -7,7 +6,7 @@ namespace Overmock.Mocking
 	/// <summary>
 	/// 
 	/// </summary>
-	public interface IMethodCall : IOverridable
+	public interface IMethodCall : ICallable
 	{
 		/// <summary>
 		/// The <see cref="System.Linq.Expressions.Expression"/> used to select this method.
@@ -18,6 +17,12 @@ namespace Overmock.Mocking
 		/// 
 		/// </summary>
 		MethodInfo Method { get; }
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <returns></returns>
+		object? GetDefaultReturnValue();
 	}
 	/// <summary>
 	/// Represents an overridden method.

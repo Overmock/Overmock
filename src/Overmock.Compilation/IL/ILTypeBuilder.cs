@@ -55,8 +55,8 @@ namespace Overmock.Compilation.IL
                     new object[] { methodId.ToString() }
                 ));
 
-                overmockContext.Add(methodId, new RuntimeContext(methodInfo,
-                    overmock.GetOverrides(),
+                overmockContext.Add(methodId, new RuntimeContext(overmock,
+					methodInfo,
                     methodInfo.GetParameters().Select(p => new RuntimeParameter(p.Name!, type: p.ParameterType)))
                 );
             }

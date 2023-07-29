@@ -23,7 +23,14 @@
 		{
 			var overmock = Context.Overrides.First();
 
-			return new RuntimeHandlerResult(overmock.Handle(Context));
+			var result = overmock.Handle(Context);
+
+			if (result == null && Context.IsValueType())
+			{
+				return new RuntimeHandlerResult(Context.GetDefaultValueTypeValue());
+			}
+
+			return new RuntimeHandlerResult(result);
 		}
 	}
 }

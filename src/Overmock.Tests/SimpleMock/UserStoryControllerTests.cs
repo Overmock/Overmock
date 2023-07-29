@@ -2,7 +2,7 @@ using Overmock.Examples.Controllers;
 using Overmock.Examples.Storage;
 using Simple.Mocking;
 
-namespace Overmock.Examples.Tests.SimpleMock
+namespace Overmock.Tests.SimpleMock
 {
 	[TestClass]
 	public class UserStoryControllerTests

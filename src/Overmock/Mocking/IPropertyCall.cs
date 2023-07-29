@@ -1,5 +1,4 @@
-﻿using Overmock.Runtime;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 using System.Reflection;
 
 namespace Overmock.Mocking
@@ -7,7 +6,7 @@ namespace Overmock.Mocking
 	/// <summary>
 	/// 
 	/// </summary>
-	public interface IPropertyCall : IOverridable
+	public interface IPropertyCall : ICallable
 	{
 		/// <summary>
 		/// The <see cref="System.Linq.Expressions.Expression"/> used to select this member.
@@ -23,7 +22,7 @@ namespace Overmock.Mocking
 	/// <summary>
 	/// 
 	/// </summary>
-	public interface IPropertyCall<T, TReturn> : IPropertyCall, ICallable, IReturnable<TReturn>
+	public interface IPropertyCall<T, TReturn> : IPropertyCall, IReturnable<TReturn>
 	{
 	}
 }

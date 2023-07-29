@@ -1,5 +1,4 @@
-﻿using Overmock.Runtime;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 using System.Reflection;
 
 namespace Overmock.Mocking.Internal
@@ -18,6 +17,16 @@ namespace Overmock.Mocking.Internal
 		internal MethodCallExpression Expression => _expression;
 
 		MethodCallExpression IMethodCall.Expression => Expression;
+
+		public override object? GetDefaultReturnValue()
+		{
+			return null;
+		}
+
+		public override MemberInfo GetTarget()
+		{
+			throw new NotImplementedException();
+		}
 	}
 
 	internal class MethodCall<T, TReturn> : Returnable<T, TReturn>, IMethodCall<T, TReturn> where T : class
@@ -34,5 +43,15 @@ namespace Overmock.Mocking.Internal
 		internal MethodCallExpression Expression => _expression;
 
 		MethodCallExpression IMethodCall.Expression => Expression;
+
+		public override object? GetDefaultReturnValue()
+		{
+			return default(TReturn);
+		}
+
+		public override MemberInfo GetTarget()
+		{
+			return _expression.Method;
+		}
 	}
 }
