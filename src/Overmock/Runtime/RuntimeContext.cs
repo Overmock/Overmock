@@ -18,7 +18,7 @@ namespace Overmock.Runtime
 		/// <param name="overmock"></param>
 		/// <param name="overrides"></param>
 		/// <param name="parameters">The parameters.</param>
-		public RuntimeContext(MemberInfo overmock, IEnumerable<MemberOverride> overrides, IEnumerable<RuntimeParameter> parameters)
+		public RuntimeContext(MemberInfo overmock, IEnumerable<IOverride> overrides, IEnumerable<RuntimeParameter> parameters)
 		{
 			_target = overmock;
 			Overrides = overrides;
@@ -31,7 +31,7 @@ namespace Overmock.Runtime
 		/// <param name="overmock"></param>
 		/// <param name="overrides"></param>
 		/// <param name="parameters">The parameters.</param>
-		public RuntimeContext(MemberInfo overmock, IEnumerable<MemberOverride> overrides, params RuntimeParameter[] parameters) : this(overmock, overrides, parameters.AsEnumerable())
+		public RuntimeContext(MemberInfo overmock, IEnumerable<IOverride> overrides, params RuntimeParameter[] parameters) : this(overmock, overrides, parameters.AsEnumerable())
 		{
 		}
 
@@ -48,7 +48,7 @@ namespace Overmock.Runtime
 		/// <summary>
 		/// The overrides for the current Overmock.
 		/// </summary>
-		public IEnumerable<MemberOverride> Overrides { get; }
+		public IEnumerable<IOverride> Overrides { get; }
 
         /// <summary>
 		/// Gets the specified name.

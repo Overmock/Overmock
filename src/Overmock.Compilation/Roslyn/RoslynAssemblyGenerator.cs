@@ -2,6 +2,7 @@
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Overmock.Mocking;
+using Overmock.Mocking.Internal;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -232,7 +233,7 @@ namespace Overmock.Compilation.Roslyn
 			{
 				var methodOvermocked = BuildMethodSignature(method.Expression.Method, context);
 
-				var exception = overrides.SingleOrDefault(o => o.Exception != null);
+				var exception = (ThrowExceptionOverride)overrides.SingleOrDefault(o => o is ThrowExceptionOverride)!;
 
 				if (exception != default)
 				{
@@ -258,7 +259,7 @@ namespace Overmock.Compilation.Roslyn
 				var propertyDeclaration = sf.PropertyDeclaration(GetSafeTypeName(propertyInfo.PropertyType, context), propertyInfo.Name)
 					.AddModifiers(sf.Token(SyntaxKind.PublicKeyword));
 
-				var exception = overrides.SingleOrDefault(o => o.Exception != null);
+				var exception = (ThrowExceptionOverride)overrides.SingleOrDefault(o => o is ThrowExceptionOverride);
 
 				if (exception != default)
 				{

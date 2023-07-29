@@ -355,13 +355,20 @@ namespace Overmock.Runtime.Marshalling
 
 			if (returnIsNotVoid)
 			{
-				emitter.Emit(OpCodes.Castclass, returnType);
+				if (returnType.IsValueType)
+				{
+					emitter.Emit(OpCodes.Unbox_Any, returnType);
+				}
+				else
+				{
+					emitter.Emit(OpCodes.Castclass, returnType);
 
-				emitter.Emit(OpCodes.Stloc_0);
-				emitter.Emit(OpCodes.Br_S, returnLabel);
+					emitter.Emit(OpCodes.Stloc_0);
+					emitter.Emit(OpCodes.Br_S, returnLabel);
 
-				emitter.MarkLabel(returnLabel);
-				emitter.Emit(OpCodes.Ldloc_0);
+					emitter.MarkLabel(returnLabel);
+					emitter.Emit(OpCodes.Ldloc_0);
+				}
 			}
             else
             {

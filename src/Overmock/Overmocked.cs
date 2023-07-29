@@ -50,14 +50,19 @@ namespace Overmock
         internal static IMarshallerFactory GetMarshallerFactory()
         {
             return _marshallerFactory;
-        }
-
-		internal static TMethod RegisterMethod<TMethod>(IOvermock overmock, TMethod property) where TMethod : IMethodCall
-		{
-			return overmock.AddMethod(property);
 		}
 
-		internal static TProperty RegisterProperty<TProperty>(IOvermock overmock, TProperty property) where TProperty : IPropertyCall
+		internal static IMethodCall<T> RegisterMethod<T>(IOvermock overmock, IMethodCall<T> method) where T : class
+		{
+			return overmock.AddMethod(method);
+		}
+
+		internal static IMethodCall<T, TReturn> RegisterMethod<T, TReturn>(IOvermock overmock, IMethodCall<T, TReturn> method) where T : class
+		{
+			return overmock.AddMethod(method);
+		}
+
+		internal static IPropertyCall<T, TProperty> RegisterProperty<T, TProperty>(IOvermock overmock, IPropertyCall<T, TProperty> property) where T : class
 		{
 			return overmock.AddProperty(property);
 		}

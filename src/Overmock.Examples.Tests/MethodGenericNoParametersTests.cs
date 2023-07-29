@@ -1,10 +1,10 @@
 ﻿using Overmock.Examples.Storage;
-using Overmock.Examples.Tests.TestCode;
+using Overmock.Examples.Tests.Methods;
 
 namespace Overmock.Examples.Tests
 {
 	[TestClass]
-	public class GenericParameterTests
+	public class GenericMethodNoParametersTests
 	{
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 #pragma warning disable IDE0052 // Remove unread private members
