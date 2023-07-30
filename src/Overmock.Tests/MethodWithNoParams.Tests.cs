@@ -17,5 +17,15 @@ namespace Overmock.Tests
 		{
             _testInterface = Overmocked.Interface<IMethodsWithNoParameters>();
 		}
+
+		[TestMethod]
+		public void MethodWith2Params()
+		{
+			var overmock = Overmocked.Interface<IMethodsWith2Parameters>();
+
+			overmock.Override(p => p.BoolMethodWithStringAndModel(Its.Any<string>(), Its.Any<Model>()))
+				.ToCall(c => c.Get<string>("name"));
+			overmock.Target.BoolMethodWithStringAndModel("hello world", _model2);
+		}
 	}
 }
