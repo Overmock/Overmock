@@ -1,4 +1,6 @@
 ﻿
+using System.Reflection;
+
 namespace Overmock.Proxies.Tests.ProxyMembers
 {
 	public interface IInterface
@@ -7,10 +9,10 @@ namespace Overmock.Proxies.Tests.ProxyMembers
 
 		void DoSomething(string name);
 
-		string MethodWithReturn(string name);
+		string MethodWithReturn(string name, object param);
 	}
 
-	public class InterfaceImpl : IInterface
+	public class InterfaceImpl : ProxyBase<IInterface>, IInterface
 	{
 		public string Name => throw new NotImplementedException();
 
@@ -19,9 +21,9 @@ namespace Overmock.Proxies.Tests.ProxyMembers
 			throw new NotImplementedException();
 		}
 
-		public string MethodWithReturn(string name)
+		public string MethodWithReturn(string name, object param)
 		{
-			throw new NotImplementedException();
+			return (string)HandleMethodCall((MethodInfo)MethodBase.GetCurrentMethod());
 		}
 	}
 

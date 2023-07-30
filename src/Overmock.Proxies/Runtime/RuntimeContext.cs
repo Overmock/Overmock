@@ -8,8 +8,8 @@ namespace Overmock.Proxies
 	/// </summary>
 	public class RuntimeContext
 	{
-		private readonly IProxyMember _proxyMember;
-		private readonly IInterceptor _target;
+		private readonly IProxyMember _proxiedMember;
+		private readonly IInterceptor _interceptor;
 		private readonly object? _defaultReturnValue;
 		private readonly List<RuntimeParameter> _parameters = new List<RuntimeParameter>();
 
@@ -21,8 +21,8 @@ namespace Overmock.Proxies
 		/// <param name="parameters">The parameters.</param>
 		public RuntimeContext(IInterceptor target, IProxyMember proxyMember, IEnumerable<RuntimeParameter> parameters)
 		{
-			_target = target;
-			_proxyMember = proxyMember;
+			_interceptor = target;
+			_proxiedMember = proxyMember;
 			_parameters.AddRange(parameters);
 			_defaultReturnValue = proxyMember.GetDefaultReturnValue();
 		}
@@ -30,7 +30,7 @@ namespace Overmock.Proxies
 		/// <summary>
 		/// Gets the name of the Override.
 		/// </summary>
-		public string MemberName => ProxyMember.Name;
+		public string MemberName => ProxiedMember.Name;
 
 		/// <summary>
 		/// Gets the number of parameters for this overmock.
@@ -40,48 +40,21 @@ namespace Overmock.Proxies
 		/// <summary>
 		/// 
 		/// </summary>
-		public IInterceptor Target => _target;
+		public IInterceptor Interceptor => _interceptor;
 
 		/// <summary>
 		/// 
 		/// </summary>
-		public IProxyMember ProxyMember => _proxyMember;
-
-		/// <summary>
-		/// Gets or Sets the value to return.
-		/// </summary>
-		public object? ReturnValue { get; set; }
-
-		internal object? GetReturnTypeDefaultValue()
-		{
-			return _defaultReturnValue;
-		}
+		public IProxyMember ProxiedMember => _proxiedMember;
 
 		internal object? Invoke<T>(T target, object[] parameters) where T : class
 		{
-			return ReturnValue = ProxyMember.Method.Invoke(target, parameters);
+			return ProxiedMember.Method.Invoke(target, parameters);
 		}
 
 		internal InvocationContext CreateInvocationContext(object[] parameters)
 		{
 			return new InvocationContext(this,  parameters);
-		}
-
-		internal bool MemberReturnsValueType()
-		{
-			var member = ProxyMember.GetMember();
-
-			if (member is MethodInfo method)
-			{
-				return method.ReturnType.IsValueType;
-			}
-
-			if (member is PropertyInfo property)
-			{
-				return property.PropertyType.IsValueType;
-			}
-
-			return false;
 		}
 
 		internal Parameters MapParameters(object[] parameters)

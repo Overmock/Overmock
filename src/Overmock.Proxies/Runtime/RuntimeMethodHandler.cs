@@ -23,14 +23,14 @@
 		{
 			var context = Context.CreateInvocationContext(parameters);
 
-			Context.Target.MemberInvoked(context);
+			Context.Interceptor.MemberInvoked(context);
 
-			if (Context.ReturnValue == null && Context.MemberReturnsValueType())
+			if (context.ReturnValue == null && context.MemberReturnsValueType())
 			{
-				return new RuntimeHandlerResult(Context.GetReturnTypeDefaultValue());
+				return new RuntimeHandlerResult(context.GetReturnTypeDefaultValue());
 			}
 
-			return new RuntimeHandlerResult(Context.ReturnValue);
+			return new RuntimeHandlerResult(context.ReturnValue);
 		}
 	}
 }

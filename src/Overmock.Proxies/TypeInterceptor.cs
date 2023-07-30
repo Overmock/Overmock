@@ -12,7 +12,7 @@ namespace Overmock.Proxies
 
 		protected override void MemberInvoked(InvocationContext context)
 		{
-			_memberInvoked.Invoke(context, this);
+			context.ReturnValue = _memberInvoked.Invoke(context, this);
 		}
 
 		public static implicit operator TInterface(TypeInterceptor<TInterface> interceptor)

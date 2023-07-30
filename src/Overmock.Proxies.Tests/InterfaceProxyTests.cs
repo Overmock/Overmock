@@ -34,15 +34,16 @@ namespace Overmock.Proxies.Tests
 
 		[TestMethod]
 		public void ProxyCallsMethodWithParameters()
-		{
+		 {
 			var called = false;
 
 			var proxy = Interceptor.For<IInterface>((c, ps) => {
 				called = c.MemberName == "MethodWithReturn";
-				return c.Parameters.Get("name");
+				
+				 return c.Parameters.Get("name");
 			});
 
-			var actual = proxy.MethodWithReturn("hello world");
+			var actual = proxy.MethodWithReturn("hello world", new object());
 
 			Assert.IsTrue(called);
 
