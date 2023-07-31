@@ -1,13 +1,12 @@
-﻿using Overmock.Runtime;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 using System.Reflection;
 
 namespace Overmock.Mocking
 {
 	/// <summary>
-	/// Represents an overridden property.
+	/// 
 	/// </summary>
-	public interface IPropertyCall : IMemberCall
+	public interface IPropertyCall : ICallable
 	{
 		/// <summary>
 		/// The <see cref="System.Linq.Expressions.Expression"/> used to select this member.
@@ -21,15 +20,9 @@ namespace Overmock.Mocking
 	}
 
 	/// <summary>
-	/// Represents an overridden property.
+	/// 
 	/// </summary>
-	/// <typeparam name="TReturn">The property's return type.</typeparam>
-	public interface IPropertyCall<TReturn> : IPropertyCall
+	public interface IPropertyCall<T, TReturn> : IPropertyCall, IReturnable<TReturn>
 	{
-		/// <summary>
-		/// An <see cref="Func{OverrideContext, TReturn}"/> delegate to call in place of this override's property.
-		/// </summary>
-		/// <param name="func"></param>
-		void Calls(Func<RuntimeContext, TReturn> func);
 	}
 }

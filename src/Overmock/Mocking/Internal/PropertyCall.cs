@@ -1,39 +1,24 @@
-﻿using Overmock.Runtime;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 using System.Reflection;
 
 namespace Overmock.Mocking.Internal
 {
-	internal class PropertyCall : MemberCall, IPropertyCall, IVerifiable
+	internal class PropertyCall<T, TReturn> : Returnable<T, TReturn>, IPropertyCall<T, TReturn>
 	{
 		private readonly MemberExpression _expression;
 
-		public PropertyCall(MemberExpression expression) : base(Throw.If.DeclaringTypeNull(expression.Member.DeclaringType, expression.Member.Name))
+		internal PropertyCall(MemberExpression expression)
 		{
-			_expression = expression ?? throw new ArgumentNullException(nameof(expression));
-		}
-
-		protected override void Verify()
-		{
-			throw new NotImplementedException();
+			_expression = expression;
 		}
 
 		MemberExpression IPropertyCall.Expression => _expression;
 
 		PropertyInfo IPropertyCall.PropertyInfo => (PropertyInfo)_expression.Member;
-	}
 
-	internal class PropertyCall<TReturn> : PropertyCall, IPropertyCall<TReturn>
-	{
-		private Func<RuntimeContext, TReturn>? _func;
-
-		internal PropertyCall(MemberExpression expression) : base(expression)
+		public override MemberInfo GetTarget()
 		{
-		}
-
-		void IPropertyCall<TReturn>.Calls(Func<RuntimeContext, TReturn> func)
-		{
-			_func = func;
+			return _expression.Member;
 		}
 	}
 }

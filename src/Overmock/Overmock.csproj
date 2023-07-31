@@ -26,6 +26,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Runtime\Marshalling\**" />
+    <Compile Remove="Setup\**" />
+    <EmbeddedResource Remove="Runtime\Marshalling\**" />
+    <EmbeddedResource Remove="Setup\**" />
+    <None Remove="Runtime\Marshalling\**" />
+    <None Remove="Setup\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Include="..\..\README.md">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
