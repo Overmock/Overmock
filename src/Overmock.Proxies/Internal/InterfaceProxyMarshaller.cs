@@ -75,10 +75,10 @@ namespace Overmock.Proxies.Internal
             var dynamicType = context.TypeBuilder.CreateType();
 
             // Write the assembly to disc for testing
-            //if (Debugger.IsAttached)
-            //{
-            //    WriteAssembly();
-            //}
+            if (Debugger.IsAttached)
+            {
+                WriteAssembly();
+            }
             // Write the assembly to disc for testing
 
             var instance = Activator.CreateInstance(dynamicType)!;
@@ -101,18 +101,18 @@ namespace Overmock.Proxies.Internal
             return new MarshallerContext(Target, typeBuilder);
         }
 
-        //private void WriteAssembly()
-        //{
-        //    var generator = new AssemblyGenerator();
-        //    var fileName = DynamicAssembly.GetName().Name!;
+        private void WriteAssembly()
+        {
+            var generator = new Lokad.ILPack.AssemblyGenerator();
+            var fileName = DynamicAssembly.GetName().Name!;
 
-        //    if (File.Exists(fileName))
-        //    {
-        //        File.Delete(fileName);
-        //    }
+            if (File.Exists(fileName))
+            {
+                File.Delete(fileName);
+            }
 
-        //    File.WriteAllBytes(fileName, generator.GenerateAssemblyBytes(DynamicAssembly));
-        //}
+            File.WriteAllBytes(fileName, generator.GenerateAssemblyBytes(DynamicAssembly));
+        }
 
         private static void ImplementConstructor(MarshallerContext context, ConstructorInfo baseConstructor)
         {
@@ -325,7 +325,7 @@ namespace Overmock.Proxies.Internal
 
                 emitter.Emit(OpCodes.Dup);
                 emitter.Emit(OpCodes.Ldc_I4, parameters.Length - 1);
-                emitter.Emit(OpCodes.Ldarg, parameters.Length - 1);
+                emitter.Emit(OpCodes.Ldarg, parameters.Length);
                 emitter.Emit(OpCodes.Stelem_Ref);
             }
             else
@@ -333,7 +333,7 @@ namespace Overmock.Proxies.Internal
                 emitter.EmitCall(OpCodes.Call, Constants.EmptyObjectArrayMethod, null);
             }
 
-            emitter.EmitCall(OpCodes.Callvirt, Constants.GetProxyTypeHandleMethodCallMethod(context.Target.TargetType), null);
+            emitter.EmitCall(OpCodes.Call, Constants.GetProxyTypeHandleMethodCallMethod(context.Target.TargetType), null);
 
             if (returnIsNotVoid)
             {

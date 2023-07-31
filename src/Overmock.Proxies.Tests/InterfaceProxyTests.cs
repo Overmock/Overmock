@@ -25,7 +25,7 @@ namespace Overmock.Proxies.Tests
 		{
 			var called = false;
 
-			var proxy = Interceptor.For<IInterface>((c, ps) => called = c.MemberName == "Method");
+			var proxy = Interceptor.For<IInterface>((c, ps) => called = c.MemberName == "DoSomething");
 			proxy.DoSomething("hello world");
 
 			Assert.IsTrue(called);

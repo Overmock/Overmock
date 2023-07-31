@@ -6,12 +6,7 @@ namespace Overmock.Tests
     [TestClass]
 	public class MethodGenericNoParametersTests
 	{
-#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-#pragma warning disable IDE0052 // Remove unread private members
-
-		private IOvermock<IGenericMethodsTestInterface> _genericMethodsTestInterface;
-#pragma warning restore IDE0052 // Remove unread private members
-#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+		private IOvermock<IGenericMethodsTestInterface> _genericMethodsTestInterface = null!;
 
 		[TestInitialize]
 		public void Initialize()

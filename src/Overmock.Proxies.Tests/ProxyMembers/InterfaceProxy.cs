@@ -23,7 +23,7 @@ namespace Overmock.Proxies.Tests.ProxyMembers
 
 		public string MethodWithReturn(string name, object param)
 		{
-			return (string)HandleMethodCall((MethodInfo)MethodBase.GetCurrentMethod());
+			return (string)HandleMethodCall((MethodInfo)MethodBase.GetCurrentMethod(), name, param);
 		}
 	}
 

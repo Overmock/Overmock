@@ -21,8 +21,17 @@
 		/// <exception cref="OvermockException"></exception>
 		protected override RuntimeHandlerResult HandleCore(params object[] parameters)
 		{
-			var overmock = Context.Overrides.First();
+			if (Context.ParameterCount != parameters.Length)
+			{
+				throw new OvermockException(Ex.Message.NumberOfParameterMismatch);
+			}
 
+			for (int i = 0; i < parameters.Length; i++)
+			{
+				Context.SetParameterValue(i, parameters[i]);
+			}
+
+			var overmock = Context.Overrides.First();
 			var result = overmock.Handle(Context);
 
 			if (result == null && Context.IsValueType())

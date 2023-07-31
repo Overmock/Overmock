@@ -342,7 +342,7 @@ namespace Overmock.Runtime.Proxies
 
                 emitter.Emit(OpCodes.Dup);
                 emitter.Emit(OpCodes.Ldc_I4, parameters.Length - 1);
-                emitter.Emit(OpCodes.Ldarg, parameters.Length - 1);
+                emitter.Emit(OpCodes.Ldarg, parameters.Length);
                 emitter.Emit(OpCodes.Stelem_Ref);
             }
             else
