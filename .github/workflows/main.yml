@@ -12,3 +12,5 @@ jobs:
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CONFIG_FILE: .github/auto-assign.yml
+      - name: Setup .NET Core SDK
+        uses: actions/setup-dotnet@v3.2.0
