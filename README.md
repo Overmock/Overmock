@@ -1,7 +1,10 @@
 # Overmock
 ![DOTNET Build](https://github.com/overmock/overmock/actions/workflows/dotnet.yml/badge.svg)
 
-Overmock is a mocking framework in development that allows for creating dynamic proxies that monitor and control expected behavior when writing unit tests.
+Overmock is a mocking framework in development that allows for creating dynamic proxies that monitor and control expected behavior when writing unit tests. Here are some examples below.
+
+The current goal is refactoring out the dynamic proxy creation into it's own class library to be used by the testing framework. 
+
 ``` C#
 public class Model
 {
@@ -17,8 +20,8 @@ public interface ILog
 }
 public class Service
 {
-    private ILog _log;
-    private IRepository _repo;
+    private readonly ILog _log;
+    private readonly IRepository _repo;
     public Service(ILog log, IRepository repo)
     {
         _log = log;
@@ -26,10 +29,19 @@ public class Service
     }
     public void SaveModel(Model model)
     {
-        var saved = _repo.Save(model);
-        if (!saved)
+
+        try
         {
-            _log.Log("Failed to save");
+            var saved = _repo.Save(model);
+            if (!saved)
+            {
+                _log.Log("Failed to save");
+            }
+        }
+        catch (Exception ex)
+        {
+            _log.Log(ex.Message);
+            throw;
         }
     }
 }
@@ -41,6 +53,7 @@ public void CallsSaveTest()
     var wasSaved = false;
     var log = Overmocked.Interface<ILog>();
     var repository = Overmocked.Interface<IRepository>();
+
     repository.Override(r => r.Save(Its.Any<Model>())).ToCall(c => {
         wasSaved = true;
         return c.Get<Model>("model")?.Id == id;
@@ -58,6 +71,8 @@ public void ThrowsExceptionWhenSaveFailsTest()
     var expected = "Failed to save";
     var log = Overmocked.Interface<ILog>();
     var repository = Overmocked.Interface<IRepository>();
+
+    log.Override(l => l.Log(expected));
     repository.Override(r => r.Save(Its.Any<Model>())).ToThrow(new Exception(expected));
 
     var service = new Service(log.Target, repository.Target);
@@ -72,5 +87,6 @@ public void ThrowsExceptionWhenSaveFailsTest()
     {
         Assert.AreEqual(expected, actual.Message);
     }
+}
 }
 ```
