@@ -1,5 +1,5 @@
 # Overmock
-![DOTNET Build](https://github.com/overmock/overmock/actions/workflows/main.yml/badge.svg)
+![DOTNET Build](https://github.com/overmock/overmock/actions/workflows/dotnet.yml/badge.svg)
 
 ` C#
 using System;
