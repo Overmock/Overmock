@@ -7,7 +7,7 @@ namespace Overmock.Proxies.Internal
     /// <summary>
     /// 
     /// </summary>
-    internal class InterfaceProxyMarshaller : ProxyMarshaller
+    internal class InterfaceProxyFactory : ProxyFactory
     {
 		private static readonly ConstructorInfo OvermockAttributeConstructor = typeof(OvermockAttribute).GetConstructors().First();
 
@@ -16,7 +16,7 @@ namespace Overmock.Proxies.Internal
 		/// </summary>
 		/// <param name="interceptor"></param>
 		/// <param name="argsProvider"></param>
-		internal InterfaceProxyMarshaller(IInterceptor interceptor) : base(interceptor)
+		internal InterfaceProxyFactory(IInterceptor interceptor) : base(interceptor)
         {
             Name = GetName(Target);
             DynamicAssembly = AssemblyBuilder.DefineDynamicAssembly(
@@ -53,7 +53,7 @@ namespace Overmock.Proxies.Internal
         /// <param name="marshallerContext"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        protected override object MarshalCore(IMarshallerContext marshallerContext)
+        protected override object CreateCore(IMarshallerContext marshallerContext)
         {
             const BindingFlags bindingFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
 

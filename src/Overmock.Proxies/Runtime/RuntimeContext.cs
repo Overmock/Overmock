@@ -47,7 +47,7 @@ namespace Overmock.Proxies
 		/// </summary>
 		public IProxyMember ProxiedMember => _proxiedMember;
 
-		internal object? Invoke<T>(T target, object[] parameters) where T : class
+		internal object? Invoke(object target, object[] parameters)
 		{
 			return ProxiedMember.Method.Invoke(target, parameters);
 		}

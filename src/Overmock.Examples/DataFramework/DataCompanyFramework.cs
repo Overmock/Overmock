@@ -8,7 +8,7 @@
 	{
 		public bool Connect(string username, string password)
 		{
-			throw new NotImplementedException();
+			return true;
 		}
 	}
 	public interface IIdentifiable

@@ -52,12 +52,17 @@ namespace Overmock.Proxies
 
 		public IEnumerator<object> GetEnumerator()
 		{
-			throw new NotImplementedException();
+			yield return ToObjectArray();
 		}
 
 		IEnumerator IEnumerable.GetEnumerator()
 		{
-			throw new NotImplementedException();
+			return GetEnumerator();
+		}
+
+		internal object[] ToObjectArray()
+		{
+			return _parameters.Select(p => p.Value).ToArray();
 		}
 	}
 }

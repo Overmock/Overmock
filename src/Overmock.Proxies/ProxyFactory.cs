@@ -6,14 +6,14 @@ namespace Overmock.Proxies
     /// <summary>
     /// 
     /// </summary>
-    public abstract class ProxyMarshaller : IMarshaller
+    public abstract class ProxyFactory : IProxyFactory
     {
         /// <summary>
         /// 
         /// </summary>
         /// <param name="interceptor"></param>
         /// <param name="argsProvider"></param>
-        protected ProxyMarshaller(IInterceptor interceptor)
+        protected ProxyFactory(IInterceptor interceptor)
         {
             Target = interceptor;
         }
@@ -28,19 +28,19 @@ namespace Overmock.Proxies
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public T Marshal<T>() where T : class
+        public T Create<T>() where T : class
         {
-            return (T)Marshal();
+            return (T)Create();
         }
 
         /// <summary>
         /// 
         /// </summary>
         /// <returns></returns>
-		public object Marshal()
+		public object Create()
         {
             var context = CreateContext();
-            return MarshalCore(context);
+            return CreateCore(context);
         }
 
         /// <summary>
@@ -54,7 +54,7 @@ namespace Overmock.Proxies
         /// </summary>
         /// <param name="marshallerContext"></param>
         /// <returns></returns>
-        protected abstract object MarshalCore(IMarshallerContext marshallerContext);
+        protected abstract object CreateCore(IMarshallerContext marshallerContext);
 
         /// <summary>
         /// 

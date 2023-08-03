@@ -1,4 +1,6 @@
 ﻿
+using Overmock.Proxies.Internal;
+
 namespace Overmock.Proxies
 {
 	public abstract class Interceptor : IInterceptor
@@ -13,14 +15,19 @@ namespace Overmock.Proxies
 
 		public Type TargetType { get; protected set; }
 
-		public static TInterface For<TInterface>(Func<InvocationContext, IInterceptor<TInterface>, object?> memberInvoked) where TInterface : class
+		public static TInterface For<TInterface>(Action<InvocationContext> memberInvoked) where TInterface : class
 		{
-			return new TypeInterceptor<TInterface>(memberInvoked: memberInvoked);
+			return new TypeInterceptor<TInterface>(default, memberInvoked: memberInvoked);
 		}
 
-		public static IInterceptor<TInterface> Intercept<TInterface>(TInterface? implementation = null, Func<InvocationContext, IInterceptor<TInterface>, object?>? memberInvoked = null) where TInterface : class
+		public static TypeInterceptor<TInterface> Intercept<TInterface, TImplementation>(TImplementation implementation, Action<InvocationContext>? memberInvoked = null) where TInterface : class where TImplementation : TInterface
 		{
 			return new TypeInterceptor<TInterface>(implementation, memberInvoked);
+		}
+
+		object IInterceptor.GetTarget()
+		{
+			return GetTarget();
 		}
 
 		void IInterceptor.MemberInvoked(InvocationContext context)
@@ -29,27 +36,36 @@ namespace Overmock.Proxies
 		}
 
 		protected abstract void MemberInvoked(InvocationContext context);
+
+		protected abstract object GetTarget();
 	}
 
 	public abstract class Interceptor<T> : Interceptor, IInterceptor<T> where T : class
 	{
 		private static readonly string TargetTypeName = $"{typeof(T).Name}_{Guid.NewGuid():N}";
 
-		private readonly IMarshaller _marshaller;
-		private readonly T _target;
+		private readonly IProxyFactory _factory;
+		private readonly IProxyCache _typeCache;
+		private readonly T? _target;
 		private T? _proxy;
 
-		protected Interceptor(T target, IMarshaller? marshaller = null) : base(typeof(T))
+		protected Interceptor(T target, IProxyFactory? factory = null, IProxyCache? typeCache = null) : base(typeof(T))
 		{
 			_target = target;
-			_marshaller = marshaller ?? MarshallerFactory.Proxy(this);
+			_factory = factory ?? MarshallerFactory.Proxy(this);
+			_typeCache = typeCache ?? GeneratedProxyCache.Cache;
 		}
 
 		public T Proxy => _proxy ??= Create();
 
-		public T Target => _target;
+		public T? Target => _target;
 
 		string IInterceptor.TypeName => TargetTypeName;
+
+		protected override object GetTarget()
+		{
+			return Target;
+		}
 
 		/// <summary>
 		/// 
@@ -57,7 +73,16 @@ namespace Overmock.Proxies
 		/// <returns></returns>
 		protected T Create()
 		{
-			return _marshaller.Marshal<T>();
+			if (_typeCache.TryGet(typeof(T), out var proxy))
+			{
+				return (T)proxy!;
+			}
+
+			var value = _factory.Create<T>();
+
+			_typeCache.Set(typeof(T), value);
+
+			return value;
 		}
 	}
 }

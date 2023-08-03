@@ -1,21 +1,21 @@
 ﻿namespace Overmock.Proxies
 {
     /// <summary>
-    /// Represents a builder for types
+    /// Represents a builder for proxies
     /// </summary>
-    public interface IMarshaller
+    public interface IProxyFactory
     {
         /// <summary>
         /// Attempts to build the specified overmock's represented type.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        T Marshal<T>() where T : class;
+        T Create<T>() where T : class;
 
         /// <summary>
         /// 
         /// </summary>
         /// <returns></returns>
-		object Marshal();
+		object Create();
     }
 }

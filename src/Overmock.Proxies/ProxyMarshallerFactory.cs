@@ -4,11 +4,11 @@ namespace Overmock.Proxies
 {
 	internal class ProxyMarshallerFactory : IMarshallerFactory
 	{
-		IMarshaller IMarshallerFactory.Create(IInterceptor interceptor)
+		IProxyFactory IMarshallerFactory.Create(IInterceptor interceptor)
 		{
 			if (interceptor.IsInterface())
 			{
-				return new InterfaceProxyMarshaller(interceptor);
+				return new InterfaceProxyFactory(interceptor);
 			}
 
 			if (interceptor.IsDelegate())

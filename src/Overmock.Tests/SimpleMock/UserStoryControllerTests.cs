@@ -1,116 +1,114 @@
-using Overmock.Examples.Controllers;
-using Overmock.Examples.Storage;
 using Simple.Mocking;
 
 namespace Overmock.Tests.SimpleMock
 {
-	[TestClass]
-	public class UserStoryControllerTests
-	{
-		private IUserStoryService _service;
+	//[TestClass]
+	//public class UserStoryControllerTests
+	//{
+	//	private IUserStoryService _service;
 
-		private UserStoryController _controller;
+	//	private UserStoryController _controller;
 
-		public UserStoryControllerTests()
-		{
+	//	public UserStoryControllerTests()
+	//	{
 
-			var stub = Stub.Interface<IUserStoryService>();
-		}
+	//		var stub = Stub.Interface<IUserStoryService>();
+	//	}
 
-		[TestInitialize]
-		public void Initialize()
-		{
-			_service = Mock.Interface<IUserStoryService>();
-		}
+	//	[TestInitialize]
+	//	public void Initialize()
+	//	{
+	//		_service = Mock.Interface<IUserStoryService>();
+	//	}
 
-		[TestMethod]
-		public void GetTest()
-		{
-			//var story = new UserStory();
-			//_service.Override(t => t.Get(Its.Any<int>()))
-			//	.ToReturn(story);
+	//	[TestMethod]
+	//	public void GetTest()
+	//	{
+	//		//var story = new UserStory();
+	//		//_service.Override(t => t.Get(Its.Any<int>()))
+	//		//	.ToReturn(story);
 
-			//var target = _service.Target;
+	//		//var target = _service.Target;
 
-			//Assert.IsNotNull(target);
+	//		//Assert.IsNotNull(target);
 
-			//var test = target.Get(123);
+	//		//var test = target.Get(123);
 
-			//Assert.IsNotNull(test);
-			//Assert.AreEqual(test, story);
-		}
+	//		//Assert.IsNotNull(test);
+	//		//Assert.AreEqual(test, story);
+	//	}
 
-		//[TestMethod]
-		//public void GetAllTest()
-		//{
-		//	var stories = new List<UserStory> { new UserStory() };
-		//	_service.Override(t => t.GetAll())
-		//		.ToCall(c =>
-		//		{
-		//			return stories;
-		//		});
+	//	//[TestMethod]
+	//	//public void GetAllTest()
+	//	//{
+	//	//	var stories = new List<UserStory> { new UserStory() };
+	//	//	_service.Override(t => t.GetAll())
+	//	//		.ToCall(c =>
+	//	//		{
+	//	//			return stories;
+	//	//		});
 
-		//	var target = _service.Target;
+	//	//	var target = _service.Target;
 
-		//	Assert.IsNotNull(target);
+	//	//	Assert.IsNotNull(target);
 
-		//	var test = target.GetAll();
+	//	//	var test = target.GetAll();
 
-		//	Assert.IsNotNull(test);
-		//	Assert.AreEqual(test, stories);
-		//}
+	//	//	Assert.IsNotNull(test);
+	//	//	Assert.AreEqual(test, stories);
+	//	//}
 
-		//[TestMethod]
-		//public void SaveTest()
-		//{
-		//	var stories = new List<UserStory> { new UserStory() };
-		//	_service.Override(t => t.SaveAll(Any<IEnumerable<UserStory>>.Value))
-		//		.ToReturn(stories);
+	//	//[TestMethod]
+	//	//public void SaveTest()
+	//	//{
+	//	//	var stories = new List<UserStory> { new UserStory() };
+	//	//	_service.Override(t => t.SaveAll(Any<IEnumerable<UserStory>>.Value))
+	//	//		.ToReturn(stories);
 
-		//	var target = _service.Target;
+	//	//	var target = _service.Target;
 
-		//	Assert.IsNotNull(target);
+	//	//	Assert.IsNotNull(target);
 
-		//	var test = target.SaveAll(stories);
+	//	//	var test = target.SaveAll(stories);
 
-		//	Assert.IsNotNull(test);
-		//	Assert.AreEqual(test, stories);
-		//}
+	//	//	Assert.IsNotNull(test);
+	//	//	Assert.AreEqual(test, stories);
+	//	//}
 
-		//[TestMethod]
-		//public void GetReturnsTheCorrectErrorDetailsWhenAnExceptionHappens()
-		//{
-		//	// Arrange
-		//	_service.Override(s => s.Get(Any<int>.Value))
-		//		.ToThrow(new Exception("testing"));
+	//	//[TestMethod]
+	//	//public void GetReturnsTheCorrectErrorDetailsWhenAnExceptionHappens()
+	//	//{
+	//	//	// Arrange
+	//	//	_service.Override(s => s.Get(Any<int>.Value))
+	//	//		.ToThrow(new Exception("testing"));
 
-		//	_controller = new UserStoryController(_service.Target);
+	//	//	_controller = new UserStoryController(_service.Target);
 
-		//	// Act
-		//	var response = _controller.Get(2);
+	//	//	// Act
+	//	//	var response = _controller.Get(2);
 
-		//	// Assert
-		//	Assert.AreEqual(response.ErrorDetails, "testing");
-		//}
+	//	//	// Assert
+	//	//	Assert.AreEqual(response.ErrorDetails, "testing");
+	//	//}
 
-		//[TestMethod]
-		//public void GetReturnsTheResultsWhenPassedTheRightParameters()
-		//{
-		//	// Arrange
-		//	_connection.Override(s => s.Connect(Its.Any<string>(), Its.Any<string>())).ToCall(c =>
-		//	{
-		//		var user = c.Get<string>("username");
-		//		var password = c.Get<string>(1);
+	//	//[TestMethod]
+	//	//public void GetReturnsTheResultsWhenPassedTheRightParameters()
+	//	//{
+	//	//	// Arrange
+	//	//	_connection.Override(s => s.Connect(Its.Any<string>(), Its.Any<string>())).ToCall(c =>
+	//	//	{
+	//	//		var user = c.Get<string>("username");
+	//	//		var password = c.Get<string>(1);
 
-		//		return true;
+	//	//		return true;
 
-		//	});//.ToReturn(Enumerable.Empty<UserStory>);
+	//	//	});//.ToReturn(Enumerable.Empty<UserStory>);
 
-		//	var factory = new UserStoryFactory(_connection.Target);
+	//	//	var factory = new UserStoryFactory(_connection.Target);
 
-		//	// Act;
+	//	//	// Act;
 
-		//	// Assert
-		//}
-	}
+	//	//	// Assert
+	//	//}
+	//}
 }

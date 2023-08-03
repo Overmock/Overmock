@@ -29,6 +29,11 @@ namespace Overmock.Proxies
 
 		public object? ReturnValue { get; set; }
 
+		public void InvokeTarget()
+		{
+			ParentContext.Invoke(Interceptor.GetTarget(), Parameters.ToObjectArray());
+		}
+
 		internal object? GetReturnTypeDefaultValue()
 		{
 			if (_defaultReturnValue == null)
@@ -56,4 +61,6 @@ namespace Overmock.Proxies
 			return false;
 		}
 	}
+
+
 }

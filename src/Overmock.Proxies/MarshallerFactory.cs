@@ -41,7 +41,7 @@ namespace Overmock.Proxies
         /// <param name="argsProvider"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public static IMarshaller Proxy(IInterceptor interceptor)
+        public static IProxyFactory Proxy(IInterceptor interceptor)
         {
             return ProxyFactory.Create(interceptor);
         }
@@ -53,7 +53,7 @@ namespace Overmock.Proxies
         /// <param name="argsProvider"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-		public IMarshaller Create(IInterceptor interceptor)
+		public IProxyFactory Create(IInterceptor interceptor)
 		{
 			return Current.Create(interceptor);
 		}
