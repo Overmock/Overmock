@@ -1,5 +1,7 @@
 # Overmock
 ![DOTNET Build](https://github.com/overmock/overmock/actions/workflows/dotnet.yml/badge.svg)
+
+Overmock is a mocking framework in development that allows for creating dynamic proxies that monitor and control expected behavior when writing unit tests.
 ``` C#
 public class Model
 {
