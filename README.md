@@ -1,4 +1,6 @@
 # Overmock
+![DOTNET Build](https://github.com/github/docs/actions/workflows/main.yml/badge.svg)
+
 ` C#
 using System;
 using System.Reflection;
