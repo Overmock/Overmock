@@ -1,53 +1,76 @@
 # Overmock
-` C#
-using System;
-using System.Reflection;
+![DOTNET Build](https://github.com/overmock/overmock/actions/workflows/dotnet.yml/badge.svg)
 
-public class C {
-    public void M() {
+Overmock is a mocking framework in development that allows for creating dynamic proxies that monitor and control expected behavior when writing unit tests.
+``` C#
+public class Model
+{
+    public int Id { get; set; }
+}
+public interface IRepository
+{
+    bool Save(Model model);
+}
+public interface ILog
+{
+    void Log(string message);
+}
+public class Service
+{
+    private ILog _log;
+    private IRepository _repo;
+    public Service(ILog log, IRepository repo)
+    {
+        _log = log;
+        _repo = repo;
+    }
+    public void SaveModel(Model model)
+    {
+        var saved = _repo.Save(model);
+        if (!saved)
+        {
+            _log.Log("Failed to save");
+        }
     }
 }
-namespace Overmock
+
+[TestMethod]
+public void CallsSaveTest()
 {
-    public class OvermockMethodTemplate
+    var id = 22;
+    var wasSaved = false;
+    var log = Overmocked.Interface<ILog>();
+    var repository = Overmocked.Interface<IRepository>();
+    repository.Override(r => r.Save(Its.Any<Model>())).ToCall(c => {
+        wasSaved = true;
+        return c.Get<Model>("model")?.Id == id;
+    });
+
+    var service = new Service(log.Target, repository.Target);
+    service.SaveModel(new Model { Id = id });
+
+    Assert.IsTrue(wasSaved);
+}
+
+[TestMethod]
+public void ThrowsExceptionWhenSaveFailsTest()
+{
+    var expected = "Failed to save";
+    var log = Overmocked.Interface<ILog>();
+    var repository = Overmocked.Interface<IRepository>();
+    repository.Override(r => r.Save(Its.Any<Model>())).ToThrow(new Exception(expected));
+
+    var service = new Service(log.Target, repository.Target);
+
+    try
     {
-        private OvermockContext _context;
+        service.SaveModel(new Model());
 
-        public void InitializeOvermock(OvermockContext context)
-        {
-            _context = context;
-        }
-
-        public string TestMethod(string name)
-        {
-            var handle = _context.Get((MethodInfo)MethodBase.GetCurrentMethod()!);
-            var result = handle.Handle(name);
-
-            if (result.Result != null)
-            {
-                return (string)result.Result;
-            }
-
-            throw new Exception("oops, didn't handle this method call.");
-        }
+        Assert.Fail("SaveModel Failed to throw an exception.");
     }
-    
-    public class OvermockContext
+    catch (Exception actual)
     {
-        public IHandler Get(MethodInfo method)
-        {
-            return null;
-        }
-    }
-    
-    public interface IHandler
-    {
-        IResult Handle(params object[] parameters);
-    }
-    
-    public interface IResult
-    {
-        Object Result { get; }
+        Assert.AreEqual(expected, actual.Message);
     }
 }
 ```
