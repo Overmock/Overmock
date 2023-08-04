@@ -52,7 +52,7 @@ namespace Overmock.Proxies
 		protected Interceptor(T target, IProxyFactory? factory = null, IProxyCache? typeCache = null) : base(typeof(T))
 		{
 			_target = target;
-			_factory = factory ?? MarshallerFactory.Proxy(this);
+			_factory = factory ?? ProxyFactoryProvider.Proxy(this);
 			_typeCache = typeCache ?? GeneratedProxyCache.Cache;
 		}
 

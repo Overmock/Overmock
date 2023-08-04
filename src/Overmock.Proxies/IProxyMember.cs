@@ -9,11 +9,6 @@ namespace Overmock.Proxies
         /// </summary>
         MethodInfo Method { get; }
 
-		/// <summary>
-		/// 
-		/// </summary>
-		IInterceptor Parent { get; }
-
         /// <summary>
         /// 
         /// </summary>

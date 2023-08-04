@@ -43,7 +43,7 @@ namespace Overmock.Proxies
         protected object? HandleMethodCall(MethodInfo method, params object[] parameters)
         {
             var handle = ___context.Get(method);
-            var result = handle.Handle(parameters);
+            var result = handle.Handle(this, parameters);
             return result.Result;
         }
 

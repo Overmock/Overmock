@@ -16,7 +16,7 @@ namespace Overmock.Proxies.Internal
 		/// </summary>
 		/// <param name="interceptor"></param>
 		/// <param name="argsProvider"></param>
-		internal InterfaceProxyFactory(IInterceptor interceptor) : base(interceptor)
+		internal InterfaceProxyFactory(IInterceptor interceptor, IProxyCache cache) : base(interceptor, cache)
         {
             Name = GetName(Target);
             DynamicAssembly = AssemblyBuilder.DefineDynamicAssembly(
@@ -53,11 +53,11 @@ namespace Overmock.Proxies.Internal
         /// <param name="marshallerContext"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        protected override object CreateCore(IMarshallerContext marshallerContext)
+        protected override object CreateCore(IProxyBuilderContext marshallerContext)
         {
             const BindingFlags bindingFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
 
-            var context = (MarshallerContext)marshallerContext;
+            var context = (ProxyBuilderContext)marshallerContext;
 
             ImplementConstructor(context, ProxyType.GetConstructor(bindingFlags, Type.EmptyTypes)!);
 
@@ -81,24 +81,29 @@ namespace Overmock.Proxies.Internal
             }
             // Write the assembly to disc for testing
 
-            var instance = Activator.CreateInstance(dynamicType)!;
+            static object CreateProxy(ProxyContext context, Type dynamicType)
+			{
+				var instance = Activator.CreateInstance(dynamicType)!;
 
-            ((IProxy)instance).InitializeProxyContext(context.ProxyContext);
+				((IProxy)instance).InitializeProxyContext(context);
 
-            return instance;
+				return instance;
+			}
+
+            return CreateProxy(context.ProxyContext, dynamicType);
         }
 
         /// <summary>
         /// 
         /// </summary>
         /// <returns></returns>
-        protected override IMarshallerContext CreateContext()
+        protected override IProxyBuilderContext CreateContext()
         {
             const TypeAttributes attributes = TypeAttributes.Class | TypeAttributes.Public;
 
             var typeBuilder = DynamicModule.DefineType(Constants.AssemblyAndTypeNameFormat.ApplyFormat(Target.TypeName), attributes, ProxyType);
 
-            return new MarshallerContext(Target, typeBuilder);
+            return new ProxyBuilderContext(Target, typeBuilder);
         }
 
         private void WriteAssembly()
@@ -114,7 +119,7 @@ namespace Overmock.Proxies.Internal
             File.WriteAllBytes(fileName, generator.GenerateAssemblyBytes(DynamicAssembly));
         }
 
-        private static void ImplementConstructor(MarshallerContext context, ConstructorInfo baseConstructor)
+        private static void ImplementConstructor(ProxyBuilderContext context, ConstructorInfo baseConstructor)
         {
             const MethodAttributes methodAttributes = MethodAttributes.Public;
 
@@ -136,7 +141,7 @@ namespace Overmock.Proxies.Internal
             ilGenerator.Emit(OpCodes.Ret);
         }
 
-        private static (IEnumerable<MethodInfo>, IEnumerable<PropertyInfo>) AddInterfaceImplementations(MarshallerContext context)
+        private static (IEnumerable<MethodInfo>, IEnumerable<PropertyInfo>) AddInterfaceImplementations(ProxyBuilderContext context)
         {
             if (!context.Target.IsInterface())
             {
@@ -146,7 +151,7 @@ namespace Overmock.Proxies.Internal
             return AddMembersRecursive(context, context.Target.TargetType);
         }
 
-        private static (IEnumerable<MethodInfo>, IEnumerable<PropertyInfo>) AddMembersRecursive(MarshallerContext context, Type interfaceType)
+        private static (IEnumerable<MethodInfo>, IEnumerable<PropertyInfo>) AddMembersRecursive(ProxyBuilderContext context, Type interfaceType)
         {
             context.TypeBuilder.AddInterfaceImplementation(interfaceType);
 
@@ -164,7 +169,7 @@ namespace Overmock.Proxies.Internal
             return (methods.Distinct(), properties.Distinct());
         }
 
-        private static IEnumerable<MethodInfo> AddMethodsRecursive(MarshallerContext context, Type interfaceType)
+        private static IEnumerable<MethodInfo> AddMethodsRecursive(ProxyBuilderContext context, Type interfaceType)
         {
             var methods = interfaceType.GetMethods().AsEnumerable();
 
@@ -176,7 +181,7 @@ namespace Overmock.Proxies.Internal
             return methods.Distinct();
         }
 
-        private static IEnumerable<PropertyInfo> AddPropertiesRecursive(MarshallerContext context, Type interfaceType)
+        private static IEnumerable<PropertyInfo> AddPropertiesRecursive(ProxyBuilderContext context, Type interfaceType)
         {
             var properties = interfaceType.GetProperties().AsEnumerable();
 
@@ -188,7 +193,7 @@ namespace Overmock.Proxies.Internal
             return properties.Distinct();
         }
 
-        private static IEnumerable<MethodInfo> GetBaseMethods(MarshallerContext context)
+        private static IEnumerable<MethodInfo> GetBaseMethods(ProxyBuilderContext context)
         {
             if (context.Target.IsDelegate())
             {
@@ -211,11 +216,11 @@ namespace Overmock.Proxies.Internal
             initContextMethodBody.Emit(OpCodes.Ret);
         }
 
-        private static void ImplementMethods(MarshallerContext context, IEnumerable<MethodInfo> methods)
+        private static void ImplementMethods(ProxyBuilderContext context, IEnumerable<MethodInfo> methods)
         {
             foreach (var methodInfo in methods)
             {
-                var method = new ProxyMember(methodInfo, context.Target);
+                var method = new ProxyMember(methodInfo);
                 var methodBuilder = CreateMethod(context,
 					methodInfo.IsGenericMethod
                         ? methodInfo.GetGenericMethodDefinition()
@@ -234,7 +239,7 @@ namespace Overmock.Proxies.Internal
             }
         }
 
-        private static MethodBuilder CreateMethod(MarshallerContext context, MethodInfo methodInfo)
+        private static MethodBuilder CreateMethod(ProxyBuilderContext context, MethodInfo methodInfo)
         {
             var parameterTypes = methodInfo.GetParameters()
                 .Select(p => p.ParameterType).ToArray();
@@ -287,7 +292,7 @@ namespace Overmock.Proxies.Internal
             }
         }
 
-        private static void EmitMethodBody(MarshallerContext context, ILGenerator emitter, Type returnType, Type[] parameters)
+        private static void EmitMethodBody(ProxyBuilderContext context, ILGenerator emitter, Type returnType, Type[] parameters)
         {
             var returnIsNotVoid = returnType != typeof(void);
 
@@ -360,13 +365,13 @@ namespace Overmock.Proxies.Internal
             emitter.Emit(OpCodes.Ret);
         }
 
-        private static void ImplementProperties(MarshallerContext context, IEnumerable<PropertyInfo> properties)
+        private static void ImplementProperties(ProxyBuilderContext context, IEnumerable<PropertyInfo> properties)
         {
             foreach (var propertyInfo in properties)
 			{
                 if (propertyInfo.CanRead)
 				{
-					var property = new ProxyMember(propertyInfo, propertyInfo.GetGetMethod()!, context.Target);
+					var property = new ProxyMember(propertyInfo, propertyInfo.GetGetMethod()!);
 					var methodBuilder = CreateMethod(context, property.Method);
 
 					var methodId = Guid.NewGuid();
@@ -383,7 +388,7 @@ namespace Overmock.Proxies.Internal
 				}
 				if (propertyInfo.CanWrite)
 				{
-					var property = new ProxyMember(propertyInfo, propertyInfo.GetSetMethod()!, context.Target);
+					var property = new ProxyMember(propertyInfo, propertyInfo.GetSetMethod()!);
 					var methodBuilder = CreateMethod(context, property.Method);
 
 					var methodId = Guid.NewGuid();
@@ -401,7 +406,7 @@ namespace Overmock.Proxies.Internal
 			}
         }
 
-        private static void DefineProperties(MarshallerContext context)
+        private static void DefineProperties(ProxyBuilderContext context)
         {
             var targetType = context.Target.TargetType;
 
@@ -411,7 +416,7 @@ namespace Overmock.Proxies.Internal
             }
         }
 
-        private static TypeBuilder CreateProperty(MarshallerContext context, PropertyInfo propertyInfo)
+        private static TypeBuilder CreateProperty(ProxyBuilderContext context, PropertyInfo propertyInfo)
         {
             var typeBuilder = context.TypeBuilder;
 
@@ -436,7 +441,7 @@ namespace Overmock.Proxies.Internal
         }
 
         private static void CreateGetMethod(
-            MarshallerContext context,
+            ProxyBuilderContext context,
             PropertyBuilder property,
             MethodInfo method,
             FieldInfo field,
@@ -476,9 +481,9 @@ namespace Overmock.Proxies.Internal
         private static string GetDynamicTypeName(Type baseType, string prefix = "", string suffix = "") =>
             $"{prefix}{baseType.FullName}{suffix}";
 
-        private class MarshallerContext : IMarshallerContext
-        {
-            public MarshallerContext(IInterceptor target, TypeBuilder typeBuilder)
+        private class ProxyBuilderContext : IProxyBuilderContext
+		{
+            public ProxyBuilderContext(IInterceptor target, TypeBuilder typeBuilder)
             {
                 Target = target;
                 TypeBuilder = typeBuilder;

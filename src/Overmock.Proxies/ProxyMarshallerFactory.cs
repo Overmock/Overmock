@@ -2,18 +2,18 @@
 
 namespace Overmock.Proxies
 {
-	internal class ProxyMarshallerFactory : IMarshallerFactory
+	internal class ProxyMarshallerFactory : IProxyFactoryProvider
 	{
-		IProxyFactory IMarshallerFactory.Create(IInterceptor interceptor)
+		IProxyFactory IProxyFactoryProvider.Create(IInterceptor interceptor)
 		{
 			if (interceptor.IsInterface())
 			{
-				return new InterfaceProxyFactory(interceptor);
+				return new InterfaceProxyFactory(interceptor, GeneratedProxyCache.Cache);
 			}
 
 			if (interceptor.IsDelegate())
 			{
-				return new DelegateProxyMarshaller(interceptor);
+				return new DelegateProxyFactory(interceptor, GeneratedProxyCache.Cache);
 			}
 
 			throw new NotImplementedException();

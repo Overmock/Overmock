@@ -5,31 +5,31 @@ namespace Overmock.Proxies
     /// <summary>
     /// 
     /// </summary>
-    public class MarshallerFactory : IMarshallerFactory
+    public class ProxyFactoryProvider : IProxyFactoryProvider
     {
-        private static readonly IMarshallerFactory ProxyFactory = new ProxyMarshallerFactory();
-        private static IMarshallerFactory _current = ProxyFactory;
+        private static readonly IProxyFactoryProvider ProxyFactory = new ProxyMarshallerFactory();
+        private static IProxyFactoryProvider _current = ProxyFactory;
 
 		/// <summary>
 		/// 
 		/// </summary>
-		public static readonly IMarshallerFactory Default = ProxyFactory;
+		public static readonly IProxyFactoryProvider Default = ProxyFactory;
 
-		private MarshallerFactory()
+		private ProxyFactoryProvider()
 		{
 		}
 
 		/// <summary>
 		/// 
 		/// </summary>
-		public static IMarshallerFactory Current => _current;
+		public static IProxyFactoryProvider Current => _current;
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="factory"></param>
         /// <returns></returns>
-        public static IMarshallerFactory Use(IMarshallerFactory  factory)
+        public static IProxyFactoryProvider Use(IProxyFactoryProvider  factory)
         {
             return Interlocked.Exchange(ref _current, factory);
         }

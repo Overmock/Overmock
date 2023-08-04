@@ -8,8 +8,8 @@ namespace Overmock.Proxies
 	/// </summary>
 	public class RuntimeContext
 	{
-		private readonly IProxyMember _proxiedMember;
 		private readonly IInterceptor _interceptor;
+		private readonly IProxyMember _proxiedMember;
 		private readonly object? _defaultReturnValue;
 		private readonly List<RuntimeParameter> _parameters = new List<RuntimeParameter>();
 
@@ -19,9 +19,9 @@ namespace Overmock.Proxies
 		/// <param name="overmock"></param>
 		/// <param name="target"></param>
 		/// <param name="parameters">The parameters.</param>
-		public RuntimeContext(IInterceptor target, IProxyMember proxyMember, IEnumerable<RuntimeParameter> parameters)
+		public RuntimeContext(IInterceptor interceptor, IProxyMember proxyMember, IEnumerable<RuntimeParameter> parameters)
 		{
-			_interceptor = target;
+			_interceptor = interceptor;
 			_proxiedMember = proxyMember;
 			_parameters.AddRange(parameters);
 			_defaultReturnValue = proxyMember.GetDefaultReturnValue();
@@ -40,12 +40,9 @@ namespace Overmock.Proxies
 		/// <summary>
 		/// 
 		/// </summary>
-		public IInterceptor Interceptor => _interceptor;
-
-		/// <summary>
-		/// 
-		/// </summary>
 		public IProxyMember ProxiedMember => _proxiedMember;
+
+		public IInterceptor Interceptor => _interceptor;
 
 		internal object? Invoke(object target, object[] parameters)
 		{
@@ -54,7 +51,7 @@ namespace Overmock.Proxies
 
 		internal InvocationContext CreateInvocationContext(object[] parameters)
 		{
-			return new InvocationContext(this,  parameters);
+			return new InvocationContext(this, Interceptor,  parameters);
 		}
 
 		internal Parameters MapParameters(object[] parameters)

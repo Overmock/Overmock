@@ -13,10 +13,11 @@ namespace Overmock.Proxies
         /// </summary>
         /// <param name="interceptor"></param>
         /// <param name="argsProvider"></param>
-        protected ProxyFactory(IInterceptor interceptor)
+        protected ProxyFactory(IInterceptor interceptor, IProxyCache cache)
         {
             Target = interceptor;
-        }
+			Cache = cache;
+		}
 
         /// <summary>
         /// 
@@ -26,9 +27,14 @@ namespace Overmock.Proxies
         /// <summary>
         /// 
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
-        public T Create<T>() where T : class
+		protected IProxyCache Cache { get; }
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <returns></returns>
+		public T Create<T>() where T : class
         {
             return (T)Create();
         }
@@ -47,14 +53,14 @@ namespace Overmock.Proxies
         /// 
         /// </summary>
         /// <returns></returns>
-        protected abstract IMarshallerContext CreateContext();
+        protected abstract IProxyBuilderContext CreateContext();
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="marshallerContext"></param>
         /// <returns></returns>
-        protected abstract object CreateCore(IMarshallerContext marshallerContext);
+        protected abstract object CreateCore(IProxyBuilderContext marshallerContext);
 
         /// <summary>
         /// 
@@ -73,7 +79,7 @@ namespace Overmock.Proxies
         /// <summary>
 		/// 
 		/// </summary>
-		protected interface IMarshallerContext
+		protected interface IProxyBuilderContext
         {
             /// <summary>
             /// 

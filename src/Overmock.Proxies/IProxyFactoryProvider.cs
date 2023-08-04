@@ -3,7 +3,7 @@
     /// <summary>
     /// 
     /// </summary>
-    public interface IMarshallerFactory
+    public interface IProxyFactoryProvider
     {
         /// <summary>
         /// 

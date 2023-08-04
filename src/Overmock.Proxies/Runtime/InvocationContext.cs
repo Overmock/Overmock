@@ -7,11 +7,11 @@ namespace Overmock.Proxies
 	{
 		private object? _defaultReturnValue;
 
-		public InvocationContext(RuntimeContext runtimeContext, object[] parameters)
+		public InvocationContext(RuntimeContext runtimeContext, IInterceptor interceptor, object[] parameters)
 		{
 			ParentContext = runtimeContext;
 
-			Interceptor = runtimeContext.Interceptor;
+			Interceptor = interceptor;
 			MemberName = runtimeContext.MemberName;
 			Parameters = runtimeContext.MapParameters(parameters);
 			ProxiedMember = runtimeContext.ProxiedMember;
