@@ -11,7 +11,7 @@ namespace Overmock.Proxies
 			_method = method;
 		}
 
-		public RuntimeHandlerResult Handle(params object[] parameters)
+		public RuntimeHandlerResult Handle(IProxy proxy, params object[] parameters)
 		{
 			throw new OvermockException($"No override specified for the given method: {_method}");
 		}

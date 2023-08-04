@@ -14,12 +14,17 @@ namespace Overmock
         /// <summary>
         /// 
         /// </summary>
-        public const string AssemblyDllNameFormat = "{0}.dll";
+        public static readonly string AssemblyId = Guid.NewGuid().ToString();
 
         /// <summary>
         /// 
         /// </summary>
-        public const string AssemblyAndTypeNameFormat = "Overmocked.Proxies.{0}";
+        public const string AssemblyDllNameFormat = "Overmock.Proxies.{0}.dll";
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public const string AssemblyAndTypeNameFormat = "Overmock.Proxies.{0}";
 
         /// <summary>
         /// 

@@ -1,7 +1,7 @@
 ﻿
 namespace Overmock.Proxies
 {
-	public sealed class TypeInterceptor<TInterface> : Interceptor<TInterface> where TInterface : class
+	public class TypeInterceptor<TInterface> : Interceptor<TInterface> where TInterface : class
 	{
 		private readonly Action<InvocationContext> _memberInvoked;
 

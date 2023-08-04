@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using Overmock.Proxies.Internal;
+using System.Reflection;
 using System.Reflection.Emit;
 
 namespace Overmock.Proxies
@@ -13,72 +14,70 @@ namespace Overmock.Proxies
         /// </summary>
         /// <param name="interceptor"></param>
         /// <param name="argsProvider"></param>
-        protected ProxyFactory(IInterceptor interceptor)
+        protected ProxyFactory(IProxyCache cache)
         {
-            Target = interceptor;
-        }
+			Cache = cache;
+		}
 
         /// <summary>
         /// 
         /// </summary>
-        protected IInterceptor Target { get; }
+		protected IProxyCache Cache { get; }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
-        public T Create<T>() where T : class
-        {
-            return (T)Create();
-        }
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <returns></returns>
+		public IProxyGenerator<T> Create<T>(IInterceptor<T> interceptor) where T : class
+		{
+			var generator = (IProxyGenerator<T>)Cache.Get(interceptor.TargetType)!;
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-		public object Create()
-        {
-            var context = CreateContext();
-            return CreateCore(context);
-        }
+			if (generator == null)
+			{
+				var context = CreateContext(interceptor);
+				generator = CreateCore<T>(context);
+			}
+
+			return generator;
+		}
 
         /// <summary>
         /// 
         /// </summary>
         /// <returns></returns>
-        protected abstract IMarshallerContext CreateContext();
+        protected abstract IProxyBuilderContext CreateContext(IInterceptor interceptor);
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="marshallerContext"></param>
         /// <returns></returns>
-        protected abstract object CreateCore(IMarshallerContext marshallerContext);
+        protected abstract IProxyGenerator<T> CreateCore<T>(IProxyBuilderContext marshallerContext) where T : class;
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="target"></param>
         /// <returns></returns>
-        protected static string GetName(IInterceptor interceptor) => Constants.AssemblyAndTypeNameFormat.ApplyFormat(interceptor.TypeName);
+        protected static string GetName(string name) => Constants.AssemblyAndTypeNameFormat.ApplyFormat(name);
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="target"></param>
         /// <returns></returns>
-        protected static AssemblyName GetAssemblyName(IInterceptor target) => new(Constants.AssemblyDllNameFormat.ApplyFormat(GetName(target)));
+        protected static AssemblyName GetAssemblyName(string name) => new(Constants.AssemblyDllNameFormat.ApplyFormat(GetName(name)));
 
         /// <summary>
 		/// 
 		/// </summary>
-		protected interface IMarshallerContext
+		protected interface IProxyBuilderContext
         {
             /// <summary>
             /// 
             /// </summary>
-			IInterceptor Target { get; }
+			IInterceptor Interceptor { get; }
 
             /// <summary>
             /// 

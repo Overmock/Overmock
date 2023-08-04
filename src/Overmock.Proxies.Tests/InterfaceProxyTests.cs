@@ -30,8 +30,7 @@ namespace Overmock.Proxies.Tests
 
 			Assert.IsTrue(called);
 		}
-
-
+		
 		[TestMethod]
 		public void ProxyCallsMethodWithParameters()
 		 {

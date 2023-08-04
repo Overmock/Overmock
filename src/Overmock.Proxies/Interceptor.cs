@@ -45,15 +45,13 @@ namespace Overmock.Proxies
 		private static readonly string TargetTypeName = $"{typeof(T).Name}_{Guid.NewGuid():N}";
 
 		private readonly IProxyFactory _factory;
-		private readonly IProxyCache _typeCache;
 		private readonly T? _target;
 		private T? _proxy;
 
-		protected Interceptor(T target, IProxyFactory? factory = null, IProxyCache? typeCache = null) : base(typeof(T))
+		protected Interceptor(T target, IProxyFactory? factory = null) : base(typeof(T))
 		{
 			_target = target;
-			_factory = factory ?? MarshallerFactory.Proxy(this);
-			_typeCache = typeCache ?? GeneratedProxyCache.Cache;
+			_factory = factory ?? ProxyFactoryProvider.Proxy(this);
 		}
 
 		public T Proxy => _proxy ??= Create();
@@ -73,16 +71,14 @@ namespace Overmock.Proxies
 		/// <returns></returns>
 		protected T Create()
 		{
-			if (_typeCache.TryGet(typeof(T), out var proxy))
+			var proxyGenaerator = _factory.Create<T>(this);
+
+			if (proxyGenaerator == null)
 			{
-				return (T)proxy!;
+				throw new InvalidOperationException($"Generator not created by ProxyFactory. {TargetType}");
 			}
 
-			var value = _factory.Create<T>();
-
-			_typeCache.Set(typeof(T), value);
-
-			return value;
+			return proxyGenaerator.GenerateProxy(this);
 		}
 	}
 }
