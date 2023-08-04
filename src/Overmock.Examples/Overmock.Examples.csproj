@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Overmock.Proxies\Overmock.Proxies.csproj" />
     <ProjectReference Include="..\Overmock\Overmock.csproj" />
   </ItemGroup>
 

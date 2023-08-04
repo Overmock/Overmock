@@ -10,7 +10,7 @@
         /// </summary>
         /// <param name="target"></param>
         /// <returns></returns>
-        public static bool IsInterface(this IInterceptor target)
+        internal static bool IsInterface(this IInterceptor target)
         {
             return target.TargetType.IsInterface();
         }
@@ -20,7 +20,7 @@
         /// </summary>
         /// <param name="target"></param>
         /// <returns></returns>
-        public static bool IsDelegate(this IInterceptor target)
+        internal static bool IsDelegate(this IInterceptor target)
         {
             return target.TargetType.IsDelegate();
         }
@@ -30,7 +30,7 @@
         /// </summary>
         /// <param name="target"></param>
         /// <returns></returns>
-        public static bool IsInterface(this Type target)
+        internal static bool IsInterface(this Type target)
         {
             return target is { IsInterface: true };
         }
@@ -40,7 +40,7 @@
         /// </summary>
         /// <param name="target"></param>
         /// <returns></returns>
-        public static bool IsDelegate(this Type target)
+        internal static bool IsDelegate(this Type target)
         {
             return Constants.DelegateType.IsAssignableFrom(target);
 		}

@@ -35,7 +35,6 @@ namespace Overmock.Proxies.Tests.ProxyMembers
 
 		protected override void MemberInvoked(InvocationContext context)
 		{
-
 		}
 	}
 }

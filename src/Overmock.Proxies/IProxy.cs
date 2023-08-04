@@ -15,11 +15,13 @@ namespace Overmock.Proxies
 	/// </summary>
 	public interface IProxy
 	{
+		IInterceptor Interceptor { get; }
+
 		/// <summary>
 		/// 
 		/// </summary>
 		/// <param name="context"></param>
-		void InitializeProxyContext(ProxyContext context);
+		void InitializeProxyContext(IInterceptor interceptor, ProxyContext context);
 
 		/// <summary>
 		/// 

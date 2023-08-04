@@ -3,7 +3,7 @@
     /// <summary>
     /// 
     /// </summary>
-    public interface IMarshallerFactory
+    public interface IProxyFactoryProvider
     {
         /// <summary>
         /// 
@@ -11,6 +11,6 @@
         /// <param name="target"></param>
         /// <param name="argsProvider"></param>
         /// <returns></returns>
-        IMarshaller Create(IInterceptor interceptor);
+        IProxyFactory Provide(IInterceptor interceptor);
     }
 }

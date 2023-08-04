@@ -24,9 +24,9 @@
         /// </summary>
         /// <param name="parameters"></param>
         /// <returns></returns>
-        public RuntimeHandlerResult Handle(params object[] parameters)
+        public RuntimeHandlerResult Handle(IProxy proxy, params object[] parameters)
         {
-            return HandleCore(parameters);
+            return HandleCore(proxy, parameters);
         }
 
         /// <summary>
@@ -34,6 +34,6 @@
         /// </summary>
         /// <param name="parameters"></param>
         /// <returns></returns>
-        protected abstract RuntimeHandlerResult HandleCore(params object[] parameters);
+        protected abstract RuntimeHandlerResult HandleCore(IProxy proxy, params object[] parameters);
     }
 }

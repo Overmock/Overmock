@@ -10,11 +10,13 @@ namespace Overmock.Proxies
 
 		Type TargetType { get; }
 
+		object GetTarget();
+
 		void MemberInvoked(InvocationContext context);
 	}
 
 	public interface IInterceptor<T> : IInterceptor where T : class
 	{
-		T Target { get; }
+		T? Target { get; }
 	}
 }
