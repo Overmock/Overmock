@@ -11,6 +11,6 @@
         /// <param name="target"></param>
         /// <param name="argsProvider"></param>
         /// <returns></returns>
-        IProxyFactory Create(IInterceptor interceptor);
+        IProxyFactory Provide(IInterceptor interceptor);
     }
 }

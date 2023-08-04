@@ -10,6 +10,6 @@
 		/// </summary>
 		/// <returns></returns>
 		/// <exception cref="OvermockException"></exception>
-		public RuntimeHandlerResult Handle(params object[] parameters);
+		public RuntimeHandlerResult Handle(IProxy proxy, params object[] parameters);
 	}
 }

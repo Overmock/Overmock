@@ -2,16 +2,16 @@
 {
     internal class DelegateProxyFactory : ProxyFactory
     {
-        public DelegateProxyFactory(IInterceptor interceptor, IProxyCache cache) : base(interceptor, cache)
+        public DelegateProxyFactory(IProxyCache cache) : base(cache)
         {
         }
 
-        protected override IProxyBuilderContext CreateContext()
+        protected override IProxyBuilderContext CreateContext(IInterceptor interceptor)
         {
             throw new NotImplementedException();
         }
 
-        protected override object CreateCore(IProxyBuilderContext marshallerContext)
+        protected override IProxyGenerator<T> CreateCore<T>(IProxyBuilderContext marshallerContext)
         {
             throw new NotImplementedException();
         }

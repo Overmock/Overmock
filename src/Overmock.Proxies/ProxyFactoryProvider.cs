@@ -1,13 +1,14 @@
 ﻿using Overmock.Proxies;
+using Overmock.Proxies.Internal;
 
 namespace Overmock.Proxies
 {
     /// <summary>
     /// 
     /// </summary>
-    public class ProxyFactoryProvider : IProxyFactoryProvider
+    public abstract class ProxyFactoryProvider : IProxyFactoryProvider
     {
-        private static readonly IProxyFactoryProvider ProxyFactory = new ProxyMarshallerFactory();
+        private static readonly IProxyFactoryProvider ProxyFactory = new CachedProxyFactoryProvider();
         private static IProxyFactoryProvider _current = ProxyFactory;
 
 		/// <summary>
@@ -43,7 +44,7 @@ namespace Overmock.Proxies
         /// <exception cref="NotImplementedException"></exception>
         public static IProxyFactory Proxy(IInterceptor interceptor)
         {
-            return ProxyFactory.Create(interceptor);
+            return ProxyFactory.Provide(interceptor);
         }
 
         /// <summary>
@@ -53,9 +54,25 @@ namespace Overmock.Proxies
         /// <param name="argsProvider"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-		public IProxyFactory Create(IInterceptor interceptor)
+		public abstract IProxyFactory Provide(IInterceptor interceptor);
+
+		private class CachedProxyFactoryProvider : ProxyFactoryProvider
 		{
-			return Current.Create(interceptor);
+            private readonly IProxyFactory _interfaceProxyFactory = new InterfaceProxyFactory(GeneratedProxyCache.Cache);
+			public override IProxyFactory Provide(IInterceptor interceptor)
+			{
+				if (interceptor.IsInterface())
+				{
+					return _interfaceProxyFactory;
+				}
+
+				if (interceptor.IsDelegate())
+				{
+					return new DelegateProxyFactory(GeneratedProxyCache.Cache);
+				}
+
+				throw new NotImplementedException();
+			}
 		}
 	}
 }

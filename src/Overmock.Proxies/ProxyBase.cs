@@ -9,28 +9,29 @@ namespace Overmock.Proxies
         protected ProxyContext? ___context;
 #pragma warning restore CA1051 // Do not declare visible instance fields
 
-		private Func<RuntimeContext, object[], object>? _callback;
-
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="target"></param>
-		protected ProxyBase()
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="target"></param>
+        protected ProxyBase()
         {
             TargetType = typeof(T);
-		}
+        }
 
         /// <summary>
         /// The <see cref="Target" />s <see cref="Type" />.
         /// </summary>
         public Type TargetType { get; }
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="context"></param>
-		void IProxy.InitializeProxyContext(ProxyContext context)
+        public IInterceptor Interceptor { get; private set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="context"></param>
+        void IProxy.InitializeProxyContext(IInterceptor interceptor, ProxyContext context)
         {
+            Interceptor = interceptor;
             ___context = context;
         }
 
@@ -52,25 +53,8 @@ namespace Overmock.Proxies
         /// </summary>
         /// <returns></returns>
 		Type IProxy.GetTargetType()
-		{
+        {
             return TargetType;
-		}
-
-		internal void RegisterCallback(Func<RuntimeContext, object[], object> memberInvoked)
-		{
-			_callback = memberInvoked;
-		}
-
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="context"></param>
-		/// <param name="parameters"></param>
-		/// <returns></returns>
-		/// <exception cref="NotImplementedException"></exception>
-		protected object? InvokeTargetMember(RuntimeContext context, object[] parameters)
-		{
-            return _callback?.Invoke(context, parameters);
-		}
-	}
+        }
+    }
 }

@@ -20,7 +20,7 @@ namespace Overmock.Proxies.Runtime
 		/// </summary>
 		/// <param name="parameters"></param>
 		/// <returns></returns>
-		protected override RuntimeHandlerResult HandleCore(params object[] parameters)
+		protected override RuntimeHandlerResult HandleCore(IProxy proxy, params object[] parameters)
 		{
 			return RuntimeHandlerResult.Empty;
 		}

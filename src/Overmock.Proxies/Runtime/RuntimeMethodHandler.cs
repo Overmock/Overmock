@@ -19,11 +19,11 @@
 		/// <param name="parameters">The parameters used to call the overridden member.</param>
 		/// <returns>An object that handles the result of the method call.</returns>
 		/// <exception cref="OvermockException"></exception>
-		protected override RuntimeHandlerResult HandleCore(params object[] parameters)
+		protected override RuntimeHandlerResult HandleCore(IProxy proxy, params object[] parameters)
 		{
-			var context = Context.CreateInvocationContext(parameters);
+			var context = Context.CreateInvocationContext(proxy.Interceptor, parameters);
 
-			Context.Interceptor.MemberInvoked(context);
+			proxy.Interceptor.MemberInvoked(context);
 
 			if (context.ReturnValue == null && context.MemberReturnsValueType())
 			{

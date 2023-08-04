@@ -17,13 +17,13 @@ namespace Overmock.Proxies
 			ProxiedMember = runtimeContext.ProxiedMember;
 		}
 
-		public IInterceptor Interceptor { get; }
-
 		public string MemberName { get; }
 
 		public Parameters Parameters { get; }
 
 		public RuntimeContext ParentContext { get; }
+
+		public IInterceptor Interceptor { get; }
 
 		public IProxyMember ProxiedMember { get; }
 
@@ -31,14 +31,14 @@ namespace Overmock.Proxies
 
 		public void InvokeTarget()
 		{
-			ParentContext.Invoke(Interceptor.GetTarget(), Parameters.ToObjectArray());
+			ProxiedMember.Method.Invoke(Interceptor.GetTarget(), Parameters.ToObjectArray());
 		}
 
 		internal object? GetReturnTypeDefaultValue()
 		{
 			if (_defaultReturnValue == null)
 			{
-				_defaultReturnValue = DefaultReturnValueCache.GetDefaultValue(ParentContext.Interceptor.TargetType);
+				_defaultReturnValue = DefaultReturnValueCache.GetDefaultValue(Interceptor.TargetType);
 			}
 
 			return _defaultReturnValue;
