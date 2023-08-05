@@ -4,12 +4,16 @@ namespace Overmock.Proxies.Internal
 {
     public class ProxyMember : IProxyMember
 	{
+		private readonly Func<object, object[]?, object?> _delegate;
+
 		public ProxyMember(MethodInfo method) : this(method, method)
 		{
 		}
 
 		public ProxyMember(MemberInfo member, MethodInfo method)
 		{
+			_delegate = method.Invoke;
+
 			Member = member;
 			Method = method;
 		}
@@ -20,9 +24,9 @@ namespace Overmock.Proxies.Internal
 
 		public string Name => Member.Name;
 
-		public object? GetDefaultReturnValue()
+		public Func<object, object[]?, object?> CreateDelegate()
 		{
-			return default(object?);
+			return _delegate;
 		}
 
 		public MemberInfo GetMember()

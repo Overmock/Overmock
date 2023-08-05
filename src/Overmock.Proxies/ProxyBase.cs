@@ -46,12 +46,25 @@ namespace Overmock.Proxies
             var handle = ___context.Get(method);
             var result = handle.Handle(this, parameters);
             return result.Result;
-        }
+		}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
+		///// <summary>
+		///// 
+		///// </summary>
+		///// <param name="method"></param>
+		///// <param name="parameters"></param>
+		///// <returns></returns>
+		//protected object? HandleMethodCall(string methodId, params object[] parameters)
+		//{
+		//	var handle = ___context.Get(methodId);
+		//	var result = handle.Handle(this, parameters);
+		//	return result.Result;
+		//}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <returns></returns>
 		Type IProxy.GetTargetType()
         {
             return TargetType;

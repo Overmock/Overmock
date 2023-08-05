@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace Overmock.Proxies
 {
@@ -52,7 +53,10 @@ namespace Overmock.Proxies
 
 		public IEnumerator<object> GetEnumerator()
 		{
-			yield return ToObjectArray();
+			foreach (var item in _parameters)
+			{
+				yield return item.Value;
+			}
 		}
 
 		IEnumerator IEnumerable.GetEnumerator()
@@ -60,7 +64,12 @@ namespace Overmock.Proxies
 			return GetEnumerator();
 		}
 
-		internal object[] ToObjectArray()
+		internal IReadOnlyList<object> ToParameterList()
+		{
+			return _parameters.Select(p => p.Value).ToList();
+		}
+
+		internal object[] ToArray()
 		{
 			return _parameters.Select(p => p.Value).ToArray();
 		}

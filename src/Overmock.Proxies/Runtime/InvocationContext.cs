@@ -5,11 +5,19 @@ namespace Overmock.Proxies
 {
 	public class InvocationContext
 	{
+		private readonly Func<object, object[]?, object?> _invokeTargetHandler;
+		private readonly object[] _arguments;
+		private readonly object _target;
+
 		private object? _defaultReturnValue;
 
 		public InvocationContext(RuntimeContext runtimeContext, IInterceptor interceptor, object[] parameters)
 		{
 			ParentContext = runtimeContext;
+			
+			_arguments = parameters;
+			_target = interceptor.GetTarget();
+			_invokeTargetHandler = runtimeContext.GetTargetInvocationHandler();
 
 			Interceptor = interceptor;
 			MemberName = runtimeContext.MemberName;
@@ -29,9 +37,14 @@ namespace Overmock.Proxies
 
 		public object? ReturnValue { get; set; }
 
-		public void InvokeTarget()
+		public void InvokeTarget(bool setReturnValue = true)
 		{
-			ProxiedMember.Method.Invoke(Interceptor.GetTarget(), Parameters.ToObjectArray());
+			var returnValue = _invokeTargetHandler(_target, _arguments);
+
+			if (setReturnValue)
+			{
+				ReturnValue = returnValue;
+			}
 		}
 
 		internal object? GetReturnTypeDefaultValue()

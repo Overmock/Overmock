@@ -14,11 +14,7 @@ namespace Overmock.Proxies
         /// </summary>
 		string Name { get; }
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <returns></returns>
-		object? GetDefaultReturnValue();
+		Func<object, object[]?, object?> CreateDelegate();
 
         /// <summary>
         /// 

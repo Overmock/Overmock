@@ -41,5 +41,10 @@ namespace Overmock.Proxies
 
             return new RuntimeMethodHandler(overrideContext);
         }
-    }
+
+		internal object GetRuntimeContext(string identifier)
+		{
+			return _overrides[Guid.Parse(identifier)];
+		}
+	}
 }
