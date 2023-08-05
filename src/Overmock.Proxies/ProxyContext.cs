@@ -16,11 +16,9 @@ namespace Overmock.Proxies
         /// <param name="methodId"></param>
         /// <param name="context"></param>
         /// <returns></returns>
-        internal ProxyContext Add(int methodId, RuntimeContext context)
+        internal void Add(int methodId, RuntimeContext context)
         {
             _overrides.Add(context);
-
-            return this;
         }
 
 		internal InvocationContext GetInvocationContext(int methodId, IProxy proxy, object[] parameters)
