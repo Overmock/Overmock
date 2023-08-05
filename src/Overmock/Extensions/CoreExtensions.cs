@@ -1,4 +1,5 @@
-﻿using Overmock.Runtime;
+﻿
+using System.Globalization;
 
 namespace Overmock
 {
@@ -6,7 +7,7 @@ namespace Overmock
     {
         internal static string ApplyFormat(this string format, params object[] args)
         {
-            return Constants.Format(() => format, args);
+            return string.Format(CultureInfo.CurrentCulture, format, args);
         }
     }
 }

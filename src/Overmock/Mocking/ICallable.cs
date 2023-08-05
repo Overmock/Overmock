@@ -1,5 +1,4 @@
-﻿using Overmock.Runtime;
-
+﻿
 namespace Overmock.Mocking
 {
 	/// <summary>
@@ -11,7 +10,7 @@ namespace Overmock.Mocking
 		/// An <see cref="Func{OverrideContext, TReturn}"/> delegate to call in place of this override's property.
 		/// </summary>
 		/// <param name="action"></param>
-		void Calls(Action<RuntimeContext> action);
+		void Calls(Action<OvermockContext> action);
 
 
 		/// <summary>

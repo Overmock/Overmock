@@ -1,5 +1,4 @@
-﻿using Overmock.Runtime;
-
+﻿
 namespace Overmock
 {
 	internal class SetupOvermock : ISetup
@@ -16,11 +15,16 @@ namespace Overmock
             _callable.Throws(exception);
         }
 
-        public void ToCall(Action<RuntimeContext> action)
+        public void ToCall(Action<OvermockContext> action)
         {
             _callable.Calls(action);
         }
-    }
+
+		public void ToBeCalled()
+		{
+            _callable.Calls(c => { });
+		}
+	}
     internal class SetupOvermock<T> : SetupOvermock, ISetup<T> where T : class
     {
         internal SetupOvermock(ICallable<T> callable) : base(callable)
@@ -37,12 +41,12 @@ namespace Overmock
             _returnable = returnable;
         }
 
-        void ISetup<T, TReturn>.ToCall(Func<RuntimeContext, TReturn> callback)
+        void ISetup<T, TReturn>.ToCall(Func<OvermockContext, TReturn> callback)
         {
             _returnable.Calls(callback);
         }
 
-        void ISetup<T>.ToCall(Action<RuntimeContext> action)
+        void ISetup<T>.ToCall(Action<OvermockContext> action)
         {
             _returnable.Calls(action);
         }

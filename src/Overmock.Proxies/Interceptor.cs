@@ -1,6 +1,4 @@
 ﻿
-using Overmock.Proxies.Internal;
-
 namespace Overmock.Proxies
 {
 	public abstract class Interceptor : IInterceptor

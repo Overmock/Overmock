@@ -1,6 +1,4 @@
 ﻿
-using Overmock.Runtime;
-
 namespace Overmock.Mocking.Internal
 {
 	internal class MethodCallOverride : IOverride
@@ -12,7 +10,7 @@ namespace Overmock.Mocking.Internal
 
 		public Delegate Overmock { get; }
 
-		public object? Handle(RuntimeContext context)
+		public object? Handle(OvermockContext context)
 		{
 			return Overmock.DynamicInvoke(context);
 		}

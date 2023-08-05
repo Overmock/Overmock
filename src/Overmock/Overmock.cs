@@ -1,5 +1,5 @@
-﻿using System.Reflection;
-using Overmock.Runtime;
+﻿using Overmock.Proxies;
+using System.Reflection;
 
 namespace Overmock;
 
@@ -11,8 +11,8 @@ public class Overmock<T> : Verifiable<T>, IOvermock<T> where T : class
 {
     private readonly List<IMethodCall> _methods = new List<IMethodCall>();
 	private readonly List<IPropertyCall> _properties = new List<IPropertyCall>();
-	
-	private Lazy<T>? _lazyObject;
+	private readonly TypeInterceptor<T> _interceptor;
+
 	private Type? _compiledType;
 
     /// <summary>
@@ -20,17 +20,17 @@ public class Overmock<T> : Verifiable<T>, IOvermock<T> where T : class
     /// </summary>
     /// <param name="factory"></param>
     /// <param name="argsProvider">The delegate used to get arguments to pass when constructing <typeparamref name="T" />.</param>
-    public Overmock(IMarshallerFactory? factory = default, Action<SetupArgs>? argsProvider = default)
-    {
-        Overmocked.Register(this);
-		
-        if (Type.IsSealed || Type.IsEnum)
-        {
-            throw new InvalidOperationException($"Type '{Type.Name}' cannot be a sealed class or enum.");
-        }
+    public Overmock(Action<SetupArgs>? argsProvider = default)
+	{
+		if (Type.IsSealed || Type.IsEnum)
+		{
+			throw new InvalidOperationException($"Type '{Type.Name}' cannot be a sealed class or enum.");
+		}
 
-		InitializeLazyHandler(factory, argsProvider);
-    }
+		_interceptor = new TypeInterceptor<T>(default, memberInvoked: TargetMemberInvoked);
+
+		Overmocked.Register(this);
+	}
 
 	/// <summary>
 	/// 
@@ -63,31 +63,18 @@ public class Overmock<T> : Verifiable<T>, IOvermock<T> where T : class
     {
 		get
 		{
-			if (_lazyObject == null)
-			{
-				InitializeLazyHandler();
-			}
-
-			return _lazyObject!.Value;
+			return _interceptor.Proxy;
         }
     }
 
     Type? IOvermock.GetCompiledType() => _compiledType;
 
-	string IOvermock.TypeName => base._typeName;
+	string IOvermock.TypeName => _typeName;
 
 	/// <inheritdoc/>
 	protected override void Verify()
 	{
 		throw new VerifyException(this);
-	}
-
-	private void InitializeLazyHandler(IMarshallerFactory? factory = null, Action<SetupArgs>? argsProvider = default)
-	{
-		_lazyObject = new Lazy<T>(() => {
-			var marshaller = (factory ?? Overmocked.GetMarshallerFactory()).Create(this, argsProvider);
-			return (T)marshaller.Marshal() ?? throw new OvermockException("Can't believe this happened right now.");
-		});
 	}
 
 	internal void SetCompiledType(Type? compiledType) => _compiledType = compiledType;
@@ -119,4 +106,35 @@ public class Overmock<T> : Verifiable<T>, IOvermock<T> where T : class
 	{
 		return _properties.AsReadOnly();
 	}
+
+	private void TargetMemberInvoked(InvocationContext context)
+	{
+		var methodCall = _methods.Find(m => m.BaseMethod == context.Method);
+
+		if (methodCall != null)
+		{
+			var overmock = methodCall.GetOverrides().First();
+
+			context.ReturnValue = overmock.Handle(new OvermockContext(context));
+			
+			return;
+		}
+
+		if (context.Member is PropertyInfo property)
+		{
+			var propertyCall = _properties.Find(p => p.PropertyInfo == property);
+
+			if (propertyCall != null)
+			{
+				var overmock = propertyCall.GetOverrides().First();
+
+				context.ReturnValue = overmock.Handle(new OvermockContext(context));
+				
+				return;
+			}
+		}
+
+		throw new UnhandledMemberException(context.MemberName);
+	}
+
 }

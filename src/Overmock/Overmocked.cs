@@ -1,5 +1,4 @@
 ﻿using System.Collections.Concurrent;
-using Overmock.Runtime;
 
 namespace Overmock
 {
@@ -44,11 +43,6 @@ namespace Overmock
         {
             _overmocks.Enqueue(overmock);
         }
-		
-        internal static IMarshallerFactory GetMarshallerFactory()
-        {
-            return MarshallerFactory.Current;
-		}
 
 		internal static IMethodCall<T> RegisterMethod<T>(IOvermock overmock, IMethodCall<T> method) where T : class
 		{

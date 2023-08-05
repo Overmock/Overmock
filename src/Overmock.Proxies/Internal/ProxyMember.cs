@@ -28,10 +28,5 @@ namespace Overmock.Proxies.Internal
 		{
 			return _delegate;
 		}
-
-		public MemberInfo GetMember()
-		{
-			return Member;
-		}
 	}
 }

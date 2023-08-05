@@ -1,14 +1,13 @@
-﻿using Overmock.Runtime;
-
+﻿
 namespace Overmock.Mocking.Internal
 {
 	internal abstract class Callable : Throwable, ICallable
 	{
-		public Action<RuntimeContext>? Action { get; private set; }
+		public Action<OvermockContext>? Action { get; private set; }
 
 		public abstract object? GetDefaultReturnValue();
 
-		public void Calls(Action<RuntimeContext> action)
+		public void Calls(Action<OvermockContext> action)
 		{
 			Action = action;
 		}

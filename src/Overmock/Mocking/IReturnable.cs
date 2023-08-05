@@ -1,5 +1,4 @@
-﻿using Overmock.Runtime;
-
+﻿
 namespace Overmock.Mocking
 {
 	/// <summary>
@@ -24,6 +23,6 @@ namespace Overmock.Mocking
 		/// 
 		/// </summary>
 		/// <param name="func"></param>
-		void Calls(Func<RuntimeContext, T> func);
+		void Calls(Func<OvermockContext, T> func);
 	}
 }

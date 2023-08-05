@@ -1,10 +1,10 @@
-﻿using Overmock.Runtime.Proxies;
+﻿using Overmock.Proxies;
 
 namespace Overmock.Tests.Mocks.Methods
 {
-    public class GenericMethodsTestInterface : Proxy<IGenericMethodsTestInterface>, IGenericMethodsTestInterface
+    public class GenericMethodsTestInterface : ProxyBase<IGenericMethodsTestInterface>, IGenericMethodsTestInterface
     {
-        public GenericMethodsTestInterface(IOvermock target) : base(target)
+        public GenericMethodsTestInterface(IOvermock target) : base()
         {
         }
 

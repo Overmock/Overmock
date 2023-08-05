@@ -1,17 +1,21 @@
-﻿using Overmock.Runtime;
-
+﻿
 namespace Overmock
 {
     /// <summary>
     /// Represents a member that can setup an Exception to throw when calling the overmock.
     /// </summary>
     public interface ISetup : IFluentInterface
-    {
+	{
         /// <summary>
-        /// Specifies the exception to throw when the overmocked member is called.
+        /// 
         /// </summary>
-        /// <param name="exception">The exception to throw.</param>
-        void ToThrow(Exception exception);
+		void ToBeCalled();
+
+		/// <summary>
+		/// Specifies the exception to throw when the overmocked member is called.
+		/// </summary>
+		/// <param name="exception">The exception to throw.</param>
+		void ToThrow(Exception exception);
     }
 
     /// <summary>
@@ -24,7 +28,7 @@ namespace Overmock
 		/// 
 		/// </summary>
 		/// <param name="action"></param>
-		void ToCall(Action<RuntimeContext> action);
+		void ToCall(Action<OvermockContext> action);
 	}
 
     /// <summary>
@@ -58,6 +62,6 @@ namespace Overmock
         /// </summary>
         /// <param name="callback"></param>
         /// <returns></returns>
-        void ToCall(Func<RuntimeContext, TReturn> callback);
+        void ToCall(Func<OvermockContext, TReturn> callback);
     }
 }

@@ -1,6 +1,4 @@
 ﻿
-using Overmock.Runtime;
-
 namespace Overmock.Mocking.Internal
 {
 	/// <summary>
@@ -18,7 +16,7 @@ namespace Overmock.Mocking.Internal
 		/// </summary>
 		public Func<object> ReturnProvider { get; }
 
-		public object? Handle(RuntimeContext context)
+		public object? Handle(OvermockContext context)
 		{
 			return ReturnProvider();
 		}

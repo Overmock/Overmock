@@ -1,17 +1,16 @@
-﻿using Overmock.Runtime;
-
+﻿
 namespace Overmock.Mocking.Internal
 {
 	internal abstract class Returnable<T, TReturn> : Callable, IReturnable<TReturn>
 	{
-		public Func<RuntimeContext, TReturn>? Func { get; private set; }
+		public Func<OvermockContext, TReturn>? Func { get; private set; }
 
 		public override object? GetDefaultReturnValue()
 		{
 			return default(TReturn);
 		}
 
-		public void Calls(Func<RuntimeContext, TReturn> func)
+		public void Calls(Func<OvermockContext, TReturn> func)
 		{
 			Func = func;
 		}

@@ -28,7 +28,6 @@ namespace Overmock.Tests.Examples
             }
             public void SaveModel(Model model)
             {
-
                 try
                 {
                     var saved = _repo.Save(model);
@@ -53,6 +52,7 @@ namespace Overmock.Tests.Examples
             var log = Overmocked.Interface<ILog>();
             var repository = Overmocked.Interface<IRepository>();
 
+            log.Override(l => l.Log(Its.Any<string>())).ToBeCalled();
             repository.Override(r => r.Save(Its.Any<Model>())).ToCall(c =>
             {
                 wasSaved = true;
@@ -72,7 +72,7 @@ namespace Overmock.Tests.Examples
             var log = Overmocked.Interface<ILog>();
             var repository = Overmocked.Interface<IRepository>();
 
-            log.Override(l => l.Log(expected));
+            log.Override(l => l.Log(expected)).ToBeCalled();
             repository.Override(r => r.Save(Its.Any<Model>())).ToThrow(new Exception(expected));
 
             var service = new Service(log.Target, repository.Target);

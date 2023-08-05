@@ -3,11 +3,16 @@
 namespace Overmock.Proxies
 {
     public interface IProxyMember
-    {
-        /// <summary>
-        /// 
-        /// </summary>
-        MethodInfo Method { get; }
+	{
+		/// <summary>
+		/// 
+		/// </summary>
+		MemberInfo Member { get; }
+
+		/// <summary>
+		/// 
+		/// </summary>
+		MethodInfo Method { get; }
 
         /// <summary>
         /// 
@@ -15,11 +20,5 @@ namespace Overmock.Proxies
 		string Name { get; }
 
 		Func<object, object[]?, object?> CreateDelegate();
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        MemberInfo GetMember();
     }
 }

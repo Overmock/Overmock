@@ -152,26 +152,26 @@ namespace Overmock.Proxies.Internal
         }
 
         private static (IEnumerable<MethodInfo>, IEnumerable<PropertyInfo>) AddMembersRecursive(ProxyBuilderContext context, Type interfaceType)
+		{
+			context.TypeBuilder.AddInterfaceImplementation(interfaceType);
+
+			context.AddInterfaces(interfaceType);
+
+			var methods = GetMethods(interfaceType);
+			var properties = interfaceType.GetProperties().AsEnumerable();
+
+			foreach (Type type in interfaceType.GetInterfaces())
+			{
+				methods = AddMethodsRecursive(context, type).Concat(methods);
+				properties = AddPropertiesRecursive(context, type).Concat(properties);
+			}
+
+			return (methods.Distinct(), properties.Distinct());
+		}
+
+		private static IEnumerable<MethodInfo> AddMethodsRecursive(ProxyBuilderContext context, Type interfaceType)
         {
-            context.TypeBuilder.AddInterfaceImplementation(interfaceType);
-
-            context.AddInterfaces(interfaceType);
-
-            var methods = interfaceType.GetMethods().AsEnumerable();
-            var properties = interfaceType.GetProperties().AsEnumerable();
-
-            foreach (Type type in interfaceType.GetInterfaces())
-            {
-                methods = AddMethodsRecursive(context, type).Concat(methods);
-                properties = AddPropertiesRecursive(context, type).Concat(properties);
-            }
-
-            return (methods.Distinct(), properties.Distinct());
-        }
-
-        private static IEnumerable<MethodInfo> AddMethodsRecursive(ProxyBuilderContext context, Type interfaceType)
-        {
-            var methods = interfaceType.GetMethods().AsEnumerable();
+            var methods = GetMethods(interfaceType);
 
             foreach (Type type in interfaceType.GetInterfaces())
             {
@@ -179,9 +179,14 @@ namespace Overmock.Proxies.Internal
             }
 
             return methods.Distinct();
-        }
+		}
 
-        private static IEnumerable<PropertyInfo> AddPropertiesRecursive(ProxyBuilderContext context, Type interfaceType)
+		private static IEnumerable<MethodInfo> GetMethods(Type interfaceType)
+		{
+			return interfaceType.GetMethods().Where(m => !m.IsSpecialName);
+		}
+
+		private static IEnumerable<PropertyInfo> AddPropertiesRecursive(ProxyBuilderContext context, Type interfaceType)
         {
             var properties = interfaceType.GetProperties().AsEnumerable();
 

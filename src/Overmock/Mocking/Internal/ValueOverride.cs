@@ -1,5 +1,4 @@
-﻿using Overmock.Runtime;
-
+﻿
 namespace Overmock.Mocking.Internal
 {
 	internal class ValueOverride : IOverride
@@ -11,7 +10,7 @@ namespace Overmock.Mocking.Internal
 
 		public object Value { get; }
 
-		public object? Handle(RuntimeContext context)
+		public object? Handle(OvermockContext context)
 		{
 			return Value;
 		}

@@ -7,7 +7,7 @@ namespace Overmock.Tests
 		[TestMethod]
 		public void VoidMethodWithNoParamsToReturnTest()
 		{
-            _testInterface.Override(t => t.VoidMethodWithNoParams());
+            _testInterface.Override(t => t.VoidMethodWithNoParams()).ToBeCalled();
 
 			var target = _testInterface.Target;
 

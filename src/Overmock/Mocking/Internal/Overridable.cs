@@ -10,6 +10,11 @@ namespace Overmock.Mocking.Internal
 
 			AddOverridesTo(overrides);
 
+			if (overrides.Count == 0)
+			{
+				overrides.Add(new ThrowExceptionOverride(new UnhandledMemberException(GetTarget().Name)));
+			}
+
 			return overrides.AsReadOnly();
 		}
 
