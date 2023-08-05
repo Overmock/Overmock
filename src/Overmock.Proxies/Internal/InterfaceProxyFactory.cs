@@ -203,34 +203,22 @@ namespace Overmock.Proxies.Internal
             return typeof(object).GetMethods().Where(method => method.IsVirtual);
         }
 
-        private static void DefineOvermockInitMethod(TypeBuilder typeBuilder, FieldBuilder contextField)
-        {
-            var initContextMethod = typeBuilder.DefineMethod(Constants.InitializeOvermockContextMethodName,
-                MethodAttributes.Public, CallingConventions.HasThis, typeof(void),
-                new[] { contextField.FieldType }
-            );
-            var initContextMethodBody = initContextMethod.GetILGenerator();
-            initContextMethodBody.Emit(OpCodes.Ldarg_0);
-            initContextMethodBody.Emit(OpCodes.Ldarg_1);
-            initContextMethodBody.Emit(OpCodes.Stfld, contextField);
-            initContextMethodBody.Emit(OpCodes.Ret);
-        }
-
         private static void ImplementMethods(ProxyBuilderContext context, IEnumerable<MethodInfo> methods)
         {
             foreach (var methodInfo in methods)
-            {
-                var method = new ProxyMember(methodInfo);
+			{
+                var methodId = context.GetNextMethodId();
+				var method = new ProxyMember(methodInfo);
                 var methodBuilder = CreateMethod(context,
 					methodInfo.IsGenericMethod
                         ? methodInfo.GetGenericMethodDefinition()
-                        : methodInfo
+                        : methodInfo,
+                    methodId
 				);
 
-                var methodId = Guid.NewGuid();
                 methodBuilder.SetCustomAttribute(new CustomAttributeBuilder(
                     OvermockAttributeConstructor,
-                    new object[] { methodId.ToString() }
+                    new object[] { methodId }
                 ));
 
                 context.ProxyContext.Add(methodId, new RuntimeContext(method,
@@ -239,7 +227,7 @@ namespace Overmock.Proxies.Internal
             }
         }
 
-        private static MethodBuilder CreateMethod(ProxyBuilderContext context, MethodInfo methodInfo)
+        private static MethodBuilder CreateMethod(ProxyBuilderContext context, MethodInfo methodInfo, int methodId)
         {
             var parameterTypes = methodInfo.GetParameters()
                 .Select(p => p.ParameterType).ToArray();
@@ -261,7 +249,7 @@ namespace Overmock.Proxies.Internal
                 DefineGenericParameters(methodInfo, methodBuilder);
             }
 
-            EmitMethodBody(context, iLGenerator, returnType, parameterTypes);
+            EmitMethodBody(context, iLGenerator, returnType, parameterTypes, methodId);
 
             return methodBuilder;
         }
@@ -292,7 +280,7 @@ namespace Overmock.Proxies.Internal
             }
         }
 
-        private static void EmitMethodBody(ProxyBuilderContext context, ILGenerator emitter, Type returnType, Type[] parameters)
+        private static void EmitMethodBody(ProxyBuilderContext context, ILGenerator emitter, Type returnType, Type[] parameters, int methodId)
         {
             var returnIsNotVoid = returnType != typeof(void);
 
@@ -306,8 +294,7 @@ namespace Overmock.Proxies.Internal
             emitter.Emit(OpCodes.Nop);
             emitter.Emit(OpCodes.Ldarg_0);
 
-            emitter.Emit(OpCodes.Call, Constants.MethodBaseTypeGetCurrentMethod);
-            emitter.Emit(OpCodes.Castclass, Constants.MethodInfoType);
+            emitter.Emit(OpCodes.Ldc_I4, methodId);
 
             if (parameters.Length > 0)
             {
@@ -371,13 +358,13 @@ namespace Overmock.Proxies.Internal
 			{
                 if (propertyInfo.CanRead)
 				{
+					var methodId = context.GetNextMethodId();
 					var property = new ProxyMember(propertyInfo, propertyInfo.GetGetMethod()!);
-					var methodBuilder = CreateMethod(context, property.Method);
+					var methodBuilder = CreateMethod(context, property.Method, methodId);
 
-					var methodId = Guid.NewGuid();
 					methodBuilder.SetCustomAttribute(new CustomAttributeBuilder(
                         OvermockAttributeConstructor,
-						new object[] { methodId.ToString() }
+						new object[] { methodId }
 					));
 
 					context.ProxyContext.Add(methodId, new RuntimeContext(
@@ -387,10 +374,10 @@ namespace Overmock.Proxies.Internal
 				}
 				if (propertyInfo.CanWrite)
 				{
+					var methodId = context.GetNextMethodId();
 					var property = new ProxyMember(propertyInfo, propertyInfo.GetSetMethod()!);
-					var methodBuilder = CreateMethod(context, property.Method);
+					var methodBuilder = CreateMethod(context, property.Method, methodId);
 
-					var methodId = Guid.NewGuid();
 					methodBuilder.SetCustomAttribute(new CustomAttributeBuilder(
 						OvermockAttributeConstructor,
 						new object[] { methodId.ToString() }
@@ -404,83 +391,9 @@ namespace Overmock.Proxies.Internal
 			}
         }
 
-        private static void DefineProperties(ProxyBuilderContext context)
-        {
-            var targetType = context.Interceptor.TargetType;
-
-            foreach (PropertyInfo property in targetType.GetProperties())
-            {
-                CreateProperty(context, property);
-            }
-        }
-
-        private static TypeBuilder CreateProperty(ProxyBuilderContext context, PropertyInfo propertyInfo)
-        {
-            var typeBuilder = context.TypeBuilder;
-
-            PropertyBuilder property = typeBuilder.DefineProperty(propertyInfo.Name, PropertyAttributes.HasDefault, CallingConventions.HasThis, propertyInfo.PropertyType, new Type[1]
-            {
-                propertyInfo.PropertyType
-            });
-
-            FieldBuilder field = typeBuilder.DefineField("_" + propertyInfo.Name.ToLower(), propertyInfo.PropertyType, FieldAttributes.Private);
-
-            if (propertyInfo.CanRead)
-            {
-                CreateGetMethod(context, property, propertyInfo.GetGetMethod()!, field, MethodAttributes.Public | MethodAttributes.Virtual | MethodAttributes.SpecialName);
-            }
-
-            //if (propertyInfo.CanWrite)
-            //{
-            //    CreateSetMethod(typeBuilder, property, propertyInfo.GetSetMethod()!, field, MethodAttributes.Public | MethodAttributes.Virtual | MethodAttributes.SpecialName);
-            //}
-
-            return typeBuilder;
-        }
-
-        private static void CreateGetMethod(
-            ProxyBuilderContext context,
-            PropertyBuilder property,
-            MethodInfo method,
-            FieldInfo field,
-            MethodAttributes getAttrs)
-        {
-            MethodBuilder mdBuilder = context.TypeBuilder.DefineMethod(method.Name, getAttrs, method.ReturnType, Type.EmptyTypes);
-
-            EmitMethodBody(context, mdBuilder.GetILGenerator(), property.PropertyType, Type.EmptyTypes);
-
-            //ILGenerator ilGenerator = mdBuilder.GetILGenerator();
-            //ilGenerator.Emit(OpCodes.Ldarg_0);
-            //ilGenerator.Emit(OpCodes.Ldfld, field);
-            //ilGenerator.Emit(OpCodes.Ret);
-
-            property.SetGetMethod(mdBuilder);
-        }
-
-        private static void CreateSetMethod(
-            TypeBuilder baseType,
-            PropertyBuilder property,
-            MethodInfo method,
-            FieldInfo field,
-            MethodAttributes setAttrs)
-        {
-            MethodBuilder mdBuilder = baseType.DefineMethod(method.Name, setAttrs, method.ReturnType, new Type[1]
-            {
-        field.FieldType
-            });
-            ILGenerator ilGenerator = mdBuilder.GetILGenerator();
-            ilGenerator.Emit(OpCodes.Ldarg_0);
-            ilGenerator.Emit(OpCodes.Ldarg_1);
-            ilGenerator.Emit(OpCodes.Stfld, field);
-            ilGenerator.Emit(OpCodes.Ret);
-            property.SetSetMethod(mdBuilder);
-        }
-
-        private static string GetDynamicTypeName(Type baseType, string prefix = "", string suffix = "") =>
-            $"{prefix}{baseType.FullName}{suffix}";
-
         private class ProxyBuilderContext : IProxyBuilderContext
 		{
+            private int _methodCounter = 0;
             public ProxyBuilderContext(IInterceptor target, TypeBuilder typeBuilder, Type proxyType)
             {
                 Interceptor = target;
@@ -505,6 +418,11 @@ namespace Overmock.Proxies.Internal
                 var interfaces = Interfaces.ToArray();
 
                 Interfaces = interfaces.Union(interfaceTypes).Distinct().ToList();
+            }
+
+            public int GetNextMethodId()
+            {
+                return _methodCounter++;
             }
         }
     }
