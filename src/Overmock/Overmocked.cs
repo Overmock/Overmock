@@ -14,6 +14,22 @@ namespace Overmock
 		}
 
 		/// <summary>
+		/// Signals the Overmock to expect any invocation.
+		/// </summary>
+		/// <param name="value"></param>
+		public static IOvermock<T> ExpectAnyInvocation<T>(bool value = true) where T : class
+		{
+			var result = new Overmock<T>();
+
+			_overmocks.Enqueue(result);
+
+			((IExpectAnyInvocation)result).ExpectAny(value);
+
+			return result;
+		}
+
+
+		/// <summary>
 		/// Sets up the specified <typeparamref name="T" /> type with overmock using the constructor arguments.
 		/// </summary>
 		/// <typeparam name="T"></typeparam>

@@ -49,10 +49,9 @@ namespace Overmock.Tests.Examples
         {
             var id = 22;
             var wasSaved = false;
-            var log = Overmocked.Interface<ILog>();
+            var log = Overmocked.ExpectAnyInvocation<ILog>();
             var repository = Overmocked.Interface<IRepository>();
 
-            log.Override(l => l.Log(Its.Any<string>())).ToBeCalled();
             repository.Override(r => r.Save(Its.Any<Model>())).ToCall(c =>
             {
                 wasSaved = true;
@@ -69,10 +68,9 @@ namespace Overmock.Tests.Examples
         public void ThrowsExceptionWhenSaveFailsTest()
         {
             var expected = "Failed to save";
-            var log = Overmocked.Interface<ILog>();
+            var log = Overmocked.ExpectAnyInvocation<ILog>();
             var repository = Overmocked.Interface<IRepository>();
 
-            log.Override(l => l.Log(expected)).ToBeCalled();
             repository.Override(r => r.Save(Its.Any<Model>())).ToThrow(new Exception(expected));
 
             var service = new Service(log.Target, repository.Target);

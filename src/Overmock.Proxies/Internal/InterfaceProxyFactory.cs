@@ -246,6 +246,11 @@ namespace Overmock.Proxies.Internal
                 parameterTypes
             );
 
+            if (methodInfo.DeclaringType == Constants.ObjectType)
+            {
+                context.TypeBuilder.DefineMethodOverride(methodBuilder,  methodInfo);
+            }
+
             var iLGenerator = methodBuilder.GetILGenerator();
             var returnType = methodInfo.ReturnType;
 

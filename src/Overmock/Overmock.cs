@@ -7,20 +7,21 @@ namespace Overmock;
 /// Allows for mocking classes and interfaces.
 /// </summary>
 /// <typeparam name="T">The type going to be mocked.</typeparam>
-public class Overmock<T> : Verifiable<T>, IOvermock<T> where T : class
+public class Overmock<T> : Verifiable<T>, IOvermock<T>, IExpectAnyInvocation where T : class
 {
     private readonly List<IMethodCall> _methods = new List<IMethodCall>();
 	private readonly List<IPropertyCall> _properties = new List<IPropertyCall>();
 	private readonly TypeInterceptor<T> _interceptor;
 
 	private Type? _compiledType;
+	private bool _overrideAll;
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="Overmock{T}"/> class.
-    /// </summary>
-    /// <param name="factory"></param>
-    /// <param name="argsProvider">The delegate used to get arguments to pass when constructing <typeparamref name="T" />.</param>
-    public Overmock(Action<SetupArgs>? argsProvider = default)
+	/// <summary>
+	/// Initializes a new instance of the <see cref="Overmock{T}"/> class.
+	/// </summary>
+	/// <param name="factory"></param>
+	/// <param name="argsProvider">The delegate used to get arguments to pass when constructing <typeparamref name="T" />.</param>
+	public Overmock(Action<SetupArgs>? argsProvider = default)
 	{
 		if (Type.IsSealed || Type.IsEnum)
 		{
@@ -107,6 +108,11 @@ public class Overmock<T> : Verifiable<T>, IOvermock<T> where T : class
 		return _properties.AsReadOnly();
 	}
 
+	void IExpectAnyInvocation.ExpectAny(bool value = false)
+	{
+		_overrideAll = value;
+	}
+
 	private void TargetMemberInvoked(InvocationContext context)
 	{
 		var methodCall = _methods.Find(m => m.BaseMethod == context.Method);
@@ -134,7 +140,9 @@ public class Overmock<T> : Verifiable<T>, IOvermock<T> where T : class
 			}
 		}
 
-		throw new UnhandledMemberException(context.MemberName);
+		if (!_overrideAll)
+		{
+			throw new UnhandledMemberException(context.MemberName);
+		}
 	}
-
 }
