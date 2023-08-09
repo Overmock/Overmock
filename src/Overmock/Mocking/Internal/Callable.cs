@@ -5,18 +5,21 @@ namespace Overmock.Mocking.Internal
 	{
 		public Action<OvermockContext>? Action { get; private set; }
 
+		public Times Times { get; set; } = Times.Any;
+
 		public abstract object? GetDefaultReturnValue();
 
-		public void Calls(Action<OvermockContext> action)
+		public void Calls(Action<OvermockContext> action, Times times)
 		{
 			Action = action;
+			Times = times;
 		}
 
 		protected override void AddOverridesTo(List<IOverride> overrides) 
 		{
 			if (Action != null)
 			{
-				overrides.Add(new MethodCallOverride(overmock: Action));
+				overrides.Add(new MethodCallOverride(overmock: Action, Times));
 			}
 
 			base.AddOverridesTo(overrides);

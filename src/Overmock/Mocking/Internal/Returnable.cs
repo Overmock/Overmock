@@ -10,9 +10,10 @@ namespace Overmock.Mocking.Internal
 			return default(TReturn);
 		}
 
-		public void Calls(Func<OvermockContext, TReturn> func)
+		public void Calls(Func<OvermockContext, TReturn> func, Times times)
 		{
 			Func = func;
+			Times = times;
 		}
 
 		public void Returns(TReturn value)
@@ -29,7 +30,7 @@ namespace Overmock.Mocking.Internal
 		{
 			if (Func != null)
 			{
-				overrides.Add(new MethodCallOverride(overmock: Func));
+				overrides.Add(new MethodCallOverride(overmock: Func, Times));
 			}
 
 			base.AddOverridesTo(overrides);

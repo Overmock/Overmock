@@ -23,6 +23,7 @@ namespace Overmock.Mocking
 		/// 
 		/// </summary>
 		/// <param name="func"></param>
-		void Calls(Func<OvermockContext, T> func);
+		/// <param name="times"></param>
+		void Calls(Func<OvermockContext, T> func, Times times);
 	}
 }

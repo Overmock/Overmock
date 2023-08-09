@@ -56,7 +56,7 @@ namespace Overmock.Tests.Examples
             {
                 wasSaved = true;
                 return c.Get<Model>("model")?.Id == id;
-            });
+            }, Times.Once);
 
             var service = new Service(log.Target, repository.Target);
             service.SaveModel(new Model { Id = id });

@@ -7,10 +7,16 @@ namespace Overmock.Mocking
 	public interface ICallable : IThrowable
 	{
 		/// <summary>
+		/// 
+		/// </summary>
+		Times Times { get; set; }
+
+		/// <summary>
 		/// An <see cref="Func{OverrideContext, TReturn}"/> delegate to call in place of this override's property.
 		/// </summary>
 		/// <param name="action"></param>
-		void Calls(Action<OvermockContext> action);
+		/// <param name="times"></param>
+		void Calls(Action<OvermockContext> action, Times times);
 
 
 		/// <summary>

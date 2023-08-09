@@ -69,10 +69,10 @@ namespace Overmock.Proxies.Internal
             var dynamicType = context.TypeBuilder.CreateType();
 
             // Write the assembly to disc for testing
-            if (Debugger.IsAttached)
-            {
-                WriteAssembly();
-            }
+            //if (Debugger.IsAttached)
+            //{
+            //    WriteAssembly();
+            //}
             // Write the assembly to disc for testing
 
             static object CreateProxy(ProxyContext context, IInterceptor interceptor, Type dynamicType)

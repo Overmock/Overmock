@@ -12,6 +12,11 @@ namespace Overmock
 		void ToBeCalled();
 
 		/// <summary>
+		/// 
+		/// </summary>
+		void ToBeCalled(Times times);
+
+		/// <summary>
 		/// Specifies the exception to throw when the overmocked member is called.
 		/// </summary>
 		/// <param name="exception">The exception to throw.</param>
@@ -29,6 +34,13 @@ namespace Overmock
 		/// </summary>
 		/// <param name="action"></param>
 		void ToCall(Action<OvermockContext> action);
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="action"></param>
+		/// <param name="times"></param>
+		void ToCall(Action<OvermockContext> action, Times times);
 	}
 
     /// <summary>
@@ -56,12 +68,20 @@ namespace Overmock
     /// <typeparam name="T"></typeparam>
     /// <typeparam name="TReturn"></typeparam>
     public interface ISetup<in T, in TReturn> : ISetup<T>, ISetupReturn<TReturn> where T : class
-    {
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="callback"></param>
-        /// <returns></returns>
-        void ToCall(Func<OvermockContext, TReturn> callback);
+	{
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="callback"></param>
+		/// <returns></returns>
+		void ToCall(Func<OvermockContext, TReturn> callback);
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="callback"></param>
+		/// <param name="times"></param>
+		/// <returns></returns>
+		void ToCall(Func<OvermockContext, TReturn> callback, Times times);
     }
 }
