@@ -7,7 +7,7 @@
 	{
 		private readonly IProxyMember _proxiedMember;
 		private readonly object? _defaultReturnValue;
-		private readonly List<RuntimeParameter> _parameters = new List<RuntimeParameter>();
+		private readonly List<RuntimeParameter> _parameters;
 		private readonly Func<object, object[]?, object?> _invokeTargetHandler;
 
 		/// <summary>
@@ -19,8 +19,9 @@
 		public RuntimeContext(IProxyMember proxyMember, IEnumerable<RuntimeParameter> parameters)
 		{
 			_proxiedMember = proxyMember;
+			_defaultReturnValue = null;
+			_parameters = new List<RuntimeParameter>();
 			_parameters.AddRange(parameters);
-			//_defaultReturnValue = proxyMember.GetDefaultReturnValue();
 			_invokeTargetHandler = proxyMember.CreateDelegate();
 		}
 
