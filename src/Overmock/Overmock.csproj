@@ -6,23 +6,26 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
-    <IsPackable>true</IsPackable>
-	<!--<PackageLicenseFile>..\..\LICENSE</PackageLicenseFile>-->
-	<PackageId>Overmock</PackageId>
-	<PackageProjectUrl>https://github.com/Overmock</PackageProjectUrl>
+	  
+	<!-- Nuget -->
 	<Title>Overmock</Title>
 	<Description>Overmock is a mocking framework that allows for very robust mocking configuration and validation.</Description>
+    <IsPackable>true</IsPackable>
+    <EnablePackageValidation>true</EnablePackageValidation>
+	<PackageId>Overmock</PackageId>
+	<PackageProjectUrl>https://github.com/Overmock</PackageProjectUrl>
 	<PackageReadmeFile>\README.md</PackageReadmeFile>
-	<RepositoryUrl>https://github.com/Overmock</RepositoryUrl>
+	<RepositoryUrl>https://github.com/Overmock/Overmock</RepositoryUrl>
 	<RepositoryType>git</RepositoryType>
-	<PackageTags>mocking;mock;unit tests;unit testing;unittesting;unittest;mocking framework;overmock;overmocked;</PackageTags>
-	<AnalysisLevel>6.0-recommended</AnalysisLevel>
-	<PackageLicenseExpression>MIT</PackageLicenseExpression>
-	<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
-	<IncludeSymbols>True</IncludeSymbols>
-	<SymbolPackageFormat>snupkg</SymbolPackageFormat>
 	<PackageReadmeFile>README.md</PackageReadmeFile>
 	<PackageReleaseNotes>This is a first release and is meant for internal usages until further notice.</PackageReleaseNotes>
+	<PackageTags>proxies;dynamic proxy;dynamicproxy;mocking;mock;unit tests;unit testing;unittesting;unittest;mocking framework;overmock;overmocked;</PackageTags>
+	<PackageLicenseExpression>MIT</PackageLicenseExpression>
+	<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+	
+	<AnalysisLevel>7.0-recommended</AnalysisLevel>
+	<IncludeSymbols>True</IncludeSymbols>
+	<SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
 
   <ItemGroup>
