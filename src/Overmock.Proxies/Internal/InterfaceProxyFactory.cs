@@ -109,7 +109,7 @@ namespace Overmock.Proxies.Internal
 
             return new ProxyBuilderContext(interceptor, typeBuilder, proxyType);
         }
-
+ #if DEBUG
         private void WriteAssembly()
         {
             var generator = new Lokad.ILPack.AssemblyGenerator();
@@ -122,7 +122,7 @@ namespace Overmock.Proxies.Internal
 
             File.WriteAllBytes(fileName, generator.GenerateAssemblyBytes(DynamicAssembly));
         }
-
+#endif
         private static void ImplementConstructor(ProxyBuilderContext context, ConstructorInfo baseConstructor)
         {
             const MethodAttributes methodAttributes = MethodAttributes.Public;
