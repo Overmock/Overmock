@@ -14,7 +14,7 @@ namespace Overmock.Tests
 
 			Assert.IsNotNull(target);
 
-			target.MethodWithNoParamsAndReturnsEnumerableOfT<string>();
+			target.MethodWithNoParamsAndReturnsEnumerableOfT<Model>();
 		}
 
 		[TestMethod]
