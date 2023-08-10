@@ -7,7 +7,7 @@
     <Nullable>enable</Nullable>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <IsPackable>true</IsPackable>
-	<PackageLicenseFile>..\LICENSE</PackageLicenseFile>
+	<!--<PackageLicenseFile>..\..\LICENSE</PackageLicenseFile>-->
 	<PackageId>Overmock</PackageId>
 	<PackageProjectUrl>https://github.com/Overmock</PackageProjectUrl>
 	<Title>Overmock</Title>
@@ -17,7 +17,7 @@
 	<RepositoryType>git</RepositoryType>
 	<PackageTags>mocking;mock;unit tests;unit testing;unittesting;unittest;mocking framework;overmock;overmocked;</PackageTags>
 	<AnalysisLevel>6.0-recommended</AnalysisLevel>
-	<!--<PackageLicenseExpression>MIT</PackageLicenseExpression>-->
+	<PackageLicenseExpression>MIT</PackageLicenseExpression>
 	<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
 	<IncludeSymbols>True</IncludeSymbols>
 	<SymbolPackageFormat>snupkg</SymbolPackageFormat>
