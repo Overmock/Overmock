@@ -7,7 +7,7 @@
     <Nullable>enable</Nullable>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <IsPackable>true</IsPackable>
-	<PackageLicenseFile>..\..\LICENSE</PackageLicenseFile>
+	<PackageLicenseFile>..\LICENSE</PackageLicenseFile>
 	<PackageId>Overmock</PackageId>
 	<PackageProjectUrl>https://github.com/Overmock</PackageProjectUrl>
 	<Title>Overmock</Title>
