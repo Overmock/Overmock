@@ -5,7 +5,7 @@ namespace Overmock.Tests
 	public partial class MethodWithNoParamsTests
 	{
 		[TestMethod]
-		public void VoidMethodWithNoParamsToReturnTest()
+		public void VoidMethodWithNoParamsToBeCalledTest()
 		{
             _testInterface.Override(t => t.VoidMethodWithNoParams()).ToBeCalled();
 

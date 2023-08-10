@@ -33,5 +33,14 @@ namespace Overmock
 		{
 			return _invocationContext.Parameters.Get<T>(name);
 		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		public object? ReturnValue
+		{
+			get => _invocationContext.ReturnValue;
+			set => _invocationContext.ReturnValue = value;
+		}
 	}
 }
