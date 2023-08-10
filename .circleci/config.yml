@@ -9,7 +9,7 @@ jobs:
           path: ./test-results/
       - checkout
       - run:
-          working_directory: ./src/Overmock.Examples.Tests/
+          working_directory: ./src/Overmock.Tests/
           name: Run tests
           command: |
             dotnet test
