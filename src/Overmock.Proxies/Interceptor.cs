@@ -1,6 +1,4 @@
 ﻿
-using Overmock.Proxies.Internal;
-
 namespace Overmock.Proxies
 {
 	public abstract class Interceptor : IInterceptor
@@ -30,10 +28,7 @@ namespace Overmock.Proxies
 			return GetTarget();
 		}
 
-		void IInterceptor.MemberInvoked(InvocationContext context)
-		{
-			MemberInvoked(context);
-		}
+		void IInterceptor.MemberInvoked(InvocationContext context) => MemberInvoked(context);
 
 		protected abstract void MemberInvoked(InvocationContext context);
 

@@ -14,11 +14,15 @@ namespace Overmock.Tests
 			_overmock.Override(t => t.Int)
 				.ToCall(c => called = true);
 
+			_overmock.Override(t => t.GetHashCode()).ToBeCalled();
+
 			var target = _overmock.Target;
 
 			Assert.IsNotNull(target);
 
 			var model = target.Int;
+
+			Assert.ThrowsException<UnhandledMemberException>(() => target.Equals(null));
 
 			Assert.IsTrue(called);
 		}

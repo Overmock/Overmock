@@ -1,5 +1,4 @@
-﻿using Overmock.Runtime;
-
+﻿
 namespace Overmock.Mocking.Internal
 {
 	/// <summary>
@@ -17,7 +16,7 @@ namespace Overmock.Mocking.Internal
 		/// </summary>
 		public Exception Exception { get; }
 
-		public object? Handle(RuntimeContext context)
+		public object? Handle(OvermockContext context)
 		{
 			throw Exception;
 		}

@@ -19,7 +19,7 @@ namespace Overmock
         /// <summary>
         /// 
         /// </summary>
-        public const string AssemblyDllNameFormat = "Overmock.Proxies.{0}.dll";
+        public const string AssemblyDllNameFormat = "{0}.dll";
 
         /// <summary>
         /// 

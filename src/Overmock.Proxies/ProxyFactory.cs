@@ -67,7 +67,7 @@ namespace Overmock.Proxies
         /// </summary>
         /// <param name="target"></param>
         /// <returns></returns>
-        protected static AssemblyName GetAssemblyName(string name) => new(Constants.AssemblyDllNameFormat.ApplyFormat(GetName(name)));
+        protected static AssemblyName GetAssemblyName(string name) => new AssemblyName(Constants.AssemblyDllNameFormat.ApplyFormat(GetName(name)));
 
         /// <summary>
 		/// 

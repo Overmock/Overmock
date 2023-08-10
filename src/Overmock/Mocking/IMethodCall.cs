@@ -16,13 +16,12 @@ namespace Overmock.Mocking
 		/// <summary>
 		/// 
 		/// </summary>
-		MethodInfo Method { get; }
+		MethodInfo BaseMethod { get; }
 
 		/// <summary>
 		/// 
 		/// </summary>
-		/// <returns></returns>
-		object? GetDefaultReturnValue();
+		MethodInfo Method { get; }
 	}
 	/// <summary>
 	/// Represents an overridden method.

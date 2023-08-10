@@ -1,5 +1,4 @@
-﻿using Overmock.Runtime;
-
+﻿
 namespace Overmock.Mocking
 {
 	/// <summary>
@@ -12,6 +11,6 @@ namespace Overmock.Mocking
 		/// </summary>
 		/// <param name="context"></param>
 		/// <returns></returns>
-		object? Handle(RuntimeContext context);
+		object? Handle(OvermockContext context);
 	}
 }

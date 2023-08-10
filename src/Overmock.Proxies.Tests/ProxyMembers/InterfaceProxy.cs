@@ -7,7 +7,7 @@ namespace Overmock.Proxies.Tests.ProxyMembers
 	{
 		string Name { get; }
 
-		void DoSomething(string name);
+		string DoSomething(string name);
 
 		string MethodWithReturn(string name, object param);
 	}
@@ -16,14 +16,16 @@ namespace Overmock.Proxies.Tests.ProxyMembers
 	{
 		public string Name => throw new NotImplementedException();
 
-		public void DoSomething(string name)
+		public string DoSomething(string name)
 		{
-			throw new NotImplementedException();
+			const int methodId = 90001;
+			return (string)HandleMethodCall(methodId, name);
 		}
 
 		public string MethodWithReturn(string name, object param)
 		{
-			return (string)HandleMethodCall((MethodInfo)MethodBase.GetCurrentMethod(), name, param);
+			const int methodId = 50004;
+			return (string)HandleMethodCall(methodId, name, param);
 		}
 	}
 

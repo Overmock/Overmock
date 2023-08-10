@@ -33,7 +33,7 @@ namespace Overmock.Proxies.Tests
 		
 		[TestMethod]
 		public void ProxyCallsMethodWithParameters()
-		 {
+		{
 			var called = false;
 
 			var proxy = Interceptor.For<IInterface>(c => {

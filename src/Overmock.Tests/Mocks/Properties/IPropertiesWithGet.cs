@@ -1,4 +1,4 @@
-﻿using Overmock.Runtime.Proxies;
+﻿using Overmock.Proxies;
 using System.Reflection;
 
 namespace Overmock.Tests.Mocks.Properties
@@ -14,13 +14,13 @@ namespace Overmock.Tests.Mocks.Properties
         public List<Model> ListOfModels { get; }
     }
 
-    public class IPropertiesWithGetImpl : Proxy<IPropertiesWithGet>, IPropertiesWithGet
+    public class IPropertiesWithGetImpl : ProxyBase<IPropertiesWithGet>, IPropertiesWithGet
     {
-        public IPropertiesWithGetImpl(IOvermock target) : base(target)
+        public IPropertiesWithGetImpl(IOvermock target) : base()
         {
         }
 
-        public int Int => (int)HandleMethodCall((MethodInfo)MethodBase.GetCurrentMethod());
+        public int Int => (int)HandleMethodCall(1);
 
         public Model Model => throw new NotImplementedException();
 

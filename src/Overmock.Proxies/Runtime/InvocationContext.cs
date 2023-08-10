@@ -5,16 +5,30 @@ namespace Overmock.Proxies
 {
 	public class InvocationContext
 	{
+		private readonly Func<object, object[]?, object?> _invokeTargetHandler;
+		private readonly object[] _arguments;
+		private readonly object _target;
+		private readonly bool _isProperty;
+
 		private object? _defaultReturnValue;
 
 		public InvocationContext(RuntimeContext runtimeContext, IInterceptor interceptor, object[] parameters)
 		{
 			ParentContext = runtimeContext;
+			
+			_arguments = parameters;
+			_target = interceptor.GetTarget();
+			_invokeTargetHandler = runtimeContext.GetTargetInvocationHandler();
 
 			Interceptor = interceptor;
 			MemberName = runtimeContext.MemberName;
 			Parameters = runtimeContext.MapParameters(parameters);
 			ProxiedMember = runtimeContext.ProxiedMember;
+			
+			var member = runtimeContext.ProxiedMember.Member;
+			_isProperty = member is PropertyInfo;
+
+			Member = member;
 		}
 
 		public string MemberName { get; }
@@ -25,20 +39,29 @@ namespace Overmock.Proxies
 
 		public IInterceptor Interceptor { get; }
 
-		public IProxyMember ProxiedMember { get; }
+		public MethodInfo Method => ProxiedMember.Method;
 
 		public object? ReturnValue { get; set; }
 
-		public void InvokeTarget()
+		public MemberInfo Member { get; }
+		
+		internal IProxyMember ProxiedMember { get; }
+
+		public void InvokeTarget(bool setReturnValue = true)
 		{
-			ProxiedMember.Method.Invoke(Interceptor.GetTarget(), Parameters.ToObjectArray());
+			var returnValue = _invokeTargetHandler(_target, _arguments);
+
+			if (setReturnValue)
+			{
+				ReturnValue = returnValue;
+			}
 		}
 
 		internal object? GetReturnTypeDefaultValue()
 		{
 			if (_defaultReturnValue == null)
 			{
-				_defaultReturnValue = DefaultReturnValueCache.GetDefaultValue(Interceptor.TargetType);
+				_defaultReturnValue = DefaultReturnValueCache.GetDefaultValue(Method.ReturnType);
 			}
 
 			return _defaultReturnValue;
@@ -46,7 +69,7 @@ namespace Overmock.Proxies
 
 		internal bool MemberReturnsValueType()
 		{
-			var member = ProxiedMember.GetMember();
+			var member = ProxiedMember.Member;
 
 			if (member is MethodInfo method)
 			{
@@ -61,6 +84,4 @@ namespace Overmock.Proxies
 			return false;
 		}
 	}
-
-
 }

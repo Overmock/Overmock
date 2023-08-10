@@ -8,13 +8,13 @@ namespace Overmock
     [AttributeUsage(AttributeTargets.Method)]
     public class OvermockAttribute : CustomConstantAttribute
     {
-        private readonly string _methodId;
+        private readonly int _methodId;
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="methodId"></param>
-        public OvermockAttribute(string methodId)
+        public OvermockAttribute(int methodId)
         {
             _methodId = methodId;
         }

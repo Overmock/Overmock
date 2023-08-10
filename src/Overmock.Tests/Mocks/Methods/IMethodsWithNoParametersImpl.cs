@@ -1,12 +1,12 @@
-﻿using Overmock.Runtime.Proxies;
+﻿using Overmock.Proxies;
 
 namespace Overmock.Tests.Mocks.Methods
 {
-    public class IMethodsWithNoParametersImpl : Proxy<IMethodsWithNoParameters>, IMethodsWithNoParameters
+    public class IMethodsWithNoParametersImpl : ProxyBase<IMethodsWithNoParameters>, IMethodsWithNoParameters
     {
         public string? Name { get; set; }
 
-        public IMethodsWithNoParametersImpl(IOvermock target) : base(target)
+        public IMethodsWithNoParametersImpl(IOvermock target) : base()
         {
         }
 

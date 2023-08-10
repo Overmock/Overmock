@@ -1,16 +1,14 @@
-﻿using System.Collections.Immutable;
-using System.Reflection;
-
-namespace Overmock.Proxies
+﻿namespace Overmock.Proxies
 {
 	/// <summary>
 	/// The context for an overridden member.
 	/// </summary>
-	public class RuntimeContext
+	public struct RuntimeContext
 	{
 		private readonly IProxyMember _proxiedMember;
 		private readonly object? _defaultReturnValue;
 		private readonly List<RuntimeParameter> _parameters = new List<RuntimeParameter>();
+		private readonly Func<object, object[]?, object?> _invokeTargetHandler;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="RuntimeContext"/> class.
@@ -22,7 +20,8 @@ namespace Overmock.Proxies
 		{
 			_proxiedMember = proxyMember;
 			_parameters.AddRange(parameters);
-			_defaultReturnValue = proxyMember.GetDefaultReturnValue();
+			//_defaultReturnValue = proxyMember.GetDefaultReturnValue();
+			_invokeTargetHandler = proxyMember.CreateDelegate();
 		}
 
 		/// <summary>
@@ -43,6 +42,11 @@ namespace Overmock.Proxies
 		internal InvocationContext CreateInvocationContext(IInterceptor interceptor, object[] parameters)
 		{
 			return new InvocationContext(this, interceptor,  parameters);
+		}
+
+		internal Func<object, object[]?, object?> GetTargetInvocationHandler()
+		{
+			return _invokeTargetHandler;
 		}
 
 		internal Parameters MapParameters(object[] parameters)

@@ -3,20 +3,20 @@ version: 2.1
 jobs:
   build-and-test:
     docker:
-      - image: mcr.microsoft.com/dotnet/sdk:6.0
+      - image: mcr.microsoft.com/dotnet/sdk:7.0
     steps:
       - store_test_results:
           path: ./test-results/
       - checkout
       - run:
-          working_directory: ./src/Overmock.Examples.Tests/
+          working_directory: ./src/Overmock.Tests/
           name: Run tests
           command: |
             dotnet test
 
   pack:
     docker:
-      - image: mcr.microsoft.com/dotnet/sdk:6.0
+      - image: mcr.microsoft.com/dotnet/sdk:7.0
     parallelism: 1 # figure out later if needed.
     steps:
       - checkout

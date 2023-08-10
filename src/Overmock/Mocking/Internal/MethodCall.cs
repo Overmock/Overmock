@@ -10,7 +10,12 @@ namespace Overmock.Mocking.Internal
 		internal MethodCall(MethodCallExpression expression)
 		{
 			_expression = expression;
+			BaseMethod = _expression.Method.IsGenericMethod
+				? _expression.Method.GetGenericMethodDefinition()
+				: _expression.Method;
 		}
+
+		public MethodInfo BaseMethod { get; }
 
 		public MethodInfo Method => _expression.Method;
 
@@ -25,7 +30,7 @@ namespace Overmock.Mocking.Internal
 
 		public override MemberInfo GetTarget()
 		{
-			throw new NotImplementedException();
+			return Method;
 		}
 	}
 
@@ -36,7 +41,12 @@ namespace Overmock.Mocking.Internal
 		internal MethodCall(MethodCallExpression expression)
 		{
 			_expression = expression;
+			BaseMethod = _expression.Method.IsGenericMethod
+				? _expression.Method.GetGenericMethodDefinition()
+				: _expression.Method;
 		}
+
+		public MethodInfo BaseMethod { get; }
 
 		public MethodInfo Method => _expression.Method;
 

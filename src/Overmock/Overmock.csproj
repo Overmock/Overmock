@@ -7,7 +7,7 @@
     <Nullable>enable</Nullable>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <IsPackable>true</IsPackable>
-	<PackageLicenseFile>..\..\LICENSE</PackageLicenseFile>
+	<!--<PackageLicenseFile>..\..\LICENSE</PackageLicenseFile>-->
 	<PackageId>Overmock</PackageId>
 	<PackageProjectUrl>https://github.com/Overmock</PackageProjectUrl>
 	<Title>Overmock</Title>
@@ -26,11 +26,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Runtime\Marshalling\**" />
+    <Compile Remove="Runtime\**" />
     <Compile Remove="Setup\**" />
-    <EmbeddedResource Remove="Runtime\Marshalling\**" />
+    <EmbeddedResource Remove="Runtime\**" />
     <EmbeddedResource Remove="Setup\**" />
-    <None Remove="Runtime\Marshalling\**" />
+    <None Remove="Runtime\**" />
     <None Remove="Setup\**" />
   </ItemGroup>
 
@@ -46,14 +46,14 @@
     <PackageReference Include="Lokad.ILPack" Version="0.2.0" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.4.0" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Runtime\Extensions\" />
-  </ItemGroup>
 	
   <ItemGroup>
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
       <_Parameter1>$(AssemblyName).Compilation</_Parameter1>
     </AssemblyAttribute>
+  </ItemGroup>
+	
+  <ItemGroup>
+    <ProjectReference Include="..\Overmock.Proxies\Overmock.Proxies.csproj" />
   </ItemGroup>
 </Project>
