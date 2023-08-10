@@ -15,6 +15,7 @@
 	<Title>Overmock</Title>
 	<Description>Overmock is a mocking framework that allows for very robust mocking configuration and validation.</Description>
     <IsPackable>true</IsPackable>
+	<!--<PackageLicenseFile>..\..\LICENSE</PackageLicenseFile>-->
     <EnablePackageValidation>true</EnablePackageValidation>
 	<PackageId>Overmock</PackageId>
 	<PackageProjectUrl>https://github.com/Overmock</PackageProjectUrl>
@@ -48,12 +49,6 @@
     <PackageReference Include="IFluentInterface" Version="2.1.0" />
     <!--<PackageReference Include="Lokad.ILPack" Version="0.2.0" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.4.0" />-->
-  </ItemGroup>
-	
-  <ItemGroup>
-    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
-      <_Parameter1>$(AssemblyName).Compilation</_Parameter1>
-    </AssemblyAttribute>
   </ItemGroup>
 	
   <ItemGroup>
