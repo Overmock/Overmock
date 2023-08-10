@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Version>0.0.1-RC03</Version>
+    <Version>0.0.1-RC04</Version>
     <TargetFramework>net7.0</TargetFramework>
     <!--<TargetFrameworks>net7.0</TargetFrameworks>-->
     <ImplicitUsings>enable</ImplicitUsings>
@@ -46,8 +46,8 @@
 
   <ItemGroup>
     <PackageReference Include="IFluentInterface" Version="2.1.0" />
-    <PackageReference Include="Lokad.ILPack" Version="0.2.0" />
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.4.0" />
+    <!--<PackageReference Include="Lokad.ILPack" Version="0.2.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.4.0" />-->
   </ItemGroup>
 	
   <ItemGroup>
