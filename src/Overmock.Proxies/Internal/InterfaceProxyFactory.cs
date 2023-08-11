@@ -44,14 +44,14 @@ namespace Overmock.Proxies.Internal
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="marshallerContext"></param>
+        /// <param name="builderContext"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        protected override IProxyGenerator<T> CreateCore<T>(IProxyBuilderContext marshallerContext)
+        protected override IProxyGenerator<T> CreateCore<T>(IProxyBuilderContext builderContext)
         {
             const BindingFlags bindingFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
 
-            var context = (ProxyBuilderContext)marshallerContext;
+            var context = (ProxyBuilderContext)builderContext;
 
             ImplementConstructor(context, context.ProxyType.GetConstructor(bindingFlags, Type.EmptyTypes)!);
 
@@ -68,16 +68,16 @@ namespace Overmock.Proxies.Internal
 
             var dynamicType = context.TypeBuilder.CreateType();
 
-#if DEBUG
+//#if DEBUG
 
-            //Write the assembly to disc for testing
-            if (Debugger.IsAttached)
-            {
-                WriteAssembly();
-            }
-            //Write the assembly to disc for testing
+//            //Write the assembly to disc for testing
+//            if (Debugger.IsAttached)
+//            {
+//                WriteAssembly();
+//            }
+//            //Write the assembly to disc for testing
 
-#endif
+//#endif
 
 			static object CreateProxy(ProxyContext context, IInterceptor interceptor, Type dynamicType)
 			{
@@ -110,18 +110,20 @@ namespace Overmock.Proxies.Internal
             return new ProxyBuilderContext(interceptor, typeBuilder, proxyType);
         }
 
-        private void WriteAssembly()
-        {
-            var generator = new Lokad.ILPack.AssemblyGenerator();
-            var fileName = DynamicAssembly.GetName().Name!;
+// #if DEBUG
+//        private void WriteAssembly()
+//        {
+//            var generator = new Lokad.ILPack.AssemblyGenerator();
+//            var fileName = DynamicAssembly.GetName().Name!;
 
-            if (File.Exists(fileName))
-            {
-                File.Delete(fileName);
-            }
+//            if (File.Exists(fileName))
+//            {
+//                File.Delete(fileName);
+//            }
 
-            File.WriteAllBytes(fileName, generator.GenerateAssemblyBytes(DynamicAssembly));
-        }
+//            File.WriteAllBytes(fileName, generator.GenerateAssemblyBytes(DynamicAssembly));
+//        }
+//#endif
 
         private static void ImplementConstructor(ProxyBuilderContext context, ConstructorInfo baseConstructor)
         {

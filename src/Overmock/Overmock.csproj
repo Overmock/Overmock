@@ -1,29 +1,41 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Version>0.0.1-RC02</Version>
+    <Version>0.0.2-RC02</Version>
     <TargetFramework>net7.0</TargetFramework>
+    <!--<TargetFrameworks>net7.0</TargetFrameworks>-->
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <AnalysisLevel>7.0-recommended</AnalysisLevel>
+    <IncludeSymbols>True</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+
+    <!-- Nuget -->
+    <Title>Overmock</Title>
+    <Description>Overmock is a mocking framework that allows for very robust mocking configuration and validation.</Description>
     <IsPackable>true</IsPackable>
-	<!--<PackageLicenseFile>..\..\LICENSE</PackageLicenseFile>-->
-	<PackageId>Overmock</PackageId>
-	<PackageProjectUrl>https://github.com/Overmock</PackageProjectUrl>
-	<Title>Overmock</Title>
-	<Description>Overmock is a mocking framework that allows for very robust mocking configuration and validation.</Description>
-	<PackageReadmeFile>\README.md</PackageReadmeFile>
-	<RepositoryUrl>https://github.com/Overmock</RepositoryUrl>
-	<RepositoryType>git</RepositoryType>
-	<PackageTags>mocking;mock;unit tests;unit testing;unittesting;unittest;mocking framework;overmock;overmocked;</PackageTags>
-	<AnalysisLevel>6.0-recommended</AnalysisLevel>
-	<PackageLicenseExpression>MIT</PackageLicenseExpression>
-	<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
-	<IncludeSymbols>True</IncludeSymbols>
-	<SymbolPackageFormat>snupkg</SymbolPackageFormat>
-	<PackageReadmeFile>README.md</PackageReadmeFile>
-	<PackageReleaseNotes>This is a first release and is meant for internal usages until further notice.</PackageReleaseNotes>
+    <PackageId>Overmock</PackageId>
+    <IncludeReferencedProjects>true</IncludeReferencedProjects>
+    <!--<PackageLicenseFile>..\..\LICENSE</PackageLicenseFile>-->
+    <EnablePackageValidation>true</EnablePackageValidation>
+    <PackageProjectUrl>https://github.com/Overmock</PackageProjectUrl>
+    <PackageReadmeFile>\README.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/Overmock/Overmock</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageReleaseNotes>This is a first release and is meant for internal usages until further notice.</PackageReleaseNotes>
+    <PackageTags>proxies;dynamic proxy;dynamicproxy;mocking;mock;unit tests;unit testing;unittesting;unittest;mocking framework;overmock;overmocked;</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+    <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage</TargetsForTfmSpecificBuildOutput>
   </PropertyGroup>
+  
+  <Target DependsOnTargets="ResolveReferences" Name="CopyProjectReferencesToPackage">
+    <ItemGroup>
+      <BuildOutputInPackage Include="@(ReferenceCopyLocalPaths->WithMetadataValue('ReferenceSourceTarget', 'ProjectReference'))"/>
+    </ItemGroup>
+  </Target>
 
   <ItemGroup>
     <Compile Remove="Runtime\**" />
@@ -43,17 +55,13 @@
 
   <ItemGroup>
     <PackageReference Include="IFluentInterface" Version="2.1.0" />
-    <PackageReference Include="Lokad.ILPack" Version="0.2.0" />
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.4.0" />
+    <!--<PackageReference Include="Lokad.ILPack" Version="0.2.0" />-->
   </ItemGroup>
-	
+
   <ItemGroup>
-    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
-      <_Parameter1>$(AssemblyName).Compilation</_Parameter1>
-    </AssemblyAttribute>
-  </ItemGroup>
-	
-  <ItemGroup>
-    <ProjectReference Include="..\Overmock.Proxies\Overmock.Proxies.csproj" />
+    <ProjectReference Include="..\Overmock.Proxies\Overmock.Proxies.csproj">
+      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+      <IncludeAssets>Overmock.Proxies.dll</IncludeAssets>
+    </ProjectReference>
   </ItemGroup>
 </Project>
