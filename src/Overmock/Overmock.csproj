@@ -20,7 +20,7 @@
     <!--<PackageLicenseFile>..\..\LICENSE</PackageLicenseFile>-->
     <EnablePackageValidation>true</EnablePackageValidation>
     <PackageProjectUrl>https://github.com/Overmock</PackageProjectUrl>
-    <PackageReadmeFile>\README.md</PackageReadmeFile>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/Overmock/Overmock</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageReleaseNotes>This is a first release and is meant for internal usages until further notice.</PackageReleaseNotes>

@@ -1,16 +1,15 @@
 ﻿namespace Kimono
 {
-    /// <summary>
-    /// 
-    /// </summary>
-    public interface IProxyFactoryProvider
+	/// <summary>
+	/// Interface IProxyFactoryProvider
+	/// </summary>
+	public interface IProxyFactoryProvider
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="target"></param>
-        /// <param name="argsProvider"></param>
-        /// <returns></returns>
-        IProxyFactory Provide(IInterceptor interceptor);
+		/// <summary>
+		/// Provides the specified interceptor.
+		/// </summary>
+		/// <param name="interceptor">The interceptor.</param>
+		/// <returns>IProxyFactory.</returns>
+		IProxyFactory Provide(IInterceptor interceptor);
     }
 }

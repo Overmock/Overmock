@@ -5,6 +5,9 @@
 	/// </summary>
 	public class SetupArgs
 	{
+		/// <summary>
+		/// The arguments
+		/// </summary>
 		private object?[] _args = Array.Empty<object>();
 
 		/// <summary>
@@ -16,6 +19,10 @@
 			_args = args;
 		}
 
+		/// <summary>
+		/// Gets the parameters.
+		/// </summary>
+		/// <value>The parameters.</value>
 		public object?[] Parameters => _args;
 	}
 }

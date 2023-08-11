@@ -3,24 +3,33 @@ using System.Reflection;
 
 namespace Kimono
 {
-    /// <summary>
-    /// 
-    /// </summary>
-    public class ProxyContext
+	/// <summary>
+	/// Class ProxyContext.
+	/// </summary>
+	public class ProxyContext
     {
-        private readonly IList<RuntimeContext> _overrides = new List<RuntimeContext>();
+		/// <summary>
+		/// The overrides
+		/// </summary>
+		private readonly IList<RuntimeContext> _overrides = new List<RuntimeContext>();
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="methodId"></param>
-        /// <param name="context"></param>
-        /// <returns></returns>
-        internal void Add(int methodId, RuntimeContext context)
+		/// <summary>
+		/// Adds the specified method identifier.
+		/// </summary>
+		/// <param name="methodId">The method identifier.</param>
+		/// <param name="context">The context.</param>
+		internal void Add(int methodId, RuntimeContext context)
         {
             _overrides.Add(context);
         }
 
+		/// <summary>
+		/// Gets the invocation context.
+		/// </summary>
+		/// <param name="methodId">The method identifier.</param>
+		/// <param name="proxy">The proxy.</param>
+		/// <param name="parameters">The parameters.</param>
+		/// <returns>InvocationContext.</returns>
 		internal InvocationContext GetInvocationContext(int methodId, IProxy proxy, object[] parameters)
 		{
             return _overrides[methodId].CreateInvocationContext(proxy.Interceptor, parameters);

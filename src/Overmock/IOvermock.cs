@@ -14,7 +14,7 @@ namespace Overmock
 		/// </summary>
 		/// <typeparam name="TMethod">The type of the method.</typeparam>
 		/// <param name="method">The method.</param>
-		/// <returns></returns>
+		/// <returns>TMethod.</returns>
 		TMethod AddMethod<TMethod>(TMethod method) where TMethod : IMethodCall;
 
 		/// <summary>
@@ -22,22 +22,20 @@ namespace Overmock
 		/// </summary>
 		/// <typeparam name="TProperty">The type of the property.</typeparam>
 		/// <param name="propertyCall">The property.</param>
-		/// <returns></returns>
+		/// <returns>TProperty.</returns>
 		TProperty AddProperty<TProperty>(TProperty propertyCall) where TProperty : IPropertyCall;
 
 		/// <summary>
 		/// Gets the name of the type.
 		/// </summary>
-		/// <value>
-		/// The name of the type.
-		/// </value>
+		/// <value>The name of the type.</value>
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		string TypeName { get; }
 
 		/// <summary>
 		/// Gets the type of the compiled.
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>System.Nullable&lt;Type&gt;.</returns>
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		Type? GetCompiledType();
 
@@ -58,14 +56,14 @@ namespace Overmock
 		/// <summary>
 		/// Gets the overmocked methods.
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>IEnumerable&lt;IMethodCall&gt;.</returns>
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		IEnumerable<IMethodCall> GetOvermockedMethods();
 
 		/// <summary>
 		/// Gets the overmocked properties.
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>IEnumerable&lt;IPropertyCall&gt;.</returns>
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		IEnumerable<IPropertyCall> GetOvermockedProperties();
     }

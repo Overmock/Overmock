@@ -6,6 +6,10 @@
     <!--<TargetFrameworks>net7.0</TargetFrameworks>-->
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <AnalysisLevel>7.0-recommended</AnalysisLevel>
+    <IncludeSymbols>True</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
 
     <!-- Nuget -->
     <Title>Kimono</Title>

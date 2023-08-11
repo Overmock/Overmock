@@ -1,17 +1,39 @@
 ﻿namespace Kimono.Internal
 {
-    internal class DelegateProxyFactory : ProxyFactory
+	/// <summary>
+	/// Class DelegateProxyFactory.
+	/// Implements the <see cref="Kimono.ProxyFactory" />
+	/// </summary>
+	/// <seealso cref="Kimono.ProxyFactory" />
+	internal class DelegateProxyFactory : ProxyFactory
     {
-        public DelegateProxyFactory(IProxyCache cache) : base(cache)
+		/// <summary>
+		/// Initializes a new instance of the <see cref="DelegateProxyFactory"/> class.
+		/// </summary>
+		/// <param name="cache">The cache.</param>
+		public DelegateProxyFactory(IProxyCache cache) : base(cache)
         {
         }
 
-        protected override IProxyBuilderContext CreateContext(IInterceptor interceptor)
+		/// <summary>
+		/// Creates the context.
+		/// </summary>
+		/// <param name="interceptor">The interceptor.</param>
+		/// <returns>IProxyBuilderContext.</returns>
+		/// <exception cref="System.NotImplementedException"></exception>
+		protected override IProxyBuilderContext CreateContext(IInterceptor interceptor)
         {
             throw new NotImplementedException();
         }
 
-        protected override IProxyGenerator<T> CreateCore<T>(IProxyBuilderContext marshallerContext)
+		/// <summary>
+		/// Creates the core.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="marshallerContext">The marshaller context.</param>
+		/// <returns>IProxyGenerator&lt;T&gt;.</returns>
+		/// <exception cref="System.NotImplementedException"></exception>
+		protected override IProxyGenerator<T> CreateCore<T>(IProxyBuilderContext marshallerContext)
         {
             throw new NotImplementedException();
         }

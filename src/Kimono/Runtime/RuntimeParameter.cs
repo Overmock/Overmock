@@ -6,10 +6,9 @@
 	public class RuntimeParameter
 	{
 		/// <summary>
-		/// Initializes a new instance of the <see cref="RuntimeParameter"/> class.
+		/// Initializes a new instance of the <see cref="RuntimeParameter" /> class.
 		/// </summary>
 		/// <param name="name">The name.</param>
-		/// <param name="value">The value.</param>
 		/// <param name="type">The type.</param>
 		public RuntimeParameter(string name, Type type)
 		{
