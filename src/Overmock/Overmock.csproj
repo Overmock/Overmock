@@ -33,7 +33,7 @@
   
   <Target DependsOnTargets="ResolveReferences" Name="CopyProjectReferencesToPackage">
     <ItemGroup>
-      <BuildOutputInPackage Include="@(ReferenceCopyLocalPaths->WithMetadataValue('ReferenceSourceTarget', 'ProjectReference'))"/>
+      <BuildOutputInPackage Include="@(ReferenceCopyLocalPaths-&gt;WithMetadataValue('ReferenceSourceTarget', 'ProjectReference'))" />
     </ItemGroup>
   </Target>
 
@@ -59,9 +59,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Overmock.Proxies\Overmock.Proxies.csproj">
+    <ProjectReference Include="..\Kimono\Kimono.csproj">
       <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
-      <IncludeAssets>Overmock.Proxies.dll</IncludeAssets>
+      <IncludeAssets>Kimono.dll</IncludeAssets>
     </ProjectReference>
   </ItemGroup>
 </Project>

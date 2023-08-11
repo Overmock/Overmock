@@ -1,4 +1,5 @@
 ﻿
+using Kimono;
 using System.Diagnostics;
 using System.Globalization;
 
@@ -78,7 +79,7 @@ namespace Overmock
 
 			if (count > _times)
 			{
-				throw new OvermockException($"Method called: Expected: {_times}, Actual: {count}");
+				throw new KimonoException($"Method called: Expected: {_times}, Actual: {count}");
 			}
 		}
 	}
