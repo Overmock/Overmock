@@ -1,4 +1,5 @@
-﻿using Overmock.Proxies;
+﻿using Kimono;
+using Overmock.Proxies;
 using System.Reflection;
 
 namespace Overmock;

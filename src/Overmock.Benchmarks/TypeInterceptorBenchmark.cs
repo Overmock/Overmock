@@ -1,5 +1,5 @@
 ﻿using BenchmarkDotNet.Attributes;
-using Overmock.Proxies;
+using Kimono;
 using System;
 using System.Collections.Generic;
 using System.Linq;

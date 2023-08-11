@@ -1,10 +1,12 @@
-﻿namespace Overmock
+﻿using Kimono;
+
+namespace Overmock
 {
 	/// <summary>
 	/// The exception that gets thrown when verifying a type.
 	/// </summary>
 	/// <seealso cref="Overmock.OvermockException" />
-	public class VerifyException : OvermockException
+	public class VerifyException : KimonoException
 	{
 		/// <summary>
 		/// Initializes a new instance of the <see cref="VerifyException"/> class.

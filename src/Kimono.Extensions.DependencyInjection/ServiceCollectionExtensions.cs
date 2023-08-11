@@ -1,7 +1,8 @@
-﻿using Kimono;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Kimono;
 
-namespace Overmock.Examples
+namespace Microsoft.Extensions.DependencyInjection
 {
 	public static class ServiceCollectionExtensions
 	{

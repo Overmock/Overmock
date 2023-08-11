@@ -1,4 +1,4 @@
-﻿using Overmock.Proxies;
+﻿using Kimono;
 
 namespace Overmock.Tests.Mocks.Methods
 {
