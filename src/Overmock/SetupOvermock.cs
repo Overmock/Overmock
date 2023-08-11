@@ -1,7 +1,7 @@
 ﻿
 namespace Overmock
 {
-	internal class SetupOvermock : ISetup
+	internal sealed class SetupOvermock : ISetup
     {
         private readonly ICallable _callable;
 
