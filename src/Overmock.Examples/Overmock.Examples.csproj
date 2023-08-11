@@ -13,7 +13,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Kimono\Kimono.csproj" />
-    <ProjectReference Include="..\Overmock.Proxies\Kimono.csproj" />
     <ProjectReference Include="..\Overmock\Overmock.csproj" />
   </ItemGroup>
 

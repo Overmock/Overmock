@@ -23,7 +23,6 @@
     <PackageReadmeFile>\README.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/Overmock/Overmock</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageReleaseNotes>This is a first release and is meant for internal usages until further notice.</PackageReleaseNotes>
     <PackageTags>proxies;dynamic proxy;dynamicproxy;mocking;mock;unit tests;unit testing;unittesting;unittest;mocking framework;overmock;overmocked;</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -36,15 +35,6 @@
       <BuildOutputInPackage Include="@(ReferenceCopyLocalPaths-&gt;WithMetadataValue('ReferenceSourceTarget', 'ProjectReference'))" />
     </ItemGroup>
   </Target>
-
-  <ItemGroup>
-    <Compile Remove="Runtime\**" />
-    <Compile Remove="Setup\**" />
-    <EmbeddedResource Remove="Runtime\**" />
-    <EmbeddedResource Remove="Setup\**" />
-    <None Remove="Runtime\**" />
-    <None Remove="Setup\**" />
-  </ItemGroup>
 
   <ItemGroup>
     <None Include="..\..\README.md">

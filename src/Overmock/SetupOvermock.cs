@@ -42,7 +42,7 @@ namespace Overmock
         }
     }
 
-    internal class SetupOvermock<T, TReturn> : SetupOvermock, ISetup<T, TReturn> where T : class
+    internal sealed class SetupOvermock<T, TReturn> : SetupOvermock, ISetup<T, TReturn> where T : class
     {
         private readonly IReturnable<TReturn> _returnable;
 
