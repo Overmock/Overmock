@@ -4,31 +4,34 @@ using System.Reflection.Emit;
 
 namespace Kimono
 {
-    /// <summary>
-    /// 
-    /// </summary>
-    public abstract class ProxyFactory : IProxyFactory
+	/// <summary>
+	/// Class ProxyFactory.
+	/// Implements the <see cref="Kimono.IProxyFactory" />
+	/// </summary>
+	/// <seealso cref="Kimono.IProxyFactory" />
+	public abstract class ProxyFactory : IProxyFactory
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="interceptor"></param>
-        /// <param name="argsProvider"></param>
-        protected ProxyFactory(IProxyCache cache)
+		/// <summary>
+		/// Initializes a new instance of the <see cref="ProxyFactory"/> class.
+		/// </summary>
+		/// <param name="cache">The cache.</param>
+		protected ProxyFactory(IProxyCache cache)
         {
 			Cache = cache;
 		}
 
-        /// <summary>
-        /// 
-        /// </summary>
+		/// <summary>
+		/// Gets the cache.
+		/// </summary>
+		/// <value>The cache.</value>
 		protected IProxyCache Cache { get; }
 
 		/// <summary>
-		/// 
+		/// Creates the specified interceptor.
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
-		/// <returns></returns>
+		/// <param name="interceptor">The interceptor.</param>
+		/// <returns>IProxyGenerator&lt;T&gt;.</returns>
 		public IProxyGenerator<T> Create<T>(IInterceptor<T> interceptor) where T : class
 		{
 			var generator = (IProxyGenerator<T>)Cache.Get(interceptor.TargetType)!;
@@ -42,52 +45,57 @@ namespace Kimono
 			return generator;
 		}
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        protected abstract IProxyBuilderContext CreateContext(IInterceptor interceptor);
+		/// <summary>
+		/// Creates the context.
+		/// </summary>
+		/// <param name="interceptor">The interceptor.</param>
+		/// <returns>IProxyBuilderContext.</returns>
+		protected abstract IProxyBuilderContext CreateContext(IInterceptor interceptor);
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="marshallerContext"></param>
-        /// <returns></returns>
-        protected abstract IProxyGenerator<T> CreateCore<T>(IProxyBuilderContext marshallerContext) where T : class;
+		/// <summary>
+		/// Creates the core.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="marshallerContext">The marshaller context.</param>
+		/// <returns>IProxyGenerator&lt;T&gt;.</returns>
+		protected abstract IProxyGenerator<T> CreateCore<T>(IProxyBuilderContext marshallerContext) where T : class;
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="target"></param>
-        /// <returns></returns>
-        protected static string GetName(string name) => Constants.AssemblyAndTypeNameFormat.ApplyFormat(name);
+		/// <summary>
+		/// Gets the name.
+		/// </summary>
+		/// <param name="name">The name.</param>
+		/// <returns>System.String.</returns>
+		protected static string GetName(string name) => Constants.AssemblyAndTypeNameFormat.ApplyFormat(name);
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="target"></param>
-        /// <returns></returns>
-        protected static AssemblyName GetAssemblyName(string name) => new AssemblyName(Constants.AssemblyDllNameFormat.ApplyFormat(GetName(name)));
+		/// <summary>
+		/// Gets the name of the assembly.
+		/// </summary>
+		/// <param name="name">The name.</param>
+		/// <returns>AssemblyName.</returns>
+		protected static AssemblyName GetAssemblyName(string name) => new AssemblyName(Constants.AssemblyDllNameFormat.ApplyFormat(GetName(name)));
 
-        /// <summary>
-		/// 
+		/// <summary>
+		/// Interface IProxyBuilderContext
 		/// </summary>
 		protected interface IProxyBuilderContext
         {
-            /// <summary>
-            /// 
-            /// </summary>
+			/// <summary>
+			/// Gets the interceptor.
+			/// </summary>
+			/// <value>The interceptor.</value>
 			IInterceptor Interceptor { get; }
 
-            /// <summary>
-            /// 
-            /// </summary>
+			/// <summary>
+			/// Gets the type builder.
+			/// </summary>
+			/// <value>The type builder.</value>
 			TypeBuilder TypeBuilder { get; }
 
-            /// <summary>
-            /// 
-            /// </summary>
-            ProxyContext ProxyContext { get; }
+			/// <summary>
+			/// Gets the proxy context.
+			/// </summary>
+			/// <value>The proxy context.</value>
+			ProxyContext ProxyContext { get; }
         }
     }
 }

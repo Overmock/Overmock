@@ -2,8 +2,14 @@
 
 namespace Overmock.Mocking.Internal
 {
+	/// <summary>
+	/// Class Overridable.
+	/// Implements the <see cref="Overmock.Mocking.IOverridable" />
+	/// </summary>
+	/// <seealso cref="Overmock.Mocking.IOverridable" />
 	internal abstract class Overridable : IOverridable
 	{
+		/// <inheritdoc />
 		public IEnumerable<IOverride> GetOverrides()
 		{
 			var overrides = new List<IOverride>();
@@ -18,8 +24,16 @@ namespace Overmock.Mocking.Internal
 			return overrides.AsReadOnly();
 		}
 
+		/// <summary>
+		/// Gets the target.
+		/// </summary>
+		/// <returns>MemberInfo.</returns>
 		public abstract MemberInfo GetTarget();
 
+		/// <summary>
+		/// Adds the overrides to.
+		/// </summary>
+		/// <param name="overrides">The overrides.</param>
 		protected abstract void AddOverridesTo(List<IOverride> overrides);
 	}
 }

@@ -7,10 +7,10 @@ namespace Overmock.Mocking
 	public interface IOverride
 	{
 		/// <summary>
-		/// 
+		/// Handles the specified context.
 		/// </summary>
-		/// <param name="context"></param>
-		/// <returns></returns>
+		/// <param name="context">The context.</param>
+		/// <returns>System.Nullable&lt;System.Object&gt;.</returns>
 		object? Handle(OvermockContext context);
 	}
 }

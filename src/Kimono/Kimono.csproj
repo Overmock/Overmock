@@ -1,11 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Version>0.0.1-RC02</Version>
+    <Version>0.0.1-RC01</Version>
     <TargetFramework>net7.0</TargetFramework>
     <!--<TargetFrameworks>net7.0</TargetFrameworks>-->
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <AnalysisLevel>7.0-recommended</AnalysisLevel>
+    <IncludeSymbols>True</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
 
     <!-- Nuget -->
     <Title>Kimono</Title>

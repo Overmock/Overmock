@@ -4,28 +4,34 @@ using System.Reflection;
 namespace Overmock.Mocking
 {
 	/// <summary>
-	/// 
+	/// Interface IMethodCall
+	/// Extends the <see cref="Overmock.Mocking.ICallable" />
 	/// </summary>
+	/// <seealso cref="Overmock.Mocking.ICallable" />
 	public interface IMethodCall : ICallable
 	{
 		/// <summary>
-		/// The <see cref="System.Linq.Expressions.Expression"/> used to select this method.
+		/// The <see cref="System.Linq.Expressions.Expression" /> used to select this method.
 		/// </summary>
+		/// <value>The expression.</value>
 		MethodCallExpression Expression { get; }
 
 		/// <summary>
-		/// 
+		/// Gets the base method.
 		/// </summary>
+		/// <value>The base method.</value>
 		MethodInfo BaseMethod { get; }
 
 		/// <summary>
-		/// 
+		/// Gets the method.
 		/// </summary>
+		/// <value>The method.</value>
 		MethodInfo Method { get; }
 	}
 	/// <summary>
 	/// Represents an overridden method.
 	/// </summary>
+	/// <typeparam name="T"></typeparam>
 	public interface IMethodCall<T> : ICallable<T>, IMethodCall
 	{
 	}

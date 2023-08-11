@@ -1,7 +1,15 @@
 ﻿namespace Kimono
 {
+	/// <summary>
+	/// Interface IProxyDecorator
+	/// </summary>
+	/// <typeparam name="T"></typeparam>
 	public interface IProxyDecorator<T> where T : class
 	{
+		/// <summary>
+		/// Gets the proxy.
+		/// </summary>
+		/// <value>The proxy.</value>
 		IProxy<T> Proxy { get; }
 	}
 }

@@ -4,18 +4,22 @@ using System.Reflection.Emit;
 
 namespace Kimono.Internal
 {
-    /// <summary>
-    /// 
-    /// </summary>
-    internal class InterfaceProxyFactory : ProxyFactory
+	/// <summary>
+	/// Class InterfaceProxyFactory.
+	/// Implements the <see cref="Kimono.ProxyFactory" />
+	/// </summary>
+	/// <seealso cref="Kimono.ProxyFactory" />
+	internal class InterfaceProxyFactory : ProxyFactory
     {
+		/// <summary>
+		/// The kimono attribute constructor
+		/// </summary>
 		private static readonly ConstructorInfo KimonoAttributeConstructor = typeof(KimonoAttribute).GetConstructors().First();
 
 		/// <summary>
-		/// 
+		/// Initializes a new instance of the <see cref="InterfaceProxyFactory"/> class.
 		/// </summary>
-		/// <param name="interceptor"></param>
-		/// <param name="argsProvider"></param>
+		/// <param name="cache">The cache.</param>
 		internal InterfaceProxyFactory(IProxyCache cache) : base(cache)
         {
             Name = GetName(Constants.AssemblyId);
@@ -26,28 +30,32 @@ namespace Kimono.Internal
             DynamicModule = DynamicAssembly.DefineDynamicModule(Name);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        private AssemblyBuilder DynamicAssembly { get; }
+		/// <summary>
+		/// Gets the dynamic assembly.
+		/// </summary>
+		/// <value>The dynamic assembly.</value>
+		private AssemblyBuilder DynamicAssembly { get; }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        private ModuleBuilder DynamicModule { get; }
+		/// <summary>
+		/// Gets the dynamic module.
+		/// </summary>
+		/// <value>The dynamic module.</value>
+		private ModuleBuilder DynamicModule { get; }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        private string Name { get; }
+		/// <summary>
+		/// Gets the name.
+		/// </summary>
+		/// <value>The name.</value>
+		private string Name { get; }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="builderContext"></param>
-        /// <returns></returns>
-        /// <exception cref="NotImplementedException"></exception>
-        protected override IProxyGenerator<T> CreateCore<T>(IProxyBuilderContext builderContext)
+		/// <summary>
+		/// Creates the core.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="builderContext">The builder context.</param>
+		/// <returns>IProxyGenerator&lt;T&gt;.</returns>
+		/// <exception cref="NotImplementedException"></exception>
+		protected override IProxyGenerator<T> CreateCore<T>(IProxyBuilderContext builderContext)
         {
             const BindingFlags bindingFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
 
@@ -95,11 +103,12 @@ namespace Kimono.Internal
             return proxyGenerator;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        protected override IProxyBuilderContext CreateContext(IInterceptor interceptor)
+		/// <summary>
+		/// Creates the context.
+		/// </summary>
+		/// <param name="interceptor">The interceptor.</param>
+		/// <returns>IProxyBuilderContext.</returns>
+		protected override IProxyBuilderContext CreateContext(IInterceptor interceptor)
         {
             const TypeAttributes attributes = TypeAttributes.Class | TypeAttributes.Public;
 
@@ -110,22 +119,27 @@ namespace Kimono.Internal
             return new ProxyBuilderContext(interceptor, typeBuilder, proxyType);
         }
 
-// #if DEBUG
-//        private void WriteAssembly()
-//        {
-//            var generator = new Lokad.ILPack.AssemblyGenerator();
-//            var fileName = DynamicAssembly.GetName().Name!;
+		// #if DEBUG
+		//        private void WriteAssembly()
+		//        {
+		//            var generator = new Lokad.ILPack.AssemblyGenerator();
+		//            var fileName = DynamicAssembly.GetName().Name!;
 
-//            if (File.Exists(fileName))
-//            {
-//                File.Delete(fileName);
-//            }
+		//            if (File.Exists(fileName))
+		//            {
+		//                File.Delete(fileName);
+		//            }
 
-//            File.WriteAllBytes(fileName, generator.GenerateAssemblyBytes(DynamicAssembly));
-//        }
-//#endif
+		//            File.WriteAllBytes(fileName, generator.GenerateAssemblyBytes(DynamicAssembly));
+		//        }
+		//#endif
 
-        private static void ImplementConstructor(ProxyBuilderContext context, ConstructorInfo baseConstructor)
+		/// <summary>
+		/// Implements the constructor.
+		/// </summary>
+		/// <param name="context">The context.</param>
+		/// <param name="baseConstructor">The base constructor.</param>
+		private static void ImplementConstructor(ProxyBuilderContext context, ConstructorInfo baseConstructor)
         {
             const MethodAttributes methodAttributes = MethodAttributes.Public;
 
@@ -147,7 +161,13 @@ namespace Kimono.Internal
             ilGenerator.Emit(OpCodes.Ret);
         }
 
-        private static (IEnumerable<MethodInfo>, IEnumerable<PropertyInfo>) AddInterfaceImplementations(ProxyBuilderContext context)
+		/// <summary>
+		/// Adds the interface implementations.
+		/// </summary>
+		/// <param name="context">The context.</param>
+		/// <returns>System.ValueTuple&lt;IEnumerable&lt;MethodInfo&gt;, IEnumerable&lt;PropertyInfo&gt;&gt;.</returns>
+		/// <exception cref="Kimono.KimonoException">Type must be an interface: {context.Interceptor}</exception>
+		private static (IEnumerable<MethodInfo>, IEnumerable<PropertyInfo>) AddInterfaceImplementations(ProxyBuilderContext context)
         {
             if (!context.Interceptor.IsInterface())
             {
@@ -157,7 +177,13 @@ namespace Kimono.Internal
             return AddMembersRecursive(context, context.Interceptor.TargetType);
         }
 
-        private static (IEnumerable<MethodInfo>, IEnumerable<PropertyInfo>) AddMembersRecursive(ProxyBuilderContext context, Type interfaceType)
+		/// <summary>
+		/// Adds the members recursive.
+		/// </summary>
+		/// <param name="context">The context.</param>
+		/// <param name="interfaceType">Type of the interface.</param>
+		/// <returns>System.ValueTuple&lt;IEnumerable&lt;MethodInfo&gt;, IEnumerable&lt;PropertyInfo&gt;&gt;.</returns>
+		private static (IEnumerable<MethodInfo>, IEnumerable<PropertyInfo>) AddMembersRecursive(ProxyBuilderContext context, Type interfaceType)
 		{
 			context.TypeBuilder.AddInterfaceImplementation(interfaceType);
 
@@ -175,6 +201,12 @@ namespace Kimono.Internal
 			return (methods.Distinct(), properties.Distinct());
 		}
 
+		/// <summary>
+		/// Adds the methods recursive.
+		/// </summary>
+		/// <param name="context">The context.</param>
+		/// <param name="interfaceType">Type of the interface.</param>
+		/// <returns>IEnumerable&lt;MethodInfo&gt;.</returns>
 		private static IEnumerable<MethodInfo> AddMethodsRecursive(ProxyBuilderContext context, Type interfaceType)
         {
             var methods = GetMethods(interfaceType);
@@ -187,11 +219,22 @@ namespace Kimono.Internal
             return methods.Distinct();
 		}
 
+		/// <summary>
+		/// Gets the methods.
+		/// </summary>
+		/// <param name="interfaceType">Type of the interface.</param>
+		/// <returns>IEnumerable&lt;MethodInfo&gt;.</returns>
 		private static IEnumerable<MethodInfo> GetMethods(Type interfaceType)
 		{
 			return interfaceType.GetMethods().Where(m => !m.IsSpecialName);
 		}
 
+		/// <summary>
+		/// Adds the properties recursive.
+		/// </summary>
+		/// <param name="context">The context.</param>
+		/// <param name="interfaceType">Type of the interface.</param>
+		/// <returns>IEnumerable&lt;PropertyInfo&gt;.</returns>
 		private static IEnumerable<PropertyInfo> AddPropertiesRecursive(ProxyBuilderContext context, Type interfaceType)
         {
             var properties = interfaceType.GetProperties().AsEnumerable();
@@ -204,7 +247,12 @@ namespace Kimono.Internal
             return properties.Distinct();
         }
 
-        private static IEnumerable<MethodInfo> GetBaseMethods(ProxyBuilderContext context)
+		/// <summary>
+		/// Gets the base methods.
+		/// </summary>
+		/// <param name="context">The context.</param>
+		/// <returns>IEnumerable&lt;MethodInfo&gt;.</returns>
+		private static IEnumerable<MethodInfo> GetBaseMethods(ProxyBuilderContext context)
         {
             if (context.Interceptor.IsDelegate())
             {
@@ -214,7 +262,12 @@ namespace Kimono.Internal
             return typeof(object).GetMethods().Where(method => method.IsVirtual);
         }
 
-        private static void ImplementMethods(ProxyBuilderContext context, IEnumerable<MethodInfo> methods)
+		/// <summary>
+		/// Implements the methods.
+		/// </summary>
+		/// <param name="context">The context.</param>
+		/// <param name="methods">The methods.</param>
+		private static void ImplementMethods(ProxyBuilderContext context, IEnumerable<MethodInfo> methods)
         {
             foreach (var methodInfo in methods)
 			{
@@ -238,7 +291,14 @@ namespace Kimono.Internal
             }
         }
 
-        private static MethodBuilder CreateMethod(ProxyBuilderContext context, MethodInfo methodInfo, int methodId)
+		/// <summary>
+		/// Creates the method.
+		/// </summary>
+		/// <param name="context">The context.</param>
+		/// <param name="methodInfo">The method information.</param>
+		/// <param name="methodId">The method identifier.</param>
+		/// <returns>MethodBuilder.</returns>
+		private static MethodBuilder CreateMethod(ProxyBuilderContext context, MethodInfo methodInfo, int methodId)
         {
             var parameterTypes = methodInfo.GetParameters()
                 .Select(p => p.ParameterType).ToArray();
@@ -270,7 +330,12 @@ namespace Kimono.Internal
             return methodBuilder;
         }
 
-        private static void DefineGenericParameters(MethodInfo methodInfo, MethodBuilder methodBuilder)
+		/// <summary>
+		/// Defines the generic parameters.
+		/// </summary>
+		/// <param name="methodInfo">The method information.</param>
+		/// <param name="methodBuilder">The method builder.</param>
+		private static void DefineGenericParameters(MethodInfo methodInfo, MethodBuilder methodBuilder)
         {
             var genericParameters = methodInfo.GetGenericArguments();
             var genericParameterBuilders = methodBuilder.DefineGenericParameters(genericParameters.Select(t => t.Name).ToArray());
@@ -296,7 +361,15 @@ namespace Kimono.Internal
             }
         }
 
-        private static void EmitMethodBody(ProxyBuilderContext context, ILGenerator emitter, Type returnType, Type[] parameters, int methodId)
+		/// <summary>
+		/// Emits the method body.
+		/// </summary>
+		/// <param name="context">The context.</param>
+		/// <param name="emitter">The emitter.</param>
+		/// <param name="returnType">Type of the return.</param>
+		/// <param name="parameters">The parameters.</param>
+		/// <param name="methodId">The method identifier.</param>
+		private static void EmitMethodBody(ProxyBuilderContext context, ILGenerator emitter, Type returnType, Type[] parameters, int methodId)
         {
             var returnIsNotVoid = returnType != typeof(void);
 
@@ -368,7 +441,12 @@ namespace Kimono.Internal
             emitter.Emit(OpCodes.Ret);
         }
 
-        private static void ImplementProperties(ProxyBuilderContext context, IEnumerable<PropertyInfo> properties)
+		/// <summary>
+		/// Implements the properties.
+		/// </summary>
+		/// <param name="context">The context.</param>
+		/// <param name="properties">The properties.</param>
+		private static void ImplementProperties(ProxyBuilderContext context, IEnumerable<PropertyInfo> properties)
         {
             foreach (var propertyInfo in properties)
 			{
@@ -407,10 +485,24 @@ namespace Kimono.Internal
 			}
         }
 
-        private class ProxyBuilderContext : IProxyBuilderContext
+		/// <summary>
+		/// Class ProxyBuilderContext.
+		/// Implements the <see cref="Kimono.ProxyFactory.IProxyBuilderContext" />
+		/// </summary>
+		/// <seealso cref="Kimono.ProxyFactory.IProxyBuilderContext" />
+		private class ProxyBuilderContext : IProxyBuilderContext
 		{
-            private int _methodCounter = 0;
-            public ProxyBuilderContext(IInterceptor target, TypeBuilder typeBuilder, Type proxyType)
+			/// <summary>
+			/// The method counter
+			/// </summary>
+			private int _methodCounter = 0;
+			/// <summary>
+			/// Initializes a new instance of the <see cref="ProxyBuilderContext"/> class.
+			/// </summary>
+			/// <param name="target">The target.</param>
+			/// <param name="typeBuilder">The type builder.</param>
+			/// <param name="proxyType">Type of the proxy.</param>
+			public ProxyBuilderContext(IInterceptor target, TypeBuilder typeBuilder, Type proxyType)
             {
                 Interceptor = target;
                 ProxyType = proxyType;
@@ -419,24 +511,52 @@ namespace Kimono.Internal
                 ProxyContext = new ProxyContext();
             }
 
-            public IInterceptor Interceptor { get; }
+			/// <summary>
+			/// Gets the interceptor.
+			/// </summary>
+			/// <value>The interceptor.</value>
+			public IInterceptor Interceptor { get; }
 
+			/// <summary>
+			/// Gets the type of the proxy.
+			/// </summary>
+			/// <value>The type of the proxy.</value>
 			public Type ProxyType { get; }
-			
-            public TypeBuilder TypeBuilder { get; }
 
-            public ProxyContext ProxyContext { get; }
+			/// <summary>
+			/// Gets the type builder.
+			/// </summary>
+			/// <value>The type builder.</value>
+			public TypeBuilder TypeBuilder { get; }
 
-            private List<Type> Interfaces { get; set; }
+			/// <summary>
+			/// Gets the proxy context.
+			/// </summary>
+			/// <value>The proxy context.</value>
+			public ProxyContext ProxyContext { get; }
 
-            public void AddInterfaces(params Type[] interfaceTypes)
+			/// <summary>
+			/// Gets or sets the interfaces.
+			/// </summary>
+			/// <value>The interfaces.</value>
+			private List<Type> Interfaces { get; set; }
+
+			/// <summary>
+			/// Adds the interfaces.
+			/// </summary>
+			/// <param name="interfaceTypes">The interface types.</param>
+			public void AddInterfaces(params Type[] interfaceTypes)
             {
                 var interfaces = Interfaces.ToArray();
 
                 Interfaces = interfaces.Union(interfaceTypes).Distinct().ToList();
             }
 
-            public int GetNextMethodId()
+			/// <summary>
+			/// Gets the next method identifier.
+			/// </summary>
+			/// <returns>System.Int32.</returns>
+			public int GetNextMethodId()
             {
                 return _methodCounter++;
             }

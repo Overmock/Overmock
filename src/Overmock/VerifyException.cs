@@ -5,11 +5,11 @@ namespace Overmock
 	/// <summary>
 	/// The exception that gets thrown when verifying a type.
 	/// </summary>
-	/// <seealso cref="Overmock.OvermockException" />
+	/// <seealso cref="KimonoException" />
 	public class VerifyException : KimonoException
 	{
 		/// <summary>
-		/// Initializes a new instance of the <see cref="VerifyException"/> class.
+		/// Initializes a new instance of the <see cref="VerifyException" /> class.
 		/// </summary>
 		/// <param name="verifiable">The verifiable.</param>
 		/// <param name="message">The message.</param>
