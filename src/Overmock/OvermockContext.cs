@@ -10,13 +10,13 @@ namespace Overmock
 		/// <summary>
 		/// The invocation context
 		/// </summary>
-		private readonly InvocationContext _invocationContext;
+		private readonly IInvocationContext _invocationContext;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="OvermockContext"/> class.
 		/// </summary>
 		/// <param name="invocationContext">The invocation context.</param>
-		public OvermockContext(InvocationContext invocationContext)
+		public OvermockContext(IInvocationContext invocationContext)
 		{
 			_invocationContext = invocationContext;
 		}

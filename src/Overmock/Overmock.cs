@@ -20,7 +20,7 @@ public class Overmock<T> : Verifiable<T>, IOvermock<T>, IExpectAnyInvocation whe
 	/// <summary>
 	/// The interceptor
 	/// </summary>
-	private readonly TypeInterceptor<T> _interceptor;
+	private readonly CallbackInterceptor<T> _interceptor;
 
 	/// <summary>
 	/// The compiled type
@@ -43,7 +43,7 @@ public class Overmock<T> : Verifiable<T>, IOvermock<T>, IExpectAnyInvocation whe
 			throw new InvalidOperationException($"Type '{Type.Name}' cannot be a sealed class or enum.");
 		}
 
-		_interceptor = new TypeInterceptor<T>(default, memberInvoked: TargetMemberInvoked);
+		_interceptor = new CallbackInterceptor<T>(TargetMemberInvoked);
 
 		Overmocked.Register(this);
 	}
@@ -151,7 +151,7 @@ public class Overmock<T> : Verifiable<T>, IOvermock<T>, IExpectAnyInvocation whe
 	/// </summary>
 	/// <param name="context">The context.</param>
 	/// <exception cref="Overmock.UnhandledMemberException"></exception>
-	private void TargetMemberInvoked(InvocationContext context)
+	private void TargetMemberInvoked(IInvocationContext context)
 	{
 		var methodCall = _methods.Find(m => m.BaseMethod == context.Method);
 

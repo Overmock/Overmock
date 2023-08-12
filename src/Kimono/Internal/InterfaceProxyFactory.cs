@@ -495,7 +495,8 @@ namespace Kimono.Internal
 			/// <summary>
 			/// The method counter
 			/// </summary>
-			private int _methodCounter = 0;
+			private int _methodCounter;
+
 			/// <summary>
 			/// Initializes a new instance of the <see cref="ProxyBuilderContext"/> class.
 			/// </summary>

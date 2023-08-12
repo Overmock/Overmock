@@ -6,7 +6,7 @@ namespace Kimono
 	/// <summary>
 	/// Class InvocationContext.
 	/// </summary>
-	public class InvocationContext
+	public class InvocationContext : IInvocationContext
 	{
 		/// <summary>
 		/// The invoke target handler
@@ -109,11 +109,14 @@ namespace Kimono
 		/// <param name="setReturnValue">if set to <c>true</c> [set return value].</param>
 		public void InvokeTarget(bool setReturnValue = true)
 		{
-			var returnValue = _invokeTargetHandler(_target, _arguments);
-
-			if (setReturnValue)
+			if (_target is not null)
 			{
-				ReturnValue = returnValue;
+				var returnValue = _invokeTargetHandler(_target, _arguments);
+
+				if (setReturnValue)
+				{
+					ReturnValue = returnValue;
+				}
 			}
 		}
 

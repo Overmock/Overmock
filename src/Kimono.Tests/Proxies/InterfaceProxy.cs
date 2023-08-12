@@ -34,7 +34,7 @@ namespace Kimono.Tests.ProxyMembers
 		{
 		}
 
-		protected override void MemberInvoked(InvocationContext context)
+		protected override void MemberInvoked(IInvocationContext context)
 		{
 		}
 	}
