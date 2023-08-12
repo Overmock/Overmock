@@ -35,9 +35,9 @@
 		/// <typeparam name="TInterface">The type of the t interface.</typeparam>
 		/// <param name="memberInvoked">The member invoked.</param>
 		/// <returns>TInterface.</returns>
-		public static TInterface For<TInterface>(Action<InvocationContext> memberInvoked) where TInterface : class
+		public static TInterface WithAction<TInterface>(Action<IInvocationContext> memberInvoked) where TInterface : class
 		{
-			return new TypeInterceptor<TInterface>(default, memberInvoked: memberInvoked);
+			return new CallbackInterceptor<TInterface>(memberInvoked);
 		}
 
 		/// <summary>
@@ -48,16 +48,77 @@
 		/// <param name="implementation">The implementation.</param>
 		/// <param name="memberInvoked">The member invoked.</param>
 		/// <returns>TypeInterceptor&lt;TInterface&gt;.</returns>
-		public static TypeInterceptor<TInterface> Intercept<TInterface, TImplementation>(TImplementation implementation, Action<InvocationContext>? memberInvoked = null) where TInterface : class where TImplementation : TInterface
+		public static TInterface ForTarget<TInterface, TImplementation>(TImplementation implementation, Action<IInvocationContext> memberInvoked) where TInterface : class where TImplementation : TInterface
 		{
-			return new TypeInterceptor<TInterface>(implementation, memberInvoked);
+			return new TargetedCallbackInterceptor<TInterface>(implementation, memberInvoked);
+		}
+
+		/// <summary>
+		/// Intercepts member calls using the provided the handlers.
+		/// </summary>
+		/// <typeparam name="TInterface">The interface type to proxy.</typeparam>
+		/// <param name="handlers">The handlers.</param>
+		/// <returns>The interceptor.</returns>
+		public static TInterface WithHandlers<TInterface>(params IInvocationHandler[] handlers) where TInterface : class
+		{
+			var interceptors = handlers;
+			return new CallbackInterceptor<TInterface>(c =>
+			{
+				for (int i = 0; i < interceptors.Length; i++)
+				{
+					interceptors[i].Handle(c);
+				}
+			});
+		}
+
+		/// <summary>
+		/// Intercepts member calls using the provided the handlers.
+		/// </summary>
+		/// <typeparam name="TInterface">The interface type to proxy.</typeparam>
+		/// <param name="handlers">The handlers.</param>
+		/// <returns>The interceptor.</returns>
+		public static TInterface WithHandlers<TInterface>(IEnumerable<IInvocationHandler> handlers) where TInterface : class
+		{
+			var localHandlers = handlers;
+			IInvocationHandler[]? interceptors = null;
+
+			return new CallbackInterceptor<TInterface>(c =>
+			{
+				// Wait to enumerate the handlers till we need them.
+				if (interceptors == null)
+				{
+					interceptors = localHandlers.ToArray();
+				}
+
+				for (int i = 0; i < interceptors.Length; i++)
+				{
+					interceptors[i].Handle(c);
+				}
+			});
+		}
+
+		/// <summary>
+		/// Withes the inovcation chain.
+		/// </summary>
+		/// <typeparam name="TInterface">The type of the t interface.</typeparam>
+		/// <param name="builderAction">The builder action.</param>
+		/// <returns>TInterface.</returns>
+		public static TInterface WithInovcationChain<TInterface>(Action<IInvocationChainBuilder> builderAction) where TInterface : class
+		{
+			var builder = new InvocationChainBuilder();
+
+			builderAction(builder);
+
+			var handler = builder.Build();
+
+			return new CallbackInterceptor<TInterface>(handler.Handle);
 		}
 
 		/// <summary>
 		/// Gets the target.
 		/// </summary>
 		/// <returns>System.Object.</returns>
-		object IInterceptor.GetTarget()
+		object? IInterceptor.GetTarget()
 		{
 			return GetTarget();
 		}
@@ -66,13 +127,13 @@
 		/// Members the invoked.
 		/// </summary>
 		/// <param name="context">The context.</param>
-		void IInterceptor.MemberInvoked(InvocationContext context) => MemberInvoked(context);
+		void IInterceptor.MemberInvoked(IInvocationContext context) => MemberInvoked(context);
 
 		/// <summary>
 		/// Members the invoked.
 		/// </summary>
 		/// <param name="context">The context.</param>
-		protected abstract void MemberInvoked(InvocationContext context);
+		protected abstract void MemberInvoked(IInvocationContext context);
 
 		/// <summary>
 		/// Gets the target.
@@ -103,7 +164,7 @@
 		/// <summary>
 		/// The target
 		/// </summary>
-		private readonly T? _target;
+		private T? _target;
 		/// <summary>
 		/// The proxy
 		/// </summary>
@@ -114,7 +175,7 @@
 		/// </summary>
 		/// <param name="target">The target.</param>
 		/// <param name="factory">The factory.</param>
-		protected Interceptor(T target, IProxyFactory? factory = null) : base(typeof(T))
+		protected Interceptor(T? target, IProxyFactory? factory = null) : base(typeof(T))
 		{
 			_target = target;
 			_factory = factory ?? ProxyFactoryProvider.Proxy(this);
@@ -130,7 +191,17 @@
 		/// Gets the target.
 		/// </summary>
 		/// <value>The target.</value>
-		public T? Target => _target;
+		public T? Target
+		{
+			get
+			{
+				return _target;
+			}
+			protected set
+			{
+				_target = value;
+			}
+		}
 
 		/// <summary>
 		/// Gets the name of the type.

@@ -21,13 +21,13 @@
 		/// Gets the target.
 		/// </summary>
 		/// <returns>System.Object.</returns>
-		object GetTarget();
+		object? GetTarget();
 
 		/// <summary>
 		/// Members the invoked.
 		/// </summary>
 		/// <param name="context">The context.</param>
-		void MemberInvoked(InvocationContext context);
+		void MemberInvoked(IInvocationContext context);
 	}
 
 	/// <summary>

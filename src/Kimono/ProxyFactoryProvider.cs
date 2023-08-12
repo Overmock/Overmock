@@ -10,18 +10,9 @@ namespace Kimono
 	/// <seealso cref="IProxyFactoryProvider" />
 	public abstract class ProxyFactoryProvider : IProxyFactoryProvider
     {
-		/// <summary>
-		/// The proxy factory
-		/// </summary>
 		private static readonly IProxyFactoryProvider ProxyFactory = new CachedProxyFactoryProvider();
-		/// <summary>
-		/// The current
-		/// </summary>
 		private static IProxyFactoryProvider _current = ProxyFactory;
 
-		/// <summary>
-		/// The default
-		/// </summary>
 		public static readonly IProxyFactoryProvider Default = ProxyFactory;
 
 		/// <summary>

@@ -7,3 +7,8 @@ BenchmarkRunner.Run<TypeInterceptorBenchmark>();
 
 //var benchmark = new TypeInterceptorBenchmark();
 //benchmark.TypeInterceptor();
+//benchmark.Decorator();
+//benchmark.CastleProxy();
+
+//benchmark.SimpleMockProxy();
+//benchmark.MoqProxy();

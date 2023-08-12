@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Version>0.0.1-RC01</Version>
+    <Version>0.0.1-RC02</Version>
     <TargetFramework>net7.0</TargetFramework>
     <!--<TargetFrameworks>net7.0</TargetFrameworks>-->
     <ImplicitUsings>enable</ImplicitUsings>
@@ -19,7 +19,7 @@
     <IncludeReferencedProjects>true</IncludeReferencedProjects>
     <EnablePackageValidation>true</EnablePackageValidation>
     <PackageProjectUrl>https://github.com/Overmock</PackageProjectUrl>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageReadmeFile>\README.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/Overmock/Overmock</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageReleaseNotes>This is a first release and is meant for internal usages until further notice.</PackageReleaseNotes>
@@ -28,13 +28,13 @@
     <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
   </PropertyGroup>
 
-  <ItemGroup>
-    <None Include="..\..\README.md">
+	<ItemGroup>
+    <None Include=".\README.md">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
   </ItemGroup>
-
+  
   <ItemGroup>
     <PackageReference Include="IFluentInterface" Version="2.1.0" />
     <!--<PackageReference Include="Lokad.ILPack" Version="0.2.0" />-->

@@ -26,7 +26,7 @@ namespace Kimono.Tests
 		{
 			var called = false;
 
-			var proxy = Interceptor.For<IInterface>(c => called = c.MemberName == "DoSomething");
+			var proxy = Interceptor.WithAction<IInterface>(c => called = c.MemberName == "DoSomething");
 			proxy.DoSomething("hello world");
 
 			Assert.IsTrue(called);
@@ -37,7 +37,7 @@ namespace Kimono.Tests
 		{
 			var called = false;
 
-			var proxy = Interceptor.For<IInterface>(c => {
+			var proxy = Interceptor.WithAction<IInterface>(c => {
 				called = c.MemberName == "MethodWithReturn";
 				c.ReturnValue = c.Parameters.Get("name");
 			});

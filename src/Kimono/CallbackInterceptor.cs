@@ -20,38 +20,37 @@ namespace Kimono
 	/// </summary>
 	/// <typeparam name="TInterface">The type of the t interface.</typeparam>
 	/// <seealso cref="Kimono.Interceptor{TInterface}" />
-	public class TypeInterceptor<TInterface> : Interceptor<TInterface> where TInterface : class
+	public class CallbackInterceptor<TInterface> : Interceptor<TInterface> where TInterface : class
 	{
 		/// <summary>
 		/// The member invoked
 		/// </summary>
-		private readonly Action<InvocationContext> _memberInvoked;
+		private readonly Action<IInvocationContext> _memberInvoked;
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="TypeInterceptor{TInterface}"/> class.
+		/// Initializes a new instance of the <see cref="CallbackInterceptor{TInterface}"/> class.
 		/// </summary>
-		/// <param name="target">The target.</param>
 		/// <param name="memberInvoked">The member invoked.</param>
-		public TypeInterceptor(TInterface? target, Action<InvocationContext>? memberInvoked = null) : base(target)
+		public CallbackInterceptor(Action<IInvocationContext> memberInvoked) : base(default)
 		{
-			_memberInvoked = memberInvoked ??= c => c.InvokeTarget();
+			_memberInvoked = memberInvoked;
 		}
 
 		/// <summary>
 		/// Members the invoked.
 		/// </summary>
 		/// <param name="context">The context.</param>
-		protected override void MemberInvoked(InvocationContext context)
+		protected override void MemberInvoked(IInvocationContext context)
 		{
 			_memberInvoked.Invoke(context);
 		}
 
 		/// <summary>
-		/// Performs an implicit conversion from <see cref="TypeInterceptor{TInterface}"/> to <see cref="TInterface"/>.
+		/// Performs an implicit conversion from <see cref="CallbackInterceptor{TInterface}"/> to <typeparamref name="TInterface"/> cref="TInterface"/>.
 		/// </summary>
 		/// <param name="interceptor">The interceptor.</param>
 		/// <returns>The result of the conversion.</returns>
-		public static implicit operator TInterface(TypeInterceptor<TInterface> interceptor)
+		public static implicit operator TInterface(CallbackInterceptor<TInterface> interceptor)
 		{
 			return interceptor.Proxy;
 		}

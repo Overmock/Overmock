@@ -71,11 +71,6 @@ namespace Kimono
 		public static readonly Type MethodInfoType = typeof(MethodInfo);
 
 		/// <summary>
-		/// The override handler type
-		/// </summary>
-		public static readonly Type OverrideHandlerType = typeof(IRuntimeHandler);
-
-		/// <summary>
 		/// The array type
 		/// </summary>
 		public static readonly Type ArrayType = typeof(Array);
@@ -99,11 +94,6 @@ namespace Kimono
 		/// The get type from handle method
 		/// </summary>
 		public static readonly MethodInfo GetTypeFromHandleMethod = TypeType.GetMethod("GetTypeFromHandle", BindingFlags.Static | BindingFlags.Public)!;
-
-		/// <summary>
-		/// The override handler type handle method
-		/// </summary>
-		public static readonly MethodInfo OverrideHandlerTypeHandleMethod = OverrideHandlerType.GetMethod(nameof(IRuntimeHandler.Handle), BindingFlags.Instance | BindingFlags.Public)!;
 
 		/// <summary>
 		/// The method base type get current method
