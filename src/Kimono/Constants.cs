@@ -84,6 +84,7 @@ namespace Kimono
 		/// The kimono context type
 		/// </summary>
 		public static readonly Type ProxyContextType = typeof(ProxyContext);
+
 		/// <summary>
 		/// The disposable type
 		/// </summary>
@@ -102,9 +103,8 @@ namespace Kimono
 		/// <summary>
 		/// Gets the proxy type handle method call method.
 		/// </summary>
-		/// <param name="genericTypeArg">The generic type argument.</param>
 		/// <returns>MethodInfo.</returns>
-		public static MethodInfo GetProxyTypeHandleMethodCallMethod = ProxyType.GetMethod("HandleMethodCall", BindingFlags.Instance | BindingFlags.NonPublic)!;
+		public static MethodInfo ProxyTypeHandleMethodCallMethod = ProxyType.GetMethod("HandleMethodCall", BindingFlags.Instance | BindingFlags.NonPublic)!;
 
 		/// <summary>
 		/// Empties the array method.

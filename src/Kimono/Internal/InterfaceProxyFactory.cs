@@ -414,7 +414,7 @@ namespace Kimono.Internal
                 emitter.EmitCall(OpCodes.Call, Constants.EmptyObjectArrayMethod, null);
             }
 
-            emitter.EmitCall(OpCodes.Call, Constants.GetProxyTypeHandleMethodCallMethod, null);
+            emitter.EmitCall(OpCodes.Call, Constants.ProxyTypeHandleMethodCallMethod, null);
 
             if (returnIsNotVoid)
             {

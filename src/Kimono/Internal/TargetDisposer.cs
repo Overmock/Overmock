@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Kimono.Proxies;
+﻿using Kimono.Proxies;
 
 namespace Kimono.Internal
 {
-    internal class TargetDisposer<T> : ITargetDisposer<T> where T : class, IDisposable
+    internal sealed class TargetDisposer<T> : ITargetDisposer<T> where T : class, IDisposable
 	{
 		private bool _disposedValue;
 
@@ -23,7 +18,7 @@ namespace Kimono.Internal
 
 		public T Target { get; }
 
-		public virtual void Dispose(bool disposing)
+		public void Dispose(bool disposing)
 		{
 			if (!_disposedValue && disposing)
 			{

@@ -8,7 +8,7 @@ namespace Kimono.Internal
     /// Implements the <see cref="Proxies.IProxyMember" />
     /// </summary>
     /// <seealso cref="Proxies.IProxyMember" />
-    public class ProxyMember : IProxyMember
+    public sealed class ProxyMember : IProxyMember
 	{
 		/// <summary>
 		/// The delegate

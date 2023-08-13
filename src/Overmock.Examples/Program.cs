@@ -5,19 +5,18 @@ using System.Diagnostics;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // Add services to the container.
 builder.Services.AddScopedProxy<IDataConnection, FrameworkDataConnection>(c => {
-	Stopwatch stopwatch = Stopwatch.StartNew();
-	c.InvokeTarget();
-	stopwatch.Stop();
-	var elapsed = stopwatch.Elapsed;
-})
+		Stopwatch stopwatch = Stopwatch.StartNew();
+		c.InvokeTarget();
+		stopwatch.Stop();
+		var elapsed = stopwatch.Elapsed;
+	})
 	.AddTransient<EntityCollection<UserStory>, UserStoryFactory>()
 	.AddTransient<IUserStoryService, UserStoryService>();
 
