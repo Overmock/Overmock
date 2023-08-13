@@ -1,14 +1,13 @@
 ﻿using System.Reflection;
-using System.Reflection.Emit;
 
 namespace Kimono.Proxies
 {
-    /// <summary>
-    /// Provides a base implementation for <see cref="IProxyFactory"/>.
-    /// Implements the <see cref="IProxyFactory" />
-    /// </summary>
-    /// <seealso cref="IProxyFactory" />
-    public abstract class ProxyFactory : IProxyFactory
+	/// <summary>
+	/// Provides a base implementation for <see cref="IProxyFactory"/>.
+	/// Implements the <see cref="IProxyFactory" />
+	/// </summary>
+	/// <seealso cref="IProxyFactory" />
+	public abstract class ProxyFactory : IProxyFactory
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ProxyFactory"/> class.
@@ -72,29 +71,5 @@ namespace Kimono.Proxies
         /// <param name="name">The name.</param>
         /// <returns>AssemblyName.</returns>
         protected static AssemblyName GetAssemblyName(string name) => new AssemblyName(Constants.AssemblyDllNameFormat.ApplyFormat(GetName(name)));
-
-        /// <summary>
-        /// Interface IProxyBuilderContext
-        /// </summary>
-        protected interface IProxyBuilderContext
-        {
-            /// <summary>
-            /// Gets the interceptor.
-            /// </summary>
-            /// <value>The interceptor.</value>
-            IInterceptor Interceptor { get; }
-
-            /// <summary>
-            /// Gets the type builder.
-            /// </summary>
-            /// <value>The type builder.</value>
-            TypeBuilder TypeBuilder { get; }
-
-            /// <summary>
-            /// Gets the proxy context.
-            /// </summary>
-            /// <value>The proxy context.</value>
-            ProxyContext ProxyContext { get; }
-        }
     }
 }

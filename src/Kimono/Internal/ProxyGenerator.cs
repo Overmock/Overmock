@@ -4,35 +4,26 @@ namespace Kimono.Internal
 {
     /// <summary>
     /// Class ProxyGenerator.
-    /// Implements the <see cref="Proxies.IProxyGenerator{T}" />
+    /// Implements the <see cref="IProxyGenerator{T}" />
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    /// <seealso cref="Proxies.IProxyGenerator{T}" />
+    /// <seealso cref="IProxyGenerator{T}" />
     internal sealed class ProxyGenerator<T> : IProxyGenerator<T> where T : class
 	{
-		/// <summary>
-		/// The proxy context
-		/// </summary>
+		private readonly Type _proxyType;
 		private readonly ProxyContext _proxyContext;
-		/// <summary>
-		/// The dynamic type
-		/// </summary>
-		private readonly Type _dynamicType;
-		/// <summary>
-		/// The create proxy
-		/// </summary>
 		private readonly Func<ProxyContext, IInterceptor, Type, object> _createProxy;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ProxyGenerator{T}"/> class.
 		/// </summary>
+		/// <param name="proxyType">Type of the proxy.</param>
 		/// <param name="proxyContext">The proxy context.</param>
-		/// <param name="dynamicType">Type of the dynamic.</param>
-		/// <param name="createProxy">The create proxy.</param>
-		public ProxyGenerator(ProxyContext proxyContext, Type dynamicType, Func<ProxyContext, IInterceptor, Type, object> createProxy)
+		/// <param name="createProxy">The create proxy delegate.</param>
+		public ProxyGenerator(Type proxyType, ProxyContext proxyContext, Func<ProxyContext, IInterceptor, Type, object> createProxy)
 		{
 			_proxyContext = proxyContext;
-			_dynamicType = dynamicType;
+			_proxyType = proxyType;
 			_createProxy = createProxy;
 		}
 
@@ -43,7 +34,7 @@ namespace Kimono.Internal
 		/// <returns>System.Object.</returns>
 		public object GenerateProxy(IInterceptor interceptor)
 		{
-			return _createProxy.Invoke(_proxyContext, interceptor, _dynamicType);
+			return _createProxy.Invoke(_proxyContext, interceptor, _proxyType);
 		}
 
 		/// <summary>
