@@ -11,7 +11,7 @@ namespace Overmock.Examples
 		{
 			services.TryAddScoped<TImplementation>();
 			return services.AddScoped<TInterface>(s =>
-				Interceptor.ForTarget<TInterface, TImplementation>(s.GetRequiredService<TImplementation>(), memberInvoked));
+				Interceptor.TargetedWithCallback<TInterface, TImplementation>(s.GetRequiredService<TImplementation>(), memberInvoked));
 		}
 	}
 }

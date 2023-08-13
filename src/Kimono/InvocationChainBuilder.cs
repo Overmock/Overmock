@@ -24,6 +24,11 @@
 			return this;
 		}
 
+		public IInvocationChainBuilder Add(IInvocationChainHandler handler)
+		{
+			return Add(handler.Handle);
+		}
+
 		public IInvocationHandler Build()
 		{
 			return new InvocationChainHandler(_invocationChain);

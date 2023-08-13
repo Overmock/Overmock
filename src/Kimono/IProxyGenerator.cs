@@ -3,8 +3,8 @@
 	/// <summary>
 	/// Interface IProxyGenerator
 	/// </summary>
-	public interface IProxyGenerator
-    {
+	public interface IProxyGenerator : IFluentInterface
+	{
 		/// <summary>
 		/// Generates the proxy.
 		/// </summary>

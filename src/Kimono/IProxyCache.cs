@@ -3,8 +3,8 @@
 	/// <summary>
 	/// Interface IProxyCache
 	/// </summary>
-	public interface IProxyCache
-    {
+	public interface IProxyCache : IFluentInterface
+	{
 		/// <summary>
 		/// Determines whether this instance contains the object.
 		/// </summary>

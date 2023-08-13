@@ -9,18 +9,6 @@ namespace Kimono.Tests
 	{
 		private IInterface _interface = new InterfaceImpl();
 
-		public InterfaceProxyTests()
-		{
-			// TODO: Turn the below in to unit tests.
-			//KimonoExamples examples = new KimonoExamples();
-			//examples.NoTargetWithHandlersInterceptorExample();
-			//examples.TargetWithHandlersInterceptorExample();
-			//examples.NoTargetWithCallbackInterceptorExample();
-			//examples.TargetWithHandlersInterceptorExample();
-			//examples.TargetWithInvocationChainInterceptorExample();
-			//examples.NoTargetWithInvocationChainInterceptorExample();
-		}
-
 		[TestMethod]
 		public void ProxyCallsMemberInvokedForMethod()
 		{
