@@ -1,22 +1,8 @@
 ﻿namespace Kimono
 {
-	/// <summary>
-	/// Delegate InvocationAction
-	/// </summary>
-	/// <param name="next"></param>
-	/// <param name="context">The context.</param>
-	public delegate void InvocationAction(IInvocationContext context);
-
-	/// <summary>
-	/// Delegate InvocationAction
-	/// </summary>
-	/// <param name="next"></param>
-	/// <param name="context">The context.</param>
-	public delegate void InvocationChainAction(InvocationAction next, IInvocationContext context);
-
-	internal class InvocationChainBuilder : IInvocationChainBuilder
+	internal sealed class InvocationChainBuilder : IInvocationChainBuilder
 	{
-		private readonly List<InvocationChainAction> _invocationChain = new List<InvocationChainAction>();
+		private readonly List<InvocationChainAction> _invocationChain = new();
 
 		public IInvocationChainBuilder Add(InvocationChainAction  action)
 		{
@@ -34,7 +20,7 @@
 			return new InvocationChainHandler(_invocationChain);
 		}
 
-		private class InvocationChainHandler : IInvocationHandler
+		private sealed class InvocationChainHandler : IInvocationHandler
 		{
 			private readonly IReadOnlyList<InvocationChainAction> _chain;
 

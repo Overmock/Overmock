@@ -4,7 +4,7 @@ namespace Overmock.Tests.Mocks.Methods
 {
     public class GenericMethodsTestInterface : ProxyBase<IGenericMethodsTestInterface>, IGenericMethodsTestInterface
     {
-        public GenericMethodsTestInterface(IOvermock target) : base()
+        public GenericMethodsTestInterface() : base()
         {
         }
 

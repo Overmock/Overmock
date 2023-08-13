@@ -1,5 +1,4 @@
-﻿using Kimono;
-using Kimono.Internal;
+﻿using Kimono.Internal;
 
 namespace Kimono
 {
@@ -13,6 +12,9 @@ namespace Kimono
 		private static readonly IProxyFactoryProvider ProxyFactory = new CachedProxyFactoryProvider();
 		private static IProxyFactoryProvider _current = ProxyFactory;
 
+		/// <summary>
+		/// The default <see cref="IProxyFactoryProvider" />
+		/// </summary>
 		public static readonly IProxyFactoryProvider Default = ProxyFactory;
 
 		/// <summary>
@@ -62,7 +64,7 @@ namespace Kimono
 		/// Implements the <see cref="ProxyFactoryProvider" />
 		/// </summary>
 		/// <seealso cref="ProxyFactoryProvider" />
-		private class CachedProxyFactoryProvider : ProxyFactoryProvider
+		private sealed class CachedProxyFactoryProvider : ProxyFactoryProvider
 		{
 			/// <summary>
 			/// The interface proxy factory

@@ -1,5 +1,4 @@
-﻿using Kimono;
-using System.Globalization;
+﻿using System.Globalization;
 using System.Reflection;
 
 namespace Kimono

@@ -4,9 +4,9 @@ namespace Overmock.Tests.Mocks.Methods
 {
     public class IMethodsWithNoParametersImpl : ProxyBase<IMethodsWithNoParameters>, IMethodsWithNoParameters
     {
-        public string? Name { get; set; }
+        public string Name { get; set; }
 
-        public IMethodsWithNoParametersImpl(IOvermock target) : base()
+        public IMethodsWithNoParametersImpl() : base()
         {
         }
 

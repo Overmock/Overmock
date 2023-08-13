@@ -17,7 +17,7 @@
 		/// </summary>
 		/// <param name="type">The type.</param>
 		/// <returns>System.Nullable&lt;IProxyGenerator&gt;.</returns>
-		IProxyGenerator? Get(Type type);
+		IProxyGenerator? GetGenerator(Type type);
 
 		/// <summary>
 		/// Sets the specified type.
@@ -26,7 +26,7 @@
 		/// <param name="type">The type.</param>
 		/// <param name="value">The value.</param>
 		/// <returns>IProxyGenerator.</returns>
-		IProxyGenerator Set<T>(Type type, T value) where T : IProxyGenerator;
+		IProxyGenerator<T> SetGenerator<T>(Type type, IProxyGenerator<T> value) where T : class;
 
 		/// <summary>
 		/// Tries the get.

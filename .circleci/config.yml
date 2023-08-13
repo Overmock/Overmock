@@ -9,7 +9,7 @@ jobs:
           path: ./test-results/
       - checkout
       - run:
-          working_directory: ./src/Overmock.Tests/
+          working_directory: ./src/
           name: Run tests
           command: |
             dotnet test
@@ -21,7 +21,7 @@ jobs:
     steps:
       - checkout
       - run:
-          working_directory: ./src/Overmock/
+          working_directory: ./src/
           name: Run dotnet pack
           command: |
             dotnet pack --configuration Release

@@ -1,9 +1,8 @@
 ﻿using Kimono;
-using System.Reflection;
 
 namespace Overmock.Tests.Mocks.Properties
 {
-    public interface IPropertiesWithGet
+	public interface IPropertiesWithGet
     {
         public int Int { get; }
 
@@ -16,7 +15,7 @@ namespace Overmock.Tests.Mocks.Properties
 
     public class IPropertiesWithGetImpl : ProxyBase<IPropertiesWithGet>, IPropertiesWithGet
     {
-        public IPropertiesWithGetImpl(IOvermock target) : base()
+        public IPropertiesWithGetImpl() : base()
         {
         }
 

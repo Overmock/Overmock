@@ -1,9 +1,7 @@
-﻿using System.Reflection;
-
-namespace Kimono
+﻿namespace Kimono
 {
-    /// <inheritdoc />
-    public abstract class ProxyBase<T> : IProxy<T> where T : class
+	/// <inheritdoc />
+	public abstract class ProxyBase<T> : IProxy<T> where T : class
     {
 #pragma warning disable CA1051 // Do not declare visible instance fields
 		/// <summary>
@@ -15,13 +13,15 @@ namespace Kimono
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ProxyBase{T}"/> class.
 		/// </summary>
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 		protected ProxyBase()
-        {
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+		{
             TargetType = typeof(T);
         }
 
 		/// <summary>
-		/// The <see cref="Target" />s <see cref="Type" />.
+		/// The <see cref="Interceptor.GetTarget" />s <see cref="Type" />.
 		/// </summary>
 		/// <value>The type of the target.</value>
 		public Type TargetType { get; }

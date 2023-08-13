@@ -15,7 +15,7 @@
 		}
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="OvermockException" /> class.
+		/// Initializes a new instance of the <see cref="UnhandledMemberException" /> class.
 		/// </summary>
 		/// <param name="name">The name.</param>
 		/// <param name="innerException">The exception that is the cause of the current exception, or a null reference (<see langword="Nothing" /> in Visual Basic) if no inner exception is specified.</param>

@@ -9,34 +9,16 @@ namespace Overmock;
 /// <typeparam name="T">The type going to be mocked.</typeparam>
 public class Overmock<T> : Verifiable<T>, IOvermock<T>, IExpectAnyInvocation where T : class
 {
-	/// <summary>
-	/// The methods
-	/// </summary>
 	private readonly List<IMethodCall> _methods = new List<IMethodCall>();
-	/// <summary>
-	/// The properties
-	/// </summary>
 	private readonly List<IPropertyCall> _properties = new List<IPropertyCall>();
-	/// <summary>
-	/// The interceptor
-	/// </summary>
 	private readonly CallbackInterceptor<T> _interceptor;
-
-	/// <summary>
-	/// The compiled type
-	/// </summary>
-	private Type? _compiledType;
-	/// <summary>
-	/// The override all
-	/// </summary>
 	private bool _overrideAll;
 
 	/// <summary>
 	/// Initializes a new instance of the <see cref="Overmock{T}" /> class.
 	/// </summary>
-	/// <param name="argsProvider">The delegate used to get arguments to pass when constructing <typeparamref name="T" />.</param>
-	/// <exception cref="System.InvalidOperationException">Type '{Type.Name}' cannot be a sealed class or enum.</exception>
-	public Overmock(Action<SetupArgs>? argsProvider = default)
+	/// <exception cref="InvalidOperationException">Type '{Type.Name}' cannot be a sealed class or enum.</exception>
+	public Overmock()
 	{
 		if (Type.IsSealed || Type.IsEnum)
 		{
@@ -49,7 +31,7 @@ public class Overmock<T> : Verifiable<T>, IOvermock<T>, IExpectAnyInvocation whe
 	}
 
 	/// <summary>
-	/// Performs an implicit conversion from <see cref="Overmock{T}"/> to <see cref="T"/>.
+	/// Performs an implicit conversion from <see cref="Overmock{T}"/> to <typeparamref name="T"/>.
 	/// </summary>
 	/// <param name="overmock">The overmock.</param>
 	/// <returns>The result of the conversion.</returns>
@@ -59,7 +41,7 @@ public class Overmock<T> : Verifiable<T>, IOvermock<T>, IExpectAnyInvocation whe
 	}
 
 	/// <summary>
-	/// Performs an implicit conversion from <see cref="T"/> to <see cref="Overmock{T}"/>.
+	/// Performs an implicit conversion from <typeparamref name="T"/> to <see cref="Overmock{T}"/>.
 	/// </summary>
 	/// <param name="target">The target.</param>
 	/// <returns>The result of the conversion.</returns>
@@ -85,29 +67,11 @@ public class Overmock<T> : Verifiable<T>, IOvermock<T>, IExpectAnyInvocation whe
         }
     }
 
-	/// <inheritdoc />
-	Type? IOvermock.GetCompiledType() => _compiledType;
-
-	/// <inheritdoc />
-	string IOvermock.TypeName => _typeName;
-
 	/// <inheritdoc/>
 	protected override void Verify()
 	{
 		throw new VerifyException(this);
 	}
-
-	/// <inheritdoc />
-	internal void SetCompiledType(Type? compiledType) => _compiledType = compiledType;
-
-	/// <inheritdoc />
-	internal void SetCompiledType(Assembly assembly) => SetCompiledType(assembly.ExportedTypes.First(t => t.Name == _typeName));
-
-	/// <inheritdoc />
-	void IOvermock.SetCompiledType(Assembly assembly) => SetCompiledType(assembly);
-
-	/// <inheritdoc />
-	void IOvermock.SetCompiledType(Type compiledType) => SetCompiledType(compiledType);
 
 	/// <summary>
 	/// Adds the method.
@@ -141,7 +105,9 @@ public class Overmock<T> : Verifiable<T>, IOvermock<T>, IExpectAnyInvocation whe
 	}
 
 	/// <inheritdoc />
+#pragma warning disable CS1066 // The default value specified will have no effect because it applies to a member that is used in contexts that do not allow optional arguments
 	void IExpectAnyInvocation.ExpectAny(bool value = false)
+#pragma warning restore CS1066 // The default value specified will have no effect because it applies to a member that is used in contexts that do not allow optional arguments
 	{
 		_overrideAll = value;
 	}

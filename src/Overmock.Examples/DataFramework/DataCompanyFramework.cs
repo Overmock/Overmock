@@ -39,7 +39,7 @@
 			return model;
 		}
 		public virtual IQueryable<T> AsQueryable() => Collection.AsQueryable();
-		public virtual T? Find(int id) => Collection.ElementAtOrDefault(id);
+		public virtual T Find(int id) => Collection.ElementAtOrDefault(id);
 		public virtual T Upsert(T model, Func<T, T> update)
 		{
 			var story = Find(model.Id);

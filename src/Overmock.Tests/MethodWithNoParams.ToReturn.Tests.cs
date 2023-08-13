@@ -1,5 +1,3 @@
-using Overmock.Tests.Mocks.Methods;
-
 namespace Overmock.Tests
 {
 	public partial class MethodWithNoParamsTests

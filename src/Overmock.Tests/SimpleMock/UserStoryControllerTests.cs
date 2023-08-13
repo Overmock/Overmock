@@ -1,5 +1,3 @@
-using Simple.Mocking;
-
 namespace Overmock.Tests.SimpleMock
 {
 	//[TestClass]

@@ -5,8 +5,8 @@ namespace Overmock.Examples.Storage
     public class UserStory : Entity
     {
         public string Title { get; set; }
-        public string? Description { get; set; }
-        public int? Points { get; set; }
+        public string Description { get; set; }
+        public int Points { get; set; }
     }
     public class UserStoryFactory : EntityCollection<UserStory>
     {
@@ -37,7 +37,7 @@ namespace Overmock.Examples.Storage
     public interface IUserStoryService
     {
         IEnumerable<UserStory> GetAll();
-        UserStory? Get(int id);
+        UserStory Get(int id);
         UserStory Save(UserStory model);
         UserStory Delete(UserStory model);
 		IEnumerable<UserStory> SaveAll(IEnumerable<UserStory> value);
@@ -52,7 +52,7 @@ namespace Overmock.Examples.Storage
             return _collection.Delete(model);
         }
 
-        public UserStory? Get(int id) => _collection.Find(id);
+        public UserStory Get(int id) => _collection.Find(id);
         public IEnumerable<UserStory> GetAll() => _collection.AsQueryable();
         public UserStory Save(UserStory model) => _collection.Upsert(model, original => {
             original.Title = model.Title;

@@ -1,6 +1,4 @@
-﻿using Kimono;
-
-namespace Kimono.Tests.ProxyMembers
+﻿namespace Kimono.Tests.ProxyMembers
 {
 	public interface IInterface
 	{
@@ -18,13 +16,13 @@ namespace Kimono.Tests.ProxyMembers
 		public string DoSomething(string name)
 		{
 			const int methodId = 90001;
-			return (string)HandleMethodCall(methodId, name);
+			return (string)HandleMethodCall(methodId, name)!;
 		}
 
 		public string MethodWithReturn(string name, object param)
 		{
 			const int methodId = 50004;
-			return (string)HandleMethodCall(methodId, name, param);
+			return (string)HandleMethodCall(methodId, name, param)!;
 		}
 	}
 

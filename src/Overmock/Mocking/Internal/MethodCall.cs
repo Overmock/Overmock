@@ -11,7 +11,7 @@ namespace Overmock.Mocking.Internal
 	/// <typeparam name="T"></typeparam>
 	/// <seealso cref="Overmock.Mocking.Internal.Callable{T}" />
 	/// <seealso cref="Overmock.Mocking.IMethodCall{T}" />
-	internal class MethodCall<T> : Callable<T>, IMethodCall<T> where T : class
+	internal sealed class MethodCall<T> : Callable<T>, IMethodCall<T> where T : class
 	{
 		/// <summary>
 		/// The expression
@@ -72,14 +72,14 @@ namespace Overmock.Mocking.Internal
 
 	/// <summary>
 	/// Class MethodCall.
-	/// Implements the <see cref="Overmock.Mocking.Internal.Returnable{T, TReturn}" />
-	/// Implements the <see cref="Overmock.Mocking.IMethodCall{T, TReturn}" />
+	/// Implements the <see cref="Returnable{T, TReturn}" />
+	/// Implements the <see cref="IMethodCall{T, TReturn}" />
 	/// </summary>
 	/// <typeparam name="T"></typeparam>
 	/// <typeparam name="TReturn">The type of the t return.</typeparam>
-	/// <seealso cref="Overmock.Mocking.Internal.Returnable{T, TReturn}" />
-	/// <seealso cref="Overmock.Mocking.IMethodCall{T, TReturn}" />
-	internal class MethodCall<T, TReturn> : Returnable<T, TReturn>, IMethodCall<T, TReturn> where T : class
+	/// <seealso cref="Returnable{T, TReturn}" />
+	/// <seealso cref="IMethodCall{T, TReturn}" />
+	internal sealed class MethodCall<T, TReturn> : Returnable<T, TReturn>, IMethodCall<T, TReturn> where T : class
 	{
 		/// <summary>
 		/// The expression
