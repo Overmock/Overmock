@@ -13,7 +13,8 @@
 		/// <typeparam name="TInterface">The type of the t interface.</typeparam>
 		/// <param name="memberInvoked">The member invoked.</param>
 		/// <returns>TInterface.</returns>
-		public static TInterface WithCallback<TInterface>(Action<IInvocationContext> memberInvoked) where TInterface : class
+		public static TInterface WithCallback<TInterface>(Action<IInvocationContext> memberInvoked)
+			where TInterface : class
 		{
 			return new CallbackInterceptor<TInterface>(memberInvoked);
 		}
@@ -26,7 +27,9 @@
 		/// <param name="implementation">The implementation.</param>
 		/// <param name="memberInvoked">The member invoked.</param>
 		/// <returns>TypeInterceptor&lt;TInterface&gt;.</returns>
-		public static TInterface ForTarget<TInterface, TImplementation>(TImplementation implementation, Action<IInvocationContext> memberInvoked) where TInterface : class where TImplementation : TInterface
+		public static TInterface ForTarget<TInterface, TImplementation>(TImplementation implementation, Action<IInvocationContext> memberInvoked)
+			where TInterface : class
+			where TImplementation : TInterface
 		{
 			return new TargetedCallbackInterceptor<TInterface>(implementation, memberInvoked);
 		}
@@ -37,7 +40,8 @@
 		/// <typeparam name="TInterface">The interface type to proxy.</typeparam>
 		/// <param name="handlers">The handlers.</param>
 		/// <returns>The interceptor.</returns>
-		public static TInterface WithHandlers<TInterface>(params IInvocationHandler[] handlers) where TInterface : class
+		public static TInterface WithHandlers<TInterface>(params IInvocationHandler[] handlers)
+			where TInterface : class
 		{
 			var interceptors = handlers;
 			return new CallbackInterceptor<TInterface>(c =>
@@ -57,7 +61,9 @@
 		/// <param name="implementation"></param>
 		/// <param name="handlers">The handlers.</param>
 		/// <returns>The interceptor.</returns>
-		public static TInterface ForTargetWithHandlers<TInterface, TImplementation>(TImplementation implementation, params IInvocationHandler[] handlers) where TInterface : class where TImplementation : TInterface
+		public static TInterface ForTargetWithHandlers<TInterface, TImplementation>(TImplementation implementation, params IInvocationHandler[] handlers)
+			where TInterface : class
+			where TImplementation : TInterface
 		{
 			var interceptors = handlers;
 			return new TargetedCallbackInterceptor<TInterface>(implementation, c =>
@@ -100,7 +106,8 @@
 		/// <typeparam name="TInterface">The type of the t interface.</typeparam>
 		/// <param name="builderAction">The builder action.</param>
 		/// <returns>TInterface.</returns>
-		public static TInterface WithInovcationChain<TInterface>(Action<IInvocationChainBuilder> builderAction) where TInterface : class
+		public static TInterface WithInovcationChain<TInterface>(Action<IInvocationChainBuilder> builderAction)
+			where TInterface : class
 		{
 			var builder = new InvocationChainBuilder();
 
@@ -109,6 +116,27 @@
 			var handler = builder.Build();
 
 			return new CallbackInterceptor<TInterface>(handler.Handle);
+		}
+
+		/// <summary>
+		/// Withes the inovcation chain.
+		/// </summary>
+		/// <typeparam name="TInterface">The type of the t interface.</typeparam>
+		/// <typeparam name="TImplementation">The target type to proxy call to.</typeparam>
+		/// <param name="implementation"></param>
+		/// <param name="builderAction">The builder action.</param>
+		/// <returns>TInterface.</returns>
+		public static TInterface ForTargetWithInovcationChain<TInterface, TImplementation>(TImplementation implementation, Action<IInvocationChainBuilder> builderAction)
+			where TInterface : class
+			where TImplementation : TInterface
+		{
+			var builder = new InvocationChainBuilder();
+
+			builderAction(builder);
+
+			var handler = builder.Build();
+
+			return new TargetedCallbackInterceptor<TInterface>(implementation, handler.Handle);
 		}
 	}
 }

@@ -6,14 +6,12 @@ namespace Kimono.Tests.Examples
         public void NoTargetWithCallbackInterceptorExample()
         {
             var interceptorWithCallback = Interceptor.WithCallback<IFoo>(context => {
-                if (context.MemberName == "Baz")
-                {
-                    context.ReturnValue = new Baz
-                    {
-                        A = context.Parameters.Get<string>("a"),
-                        B = context.Parameters.Get<string>("b")
-                    };
-                }
+				if (context.MemberName == "Baz") {
+					context.ReturnValue = new Baz {
+						A = context.Parameters.Get<string>("a"),
+						B = context.Parameters.Get<string>("b")
+					};
+				}
             });
 
             interceptorWithCallback.Bar();
@@ -21,10 +19,8 @@ namespace Kimono.Tests.Examples
 		public void TargetWithCallbackInterceptorExample()
 		{
 			var interceptorWithCallback = Interceptor.ForTarget<IFoo, Foo>(new Foo(), context => {
-				if (context.MemberName == "Baz")
-				{
-					context.ReturnValue = new Baz
-					{
+				if (context.MemberName == "Baz") {
+					context.ReturnValue = new Baz {
 						A = context.Parameters.Get<string>("a"),
 						B = context.Parameters.Get<string>("b")
 					};
@@ -45,14 +41,46 @@ namespace Kimono.Tests.Examples
 
 			interceptorWithCallback.Bar();
 		}
+		public void NoTargetWithInvocationChainInterceptorExample()
+		{
+			var interceptorWithCallback = Interceptor.ForTargetWithInovcationChain<IFoo, Foo>(new Foo(), builder => {
+				builder.Add((next, context) => {
+					if (context.MemberName == "Baz") {
+						context.ReturnValue = new Baz {
+							A = context.Parameters.Get<string>("a"),
+							B = context.Parameters.Get<string>("b")
+						};
+					}
+
+					next(context);
+				});
+			});
+
+			interceptorWithCallback.Bar();
+		}
+		public void TargetWithInvocationChainInterceptorExample()
+		{
+			var interceptorWithCallback = Interceptor.WithInovcationChain<IFoo>(builder => {
+				builder.Add((next, context) => {
+					if (context.MemberName == "Baz") {
+						context.ReturnValue = new Baz {
+							A = context.Parameters.Get<string>("a"),
+							B = context.Parameters.Get<string>("b")
+						};
+					}
+
+					next(context);
+				});
+			});
+
+			interceptorWithCallback.Bar();
+		}
 		private class BazReturnInvocationHandler : IInvocationHandler
 		{
 			public void Handle(IInvocationContext context)
 			{
-				if (context.MemberName == "Baz")
-				{
-					context.ReturnValue = new Baz
-					{
+				if (context.MemberName == "Baz") {
+					context.ReturnValue = new Baz {
 						A = context.Parameters.Get<string>("a"),
 						B = context.Parameters.Get<string>("b")
 					};

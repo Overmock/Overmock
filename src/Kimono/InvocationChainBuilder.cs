@@ -40,25 +40,17 @@
 
 			public void Handle(IInvocationContext context)
 			{
-				var enumerator = _chain.GetEnumerator();
-				enumerator.MoveNext();
+				using var enumerator = _chain.GetEnumerator();
 
-				InvocationAction next;
-
-				var first = new InvocationAction(c =>
+				void Next(IInvocationContext context)
 				{
-					var current = enumerator.Current;
-
-					void Next(IInvocationContext context)
+					if (enumerator.MoveNext())
 					{
-						if (enumerator.MoveNext())
-						{
-							next = Next;
-						}
+						enumerator.Current.Invoke(Next, context);
 					}
-					
-					enumerator.Current.Invoke(Next, context);
-				});
+				}
+
+				Next(context);
 			}
 		}
 	}

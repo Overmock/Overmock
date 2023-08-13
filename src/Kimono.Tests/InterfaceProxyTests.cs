@@ -11,6 +11,14 @@ namespace Kimono.Tests
 
 		public InterfaceProxyTests()
 		{
+			// TODO: Turn the below in to unit tests.
+			//KimonoExamples examples = new KimonoExamples();
+			//examples.NoTargetWithHandlersInterceptorExample();
+			//examples.TargetWithHandlersInterceptorExample();
+			//examples.NoTargetWithCallbackInterceptorExample();
+			//examples.TargetWithHandlersInterceptorExample();
+			//examples.TargetWithInvocationChainInterceptorExample();
+			//examples.NoTargetWithInvocationChainInterceptorExample();
 		}
 
 		[TestMethod]
