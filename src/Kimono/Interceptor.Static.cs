@@ -1,4 +1,7 @@
-﻿namespace Kimono
+﻿using Kimono.Interceptors;
+using Kimono.Internal;
+
+namespace Kimono
 {
 	/// <summary>
 	/// Class Interceptor.
@@ -43,14 +46,7 @@
 		public static TInterface WithHandlers<TInterface>(params IInvocationHandler[] handlers)
 			where TInterface : class
 		{
-			var interceptors = handlers;
-			return new CallbackInterceptor<TInterface>(c =>
-			{
-				for (int i = 0; i < interceptors.Length; i++)
-				{
-					interceptors[i].Handle(c);
-				}
-			});
+			return new HandlersInterceptor<TInterface>(handlers);
 		}
 
 		/// <summary>
@@ -65,14 +61,7 @@
 			where TInterface : class
 			where TTarget : TInterface
 		{
-			var interceptors = handlers;
-			return new TargetedCallbackInterceptor<TInterface>(target, c =>
-			{
-				for (int i = 0; i < interceptors.Length; i++)
-				{
-					interceptors[i].Handle(c);
-				}
-			});
+			return new TargetedHandlersInterceptor<TInterface>(target, handlers);
 		}
 
 		/// <summary>
@@ -140,7 +129,7 @@
 
 			var handler = builder.Build();
 
-			return new CallbackInterceptor<TInterface>(handler.Handle);
+			return new SingleHandlerInterceptor<TInterface>(handler);
 		}
 
 		/// <summary>
@@ -161,7 +150,7 @@
 
 			var handler = builder.Build();
 
-			return new TargetedCallbackInterceptor<TInterface>(target, handler.Handle);
+			return new TargetedSingleHandlerInterceptor<TInterface>(target, handler);
 		}
 	}
 }

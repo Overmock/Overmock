@@ -38,16 +38,18 @@ namespace Kimono
 		Parameters Parameters { get; }
 		
 		/// <summary>
-		/// Gets the parent context.
-		/// </summary>
-		/// <value>The parent context.</value>
-		RuntimeContext ParentContext { get; }
-		
-		/// <summary>
 		/// Gets or sets the return value.
 		/// </summary>
 		/// <value>The return value.</value>
 		object? ReturnValue { get; set; }
+
+		/// <summary>
+		/// Gets the specified name.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="name">The name.</param>
+		/// <returns>T.</returns>
+		T GetParameter<T>(string name);
 
 		/// <summary>
 		/// Invokes the target.

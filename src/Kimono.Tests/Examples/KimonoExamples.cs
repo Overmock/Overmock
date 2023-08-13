@@ -1,113 +1,159 @@
 ﻿
 namespace Kimono.Tests.Examples
 {
-    public class KimonoExamples
-    {
-        public void NoTargetWithCallbackInterceptorExample()
-        {
-            var interceptorWithCallback = Interceptor.WithCallback<IFoo>(context => {
-				if (context.MemberName == "Baz") {
-					context.ReturnValue = new Baz {
-						A = context.Parameters.Get<string>("a"),
-						B = context.Parameters.Get<string>("b")
-					};
+	public class KimonoExamples
+	{
+		public void NoTargetWithCallbackInterceptorExample()
+		{
+			var interceptor = Interceptor.WithCallback<IRepository>(context =>
+			{
+				if (context.MemberName == "Baz")
+				{
+					context.ReturnValue = context.GetParameter<Model>("model");
 				}
-            });
 
-            interceptorWithCallback.Bar();
+				if (context.MemberName == nameof(IRepository.Save))
+				{
+					context.InvokeTarget();
+				}
+			});
+
+			interceptor.Save(new Model { Id = 20 });
 		}
 		public void TargetWithCallbackInterceptorExample()
 		{
-			var interceptorWithCallback = Interceptor.TargetedWithCallback<IFoo, Foo>(new Foo(), context => {
-				if (context.MemberName == "Baz") {
-					context.ReturnValue = new Baz {
-						A = context.Parameters.Get<string>("a"),
-						B = context.Parameters.Get<string>("b")
-					};
+			var interceptor = Interceptor.TargetedWithCallback<IRepository, Repository>(new Repository(), context =>
+			{
+				context.InvokeTarget();
+
+				if (context.MemberName == nameof(IRepository.Save))
+				{
+					if (context.ReturnValue is false)
+					{
+						//Log failure
+					}
 				}
 			});
 
-			interceptorWithCallback.Bar();
+			interceptor.Save(new Model { Id = 20 });
 		}
 		public void NoTargetWithHandlersInterceptorExample()
 		{
-			var interceptorWithCallback = Interceptor.WithHandlers<IFoo>(new BazReturnInvocationHandler());
+			var interceptor = Interceptor.WithHandlers<IRepository>(new BazReturnInvocationHandler());
 
-			interceptorWithCallback.Bar();
+			interceptor.Save(new Model { Id = 20 });
 		}
 		public void TargetWithHandlersInterceptorExample()
 		{
-			var interceptorWithCallback = Interceptor.TargetedWithHandlers<IFoo, Foo>(new Foo(), new BazReturnInvocationHandler());
+			var interceptor = Interceptor.TargetedWithHandlers<IRepository, Repository>(new Repository(), new BazReturnInvocationHandler());
 
-			interceptorWithCallback.Bar();
+			interceptor.Save(new Model { Id = 20 });
 		}
 		public void NoTargetWithInvocationChainInterceptorExample()
 		{
-			var interceptorWithCallback = Interceptor.TargetedWithInovcationChain<IFoo, Foo>(new Foo(), builder => {
-				builder.Add((next, context) => {
-					if (context.MemberName == "Baz") {
-						context.ReturnValue = new Baz {
-							A = context.Parameters.Get<string>("a"),
-							B = context.Parameters.Get<string>("b")
-						};
+			var interceptor = Interceptor.TargetedWithInovcationChain<IRepository, Repository>(new Repository(), builder =>
+			{
+				builder.Add((next, context) =>
+				{
+					context.InvokeTarget();
+
+					if (context.MemberName == nameof(IRepository.Save))
+					{
+						if (context.ReturnValue is false)
+						{
+							//Log failure
+							return;
+						}
 					}
 
 					next(context);
 				});
 			});
 
-			interceptorWithCallback.Bar();
+			interceptor.Save(new Model { Id = 20 });
 		}
 		public void TargetWithInvocationChainInterceptorExample()
 		{
-			var interceptorWithCallback = Interceptor.WithInovcationChain<IFoo>(builder => {
-				builder.Add((next, context) => {
-					if (context.MemberName == "Baz") {
-						context.ReturnValue = new Baz {
-							A = context.Parameters.Get<string>("a"),
-							B = context.Parameters.Get<string>("b")
-						};
+			var interceptor = Interceptor.WithInovcationChain<IRepository>(builder =>
+			{
+				builder.Add((next, context) =>
+				{
+					if (context.MemberName == nameof(IRepository.Save))
+					{
+						context.ReturnValue = true;
 					}
 
+					// Call next regardless of condition
 					next(context);
 				});
 			});
 
-			interceptorWithCallback.Bar();
+			interceptor.Save(new Model { Id = 20 });
 		}
 		private class BazReturnInvocationHandler : IInvocationHandler
 		{
 			public void Handle(IInvocationContext context)
 			{
-				if (context.MemberName == "Baz") {
-					context.ReturnValue = new Baz {
-						A = context.Parameters.Get<string>("a"),
-						B = context.Parameters.Get<string>("b")
-					};
+				if (context.MemberName == "Baz")
+				{
+					context.ReturnValue = context.GetParameter<Model>("model");
+				}
+
+				if (context.MemberName == nameof(IRepository.Save))
+				{
+					if (context.ReturnValue is false)
+					{
+						//Log failure
+						return;
+					}
 				}
 			}
 		}
 	}
-    public interface IFoo
-    {
-        void Bar();
-
-        Baz Baz(string a, string b);
-    }
-	public class Foo : IFoo
+	public class Model
 	{
-		public void Bar()
+		public int Id { get; set; }
+	}
+	public interface IRepository
+	{
+		bool Save(Model model);
+	}
+	public class Repository : IRepository
+	{
+		public bool Save(Model model)
 		{
-		}
-
-		public Baz Baz(string a, string b)
-		{
-			return new Baz { A = a, B = b };
+			return true;
 		}
 	}
-	public class Baz
+	public interface ILog
 	{
-        public string A { get; set; }
-        public string B { get; set; }
+		void Log(string message);
+	}
+	public class Service
+	{
+		private readonly ILog _log;
+		private readonly IRepository _repo;
+		public Service(ILog log, IRepository repo)
+		{
+			_log = log;
+			_repo = repo;
+		}
+		public Model SaveModel(Model model)
+		{
+			try
+			{
+				var saved = _repo.Save(model);
+				if (!saved)
+				{
+					_log.Log("Failed to save");
+				}
+				return model;
+			}
+			catch (Exception ex)
+			{
+				_log.Log(ex.Message);
+				throw;
+			}
+		}
 	}
 }

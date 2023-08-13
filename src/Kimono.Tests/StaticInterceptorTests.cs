@@ -10,179 +10,161 @@ namespace Kimono.Tests
 		public void WithCallbackInterceptorTest()
 		{
 			var called = false;
-			var bazCalled = false;
+			var saveCalled = false;
 
-			var interceptorWithCallback = Interceptor.WithCallback<IFoo>(context => {
+			var interceptor = Interceptor.WithCallback<IRepository>(context => {
 				called = true;
-				if (context.MemberName == "Baz")
+				if (context.MemberName == "Save")
 				{
-					bazCalled = true;
+					saveCalled = true;
 				}
 			});
 
-			interceptorWithCallback.Bar();
+			var returnedTrue = interceptor.Save(new Model { Id = 69 });
 
+			Assert.IsFalse(returnedTrue);
 			Assert.IsTrue(called);
-			Assert.IsFalse(bazCalled);
+			Assert.IsTrue(saveCalled);
 		}
 
 		[TestMethod]
 		public void TargetedWithCallbackInterceptorTest()
 		{
 			var called = false;
-			var bazCalled = true;
+			var saveCalled = false;
 
-			var interceptorWithCallback = Interceptor.TargetedWithCallback<IFoo, Foo>(new Foo(), context => {
+			var interceptor = Interceptor.TargetedWithCallback<IRepository, Repository>(new Repository(), context => {
 				called = true;
-				if (context.MemberName == "Bar")
+				if (context.MemberName == "Save")
 				{
-					bazCalled = false;
+					saveCalled = true;
+					context.ReturnValue = true;
 				}
 			});
 
-			interceptorWithCallback.Bar();
+			var returnedTrue = interceptor.Save(new Model { Id = 69 });
 
+			Assert.IsTrue(returnedTrue);
 			Assert.IsTrue(called);
-			Assert.IsFalse(bazCalled);
+			Assert.IsTrue(saveCalled);
 		}
 
 		[TestMethod]
 		public void TargetedWithHandlersInterceptorTest()
 		{
-			var interceptorWithCallback = Interceptor.TargetedWithHandlers<IFoo, Foo>(new Foo(), new TestHandler());
+			var interceptor = Interceptor.TargetedWithHandlers<IRepository, Repository>(new Repository(), new TestHandler());
 
-			var baz = interceptorWithCallback.Baz("a-test", "b-test");
+			var returnedTrue = interceptor.Save(new Model { Id = 69 });
 
-			Assert.AreEqual("a-test", baz.A);
-			Assert.AreEqual("b-test", baz.B);
+			Assert.IsTrue(returnedTrue);
 		}
 
 		[TestMethod]
 		public void WithHandlersInterceptorTest()
 		{
-			var interceptorWithCallback = Interceptor.WithHandlers<IFoo>(new TestHandler());
+			var interceptor = Interceptor.WithHandlers<IRepository>(new TestHandler());
 
-			var baz = interceptorWithCallback.Baz("a-test", "b-test");
+			var returnedTrue = interceptor.Save(new Model { Id = 69 });
 
-			Assert.AreEqual("a-test", baz.A);
-			Assert.AreEqual("b-test", baz.B);
+			Assert.IsTrue(returnedTrue);
 		}
-
 
 		[TestMethod]
 		public void WithHandlersEnumerableInterceptorTest()
 		{
 			var list = new List<IInvocationHandler>() { new TestHandler() };
-			var interceptorWithCallback = Interceptor.WithHandlers<IFoo>(list);
+			var interceptor = Interceptor.WithHandlers<IRepository>(list);
 
-			var baz = interceptorWithCallback.Baz("a-test", "b-test");
+			var returnedTrue = interceptor.Save(new Model { Id = 69 });
 
-			Assert.AreEqual("a-test", baz.A);
-			Assert.AreEqual("b-test", baz.B);
+			Assert.IsTrue(returnedTrue);
 		}
 
 		[TestMethod]
 		public void WithInovcationChainInterceptorTest()
 		{
-			var barCalled = false;
-			var bazCalled = false;
+			var called = false;
+			var saveCalled = false;
 
-			var interceptorWithCallback = Interceptor.WithInovcationChain<IFoo>(builder => {
+			var interceptor = Interceptor.WithInovcationChain<IRepository>(builder => {
 				builder.Add((next, context) => {
-					if (context.MemberName == "Bar")
-					{
-						barCalled = true;
-					}
+					called = true;
 
 					next(context);
 				})
 				.Add((next, context) => {
-					if (context.MemberName == "Baz")
+					if (context.MemberName == "Save")
 					{
-						bazCalled = true;
+						saveCalled = true;
+						context.ReturnValue = saveCalled;
 					}
 				});
 			});
 
-			interceptorWithCallback.Bar();
-			interceptorWithCallback.Baz("a-test", "b-test");
+			var returnedTrue = interceptor.Save(new Model { Id = 69 });
 
-			Assert.IsTrue(barCalled);
-			Assert.IsTrue(bazCalled);
+			Assert.IsTrue(returnedTrue);
+			Assert.IsTrue(called);
+			Assert.IsTrue(saveCalled);
 		}
 
 		[TestMethod]
 		public void TargetedWithInovcationChainInterceptorTest()
 		{
-			var barCalled = false;
-			var bazCalled = false;
+			var firstCalled = false;
+			var secondCalled = false;
 
-			var interceptorWithCallback = Interceptor.TargetedWithInovcationChain<IFoo, Foo>(new Foo(), builder => {
+			var interceptor = Interceptor.WithInovcationChain<IRepository>(builder => {
 				builder.Add((next, context) => {
-					if (context.MemberName == "Bar")
+					firstCalled = true;
+					if (!secondCalled)
 					{
-						barCalled = true;
+						next(context);
 					}
-
-					next(context);
 				})
 				.Add((next, context) => {
-					if (context.MemberName == "Baz")
-					{
-						bazCalled = true;
-					}
-
-					next(context);
+					secondCalled = true;
+					context.ReturnValue = true;
 				});
 			});
 
-			interceptorWithCallback.Bar();
-			interceptorWithCallback.Baz("a-test", "b-test");
+			var returnedTrue = interceptor.Save(new Model { Id = 69 });
 
-			Assert.IsTrue(barCalled);
-			Assert.IsTrue(bazCalled);
+			Assert.IsTrue(returnedTrue);
+			Assert.IsTrue(firstCalled);
+			Assert.IsTrue(secondCalled);
 		}
-
 
 		[TestMethod]
 		public void TargetedWithInovcationChainInterceptorDoesNotCallNextTest()
 		{
-			var barCalled = false;
-			var bazCalled = false;
+			var firstCalled = false;
+			var secondCalled = false;
 
-			var interceptorWithCallback = Interceptor.TargetedWithInovcationChain<IFoo, Foo>(new Foo(), builder => {
+			var interceptor = Interceptor.TargetedWithInovcationChain<IRepository, Repository>(new Repository(), builder => {
 				builder.Add((next, context) => {
-					if (context.MemberName == "Bar")
-					{
-						barCalled = true;
-					}
+					firstCalled = true;
 				})
 				.Add((next, context) => {
-					if (context.MemberName == "Baz")
-					{
-						bazCalled = true;
-					}
+					secondCalled = true;
+					context.ReturnValue = true;
 				});
 			});
 
-			interceptorWithCallback.Bar();
-			interceptorWithCallback.Baz("a-test", "b-test");
+			var returnedTrue = interceptor.Save(new Model { Id = 69 });
 
-			Assert.IsTrue(barCalled);
-			Assert.IsFalse(bazCalled);
+			Assert.IsFalse(returnedTrue);
+			Assert.IsTrue(firstCalled);
+			Assert.IsFalse(secondCalled);
 		}
 
 		private class TestHandler : IInvocationHandler
 		{
 			public void Handle(IInvocationContext context)
 			{
-				if (context.MemberName == "Baz")
+				if (context.MemberName == "Save")
 				{
-					context.ReturnValue = new Baz
-					{
-						A = context.Parameters.Get<string>("a"),
-						B = context.Parameters.Get<string>("b")
-					};
+					context.ReturnValue = true;
 				}
 			}
 		}
