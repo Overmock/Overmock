@@ -29,7 +29,7 @@ namespace Overmock
 		/// <returns>T.</returns>
 		public T Get<T>(string name)
 		{
-			return _invocationContext.Parameters.Get<T>(name);
+			return _invocationContext.GetParameter<T>(name);
 		}
 
 		/// <summary>

@@ -3,7 +3,7 @@
 	/// <summary>
 	/// Class ProxyContext.
 	/// </summary>
-	public class ProxyContext
+	public sealed class ProxyContext
     {
 		/// <summary>
 		/// The overrides

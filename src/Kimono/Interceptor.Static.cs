@@ -1,4 +1,6 @@
-﻿namespace Kimono
+﻿using Kimono.Internal;
+
+namespace Kimono
 {
 	/// <summary>
 	/// Class Interceptor.

@@ -1,3 +1,4 @@
+using Kimono.Tests.Examples;
 using Kimono.Tests.ProxyMembers;
 
 namespace Kimono.Tests
@@ -6,6 +7,17 @@ namespace Kimono.Tests
 	public class InterfaceProxyTests
 	{
 		private IInterface _interface = new InterfaceImpl();
+
+		public InterfaceProxyTests()
+		{
+			var examples = new KimonoExamples();
+			examples.NoTargetWithCallbackInterceptorExample();
+			examples.TargetWithCallbackInterceptorExample();
+			examples.NoTargetWithHandlersInterceptorExample();
+			examples.TargetWithHandlersInterceptorExample();
+			examples.NoTargetWithInvocationChainInterceptorExample();
+			examples.TargetWithInvocationChainInterceptorExample();
+		}
 
 		[TestMethod]
 		public void ProxyCallsMemberInvokedForMethod()

@@ -4,10 +4,10 @@ using System.Reflection.Emit;
 namespace Kimono
 {
 	/// <summary>
-	/// Class ProxyFactory.
-	/// Implements the <see cref="Kimono.IProxyFactory" />
+	/// Provides a base implementation for <see cref="IProxyFactory"/>.
+	/// Implements the <see cref="IProxyFactory" />
 	/// </summary>
-	/// <seealso cref="Kimono.IProxyFactory" />
+	/// <seealso cref="IProxyFactory" />
 	public abstract class ProxyFactory : IProxyFactory
     {
 		/// <summary>

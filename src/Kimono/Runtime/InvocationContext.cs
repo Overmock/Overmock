@@ -8,22 +8,10 @@ namespace Kimono
 	/// </summary>
 	public class InvocationContext : IInvocationContext
 	{
-		/// <summary>
-		/// The invoke target handler
-		/// </summary>
 		private readonly Func<object, object[]?, object?> _invokeTargetHandler;
-		/// <summary>
-		/// The arguments
-		/// </summary>
 		private readonly object[] _arguments;
-		/// <summary>
-		/// The target
-		/// </summary>
 		private readonly object? _target;
 
-		/// <summary>
-		/// The default return value
-		/// </summary>
 		private object? _defaultReturnValue;
 
 		/// <summary>
@@ -34,8 +22,6 @@ namespace Kimono
 		/// <param name="parameters">The parameters.</param>
 		public InvocationContext(RuntimeContext runtimeContext, IInterceptor interceptor, object[] parameters)
 		{
-			ParentContext = runtimeContext;
-			
 			_arguments = parameters;
 			_target = interceptor.GetTarget();
 			_invokeTargetHandler = runtimeContext.GetTargetInvocationHandler();
@@ -61,12 +47,6 @@ namespace Kimono
 		/// </summary>
 		/// <value>The parameters.</value>
 		public Parameters Parameters { get; }
-
-		/// <summary>
-		/// Gets the parent context.
-		/// </summary>
-		/// <value>The parent context.</value>
-		public RuntimeContext ParentContext { get; }
 
 		/// <summary>
 		/// Gets the interceptor.
@@ -97,6 +77,17 @@ namespace Kimono
 		/// </summary>
 		/// <value>The proxied member.</value>
 		internal IProxyMember ProxiedMember { get; }
+
+		/// <summary>
+		/// Gets the specified name.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="name">The name.</param>
+		/// <returns>T.</returns>
+		public T GetParameter<T>(string name)
+		{
+			return Parameters.Get<T>(name);
+		}
 
 		/// <summary>
 		/// Invokes the target.
