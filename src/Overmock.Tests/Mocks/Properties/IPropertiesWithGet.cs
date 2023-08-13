@@ -1,8 +1,8 @@
-﻿using Kimono;
+﻿using Kimono.Proxies;
 
 namespace Overmock.Tests.Mocks.Properties
 {
-	public interface IPropertiesWithGet
+    public interface IPropertiesWithGet
     {
         public int Int { get; }
 

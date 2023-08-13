@@ -11,13 +11,13 @@
         /// <summary>
         /// The member invoked
         /// </summary>
-        private readonly Action<IInvocationContext> _memberInvoked;
+        private readonly InvocationAction _memberInvoked;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CallbackInterceptor{TInterface}"/> class.
         /// </summary>
         /// <param name="memberInvoked">The member invoked.</param>
-        public CallbackInterceptor(Action<IInvocationContext> memberInvoked) : base(default)
+        public CallbackInterceptor(InvocationAction memberInvoked) : base(default)
         {
             _memberInvoked = memberInvoked;
         }

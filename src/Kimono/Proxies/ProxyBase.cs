@@ -1,14 +1,13 @@
-﻿namespace Kimono
+﻿namespace Kimono.Proxies
 {
-	/// <inheritdoc />
-	public abstract class ProxyBase<T> : IProxy<T> where T : class
-    {
-#pragma warning disable CA1051 // Do not declare visible instance fields
-		/// <summary>
-		/// The context
-		/// </summary>
-		protected ProxyContext? ___context;
-#pragma warning restore CA1051 // Do not declare visible instance fields
+	/// <summary>
+	/// Class ProxyBase.
+	/// Implements the <see cref="IProxy" />
+	/// </summary>
+	/// <seealso cref="IProxy" />
+	public abstract class ProxyBase : IProxy
+	{
+		private ProxyContext? _proxyContext;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ProxyBase{T}"/> class.
@@ -17,14 +16,13 @@
 		protected ProxyBase()
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 		{
-            TargetType = typeof(T);
-        }
+		}
 
 		/// <summary>
 		/// The <see cref="Interceptor.GetTarget" />s <see cref="Type" />.
 		/// </summary>
 		/// <value>The type of the target.</value>
-		public Type TargetType { get; }
+		public Type TargetType { get; protected set; }
 
 		/// <summary>
 		/// Gets the interceptor.
@@ -33,34 +31,34 @@
 		public IInterceptor Interceptor { get; private set; }
 
 		/// <summary>
-		/// Initializes the proxy context.
-		/// </summary>
-		/// <param name="interceptor">The interceptor.</param>
-		/// <param name="context">The context.</param>
-		void IProxy.InitializeProxyContext(IInterceptor interceptor, ProxyContext context)
-        {
-            Interceptor = interceptor;
-            ___context = context;
-        }
-
-		/// <summary>
 		/// Handles the method call.
 		/// </summary>
 		/// <param name="methodId">The method identifier.</param>
 		/// <param name="parameters">The parameters.</param>
 		/// <returns>System.Nullable&lt;System.Object&gt;.</returns>
 		protected object? HandleMethodCall(int methodId, params object[] parameters)
-        {
-			var invocationContext = ___context.GetInvocationContext(methodId, this, parameters);
+		{
+			var invocationContext = _proxyContext.GetInvocationContext(methodId, this, parameters);
 
 			Interceptor.MemberInvoked(invocationContext);
 
 			if (invocationContext.ReturnValue == null && invocationContext.MemberReturnsValueType())
 			{
-                return invocationContext.GetReturnTypeDefaultValue();
+				return invocationContext.GetReturnTypeDefaultValue();
 			}
 
-            return invocationContext.ReturnValue;
+			return invocationContext.ReturnValue;
+		}
+
+		/// <summary>
+		/// Initializes the proxy context.
+		/// </summary>
+		/// <param name="interceptor">The interceptor.</param>
+		/// <param name="context">The context.</param>
+		void IProxy.InitializeProxyContext(IInterceptor interceptor, ProxyContext context)
+		{
+			Interceptor = interceptor;
+			_proxyContext = context;
 		}
 
 		/// <summary>
@@ -68,8 +66,20 @@
 		/// </summary>
 		/// <returns>Type.</returns>
 		Type IProxy.GetTargetType()
-        {
-            return TargetType;
-        }
+		{
+			return TargetType;
+		}
+	}
+
+	/// <inheritdoc />
+	public abstract class ProxyBase<T> : ProxyBase, IProxy<T> where T : class
+    {
+		/// <summary>
+		/// Initializes a new instance of the <see cref="ProxyBase{T}"/> class.
+		/// </summary>
+		public ProxyBase()
+		{
+			TargetType = typeof(T);
+		}
     }
 }

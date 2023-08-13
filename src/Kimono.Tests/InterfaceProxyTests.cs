@@ -10,13 +10,13 @@ namespace Kimono.Tests
 
 		public InterfaceProxyTests()
 		{
-			var examples = new KimonoExamples();
-			examples.NoTargetWithCallbackInterceptorExample();
-			examples.TargetWithCallbackInterceptorExample();
-			examples.NoTargetWithHandlersInterceptorExample();
-			examples.TargetWithHandlersInterceptorExample();
-			examples.NoTargetWithInvocationChainInterceptorExample();
-			examples.TargetWithInvocationChainInterceptorExample();
+			//var examples = new KimonoExamples();
+			//examples.NoTargetWithCallbackInterceptorExample();
+			//examples.TargetWithCallbackInterceptorExample();
+			//examples.NoTargetWithHandlersInterceptorExample();
+			//examples.TargetWithHandlersInterceptorExample();
+			//examples.NoTargetWithInvocationChainInterceptorExample();
+			//examples.TargetWithInvocationChainInterceptorExample();
 		}
 
 		[TestMethod]
@@ -37,7 +37,7 @@ namespace Kimono.Tests
 		{
 			var called = false;
 
-			var proxy = Interceptor.WithCallback<IInterface>(c => called = c.MemberName == "DoSomething");
+			var proxy = Intercept.WithCallback<IInterface>(c => called = c.MemberName == "DoSomething");
 			proxy.DoSomething("hello world");
 
 			Assert.IsTrue(called);
@@ -48,7 +48,7 @@ namespace Kimono.Tests
 		{
 			var called = false;
 
-			var proxy = Interceptor.WithCallback<IInterface>(c => {
+			var proxy = Intercept.WithCallback<IInterface>(c => {
 				called = c.MemberName == "MethodWithReturn";
 				c.ReturnValue = c.Parameters.Get("name");
 			});

@@ -12,7 +12,7 @@
         /// </summary>
         /// <param name="target">The target.</param>
         /// <param name="memberInvoked"></param>
-        public TargetedCallbackInterceptor(T target, Action<IInvocationContext> memberInvoked) : base(memberInvoked)
+        public TargetedCallbackInterceptor(T target, InvocationAction memberInvoked) : base(memberInvoked)
         {
             Target = target;
         }

@@ -1,12 +1,13 @@
 ﻿using System.Globalization;
 using System.Reflection;
+using Kimono.Proxies;
 
 namespace Kimono
 {
-	/// <summary>
-	/// Class Constants.
-	/// </summary>
-	internal static class Constants
+    /// <summary>
+    /// Class Constants.
+    /// </summary>
+    internal static class Constants
     {
 		/// <summary>
 		/// Gets the current culture.
@@ -27,7 +28,7 @@ namespace Kimono
 		/// <summary>
 		/// The assembly and type name format
 		/// </summary>
-		public const string AssemblyAndTypeNameFormat = "Kimono.Proxies.{0}";
+		public const string AssemblyAndTypeNameFormat = "Kimono-DyamicProxies.{0}";
 
 		/// <summary>
 		/// The invoke method name
@@ -82,7 +83,11 @@ namespace Kimono
 		/// <summary>
 		/// The kimono context type
 		/// </summary>
-		public static readonly Type KimonoContextType = typeof(ProxyContext);
+		public static readonly Type ProxyContextType = typeof(ProxyContext);
+		/// <summary>
+		/// The disposable type
+		/// </summary>
+		public static readonly Type DisposableType = typeof(IDisposable);
 
 		/// <summary>
 		/// The empty object array method
@@ -90,14 +95,16 @@ namespace Kimono
 		public static readonly MethodInfo EmptyObjectArrayMethod = EmptyArrayMethod(ObjectType);
 
 		/// <summary>
-		/// The get type from handle method
-		/// </summary>
-		public static readonly MethodInfo GetTypeFromHandleMethod = TypeType.GetMethod("GetTypeFromHandle", BindingFlags.Static | BindingFlags.Public)!;
-
-		/// <summary>
 		/// The method base type get current method
 		/// </summary>
 		public static readonly MethodInfo MethodBaseTypeGetCurrentMethod = MethodBaseType.GetMethod("GetCurrentMethod", BindingFlags.Static | BindingFlags.Public)!;
+
+		/// <summary>
+		/// Gets the proxy type handle method call method.
+		/// </summary>
+		/// <param name="genericTypeArg">The generic type argument.</param>
+		/// <returns>MethodInfo.</returns>
+		public static MethodInfo GetProxyTypeHandleMethodCallMethod = ProxyType.GetMethod("HandleMethodCall", BindingFlags.Instance | BindingFlags.NonPublic)!;
 
 		/// <summary>
 		/// Empties the array method.
@@ -105,14 +112,6 @@ namespace Kimono
 		/// <param name="genericTypeArg">The generic type argument.</param>
 		/// <returns>MethodInfo.</returns>
 		public static MethodInfo EmptyArrayMethod(Type genericTypeArg) => ArrayType.GetMethod("Empty", BindingFlags.Static | BindingFlags.Public)!.MakeGenericMethod(genericTypeArg)!;
-
-		/// <summary>
-		/// Gets the proxy type handle method call method.
-		/// </summary>
-		/// <param name="genericTypeArg">The generic type argument.</param>
-		/// <returns>MethodInfo.</returns>
-		public static MethodInfo GetProxyTypeHandleMethodCallMethod(Type genericTypeArg) =>
-            ProxyType.MakeGenericType(genericTypeArg).GetMethod("HandleMethodCall", BindingFlags.Instance | BindingFlags.NonPublic)!;
 
 		/// <summary>
 		/// Formats the specified format provider.

@@ -1,12 +1,14 @@
-﻿namespace Kimono.Internal
+﻿using Kimono.Proxies;
+
+namespace Kimono.Internal
 {
-	/// <summary>
-	/// Class ProxyGenerator.
-	/// Implements the <see cref="Kimono.IProxyGenerator{T}" />
-	/// </summary>
-	/// <typeparam name="T"></typeparam>
-	/// <seealso cref="Kimono.IProxyGenerator{T}" />
-	internal sealed class ProxyGenerator<T> : IProxyGenerator<T> where T : class
+    /// <summary>
+    /// Class ProxyGenerator.
+    /// Implements the <see cref="Proxies.IProxyGenerator{T}" />
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <seealso cref="Proxies.IProxyGenerator{T}" />
+    internal sealed class ProxyGenerator<T> : IProxyGenerator<T> where T : class
 	{
 		/// <summary>
 		/// The proxy context

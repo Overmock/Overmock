@@ -1,19 +1,20 @@
 ﻿using System.Reflection;
 using System.Reflection.Emit;
+using Kimono.Proxies;
 
 namespace Kimono.Internal
 {
-	/// <summary>
-	/// Class InterfaceProxyFactory.
-	/// Implements the <see cref="Kimono.ProxyFactory" />
-	/// </summary>
-	/// <seealso cref="Kimono.ProxyFactory" />
-	internal sealed class InterfaceProxyFactory : ProxyFactory
+    /// <summary>
+    /// Class InterfaceProxyFactory.
+    /// Implements the <see cref="Proxies.ProxyFactory" />
+    /// </summary>
+    /// <seealso cref="Proxies.ProxyFactory" />
+    internal sealed class InterfaceProxyFactory : ProxyFactory
     {
 		/// <summary>
 		/// The kimono attribute constructor
 		/// </summary>
-		private static readonly ConstructorInfo KimonoAttributeConstructor = typeof(KimonoAttribute).GetConstructors().First();
+		private static readonly ConstructorInfo _kimonoAttributeConstructor = typeof(KimonoAttribute).GetConstructors().First();
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="InterfaceProxyFactory"/> class.
@@ -191,7 +192,7 @@ namespace Kimono.Internal
 			var methods = GetMethods(interfaceType);
 			var properties = interfaceType.GetProperties().AsEnumerable();
 
-			foreach (Type type in interfaceType.GetInterfaces())
+			foreach (Type type in interfaceType.GetInterfaces().Where(i => i != Constants.DisposableType))
 			{
 				methods = AddMethodsRecursive(context, type).Concat(methods);
 				properties = AddPropertiesRecursive(context, type).Concat(properties);
@@ -280,11 +281,11 @@ namespace Kimono.Internal
 				);
 
                 methodBuilder.SetCustomAttribute(new CustomAttributeBuilder(
-                    KimonoAttributeConstructor,
+                    _kimonoAttributeConstructor,
                     new object[] { methodId }
                 ));
 
-                context.ProxyContext.Add(methodId, new RuntimeContext(method,
+                context.ProxyContext.Add(new RuntimeContext(method,
 					methodInfo.GetParameters().Select(p => new RuntimeParameter(p.Name!, type: p.ParameterType)))
                 );
             }
@@ -413,7 +414,7 @@ namespace Kimono.Internal
                 emitter.EmitCall(OpCodes.Call, Constants.EmptyObjectArrayMethod, null);
             }
 
-            emitter.EmitCall(OpCodes.Call, Constants.GetProxyTypeHandleMethodCallMethod(context.Interceptor.TargetType), null);
+            emitter.EmitCall(OpCodes.Call, Constants.GetProxyTypeHandleMethodCallMethod, null);
 
             if (returnIsNotVoid)
             {
@@ -456,11 +457,11 @@ namespace Kimono.Internal
 					var methodBuilder = CreateMethod(context, property.Method, methodId);
 
 					methodBuilder.SetCustomAttribute(new CustomAttributeBuilder(
-                        KimonoAttributeConstructor,
+                        _kimonoAttributeConstructor,
 						new object[] { methodId }
 					));
 
-					context.ProxyContext.Add(methodId, new RuntimeContext(
+					context.ProxyContext.Add(new RuntimeContext(
                         property,
 						Enumerable.Empty<RuntimeParameter>())
 					);
@@ -472,11 +473,11 @@ namespace Kimono.Internal
 					var methodBuilder = CreateMethod(context, property.Method, methodId);
 
 					methodBuilder.SetCustomAttribute(new CustomAttributeBuilder(
-						KimonoAttributeConstructor,
+						_kimonoAttributeConstructor,
 						new object[] { methodId.ToString(Constants.CurrentCulture) }
 					));
 
-					context.ProxyContext.Add(methodId, new RuntimeContext(
+					context.ProxyContext.Add(new RuntimeContext(
 						property,
 						Enumerable.Empty<RuntimeParameter>())
 					);
@@ -486,9 +487,9 @@ namespace Kimono.Internal
 
 		/// <summary>
 		/// Class ProxyBuilderContext.
-		/// Implements the <see cref="Kimono.ProxyFactory.IProxyBuilderContext" />
+		/// Implements the <see cref="ProxyFactory.IProxyBuilderContext" />
 		/// </summary>
-		/// <seealso cref="Kimono.ProxyFactory.IProxyBuilderContext" />
+		/// <seealso cref="ProxyFactory.IProxyBuilderContext" />
 		private sealed class ProxyBuilderContext : IProxyBuilderContext
 		{
 			/// <summary>

@@ -1,13 +1,14 @@
 ﻿using System.Reflection;
+using Kimono.Proxies;
 
 namespace Kimono.Internal
 {
-	/// <summary>
-	/// Class ProxyMember.
-	/// Implements the <see cref="Kimono.IProxyMember" />
-	/// </summary>
-	/// <seealso cref="Kimono.IProxyMember" />
-	public class ProxyMember : IProxyMember
+    /// <summary>
+    /// Class ProxyMember.
+    /// Implements the <see cref="Proxies.IProxyMember" />
+    /// </summary>
+    /// <seealso cref="Proxies.IProxyMember" />
+    public class ProxyMember : IProxyMember
 	{
 		/// <summary>
 		/// The delegate

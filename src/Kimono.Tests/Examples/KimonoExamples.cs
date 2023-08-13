@@ -5,7 +5,7 @@ namespace Kimono.Tests.Examples
 	{
 		public void NoTargetWithCallbackInterceptorExample()
 		{
-			var interceptor = Interceptor.WithCallback<IRepository>(context =>
+			var interceptor = Intercept.WithCallback<IRepository>(context =>
 			{
 				if (context.MemberName == "Baz")
 				{
@@ -22,7 +22,7 @@ namespace Kimono.Tests.Examples
 		}
 		public void TargetWithCallbackInterceptorExample()
 		{
-			var interceptor = Interceptor.TargetedWithCallback<IRepository, Repository>(new Repository(), context =>
+			var interceptor = Intercept.TargetedWithCallback<IRepository, Repository>(new Repository(), context =>
 			{
 				context.InvokeTarget();
 
@@ -39,19 +39,19 @@ namespace Kimono.Tests.Examples
 		}
 		public void NoTargetWithHandlersInterceptorExample()
 		{
-			var interceptor = Interceptor.WithHandlers<IRepository>(new BazReturnInvocationHandler());
+			var interceptor = Intercept.WithHandlers<IRepository>(new BazReturnInvocationHandler());
 
 			interceptor.Save(new Model { Id = 20 });
 		}
 		public void TargetWithHandlersInterceptorExample()
 		{
-			var interceptor = Interceptor.TargetedWithHandlers<IRepository, Repository>(new Repository(), new BazReturnInvocationHandler());
+			var interceptor = Intercept.TargetedWithHandlers<IRepository, Repository>(new Repository(), new BazReturnInvocationHandler());
 
 			interceptor.Save(new Model { Id = 20 });
 		}
 		public void NoTargetWithInvocationChainInterceptorExample()
 		{
-			var interceptor = Interceptor.TargetedWithInovcationChain<IRepository, Repository>(new Repository(), builder =>
+			var interceptor = Intercept.TargetedWithInovcationChain<IRepository, Repository>(new Repository(), builder =>
 			{
 				builder.Add((next, context) =>
 				{
@@ -74,7 +74,7 @@ namespace Kimono.Tests.Examples
 		}
 		public void TargetWithInvocationChainInterceptorExample()
 		{
-			var interceptor = Interceptor.WithInovcationChain<IRepository>(builder =>
+			var interceptor = Intercept.WithInovcationChain<IRepository>(builder =>
 			{
 				builder.Add((next, context) =>
 				{

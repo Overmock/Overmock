@@ -1,12 +1,13 @@
-﻿using Kimono.Runtime;
+﻿using Kimono.Proxies;
+using Kimono.Runtime;
 using System.Reflection;
 
 namespace Kimono
 {
-	/// <summary>
-	/// Class InvocationContext.
-	/// </summary>
-	public class InvocationContext : IInvocationContext
+    /// <summary>
+    /// Class InvocationContext.
+    /// </summary>
+    public class InvocationContext : IInvocationContext
 	{
 		private readonly Func<object, object[]?, object?> _invokeTargetHandler;
 		private readonly object[] _arguments;
@@ -112,12 +113,7 @@ namespace Kimono
 		/// <returns>System.Nullable&lt;System.Object&gt;.</returns>
 		internal object? GetReturnTypeDefaultValue()
 		{
-			if (_defaultReturnValue == null)
-			{
-				_defaultReturnValue = DefaultReturnValueCache.GetDefaultValue(Method.ReturnType);
-			}
-
-			return _defaultReturnValue;
+			return _defaultReturnValue ??= DefaultReturnValueCache.GetDefaultValue(Method.ReturnType);
 		}
 
 		/// <summary>
