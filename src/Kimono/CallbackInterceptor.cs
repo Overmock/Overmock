@@ -1,18 +1,4 @@
-﻿// ***********************************************************************
-// Assembly         : Kimono
-// Author           : sbaker
-// Created          : 07-30-2023
-//
-// Last Modified By : sbaker
-// Last Modified On : 08-10-2023
-// ***********************************************************************
-// <copyright file="TypeInterceptor.cs" company="Kimono">
-//     Copyright (c) . All rights reserved.
-// </copyright>
-// <summary></summary>
-// ***********************************************************************
-
-namespace Kimono
+﻿namespace Kimono
 {
 	/// <summary>
 	/// Class TypeInterceptor.

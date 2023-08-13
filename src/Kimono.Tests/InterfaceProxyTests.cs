@@ -1,4 +1,5 @@
 using Kimono;
+using Kimono.Tests.Examples;
 using Kimono.Tests.ProxyMembers;
 
 namespace Kimono.Tests
@@ -7,6 +8,18 @@ namespace Kimono.Tests
 	public class InterfaceProxyTests
 	{
 		private IInterface _interface = new InterfaceImpl();
+
+		public InterfaceProxyTests()
+		{
+			// TODO: Turn the below in to unit tests.
+			//KimonoExamples examples = new KimonoExamples();
+			//examples.NoTargetWithHandlersInterceptorExample();
+			//examples.TargetWithHandlersInterceptorExample();
+			//examples.NoTargetWithCallbackInterceptorExample();
+			//examples.TargetWithHandlersInterceptorExample();
+			//examples.TargetWithInvocationChainInterceptorExample();
+			//examples.NoTargetWithInvocationChainInterceptorExample();
+		}
 
 		[TestMethod]
 		public void ProxyCallsMemberInvokedForMethod()
@@ -26,7 +39,7 @@ namespace Kimono.Tests
 		{
 			var called = false;
 
-			var proxy = Interceptor.WithAction<IInterface>(c => called = c.MemberName == "DoSomething");
+			var proxy = Interceptor.WithCallback<IInterface>(c => called = c.MemberName == "DoSomething");
 			proxy.DoSomething("hello world");
 
 			Assert.IsTrue(called);
@@ -37,7 +50,7 @@ namespace Kimono.Tests
 		{
 			var called = false;
 
-			var proxy = Interceptor.WithAction<IInterface>(c => {
+			var proxy = Interceptor.WithCallback<IInterface>(c => {
 				called = c.MemberName == "MethodWithReturn";
 				c.ReturnValue = c.Parameters.Get("name");
 			});
