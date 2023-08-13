@@ -5,7 +5,7 @@ namespace Kimono
 	/// <summary>
 	/// Interface IProxyMember
 	/// </summary>
-	public interface IProxyMember
+	public interface IProxyMember : IFluentInterface
 	{
 		/// <summary>
 		/// Gets the member.

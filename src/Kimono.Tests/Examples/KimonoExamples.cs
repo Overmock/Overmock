@@ -18,7 +18,7 @@ namespace Kimono.Tests.Examples
 		}
 		public void TargetWithCallbackInterceptorExample()
 		{
-			var interceptorWithCallback = Interceptor.ForTarget<IFoo, Foo>(new Foo(), context => {
+			var interceptorWithCallback = Interceptor.TargetedWithCallback<IFoo, Foo>(new Foo(), context => {
 				if (context.MemberName == "Baz") {
 					context.ReturnValue = new Baz {
 						A = context.Parameters.Get<string>("a"),
@@ -37,13 +37,13 @@ namespace Kimono.Tests.Examples
 		}
 		public void TargetWithHandlersInterceptorExample()
 		{
-			var interceptorWithCallback = Interceptor.ForTargetWithHandlers<IFoo, Foo>(new Foo(), new BazReturnInvocationHandler());
+			var interceptorWithCallback = Interceptor.TargetedWithHandlers<IFoo, Foo>(new Foo(), new BazReturnInvocationHandler());
 
 			interceptorWithCallback.Bar();
 		}
 		public void NoTargetWithInvocationChainInterceptorExample()
 		{
-			var interceptorWithCallback = Interceptor.ForTargetWithInovcationChain<IFoo, Foo>(new Foo(), builder => {
+			var interceptorWithCallback = Interceptor.TargetedWithInovcationChain<IFoo, Foo>(new Foo(), builder => {
 				builder.Add((next, context) => {
 					if (context.MemberName == "Baz") {
 						context.ReturnValue = new Baz {
@@ -92,7 +92,7 @@ namespace Kimono.Tests.Examples
     {
         void Bar();
 
-        Baz Baz(string  a, string b);
+        Baz Baz(string a, string b);
     }
 	public class Foo : IFoo
 	{

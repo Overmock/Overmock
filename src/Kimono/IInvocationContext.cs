@@ -10,7 +10,7 @@ namespace Kimono
 	/// <summary>
 	/// Represents a member invocation.
 	/// </summary>
-	public interface IInvocationContext
+	public interface IInvocationContext : IFluentInterface
 	{
 		/// <summary>
 		/// Gets the interceptor.

@@ -3,7 +3,7 @@
 	/// <summary>
 	/// An interface to handle member invocations
 	/// </summary>
-	public interface IInvocationHandler
+	public interface IInvocationHandler : IFluentInterface
 	{
 		/// <summary>
 		/// Handles member invocations.

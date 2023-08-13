@@ -3,8 +3,8 @@
 	/// <summary>
 	/// Represents a builder for proxies
 	/// </summary>
-	public interface IProxyFactory
-    {
+	public interface IProxyFactory : IFluentInterface
+	{
 		/// <summary>
 		/// Attempts to build the specified Kimono's represented type.
 		/// </summary>

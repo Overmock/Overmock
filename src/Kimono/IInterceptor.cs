@@ -1,9 +1,10 @@
-﻿namespace Kimono
+﻿
+namespace Kimono
 {
 	/// <summary>
 	/// Interface IInterceptor
 	/// </summary>
-	public interface IInterceptor
+	public interface IInterceptor : IFluentInterface
 	{
 		/// <summary>
 		/// Gets the name of the type.

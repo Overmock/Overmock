@@ -76,7 +76,7 @@ namespace Overmock.Benchmarks
 
 		static TypeInterceptorBenchmark()
 		{
-			_kimonoProxy = Interceptor.ForTarget<IBenchmarkTest, BenchmarkTest>(_benchmarkClass, c =>
+			_kimonoProxy = Interceptor.TargetedWithCallback<IBenchmarkTest, BenchmarkTest>(_benchmarkClass, c =>
 			{
 				c.InvokeTarget();
 			});
