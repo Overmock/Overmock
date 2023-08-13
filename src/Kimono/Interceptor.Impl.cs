@@ -78,7 +78,7 @@
 		/// </summary>
 		/// <param name="target">The target.</param>
 		/// <param name="factory">The factory.</param>
-		protected Interceptor(T? target, IProxyFactory? factory = null) : base(typeof(T))
+		protected Interceptor(T? target = null, IProxyFactory? factory = null) : base(typeof(T))
 		{
 			_target = target;
 			_factory = factory ?? ProxyFactoryProvider.Proxy(this);
@@ -111,6 +111,16 @@
 		/// </summary>
 		/// <value>The name of the type.</value>
 		string IInterceptor.TypeName => _targetTypeName;
+
+		/// <summary>
+		/// Performs an implicit conversion from <see cref="Interceptor{T}"/> to <typeparamref name="T"/>.
+		/// </summary>
+		/// <param name="interceptor">The interceptor.</param>
+		/// <returns>The result of the conversion.</returns>
+		public static implicit operator T(Interceptor<T> interceptor)
+		{
+			return interceptor.Proxy;
+		}
 
 		/// <summary>
 		/// Gets the target.

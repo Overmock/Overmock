@@ -1,4 +1,5 @@
 ﻿using Kimono;
+using Kimono.Interceptors;
 using System.Reflection;
 
 namespace Overmock;

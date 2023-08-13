@@ -1,12 +1,13 @@
 ﻿using Microsoft.Extensions.DependencyInjection.Extensions;
 using Kimono;
+using Kimono.Interceptors;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
-	/// <summary>
-	/// Class ServiceCollectionExtensions.
-	/// </summary>
-	public static class ServiceCollectionExtensions
+    /// <summary>
+    /// Class ServiceCollectionExtensions.
+    /// </summary>
+    public static class ServiceCollectionExtensions
 	{
 		/// <summary>
 		/// Adds a scoped <typeparamref name="TImplementation"/> and a scoped <see cref="CallbackInterceptor{TInterface}"/> proxy that wraps the
