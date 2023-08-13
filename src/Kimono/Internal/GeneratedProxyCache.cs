@@ -7,12 +7,14 @@ namespace Kimono.Internal
 	/// Implements the <see cref="Kimono.IProxyCache" />
 	/// </summary>
 	/// <seealso cref="Kimono.IProxyCache" />
-	internal class GeneratedProxyCache : IProxyCache
+	internal sealed class GeneratedProxyCache : IProxyCache
 	{
 		/// <summary>
 		/// The cache
 		/// </summary>
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0090:Use 'new(...)'", Justification = "")]
 		public static readonly ConcurrentDictionary<Type, IProxyGenerator> _cache = new ConcurrentDictionary<Type, IProxyGenerator>();
+
 		/// <summary>
 		/// The proxy cache
 		/// </summary>
@@ -46,7 +48,7 @@ namespace Kimono.Internal
 		/// </summary>
 		/// <param name="type">The type.</param>
 		/// <returns>System.Nullable&lt;IProxyGenerator&gt;.</returns>
-		public IProxyGenerator? Get(Type type)
+		public IProxyGenerator? GetGenerator(Type type)
 		{
 			if (_cache.TryGetValue(type, out var value))
 			{
@@ -74,7 +76,7 @@ namespace Kimono.Internal
 		/// <param name="type">The type.</param>
 		/// <param name="value">The value.</param>
 		/// <returns>IProxyGenerator.</returns>
-		public IProxyGenerator Set<T>(Type type, T value) where T : IProxyGenerator
+		public IProxyGenerator<T> SetGenerator<T>(Type type, IProxyGenerator<T> value) where T : class
 		{
 			_cache.TryAdd(type, value);
 

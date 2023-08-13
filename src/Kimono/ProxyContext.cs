@@ -1,7 +1,4 @@
-﻿using Kimono.Runtime;
-using System.Reflection;
-
-namespace Kimono
+﻿namespace Kimono
 {
 	/// <summary>
 	/// Class ProxyContext.

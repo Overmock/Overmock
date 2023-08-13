@@ -13,7 +13,7 @@ namespace Overmock.Examples
 		public bool Success => ErrorDetails == null;
 
 		[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-		public string? ErrorDetails { get; set; }
+		public string ErrorDetails { get; set; }
 
 		public static implicit operator Response(Exception obj) => new(obj.Message);
 	}
@@ -24,12 +24,12 @@ namespace Overmock.Examples
 		{
 		}
 
-		protected Response(T? obj) => Result = obj;
+		protected Response(T obj) => Result = obj;
 
 		[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-		public T? Result { get; set; }
+		public T Result { get; set; }
 
-		public static implicit operator Response<T>(T? obj) => new(obj);
+		public static implicit operator Response<T>(T obj) => new(obj);
 
 		public static implicit operator Response<T>(Exception obj) => new(obj.Message);
 	}
@@ -41,7 +41,7 @@ namespace Overmock.Examples
 		protected EnumerableResponse(List<T> results) => Results = results;
 
 		[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-		public IEnumerable<T>? Results { get; set; }
+		public IEnumerable<T> Results { get; set; }
 
 		public static implicit operator EnumerableResponse<T>(List<T> results) => new(results);
 

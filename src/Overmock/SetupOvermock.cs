@@ -66,7 +66,7 @@
 	/// <typeparam name="T"></typeparam>
 	/// <seealso cref="Overmock.SetupOvermock" />
 	/// <seealso cref="Overmock.ISetup{T}" />
-	internal class SetupOvermock<T> : SetupOvermock, ISetup<T> where T : class
+	internal sealed class SetupOvermock<T> : SetupOvermock, ISetup<T> where T : class
     {
 		/// <summary>
 		/// Initializes a new instance of the <see cref="SetupOvermock{T}"/> class.

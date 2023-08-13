@@ -67,22 +67,10 @@
 	/// <seealso cref="Kimono.IInterceptor{T}" />
 	public abstract class Interceptor<T> : Interceptor, IInterceptor<T> where T : class
 	{
-		/// <summary>
-		/// The target type name
-		/// </summary>
-		private static readonly string TargetTypeName = $"{typeof(T).Name}_{Guid.NewGuid():N}";
+		private static readonly string _targetTypeName = $"{typeof(T).Name}_{Guid.NewGuid():N}";
 
-		/// <summary>
-		/// The factory
-		/// </summary>
 		private readonly IProxyFactory _factory;
-		/// <summary>
-		/// The target
-		/// </summary>
 		private T? _target;
-		/// <summary>
-		/// The proxy
-		/// </summary>
 		private T? _proxy;
 
 		/// <summary>
@@ -122,7 +110,7 @@
 		/// Gets the name of the type.
 		/// </summary>
 		/// <value>The name of the type.</value>
-		string IInterceptor.TypeName => TargetTypeName;
+		string IInterceptor.TypeName => _targetTypeName;
 
 		/// <summary>
 		/// Gets the target.
@@ -142,12 +130,9 @@
 		{
 			var proxyGenaerator = _factory.Create<T>(this);
 
-			if (proxyGenaerator == null)
-			{
-				throw new InvalidOperationException($"Generator not created by ProxyFactory. {TargetType}");
-			}
-
-			return proxyGenaerator.GenerateProxy(this);
+			return proxyGenaerator == null
+				? throw new InvalidOperationException($"Generator not created by ProxyFactory. {TargetType}")
+				: proxyGenaerator.GenerateProxy(this);
 		}
 	}
 }

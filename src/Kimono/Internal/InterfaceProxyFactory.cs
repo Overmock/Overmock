@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using System.Reflection;
+﻿using System.Reflection;
 using System.Reflection.Emit;
 
 namespace Kimono.Internal
@@ -9,7 +8,7 @@ namespace Kimono.Internal
 	/// Implements the <see cref="Kimono.ProxyFactory" />
 	/// </summary>
 	/// <seealso cref="Kimono.ProxyFactory" />
-	internal class InterfaceProxyFactory : ProxyFactory
+	internal sealed class InterfaceProxyFactory : ProxyFactory
     {
 		/// <summary>
 		/// The kimono attribute constructor
@@ -98,7 +97,7 @@ namespace Kimono.Internal
 
             var proxyGenerator = new ProxyGenerator<T>(context.ProxyContext, dynamicType, CreateProxy);
 
-			Cache.Set(context.Interceptor.TargetType, proxyGenerator);
+			Cache.SetGenerator(context.Interceptor.TargetType, proxyGenerator);
 
             return proxyGenerator;
         }
@@ -474,7 +473,7 @@ namespace Kimono.Internal
 
 					methodBuilder.SetCustomAttribute(new CustomAttributeBuilder(
 						KimonoAttributeConstructor,
-						new object[] { methodId.ToString() }
+						new object[] { methodId.ToString(Constants.CurrentCulture) }
 					));
 
 					context.ProxyContext.Add(methodId, new RuntimeContext(
@@ -490,7 +489,7 @@ namespace Kimono.Internal
 		/// Implements the <see cref="Kimono.ProxyFactory.IProxyBuilderContext" />
 		/// </summary>
 		/// <seealso cref="Kimono.ProxyFactory.IProxyBuilderContext" />
-		private class ProxyBuilderContext : IProxyBuilderContext
+		private sealed class ProxyBuilderContext : IProxyBuilderContext
 		{
 			/// <summary>
 			/// The method counter

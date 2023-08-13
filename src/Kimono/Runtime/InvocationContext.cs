@@ -19,11 +19,7 @@ namespace Kimono
 		/// <summary>
 		/// The target
 		/// </summary>
-		private readonly object _target;
-		/// <summary>
-		/// The is property
-		/// </summary>
-		private readonly bool _isProperty;
+		private readonly object? _target;
 
 		/// <summary>
 		/// The default return value
@@ -50,7 +46,6 @@ namespace Kimono
 			ProxiedMember = runtimeContext.ProxiedMember;
 			
 			var member = runtimeContext.ProxiedMember.Member;
-			_isProperty = member is PropertyInfo;
 
 			Member = member;
 		}

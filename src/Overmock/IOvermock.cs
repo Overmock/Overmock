@@ -6,7 +6,7 @@ namespace Overmock
 	/// <summary>
 	/// An interface that represents an overmocked type.
 	/// </summary>
-	/// <seealso cref="Overmock.Mocking.IVerifiable" />
+	/// <seealso cref="IVerifiable" />
 	public interface IOvermock : IVerifiable
 	{
 		/// <summary>
@@ -15,6 +15,7 @@ namespace Overmock
 		/// <typeparam name="TMethod">The type of the method.</typeparam>
 		/// <param name="method">The method.</param>
 		/// <returns>TMethod.</returns>
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		TMethod AddMethod<TMethod>(TMethod method) where TMethod : IMethodCall;
 
 		/// <summary>
@@ -23,35 +24,8 @@ namespace Overmock
 		/// <typeparam name="TProperty">The type of the property.</typeparam>
 		/// <param name="propertyCall">The property.</param>
 		/// <returns>TProperty.</returns>
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		TProperty AddProperty<TProperty>(TProperty propertyCall) where TProperty : IPropertyCall;
-
-		/// <summary>
-		/// Gets the name of the type.
-		/// </summary>
-		/// <value>The name of the type.</value>
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		string TypeName { get; }
-
-		/// <summary>
-		/// Gets the type of the compiled.
-		/// </summary>
-		/// <returns>System.Nullable&lt;Type&gt;.</returns>
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		Type? GetCompiledType();
-
-		/// <summary>
-		/// Sets the type of the compiled mock.
-		/// </summary>
-		/// <param name="assembly">The assembly.</param>
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		void SetCompiledType(Assembly assembly);
-
-		/// <summary>
-		/// Sets the type of the compiled mock.
-		/// </summary>
-		/// <param name="compiledType">The compiled Type.</param>
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		void SetCompiledType(Type compiledType);
 
 		/// <summary>
 		/// Gets the overmocked methods.

@@ -6,7 +6,7 @@ namespace Overmock.Mocking.Internal
 	/// Implements the <see cref="Overmock.Mocking.IOverride" />
 	/// </summary>
 	/// <seealso cref="Overmock.Mocking.IOverride" />
-	internal class ValueOverride : IOverride
+	internal sealed class ValueOverride : IOverride
 	{
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ValueOverride"/> class.

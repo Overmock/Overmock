@@ -5,7 +5,7 @@ namespace Kimono
 	/// An <see cref="Kimono.Interceptor{T}" /> targeting an object.
 	/// </summary>
 	/// <typeparam name="T"></typeparam>
-	/// <seealso cref="Kimono.Interceptor{T}" />
+	/// <seealso cref="Interceptor{T}" />
 	public class TargetedCallbackInterceptor<T> : CallbackInterceptor<T> where T : class
 	{
 		/// <summary>
@@ -13,7 +13,6 @@ namespace Kimono
 		/// </summary>
 		/// <param name="target">The target.</param>
 		/// <param name="memberInvoked"></param>
-		/// <param name="factory">The factory.</param>
 		public TargetedCallbackInterceptor(T target, Action<IInvocationContext> memberInvoked) : base(memberInvoked)
 		{
 			Target = target;

@@ -1,8 +1,6 @@
-﻿using Overmock.Tests.Mocks;
-
-namespace Overmock.Tests.Examples
+﻿namespace Overmock.Tests.Examples
 {
-    [TestClass]
+	[TestClass]
     public class ExampleTestsForReadMe
     {
         public class Model

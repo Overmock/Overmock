@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections;
 
 namespace Kimono
 {
 	/// <summary>
-	/// Class Parameters.
-	/// Implements the <see cref="System.Collections.Generic.IReadOnlyList{System.Object}" />
+	/// Represents a colleciton of method parameters.
 	/// </summary>
-	/// <seealso cref="System.Collections.Generic.IReadOnlyList{System.Object}" />
 	public class Parameters : IReadOnlyList<object>
 	{
 		/// <summary>
@@ -78,7 +74,7 @@ namespace Kimono
 
 			if (param.Value == null)
 			{
-				throw new IndexOutOfRangeException(name);
+				throw new KeyNotFoundException(name);
 			}
 
 			return param.Value;

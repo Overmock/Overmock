@@ -5,7 +5,7 @@
 	/// Implements the <see cref="Kimono.ProxyFactory" />
 	/// </summary>
 	/// <seealso cref="Kimono.ProxyFactory" />
-	internal class DelegateProxyFactory : ProxyFactory
+	internal sealed class DelegateProxyFactory : ProxyFactory
     {
 		/// <summary>
 		/// Initializes a new instance of the <see cref="DelegateProxyFactory"/> class.

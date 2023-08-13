@@ -1,7 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Overmock.Tests.Mocks.Methods.Async;
-
-namespace Overmock.Tests
+﻿namespace Overmock.Tests
 {
 	public partial class AsyncMethodsWithNoParamsTests
 	{

@@ -1,5 +1,3 @@
-using Kimono;
-using Kimono.Tests.Examples;
 using Kimono.Tests.ProxyMembers;
 
 namespace Kimono.Tests

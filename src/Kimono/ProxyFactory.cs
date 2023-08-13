@@ -1,5 +1,4 @@
-﻿using Kimono.Internal;
-using System.Reflection;
+﻿using System.Reflection;
 using System.Reflection.Emit;
 
 namespace Kimono
@@ -34,7 +33,7 @@ namespace Kimono
 		/// <returns>IProxyGenerator&lt;T&gt;.</returns>
 		public IProxyGenerator<T> Create<T>(IInterceptor<T> interceptor) where T : class
 		{
-			var generator = (IProxyGenerator<T>)Cache.Get(interceptor.TargetType)!;
+			var generator = (IProxyGenerator<T>)Cache.GetGenerator(interceptor.TargetType)!;
 
 			if (generator == null)
 			{

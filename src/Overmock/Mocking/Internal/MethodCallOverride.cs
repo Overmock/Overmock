@@ -6,7 +6,7 @@ namespace Overmock.Mocking.Internal
 	/// Implements the <see cref="Overmock.Mocking.IOverride" />
 	/// </summary>
 	/// <seealso cref="Overmock.Mocking.IOverride" />
-	internal class MethodCallOverride : IOverride
+	internal sealed class MethodCallOverride : IOverride
 	{
 		/// <summary>
 		/// The call count

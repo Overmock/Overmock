@@ -6,7 +6,7 @@
 	/// </summary>
 	/// <typeparam name="T"></typeparam>
 	/// <seealso cref="Kimono.IProxyGenerator{T}" />
-	internal class ProxyGenerator<T> : IProxyGenerator<T> where T : class
+	internal sealed class ProxyGenerator<T> : IProxyGenerator<T> where T : class
 	{
 		/// <summary>
 		/// The proxy context

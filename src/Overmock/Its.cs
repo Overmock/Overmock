@@ -70,14 +70,12 @@
 
 	/// <summary>
 	/// Class Any.
-	/// Implements the <see cref="Overmock.Value{T}" />
-	/// Implements the <see cref="Overmock.IAny{T}" />
-	/// Implements the <see cref="System.IEquatable{Overmock.Any{T}}" />
+	/// Implements the <see cref="Value{T}" />
+	/// Implements the <see cref="IAny{T}" />
 	/// </summary>
 	/// <typeparam name="T"></typeparam>
-	/// <seealso cref="Overmock.Value{T}" />
-	/// <seealso cref="Overmock.IAny{T}" />
-	/// <seealso cref="System.IEquatable{Overmock.Any{T}}" />
+	/// <seealso cref="Value{T}" />
+	/// <seealso cref="IAny{T}" />
 	public class Any<T> : Value<T>, IAny<T>, IEquatable<Any<T>>
 	{
 		/// <summary>
@@ -89,7 +87,7 @@
 #pragma warning restore CA1000 // Do not declare static members on generic types
 
 		/// <summary>
-		/// Performs an implicit conversion from <see cref="Any{T}"/> to <see cref="T"/>.
+		/// Performs an implicit conversion from <see cref="Any{T}"/> to <typeparamref name="T"/>.
 		/// </summary>
 		/// <param name="any">Any.</param>
 		/// <returns>The result of the conversion.</returns>
@@ -106,26 +104,34 @@
 		/// </summary>
 		/// <param name="other">The other.</param>
 		/// <returns><c>true</c> if XXXX, <c>false</c> otherwise.</returns>
-		public bool Equals(Its? other)
-		{
-			return true;
-		}
-
-		/// <summary>
-		/// Equalses the specified other.
-		/// </summary>
-		/// <param name="other">The other.</param>
-		/// <returns><c>true</c> if XXXX, <c>false</c> otherwise.</returns>
 		/// <exception cref="System.NotImplementedException"></exception>
 		public override bool Equals(T? other)
 		{
-			throw new NotImplementedException();
+			return true;
 		}
 
 		/// <inheritdoc />
 		public bool Equals(Any<T>? other)
 		{
 			return true;
+		}
+
+		/// <inheritdoc/>
+		public override bool Equals(object? obj)
+		{
+			return base.Equals(obj);
+		}
+
+		/// <inheritdoc/>
+		public override int GetHashCode()
+		{
+			return base.GetHashCode();
+		}
+
+		/// <inheritdoc/>
+		public override string? ToString()
+		{
+			return base.ToString();
 		}
 
 		/// <summary>
@@ -177,7 +183,7 @@
 		/// Gets the value.
 		/// </summary>
 		/// <value>The value.</value>
-		T IAny<T>.Value => this;
+		T IAny<T>.Value => _value!;
 
 		/// <summary>
 		/// Equalses the specified other.

@@ -23,29 +23,26 @@ namespace Overmock
 		/// Signals the Overmock to expect any invocation.
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
-		/// <param name="value">if set to <c>true</c> [value].</param>
 		/// <returns>IOvermock&lt;T&gt;.</returns>
-		public static IOvermock<T> ExpectAnyInvocation<T>(bool value = true) where T : class
+		public static IOvermock<T> ExpectAnyInvocation<T>() where T : class
 		{
 			var result = new Overmock<T>();
 
 			_overmocks.Enqueue(result);
 
-			((IExpectAnyInvocation)result).ExpectAny(value);
+			((IExpectAnyInvocation)result).ExpectAny(true);
 
 			return result;
 		}
-
 
 		/// <summary>
 		/// Sets up the specified <typeparamref name="T" /> type with overmock using the constructor arguments.
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
-		/// <param name="argsProvider">The arguments provider.</param>
 		/// <returns>An object used to configure overmocks</returns>
-		public static IOvermock<T> Interface<T>(Action<SetupArgs>? argsProvider = null) where T : class
+		public static IOvermock<T> Interface<T>() where T : class
 		{
-			var result = new Overmock<T>(argsProvider: argsProvider);
+			var result = new Overmock<T>();
 
 			_overmocks.Enqueue(result);
 

@@ -1,11 +1,6 @@
 ﻿using BenchmarkDotNet.Attributes;
 using Castle.DynamicProxy;
 using Kimono;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Overmock.Benchmarks
 {
@@ -116,7 +111,7 @@ namespace Overmock.Benchmarks
 		[Benchmark]
 		public void Decorator()
 		{
-			_benchmarkClass.VoidNoParams();
+			_benchmarkDecerator.VoidNoParams();
 		}
 
 		[Benchmark]

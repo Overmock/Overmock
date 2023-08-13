@@ -1,9 +1,6 @@
-﻿using Overmock.Tests.Mocks;
-using Overmock.Tests.Mocks.Properties;
-
-namespace Overmock.Tests
+﻿namespace Overmock.Tests
 {
-    public partial class PropertyGetTests
+	public partial class PropertyGetTests
 	{
 		[TestMethod]
 		public void IntPropertyToReturnTest()
