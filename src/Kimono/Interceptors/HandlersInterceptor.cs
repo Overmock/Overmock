@@ -1,21 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Metadata;
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Kimono.Interceptors
 {
-    /// <summary>
-    /// Class HandlersInterceptor.
-    /// Implements the <see cref="Interceptor{T}" />
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <seealso cref="Interceptor{T}" />
-    public class HandlersInterceptor<T> : Interceptor<T> where T : class
+	/// <summary>
+	/// Class HandlersInterceptor.
+	/// Implements the <see cref="Interceptor{T}" />
+	/// </summary>
+	/// <typeparam name="T"></typeparam>
+	/// <seealso cref="Interceptor{T}" />
+	public class HandlersInterceptor<T> : Interceptor<T> where T : class
     {
         private readonly Lazy<IInvocationHandler[]> _interceptorsLazy;
 

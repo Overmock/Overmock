@@ -49,7 +49,7 @@
             var id = 22;
             var wasSaved = false;
             var log = Overmocked.ExpectAnyInvocation<ILog>();
-            var repository = Overmocked.Interface<IRepository>();
+            var repository = Overmocked.Overmock<IRepository>();
 
             repository.Override(r => r.Save(Its.Any<Model>())).ToCall(c =>
             {
@@ -68,7 +68,7 @@
         {
             var expected = "Failed to save";
             var log = Overmocked.ExpectAnyInvocation<ILog>();
-            var repository = Overmocked.Interface<IRepository>();
+            var repository = Overmocked.Overmock<IRepository>();
 
             repository.Override(r => r.Save(Its.Any<Model>())).ToThrow(new Exception(expected));
 

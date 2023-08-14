@@ -1,12 +1,12 @@
 ﻿using Overmock.Tests.Mocks;
 using Overmock.Tests.Mocks.Properties;
 
-namespace Overmock.Tests
+namespace Overmock.Tests.OvermockedMock
 {
     [TestClass]
     public partial class PropertyGetTests
 	{
-		private readonly IOvermock<IPropertiesWithGet> _overmock = Overmocked.Overmock<IPropertiesWithGet>();
+		private readonly IPropertiesWithGet _overmock = Overmocked.For<IPropertiesWithGet>();
 
 		private readonly Model _model1 = new Model();
 		private readonly Model _model2 = new Model();

@@ -59,7 +59,7 @@ namespace Kimono
 
 			var handler = builder.Build();
 
-			return new SingleHandlerInterceptor<TInterface>(handler);
+			return new HandlerInterceptor<TInterface>(handler);
 		}
 	}
 }

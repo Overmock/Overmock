@@ -1,20 +1,38 @@
-﻿namespace Overmock.Tests.OvermockedMock
+namespace Overmock.Tests.OvermockedMock
 {
-	public partial class PropertyGetTests
+	public partial class MethodWithNoParamsTests
 	{
 		[TestMethod]
-		public void IntPropertyToThrowTest()
+		public void VoidMethodWithNoParamsTest()
 		{
 			var exception = new Exception();
 
-			Overmocked.Mock(_overmock, t => t.Int)
+			Overmocked.Mock(_overmock, t => t.VoidMethodWithNoParams())
 				.ToThrow(exception);
-
-			Assert.IsNotNull(_overmock);
 
 			try
 			{
-				var model = _overmock.Int;
+				_overmock.VoidMethodWithNoParams();
+
+				Assert.Fail();
+			}
+			catch (Exception ex)
+			{
+				Assert.AreEqual(exception, ex);
+			}
+		}
+		
+        [TestMethod]
+        public void BoolMethodWithNoParamsTest()
+		{
+			var exception = new Exception();
+
+			Overmocked.Mock(_overmock, t => t.BoolMethodWithNoParams())
+				.ToThrow(exception);
+
+			try
+			{
+				_overmock.BoolMethodWithNoParams();
 
 				Assert.Fail();
 			}
@@ -25,16 +43,16 @@
 		}
 
 		[TestMethod]
-		public void StringPropertyToThrowTest()
+		public void ModelMethodWithNoParamsTest()
 		{
 			var exception = new Exception();
 
-			Overmocked.Mock(_overmock, t => t.String)
+			Overmocked.Mock(_overmock, t => t.ModelMethodWithNoParams())
 				.ToThrow(exception);
 
 			try
 			{
-				var model = _overmock.String;
+				_overmock.ModelMethodWithNoParams();
 
 				Assert.Fail();
 			}
@@ -45,36 +63,16 @@
 		}
 
 		[TestMethod]
-		public void ModelPropertyToThrowTest()
+		public void ListOfModelMethodWithNoParamsTest()
 		{
 			var exception = new Exception();
 
-			Overmocked.Mock(_overmock, t => t.Model)
+			Overmocked.Mock(_overmock, t => t.ListOfModelMethodWithNoParams())
 				.ToThrow(exception);
 
 			try
 			{
-				var model = _overmock.Model;
-
-				Assert.Fail();
-			}
-			catch (Exception ex)
-			{
-				Assert.AreEqual(exception, ex);
-			}
-		}
-
-		[TestMethod]
-		public void ListOfModelPropertyToThrowTest()
-		{
-			var exception = new Exception();
-
-			Overmocked.Mock(_overmock, t => t.ListOfModels)
-				.ToThrow(exception);
-
-			try
-			{
-				var model = _overmock.ListOfModels;
+				_overmock.ListOfModelMethodWithNoParams();
 
 				Assert.Fail();
 			}

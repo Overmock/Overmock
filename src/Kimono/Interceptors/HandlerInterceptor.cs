@@ -8,15 +8,15 @@ namespace Kimono.Interceptors
 	/// </summary>
 	/// <typeparam name="T"></typeparam>
 	/// <seealso cref="Kimono.Interceptor{T}" />
-	public class SingleHandlerInterceptor<T> : Interceptor<T> where T : class
+	public class HandlerInterceptor<T> : Interceptor<T> where T : class
 	{
 		private readonly IInvocationHandler _handler;
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="SingleHandlerInterceptor{T}"/> class.
+		/// Initializes a new instance of the <see cref="HandlerInterceptor{T}"/> class.
 		/// </summary>
 		/// <param name="handler">The handler.</param>
-		public SingleHandlerInterceptor(IInvocationHandler handler)
+		public HandlerInterceptor(IInvocationHandler handler)
 		{
 			_handler = handler;
 		}

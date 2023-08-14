@@ -40,6 +40,7 @@ namespace Overmock
 		/// <returns>IEnumerable&lt;IPropertyCall&gt;.</returns>
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		IEnumerable<IPropertyCall> GetOvermockedProperties();
+        object GetTarget();
     }
 
 	/// <summary>
@@ -54,5 +55,7 @@ namespace Overmock
 		/// </summary>
 		/// <value>The mocked object.</value>
 		T Target { get; }
+
+        bool Equals(Overmock<T>? obj);
     }
 }

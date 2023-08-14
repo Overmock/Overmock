@@ -15,13 +15,13 @@ namespace Overmock.Tests
 		[TestInitialize]
 		public void Initialize()
 		{
-            _testInterface = Overmocked.Interface<IMethodsWithNoParameters>();
+            _testInterface = Overmocked.Overmock<IMethodsWithNoParameters>();
 		}
 
 		[TestMethod]
 		public void MethodWith2Params()
 		{
-			var overmock = Overmocked.Interface<IMethodsWith2Parameters>();
+			var overmock = Overmocked.Overmock<IMethodsWith2Parameters>();
 
 			overmock.Override(p => p.BoolMethodWithStringAndModel(Its.Any<string>(), Its.Any<Model>()))
 				.ToCall(c => c.Get<string>("name"));

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Concurrent;
+using System.Linq.Expressions;
 
 namespace Overmock
 {
@@ -10,7 +11,7 @@ namespace Overmock
 		/// <summary>
 		/// The overmocks
 		/// </summary>
-		private static readonly ConcurrentQueue<IVerifiable> _overmocks = new ConcurrentQueue<IVerifiable>();
+		private static readonly ConcurrentQueue<IOvermock> _overmocks = new ConcurrentQueue<IOvermock>();
 
 		/// <summary>
 		/// Initializes static members of the <see cref="Overmocked"/> class.
@@ -28,8 +29,6 @@ namespace Overmock
 		{
 			var result = new Overmock<T>();
 
-			_overmocks.Enqueue(result);
-
 			((IExpectAnyInvocation)result).ExpectAny(true);
 
 			return result;
@@ -40,19 +39,109 @@ namespace Overmock
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
 		/// <returns>An object used to configure overmocks</returns>
-		public static IOvermock<T> Interface<T>() where T : class
+		public static IOvermock<T> Overmock<T>() where T : class
 		{
-			var result = new Overmock<T>();
+            return new Overmock<T>();
+        }
 
-			_overmocks.Enqueue(result);
+        /// <summary>
+        /// Returns an overmocked <typeparamref name="T" />.
+        /// </summary>
+        /// <typeparam name="T">The type of interface.</typeparam>
+        /// <returns>The overmocked <typeparamref name="T" />.</returns>
+        public static T For<T>() where T : class
+		{
+			return new Overmock<T>();
+        }
 
-			return result;
-		}
+        /// <summary>
+        /// Fors the specified target.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="target">The target.</param>
+        /// <param name="use">The use.</param>
+        /// <returns>ISetup&lt;T&gt;.</returns>
+        public static ISetup<T> Mock<T>(T target, Expression<Action<T>> use) where T : class
+        {
+            Overmock<T>? overmock = null;
 
-		/// <summary>
-		/// Verifies the mocks setup behave as expected.
-		/// </summary>
-		public static void Verify()
+            if (target is Overmock<T> mock)
+            {
+                overmock = mock;
+            }
+
+            if (IsRegistered(target))
+            {
+                overmock = (Overmock<T>)GetRegistration(target)!;
+            }
+
+            if (overmock is null)
+            {
+                overmock = new Overmock<T>();
+            }
+
+            return overmock.Override(use);
+        }
+
+        /// <summary>
+        /// Fors the specified target.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="TReturn">The type of the t return.</typeparam>
+        /// <param name="target">The target.</param>
+        /// <param name="use">The use.</param>
+        /// <returns>ISetup&lt;T&gt;.</returns>
+        public static ISetup<T, TReturn> Mock<T, TReturn>(T target, Expression<Func<T, TReturn>> use) where T : class
+        {
+            Overmock<T>? overmock = null;
+
+            if (target is Overmock<T> mock)
+            {
+                overmock = mock;
+            }
+
+            if (IsRegistered(target))
+            {
+                overmock = (Overmock<T>)GetRegistration(target)!;
+            }
+
+            if (overmock is null)
+            {
+                overmock = new Overmock<T>();
+            }
+
+            return overmock.Override(use);
+        }
+
+        /// <summary>
+        /// Fors the specified target.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="overmock">The overmock.</param>
+        /// <param name="use">The use.</param>
+        /// <returns>ISetup&lt;T&gt;.</returns>
+        public static ISetup<T> Mock<T>(IOvermock<T> overmock, Expression<Action<T>> use) where T : class
+        {
+            return overmock.Override(use);
+        }
+
+        /// <summary>
+        /// Fors the specified target.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="TReturn">The type of the t return.</typeparam>
+        /// <param name="overmock">The overmock.</param>
+        /// <param name="use">The use.</param>
+        /// <returns>ISetup&lt;T&gt;.</returns>
+        public static ISetup<T, TReturn> Mock<T, TReturn>(IOvermock<T> overmock, Expression<Func<T, TReturn>> use) where T : class
+        {
+            return overmock.Override(use);
+        }
+
+        /// <summary>
+        /// Verifies the mocks setup behave as expected.
+        /// </summary>
+        public static void Verify()
 		{
             foreach (var verifiable in _overmocks)
             {
@@ -60,52 +149,34 @@ namespace Overmock
             }
         }
 
-		/// <summary>
-		/// Registers the specified overmock.
-		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <param name="overmock">The overmock.</param>
 		internal static void Register<T>(IOvermock<T> overmock) where T : class
         {
             _overmocks.Enqueue(overmock);
         }
 
-		/// <summary>
-		/// Registers the method.
-		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <param name="overmock">The overmock.</param>
-		/// <param name="method">The method.</param>
-		/// <returns>IMethodCall&lt;T&gt;.</returns>
-		internal static IMethodCall<T> RegisterMethod<T>(IOvermock overmock, IMethodCall<T> method) where T : class
+        internal static bool IsRegistered<T>(T target) where T : class
+        {
+            return _overmocks.Any(o => o.GetTarget() == target);
+        }
+
+        internal static IOvermock? GetRegistration<T>(T target) where T : class
+        {
+            return _overmocks.FirstOrDefault(o => o.GetTarget() == target);
+        }
+
+        internal static IMethodCall<T> RegisterMethod<T>(IOvermock overmock, IMethodCall<T> method) where T : class
 		{
 			return overmock.AddMethod(method);
 		}
 
-		/// <summary>
-		/// Registers the method.
-		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <typeparam name="TReturn">The type of the t return.</typeparam>
-		/// <param name="overmock">The overmock.</param>
-		/// <param name="method">The method.</param>
-		/// <returns>IMethodCall&lt;T, TReturn&gt;.</returns>
 		internal static IMethodCall<T, TReturn> RegisterMethod<T, TReturn>(IOvermock overmock, IMethodCall<T, TReturn> method) where T : class
 		{
 			return overmock.AddMethod(method);
 		}
 
-		/// <summary>
-		/// Registers the property.
-		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <typeparam name="TProperty">The type of the t property.</typeparam>
-		/// <param name="overmock">The overmock.</param>
-		/// <param name="property">The property.</param>
-		/// <returns>IPropertyCall&lt;T, TProperty&gt;.</returns>
 		internal static IPropertyCall<T, TProperty> RegisterProperty<T, TProperty>(IOvermock overmock, IPropertyCall<T, TProperty> property) where T : class
 		{
 			return overmock.AddProperty(property);
 		}
-	}
+    }
 }

@@ -8,11 +8,11 @@ namespace Overmock;
 /// Allows for mocking classes and interfaces.
 /// </summary>
 /// <typeparam name="T">The type going to be mocked.</typeparam>
-public class Overmock<T> : Verifiable<T>, IOvermock<T>, IExpectAnyInvocation where T : class
+public class Overmock<T> : Verifiable<T>, IOvermock<T>, IExpectAnyInvocation, IEquatable<Overmock<T>> where T : class
 {
 	private readonly List<IMethodCall> _methods = new List<IMethodCall>();
 	private readonly List<IPropertyCall> _properties = new List<IPropertyCall>();
-	private readonly CallbackInterceptor<T> _interceptor;
+	private readonly HandlerInterceptor<T> _interceptor;
 	private bool _overrideAll;
 
 	/// <summary>
@@ -26,34 +26,11 @@ public class Overmock<T> : Verifiable<T>, IOvermock<T>, IExpectAnyInvocation whe
 			throw new InvalidOperationException($"Type '{Type.Name}' cannot be a sealed class or enum.");
 		}
 
-		_interceptor = new CallbackInterceptor<T>(TargetMemberInvoked);
+		_interceptor = new HandlerInterceptor<T>(
+            new OvermockInstanceInvocationHandler(() => _overrideAll, () => _methods, () => _properties)
+        );
 
 		Overmocked.Register(this);
-	}
-
-	/// <summary>
-	/// Performs an implicit conversion from <see cref="Overmock{T}"/> to <typeparamref name="T"/>.
-	/// </summary>
-	/// <param name="overmock">The overmock.</param>
-	/// <returns>The result of the conversion.</returns>
-	public static implicit operator T(Overmock<T> overmock)
-	{
-		return overmock.Target;
-	}
-
-	/// <summary>
-	/// Performs an implicit conversion from <typeparamref name="T"/> to <see cref="Overmock{T}"/>.
-	/// </summary>
-	/// <param name="target">The target.</param>
-	/// <returns>The result of the conversion.</returns>
-	public static implicit operator Overmock<T>(T target)
-	{
-		if (target is Overmock<T> overmock)
-		{
-			return overmock;
-		}
-
-		return new Overmock<T>();
 	}
 
 	/// <summary>
@@ -68,8 +45,120 @@ public class Overmock<T> : Verifiable<T>, IOvermock<T>, IExpectAnyInvocation whe
         }
     }
 
-	/// <inheritdoc/>
-	protected override void Verify()
+    /// <summary>
+    /// Implements the == operator.
+    /// </summary>
+    /// <param name="overmock">The overmock.</param>
+    /// <param name="other">The other.</param>
+    /// <returns>The result of the operator.</returns>
+    public static bool operator ==(Overmock<T> overmock, object other)
+    {
+        return overmock.Equals(other);
+    }
+
+    /// <summary>
+    /// Implements the != operator.
+    /// </summary>
+    /// <param name="overmock">The overmock.</param>
+    /// <param name="other">The other.</param>
+    /// <returns>The result of the operator.</returns>
+    public static bool operator !=(Overmock<T> overmock, object other)
+    {
+        return !overmock.Equals(other);
+    }
+
+    /// <summary>
+    /// Implements the == operator.
+    /// </summary>
+    /// <param name="overmock">The overmock.</param>
+    /// <param name="other">The other.</param>
+    /// <returns>The result of the operator.</returns>
+    public static bool operator ==(object other, Overmock<T> overmock)
+    {
+        return overmock.Equals(other);
+    }
+
+    /// <summary>
+    /// Implements the != operator.
+    /// </summary>
+    /// <param name="overmock">The overmock.</param>
+    /// <param name="other">The other.</param>
+    /// <returns>The result of the operator.</returns>
+    public static bool operator !=(object other, Overmock<T> overmock)
+    {
+        return !overmock.Equals(other);
+    }
+
+    /// <summary>
+    /// Performs an implicit conversion from <see cref="Overmock{T}"/> to <typeparamref name="T"/>.
+    /// </summary>
+    /// <param name="overmock">The overmock.</param>
+    /// <returns>The result of the conversion.</returns>
+    public static implicit operator T(Overmock<T> overmock)
+    {
+        return overmock.Target;
+    }
+
+    /// <summary>
+    /// Performs an implicit conversion from <typeparamref name="T"/> to <see cref="Overmock{T}"/>.
+    /// </summary>
+    /// <param name="target">The target.</param>
+    /// <returns>The result of the conversion.</returns>
+    public static implicit operator Overmock<T>(T target)
+    {
+        if (target is Overmock<T> overmock)
+        {
+            return overmock;
+        }
+
+        if (Overmocked.IsRegistered(target))
+        {
+            return (Overmock<T>)Overmocked.GetRegistration(target)!;
+        }
+
+        return new Overmock<T>();
+    }
+
+    /// <inheritdoc />
+    public override bool Equals(object? obj)
+    {
+        if (ReferenceEquals(this, obj))
+        {
+            return true;
+        }
+
+        if (ReferenceEquals(obj, null))
+        {
+            return false;
+        }
+
+        return Target == obj;
+    }
+
+    /// <inheritdoc />
+    public override int GetHashCode()
+    {
+        return Target.GetHashCode();
+    }
+
+    /// <inheritdoc/>
+    public bool Equals(Overmock<T>? obj)
+    {
+        if (ReferenceEquals(this, obj))
+        {
+            return true;
+        }
+
+        if (ReferenceEquals(obj, null))
+        {
+            return false;
+        }
+
+        return Target == obj.Target;
+    }
+
+    /// <inheritdoc/>
+    protected override void Verify()
 	{
 		throw new VerifyException(this);
 	}
@@ -103,51 +192,73 @@ public class Overmock<T> : Verifiable<T>, IOvermock<T>, IExpectAnyInvocation whe
 	IEnumerable<IPropertyCall> IOvermock.GetOvermockedProperties()
 	{
 		return _properties.AsReadOnly();
-	}
+    }
 
-	/// <inheritdoc />
+    /// <summary>
+    /// Gets the target.
+    /// </summary>
+    /// <returns>System.Object.</returns>
+    object IOvermock.GetTarget()
+    {
+        return Target;
+    }
+
+    /// <inheritdoc />
 #pragma warning disable CS1066 // The default value specified will have no effect because it applies to a member that is used in contexts that do not allow optional arguments
-	void IExpectAnyInvocation.ExpectAny(bool value = false)
+    void IExpectAnyInvocation.ExpectAny(bool value = false)
 #pragma warning restore CS1066 // The default value specified will have no effect because it applies to a member that is used in contexts that do not allow optional arguments
 	{
 		_overrideAll = value;
 	}
 
-	/// <summary>
-	/// Targets the member invoked.
-	/// </summary>
-	/// <param name="context">The context.</param>
-	/// <exception cref="Overmock.UnhandledMemberException"></exception>
-	private void TargetMemberInvoked(IInvocationContext context)
+    private sealed class OvermockInstanceInvocationHandler : IInvocationHandler
 	{
-		var methodCall = _methods.Find(m => m.BaseMethod == context.Method);
+		private readonly Func<bool> _expectAnyProvider;
+		private readonly Func<List<IMethodCall>> _methodsProvider;
+		private readonly Func<List<IPropertyCall>> _propertiesProvider;
 
-		if (methodCall != null)
+		public OvermockInstanceInvocationHandler(Func<bool> expectAnyProvider, Func<List<IMethodCall>> methodsProvider, Func<List<IPropertyCall>> propertiesProvider)
 		{
-			var overmock = methodCall.GetOverrides().First();
-
-			context.ReturnValue = overmock.Handle(new OvermockContext(context));
-			
-			return;
+			_expectAnyProvider = expectAnyProvider;
+			_methodsProvider = methodsProvider;
+			_propertiesProvider = propertiesProvider;
 		}
 
-		if (context.Member is PropertyInfo property)
+		public void Handle(IInvocationContext context)
 		{
-			var propertyCall = _properties.Find(p => p.PropertyInfo == property);
+			var methods = _methodsProvider();
 
-			if (propertyCall != null)
+			var methodCall = methods.Find(m => m.BaseMethod == context.Method);
+
+			if (methodCall != null)
 			{
-				var overmock = propertyCall.GetOverrides().First();
+				var overmock = methodCall.GetOverrides().First();
 
 				context.ReturnValue = overmock.Handle(new OvermockContext(context));
-				
+
 				return;
 			}
-		}
 
-		if (!_overrideAll)
-		{
-			throw new UnhandledMemberException(context.MemberName);
+			if (context.Member is PropertyInfo property)
+			{
+				var properties = _propertiesProvider();
+
+				var propertyCall = properties.Find(p => p.PropertyInfo == property);
+
+				if (propertyCall != null)
+				{
+					var overmock = propertyCall.GetOverrides().First();
+
+					context.ReturnValue = overmock.Handle(new OvermockContext(context));
+
+					return;
+				}
+			}
+
+			if (!_expectAnyProvider())
+			{
+				throw new UnhandledMemberException(context.MemberName);
+			}
 		}
 	}
 }

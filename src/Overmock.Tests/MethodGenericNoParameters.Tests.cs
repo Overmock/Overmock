@@ -11,7 +11,7 @@ namespace Overmock.Tests
 		[TestInitialize]
 		public void Initialize()
 		{
-			_genericMethodsTestInterface = Overmocked.Interface<IGenericMethodsTestInterface>();
+			_genericMethodsTestInterface = Overmocked.Overmock<IGenericMethodsTestInterface>();
 		}
 
 		[TestMethod]
