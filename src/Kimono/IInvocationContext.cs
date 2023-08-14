@@ -8,7 +8,7 @@ namespace Kimono
 	public interface IInvocationContext : IFluentInterface
 	{
 		/// <summary>
-		/// Gets a value indicating whether <see cref="InvokeTarget(bool)"/> has been called previously.
+		/// Gets a value indicating whether <see cref="Invoke(bool,bool)"/> has been called previously.
 		/// </summary>
 		/// <value><c>true</c> if [target invoked]; otherwise, <c>false</c>.</value>
 		public bool TargetInvoked { get; }

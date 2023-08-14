@@ -8,7 +8,7 @@ namespace Kimono.Interceptors
 	/// </summary>
 	/// <typeparam name="T"></typeparam>
 	/// <seealso cref="Kimono.Interceptor{T}" />
-	public class TargetedSingleHandlerInterceptor<T> : SingleHandlerInterceptor<T> where T : class
+	public class TargetedSingleHandlerInterceptor<T> : HandlerInterceptor<T> where T : class
 	{
 		/// <summary>
 		/// Initializes a new instance of the <see cref="TargetedSingleHandlerInterceptor{T}"/> class.

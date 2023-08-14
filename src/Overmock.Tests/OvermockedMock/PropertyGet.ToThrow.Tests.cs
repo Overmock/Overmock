@@ -1,4 +1,4 @@
-﻿namespace Overmock.Tests.OvermockedMock
+﻿namespace Overmock.Tests
 {
 	public partial class PropertyGetTests
 	{
@@ -7,14 +7,16 @@
 		{
 			var exception = new Exception();
 
-			Overmocked.Mock(_overmock, t => t.Int)
+			_overmock.Override(t => t.Int)
 				.ToThrow(exception);
 
-			Assert.IsNotNull(_overmock);
+			var target = _overmock.Target;
+
+			Assert.IsNotNull(target);
 
 			try
 			{
-				var model = _overmock.Int;
+				var model = target.Int;
 
 				Assert.Fail();
 			}
@@ -29,12 +31,16 @@
 		{
 			var exception = new Exception();
 
-			Overmocked.Mock(_overmock, t => t.String)
+			_overmock.Override(t => t.String)
 				.ToThrow(exception);
+
+			var target = _overmock.Target;
+
+			Assert.IsNotNull(target);
 
 			try
 			{
-				var model = _overmock.String;
+				var model = target.String;
 
 				Assert.Fail();
 			}
@@ -49,12 +55,16 @@
 		{
 			var exception = new Exception();
 
-			Overmocked.Mock(_overmock, t => t.Model)
+			_overmock.Override(t => t.Model)
 				.ToThrow(exception);
+
+			var target = _overmock.Target;
+
+			Assert.IsNotNull(target);
 
 			try
 			{
-				var model = _overmock.Model;
+				var model = target.Model;
 
 				Assert.Fail();
 			}
@@ -69,12 +79,16 @@
 		{
 			var exception = new Exception();
 
-			Overmocked.Mock(_overmock, t => t.ListOfModels)
+			_overmock.Override(t => t.ListOfModels)
 				.ToThrow(exception);
+
+			var target = _overmock.Target;
+
+			Assert.IsNotNull(target);
 
 			try
 			{
-				var model = _overmock.ListOfModels;
+				var model = target.ListOfModels;
 
 				Assert.Fail();
 			}
