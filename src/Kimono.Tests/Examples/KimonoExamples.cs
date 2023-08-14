@@ -15,7 +15,7 @@ namespace Kimono.Tests.Examples
 
 				if (context.MemberName == nameof(IRepository.Save))
 				{
-					context.InvokeTarget();
+					context.Invoke();
 				}
 			});
 
@@ -25,7 +25,7 @@ namespace Kimono.Tests.Examples
 		{
 			var interceptor = Intercept.TargetedWithCallback<IRepository, Repository>(new Repository(), context =>
 			{
-				context.InvokeTarget();
+				context.Invoke();
 
 				if (context.MemberName == nameof(IRepository.Save))
 				{
@@ -56,7 +56,7 @@ namespace Kimono.Tests.Examples
 			{
 				builder.Add((next, context) =>
 				{
-					context.InvokeTarget();
+					context.Invoke();
 
 					if (context.MemberName == nameof(IRepository.Save))
 					{

@@ -73,7 +73,7 @@ namespace Overmock.Benchmarks
 		{
 			_kimonoProxy = Intercept.TargetedWithCallback<IBenchmarkTest, BenchmarkTest>(_benchmarkClass, c =>
 			{
-				c.InvokeTarget();
+				c.Invoke();
 			});
 
 			_benchmarkDecerator = new BenchmarkDecorator(_benchmarkClass);

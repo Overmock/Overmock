@@ -1,4 +1,5 @@
 ﻿
+using Kimono.Interceptors;
 using Kimono.Tests.Examples;
 using Kimono.Tests.Proxies;
 using System;
@@ -165,22 +166,35 @@ namespace Kimono.Tests
 		{
 			var called = false;
 			var saveCalled = false;
+			var disposeCalled = false;
 
-			using (var interceptor = Intercept.DisposableTargetedWithCallback<IDisposableRepository, DisposableRepository>(new DisposableRepository(), context => {
+			var interceptor = Intercept.DisposableTargetedWithCallback<IDisposableRepository, DisposableRepository>(new DisposableRepository(), context => {
 				called = true;
 				if (context.MemberName == "Save")
 				{
 					saveCalled = true;
 					context.ReturnValue = true;
 				}
-			}))
+				if (context.MemberName == "Dispose")
+				{
+					disposeCalled = true;
+				}
+				if (context.MemberName == "IsDisposed")
+				{
+					context.Invoke();
+				}
+			});
+			using (interceptor)
 			{
 				var returnedTrue = interceptor.Save(new Model { Id = 69 });
 
 				Assert.IsTrue(returnedTrue);
 				Assert.IsTrue(called);
 				Assert.IsTrue(saveCalled);
+				Assert.IsFalse(disposeCalled);
 			}
+
+			Assert.IsTrue(interceptor.IsDisposed);
 		}
 
 		[TestMethod]

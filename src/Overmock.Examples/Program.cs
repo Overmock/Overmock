@@ -13,7 +13,7 @@ builder.Services.AddSwaggerGen();
 // Add services to the container.
 builder.Services.AddScopedProxy<IDataConnection, FrameworkDataConnection>(c => {
 		Stopwatch stopwatch = Stopwatch.StartNew();
-		c.InvokeTarget();
+		c.Invoke();
 		stopwatch.Stop();
 		var elapsed = stopwatch.Elapsed;
 	})

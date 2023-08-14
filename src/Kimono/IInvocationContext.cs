@@ -8,6 +8,12 @@ namespace Kimono
 	public interface IInvocationContext : IFluentInterface
 	{
 		/// <summary>
+		/// Gets a value indicating whether <see cref="InvokeTarget(bool)"/> has been called previously.
+		/// </summary>
+		/// <value><c>true</c> if [target invoked]; otherwise, <c>false</c>.</value>
+		public bool TargetInvoked { get; }
+
+		/// <summary>
 		/// Gets the interceptor.
 		/// </summary>
 		/// <value>The interceptor.</value>
@@ -55,6 +61,7 @@ namespace Kimono
 		/// Invokes the target.
 		/// </summary>
 		/// <param name="setReturnValue">if set to <c>true</c> [set return value].</param>
-		void InvokeTarget(bool setReturnValue = true);
+		/// <param name="force">if set to <c>true</c> forces the call to be invoked regardless if it's already been called successfully.</param>
+		void Invoke(bool setReturnValue = true, bool force = false);
 	}
 }

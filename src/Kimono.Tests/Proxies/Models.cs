@@ -13,11 +13,15 @@ namespace Kimono.Tests.Proxies
 	}
 	public interface IDisposableRepository : IRepository, IDisposable
 	{
+		public bool IsDisposed { get; }
 	}
 	public class DisposableRepository : Repository, IDisposableRepository
 	{
+		public bool IsDisposed { get; private set; }
+
 		public void Dispose()
 		{
+			IsDisposed = true;
 		}
 	}
 	public class Repository : IRepository

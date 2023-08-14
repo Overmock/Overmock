@@ -51,6 +51,14 @@
 		}
 
 		/// <summary>
+		/// Handles the calling dispose if the interceptor is <see cref="IDisposableInterceptor"/>.
+		/// </summary>
+		protected void HandleDisposeCall()
+		{
+			(Interceptor as IDisposable)?.Dispose();
+		}
+
+		/// <summary>
 		/// Initializes the proxy context.
 		/// </summary>
 		/// <param name="interceptor">The interceptor.</param>

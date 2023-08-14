@@ -38,34 +38,10 @@ namespace Kimono
 		}
 
 		/// <summary>
-		/// Gets the name of the member.
-		/// </summary>
-		/// <value>The name of the member.</value>
-		public string MemberName { get; }
-
-		/// <summary>
-		/// Gets the parameters.
-		/// </summary>
-		/// <value>The parameters.</value>
-		public Parameters Parameters { get; }
-
-		/// <summary>
 		/// Gets the interceptor.
 		/// </summary>
 		/// <value>The interceptor.</value>
 		public IInterceptor Interceptor { get; }
-
-		/// <summary>
-		/// Gets the method.
-		/// </summary>
-		/// <value>The method.</value>
-		public MethodInfo Method => ProxiedMember.Method;
-
-		/// <summary>
-		/// Gets or sets the return value.
-		/// </summary>
-		/// <value>The return value.</value>
-		public object? ReturnValue { get; set; }
 
 		/// <summary>
 		/// Gets the member.
@@ -74,10 +50,37 @@ namespace Kimono
 		public MemberInfo Member { get; }
 
 		/// <summary>
+		/// Gets the name of the member.
+		/// </summary>
+		/// <value>The name of the member.</value>
+		public string MemberName { get; }
+
+		/// <summary>
+		/// Gets the method.
+		/// </summary>
+		/// <value>The method.</value>
+		public MethodInfo Method => ProxiedMember.Method;
+
+		/// <summary>
+		/// Gets the parameters.
+		/// </summary>
+		/// <value>The parameters.</value>
+		public Parameters Parameters { get; }
+
+		/// <summary>
 		/// Gets the proxied member.
 		/// </summary>
 		/// <value>The proxied member.</value>
 		internal IProxyMember ProxiedMember { get; }
+
+		/// <summary>
+		/// Gets or sets the return value.
+		/// </summary>
+		/// <value>The return value.</value>
+		public object? ReturnValue { get; set; }
+
+		/// <inheritdoc />
+		public bool TargetInvoked { get; private set; }
 
 		/// <summary>
 		/// Gets the specified name.
@@ -94,17 +97,29 @@ namespace Kimono
 		/// Invokes the target.
 		/// </summary>
 		/// <param name="setReturnValue">if set to <c>true</c> [set return value].</param>
-		public void InvokeTarget(bool setReturnValue = true)
+		/// <param name="force">if set to <c>true</c> forces the call to be invoked regardless if it's already been called successfully.</param>
+		public void Invoke(bool setReturnValue = true, bool force = false)
 		{
-			if (_target is not null)
+			// If the target's member has already been called and they
+			// haven't forced the invocation, then return to the caller;
+			if (TargetInvoked && !force)
 			{
-				var returnValue = _invokeTargetHandler(_target, _arguments);
-
-				if (setReturnValue)
-				{
-					ReturnValue = returnValue;
-				}
+				return;
 			}
+
+			if (_target is null)
+			{
+				return;
+			}
+
+			var returnValue = _invokeTargetHandler(_target, _arguments);
+
+			if (setReturnValue)
+			{
+				ReturnValue = returnValue;
+			}
+
+			TargetInvoked = true;
 		}
 
 		/// <summary>
