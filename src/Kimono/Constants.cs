@@ -91,6 +91,11 @@ namespace Kimono
 		public static readonly Type DisposableType = typeof(IDisposable);
 
 		/// <summary>
+		/// The disposable method.
+		/// </summary>
+		public static readonly MethodInfo DisposeMethod = DisposableType.GetMethod(nameof(IDisposable.Dispose))!;
+
+		/// <summary>
 		/// The empty object array method
 		/// </summary>
 		public static readonly MethodInfo EmptyObjectArrayMethod = EmptyArrayMethod(ObjectType);
@@ -105,6 +110,12 @@ namespace Kimono
 		/// </summary>
 		/// <returns>MethodInfo.</returns>
 		public static MethodInfo ProxyTypeHandleMethodCallMethod = ProxyType.GetMethod("HandleMethodCall", BindingFlags.Instance | BindingFlags.NonPublic)!;
+
+		/// <summary>
+		/// Gets the proxy type handle method call method.
+		/// </summary>
+		/// <returns>MethodInfo.</returns>
+		public static MethodInfo ProxyTypeHandleDisposeCallMethod = ProxyType.GetMethod("HandleDisposeCall", BindingFlags.Instance | BindingFlags.NonPublic)!;
 
 		/// <summary>
 		/// Empties the array method.

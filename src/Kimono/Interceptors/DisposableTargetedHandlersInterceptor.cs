@@ -11,7 +11,7 @@ namespace Kimono.Interceptors
     /// <typeparam name="T"></typeparam>
     /// <seealso cref="Kimono.Interceptors.TargetedHandlersInterceptor{T}" />
     /// <seealso cref="IDisposable" />
-    public class DisposableTargetedHandlersInterceptor<T> : TargetedHandlersInterceptor<T>, IDisposable where T : class, IDisposable
+    public class DisposableTargetedHandlersInterceptor<T> : TargetedHandlersInterceptor<T>, IDisposableInterceptor where T : class, IDisposable
 	{
 		/// <summary>
 		/// Initializes a new instance of the <see cref="DisposableTargetedHandlersInterceptor{T}" /> class.

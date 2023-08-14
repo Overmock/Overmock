@@ -18,6 +18,7 @@ namespace Kimono.Tests.Proxies
 	{
 		public void Dispose()
 		{
+
 		}
 	}
 	public class Repository : IRepository

@@ -1,4 +1,6 @@
 ﻿
+using Kimono.Proxies;
+
 namespace Kimono
 {
 	/// <summary>

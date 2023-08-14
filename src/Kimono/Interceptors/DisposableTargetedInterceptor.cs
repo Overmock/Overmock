@@ -1,10 +1,5 @@
 ﻿using Kimono.Internal;
 using Kimono.Proxies;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Kimono.Interceptors
 {
@@ -16,33 +11,15 @@ namespace Kimono.Interceptors
     /// <typeparam name="T"></typeparam>
     /// <seealso cref="Interceptor{T}" />
     /// <seealso cref="IDisposable" />
-    public class DisposableTargetedInterceptor<T> : Interceptor<T>, IDisposable where T : class, IDisposable
+    public abstract class DisposableTargetedInterceptor<T> : DisposableInterceptor<T>, IDisposableInterceptor where T : class, IDisposable
 	{
 		/// <summary>
-		/// Initializes a new instance of the <see cref="DisposableTargetedInterceptor{T}"/> class.
+		/// Initializes a new instance of the <see cref="DisposableTargetedInterceptor{T}" /> class.
 		/// </summary>
-		public DisposableTargetedInterceptor(T target, ITargetDisposer<T>? disposer = null) : base(target)
+		/// <param name="target">The target.</param>
+		/// <param name="disposer">The disposer.</param>
+		public DisposableTargetedInterceptor(T target, ITargetDisposer<T>? disposer = null) : base(target, disposer)
 		{
-			Disposer = disposer ?? new TargetDisposer<T>(target);
-		}
-
-		/// <summary>
-		/// Gets the disposer responsible for disposing of the <see cref="Interceptor{T}.Target"/>.
-		/// </summary>
-		/// <value>The disposer responsible for disposing of the <see cref="Interceptor{T}.Target"/>.</value>
-		protected ITargetDisposer<T> Disposer { get; }
-
-		/// <inheritdoc />
-		protected override void MemberInvoked(IInvocationContext context)
-		{
-			throw new NotImplementedException();
-		}
-
-		/// <inheritdoc />
-		public void Dispose()
-		{
-			Disposer.Dispose(true);
-			GC.SuppressFinalize(this);
 		}
 	}
 }
