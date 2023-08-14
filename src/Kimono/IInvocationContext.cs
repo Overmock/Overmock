@@ -62,6 +62,6 @@ namespace Kimono
 		/// </summary>
 		/// <param name="setReturnValue">if set to <c>true</c> [set return value].</param>
 		/// <param name="force">if set to <c>true</c> forces the call to be invoked regardless if it's already been called successfully.</param>
-		void InvokeTarget(bool setReturnValue = true, bool force = true);
+		void Invoke(bool setReturnValue = true, bool force = false);
 	}
 }

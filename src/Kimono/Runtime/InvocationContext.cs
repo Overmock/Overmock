@@ -98,7 +98,7 @@ namespace Kimono
 		/// </summary>
 		/// <param name="setReturnValue">if set to <c>true</c> [set return value].</param>
 		/// <param name="force">if set to <c>true</c> forces the call to be invoked regardless if it's already been called successfully.</param>
-		public void InvokeTarget(bool setReturnValue = true, bool force = false)
+		public void Invoke(bool setReturnValue = true, bool force = false)
 		{
 			// If the target's member has already been called and they
 			// haven't forced the invocation, then return to the caller;

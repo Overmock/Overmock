@@ -179,6 +179,10 @@ namespace Kimono.Tests
 				{
 					disposeCalled = true;
 				}
+				if (context.MemberName == "IsDisposed")
+				{
+					context.Invoke();
+				}
 			});
 			using (interceptor)
 			{
@@ -190,7 +194,7 @@ namespace Kimono.Tests
 				Assert.IsFalse(disposeCalled);
 			}
 
-
+			Assert.IsTrue(interceptor.IsDisposed);
 		}
 
 		[TestMethod]
