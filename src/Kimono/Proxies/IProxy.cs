@@ -1,21 +1,10 @@
-﻿namespace Kimono
+﻿namespace Kimono.Proxies
 {
 	/// <summary>
 	/// Interface IProxy
-	/// Extends the <see cref="Kimono.IProxy" />
+	/// Extends the <see cref="IProxy" />
 	/// </summary>
-	/// <typeparam name="T"></typeparam>
-	/// <seealso cref="Kimono.IProxy" />
-	public interface IProxy<T> : IProxy where T : class
-	{
-		//void RegisterCallback(Func<RuntimeContext, object[], object> memberInvoked);
-	}
-
-	/// <summary>
-	/// Interface IProxy
-	/// Extends the <see cref="Kimono.IProxy" />
-	/// </summary>
-	/// <seealso cref="Kimono.IProxy" />
+	/// <seealso cref="IProxy" />
 	public interface IProxy
 	{
 		/// <summary>
@@ -36,7 +25,7 @@
 		/// </summary>
 		/// <returns>Type.</returns>
 		Type GetTargetType();
-		
+
 		///// <summary>
 		///// 
 		///// </summary>
@@ -44,4 +33,15 @@
 		///// <returns></returns>
 		//object? MemberInvoked(RuntimeContext context, object[] parameters);
 	}
+
+	/// <summary>
+	/// Interface IProxy
+	/// Extends the <see cref="IProxy" />
+	/// </summary>
+	/// <typeparam name="T"></typeparam>
+	/// <seealso cref="IProxy" />
+	public interface IProxy<T> : IProxy where T : class
+    {
+        //void RegisterCallback(Func<RuntimeContext, object[], object> memberInvoked);
+    }
 }

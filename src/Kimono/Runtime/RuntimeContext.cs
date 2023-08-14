@@ -1,9 +1,11 @@
-﻿namespace Kimono
+﻿using Kimono.Proxies;
+
+namespace Kimono
 {
-	/// <summary>
-	/// The context for an overridden member.
-	/// </summary>
-	public struct RuntimeContext
+    /// <summary>
+    /// The context for an overridden member.
+    /// </summary>
+    public struct RuntimeContext
 	{
 		/// <summary>
 		/// The proxied member

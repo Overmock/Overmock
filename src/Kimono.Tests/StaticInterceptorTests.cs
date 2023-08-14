@@ -1,5 +1,7 @@
 ﻿
 using Kimono.Tests.Examples;
+using Kimono.Tests.Proxies;
+using System;
 
 namespace Kimono.Tests
 {
@@ -12,7 +14,7 @@ namespace Kimono.Tests
 			var called = false;
 			var saveCalled = false;
 
-			var interceptor = Interceptor.WithCallback<IRepository>(context => {
+			var interceptor = Intercept.WithCallback<IRepository>(context => {
 				called = true;
 				if (context.MemberName == "Save")
 				{
@@ -28,41 +30,9 @@ namespace Kimono.Tests
 		}
 
 		[TestMethod]
-		public void TargetedWithCallbackInterceptorTest()
-		{
-			var called = false;
-			var saveCalled = false;
-
-			var interceptor = Interceptor.TargetedWithCallback<IRepository, Repository>(new Repository(), context => {
-				called = true;
-				if (context.MemberName == "Save")
-				{
-					saveCalled = true;
-					context.ReturnValue = true;
-				}
-			});
-
-			var returnedTrue = interceptor.Save(new Model { Id = 69 });
-
-			Assert.IsTrue(returnedTrue);
-			Assert.IsTrue(called);
-			Assert.IsTrue(saveCalled);
-		}
-
-		[TestMethod]
-		public void TargetedWithHandlersInterceptorTest()
-		{
-			var interceptor = Interceptor.TargetedWithHandlers<IRepository, Repository>(new Repository(), new TestHandler());
-
-			var returnedTrue = interceptor.Save(new Model { Id = 69 });
-
-			Assert.IsTrue(returnedTrue);
-		}
-
-		[TestMethod]
 		public void WithHandlersInterceptorTest()
 		{
-			var interceptor = Interceptor.WithHandlers<IRepository>(new TestHandler());
+			var interceptor = Intercept.WithHandlers<IRepository>(new TestHandler());
 
 			var returnedTrue = interceptor.Save(new Model { Id = 69 });
 
@@ -73,7 +43,7 @@ namespace Kimono.Tests
 		public void WithHandlersEnumerableInterceptorTest()
 		{
 			var list = new List<IInvocationHandler>() { new TestHandler() };
-			var interceptor = Interceptor.WithHandlers<IRepository>(list);
+			var interceptor = Intercept.WithHandlers<IRepository>(list);
 
 			var returnedTrue = interceptor.Save(new Model { Id = 69 });
 
@@ -86,7 +56,7 @@ namespace Kimono.Tests
 			var called = false;
 			var saveCalled = false;
 
-			var interceptor = Interceptor.WithInovcationChain<IRepository>(builder => {
+			var interceptor = Intercept.WithInovcationChain<IRepository>(builder => {
 				builder.Add((next, context) => {
 					called = true;
 
@@ -109,12 +79,44 @@ namespace Kimono.Tests
 		}
 
 		[TestMethod]
+		public void TargetedWithCallbackInterceptorTest()
+		{
+			var called = false;
+			var saveCalled = false;
+
+			var interceptor = Intercept.TargetedWithCallback<IRepository, Repository>(new Repository(), context => {
+				called = true;
+				if (context.MemberName == "Save")
+				{
+					saveCalled = true;
+					context.ReturnValue = true;
+				}
+			});
+
+			var returnedTrue = interceptor.Save(new Model { Id = 69 });
+
+			Assert.IsTrue(returnedTrue);
+			Assert.IsTrue(called);
+			Assert.IsTrue(saveCalled);
+		}
+
+		[TestMethod]
+		public void TargetedWithHandlersInterceptorTest()
+		{
+			var interceptor = Intercept.TargetedWithHandlers<IRepository, Repository>(new Repository(), new TestHandler());
+
+			var returnedTrue = interceptor.Save(new Model { Id = 69 });
+
+			Assert.IsTrue(returnedTrue);
+		}
+
+		[TestMethod]
 		public void TargetedWithInovcationChainInterceptorTest()
 		{
 			var firstCalled = false;
 			var secondCalled = false;
 
-			var interceptor = Interceptor.WithInovcationChain<IRepository>(builder => {
+			var interceptor = Intercept.TargetedWithInovcationChain<IRepository, Repository>(new Repository(), builder => {
 				builder.Add((next, context) => {
 					firstCalled = true;
 					if (!secondCalled)
@@ -141,7 +143,90 @@ namespace Kimono.Tests
 			var firstCalled = false;
 			var secondCalled = false;
 
-			var interceptor = Interceptor.TargetedWithInovcationChain<IRepository, Repository>(new Repository(), builder => {
+			var interceptor = Intercept.TargetedWithInovcationChain<IRepository, Repository>(new Repository(), builder => {
+				builder.Add((next, context) => {
+					firstCalled = true;
+				})
+				.Add((next, context) => {
+					secondCalled = true;
+					context.ReturnValue = true;
+				});
+			});
+
+			var returnedTrue = interceptor.Save(new Model { Id = 69 });
+
+			Assert.IsFalse(returnedTrue);
+			Assert.IsTrue(firstCalled);
+			Assert.IsFalse(secondCalled);
+		}
+
+		[TestMethod]
+		public void DisposableTargetedWithCallbackInterceptorTest()
+		{
+			var called = false;
+			var saveCalled = false;
+
+			using (var interceptor = Intercept.DisposableTargetedWithCallback<IDisposableRepository, DisposableRepository>(new DisposableRepository(), context => {
+				called = true;
+				if (context.MemberName == "Save")
+				{
+					saveCalled = true;
+					context.ReturnValue = true;
+				}
+			}))
+			{
+				var returnedTrue = interceptor.Save(new Model { Id = 69 });
+
+				Assert.IsTrue(returnedTrue);
+				Assert.IsTrue(called);
+				Assert.IsTrue(saveCalled);
+			}
+		}
+
+		[TestMethod]
+		public void DisposableTargetedWithHandlersInterceptorTest()
+		{
+			var interceptor = Intercept.DisposableTargetedWithHandlers<IDisposableRepository, DisposableRepository>(new DisposableRepository(), new TestHandler());
+
+			var returnedTrue = interceptor.Save(new Model { Id = 69 });
+
+			Assert.IsTrue(returnedTrue);
+		}
+
+		[TestMethod]
+		public void DisposableTargetedWithInovcationChainInterceptorTest()
+		{
+			var firstCalled = false;
+			var secondCalled = false;
+
+			var interceptor = Intercept.DisposableTargetedWithInovcationChain<IDisposableRepository, DisposableRepository>(new DisposableRepository(), builder => {
+				builder.Add((next, context) => {
+					firstCalled = true;
+					if (!secondCalled)
+					{
+						next(context);
+					}
+				})
+				.Add((next, context) => {
+					secondCalled = true;
+					context.ReturnValue = true;
+				});
+			});
+
+			var returnedTrue = interceptor.Save(new Model { Id = 69 });
+
+			Assert.IsTrue(returnedTrue);
+			Assert.IsTrue(firstCalled);
+			Assert.IsTrue(secondCalled);
+		}
+
+		[TestMethod]
+		public void DisposableTargetedWithInovcationChainInterceptorDoesNotCallNextTest()
+		{
+			var firstCalled = false;
+			var secondCalled = false;
+
+			var interceptor = Intercept.DisposableTargetedWithInovcationChain<IDisposableRepository, DisposableRepository>(new DisposableRepository(), builder => {
 				builder.Add((next, context) => {
 					firstCalled = true;
 				})

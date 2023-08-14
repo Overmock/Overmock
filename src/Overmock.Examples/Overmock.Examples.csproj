@@ -7,10 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Kimono.Extensions.DependencyInjection\Kimono.Extensions.DependencyInjection.csproj" />
     <ProjectReference Include="..\Kimono\Kimono.csproj" />
     <ProjectReference Include="..\Overmock\Overmock.csproj" />
   </ItemGroup>

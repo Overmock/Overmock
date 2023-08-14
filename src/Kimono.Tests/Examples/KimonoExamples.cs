@@ -1,11 +1,12 @@
-﻿
+﻿using Kimono.Tests.Proxies;
+
 namespace Kimono.Tests.Examples
 {
 	public class KimonoExamples
 	{
 		public void NoTargetWithCallbackInterceptorExample()
 		{
-			var interceptor = Interceptor.WithCallback<IRepository>(context =>
+			var interceptor = Intercept.WithCallback<IRepository>(context =>
 			{
 				if (context.MemberName == "Baz")
 				{
@@ -22,7 +23,7 @@ namespace Kimono.Tests.Examples
 		}
 		public void TargetWithCallbackInterceptorExample()
 		{
-			var interceptor = Interceptor.TargetedWithCallback<IRepository, Repository>(new Repository(), context =>
+			var interceptor = Intercept.TargetedWithCallback<IRepository, Repository>(new Repository(), context =>
 			{
 				context.InvokeTarget();
 
@@ -39,19 +40,19 @@ namespace Kimono.Tests.Examples
 		}
 		public void NoTargetWithHandlersInterceptorExample()
 		{
-			var interceptor = Interceptor.WithHandlers<IRepository>(new BazReturnInvocationHandler());
+			var interceptor = Intercept.WithHandlers<IRepository>(new BazReturnInvocationHandler());
 
 			interceptor.Save(new Model { Id = 20 });
 		}
 		public void TargetWithHandlersInterceptorExample()
 		{
-			var interceptor = Interceptor.TargetedWithHandlers<IRepository, Repository>(new Repository(), new BazReturnInvocationHandler());
+			var interceptor = Intercept.TargetedWithHandlers<IRepository, Repository>(new Repository(), new BazReturnInvocationHandler());
 
 			interceptor.Save(new Model { Id = 20 });
 		}
 		public void NoTargetWithInvocationChainInterceptorExample()
 		{
-			var interceptor = Interceptor.TargetedWithInovcationChain<IRepository, Repository>(new Repository(), builder =>
+			var interceptor = Intercept.TargetedWithInovcationChain<IRepository, Repository>(new Repository(), builder =>
 			{
 				builder.Add((next, context) =>
 				{
@@ -74,7 +75,7 @@ namespace Kimono.Tests.Examples
 		}
 		public void TargetWithInvocationChainInterceptorExample()
 		{
-			var interceptor = Interceptor.WithInovcationChain<IRepository>(builder =>
+			var interceptor = Intercept.WithInovcationChain<IRepository>(builder =>
 			{
 				builder.Add((next, context) =>
 				{
@@ -107,52 +108,6 @@ namespace Kimono.Tests.Examples
 						return;
 					}
 				}
-			}
-		}
-	}
-	public class Model
-	{
-		public int Id { get; set; }
-	}
-	public interface IRepository
-	{
-		bool Save(Model model);
-	}
-	public class Repository : IRepository
-	{
-		public bool Save(Model model)
-		{
-			return true;
-		}
-	}
-	public interface ILog
-	{
-		void Log(string message);
-	}
-	public class Service
-	{
-		private readonly ILog _log;
-		private readonly IRepository _repo;
-		public Service(ILog log, IRepository repo)
-		{
-			_log = log;
-			_repo = repo;
-		}
-		public Model SaveModel(Model model)
-		{
-			try
-			{
-				var saved = _repo.Save(model);
-				if (!saved)
-				{
-					_log.Log("Failed to save");
-				}
-				return model;
-			}
-			catch (Exception ex)
-			{
-				_log.Log(ex.Message);
-				throw;
 			}
 		}
 	}

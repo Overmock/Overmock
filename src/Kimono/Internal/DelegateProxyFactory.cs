@@ -1,11 +1,13 @@
-﻿namespace Kimono.Internal
+﻿using Kimono.Proxies;
+
+namespace Kimono.Internal
 {
-	/// <summary>
-	/// Class DelegateProxyFactory.
-	/// Implements the <see cref="Kimono.ProxyFactory" />
-	/// </summary>
-	/// <seealso cref="Kimono.ProxyFactory" />
-	internal sealed class DelegateProxyFactory : ProxyFactory
+    /// <summary>
+    /// Class DelegateProxyFactory.
+    /// Implements the <see cref="Proxies.ProxyFactory" />
+    /// </summary>
+    /// <seealso cref="Proxies.ProxyFactory" />
+    internal sealed class DelegateProxyFactory : ProxyFactory
     {
 		/// <summary>
 		/// Initializes a new instance of the <see cref="DelegateProxyFactory"/> class.

@@ -1,6 +1,8 @@
-﻿namespace Kimono.Tests.ProxyMembers
+﻿using Kimono.Proxies;
+
+namespace Kimono.Tests.ProxyMembers
 {
-	public interface IInterface
+    public interface IInterface
 	{
 		string Name { get; }
 

@@ -1,13 +1,14 @@
 ﻿using System.Collections.Concurrent;
+using Kimono.Proxies;
 
 namespace Kimono.Internal
 {
-	/// <summary>
-	/// Class GeneratedProxyCache.
-	/// Implements the <see cref="Kimono.IProxyCache" />
-	/// </summary>
-	/// <seealso cref="Kimono.IProxyCache" />
-	internal sealed class GeneratedProxyCache : IProxyCache
+    /// <summary>
+    /// Class GeneratedProxyCache.
+    /// Implements the <see cref="Proxies.IProxyCache" />
+    /// </summary>
+    /// <seealso cref="Proxies.IProxyCache" />
+    internal sealed class GeneratedProxyCache : IProxyCache
 	{
 		/// <summary>
 		/// The cache

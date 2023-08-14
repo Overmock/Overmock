@@ -18,13 +18,13 @@ namespace Microsoft.Extensions.DependencyInjection
 		/// <param name="services">The services.</param>
 		/// <param name="memberInvoked">The callback to invoke when a member on <typeparamref name="TInterface"/> is to be invoked.</param>
 		/// <returns>IServiceCollection.</returns>
-		public static IServiceCollection AddScopedProxy<TInterface, TImplementation>(this IServiceCollection services, Action<IInvocationContext> memberInvoked)
+		public static IServiceCollection AddScopedProxy<TInterface, TImplementation>(this IServiceCollection services, InvocationAction memberInvoked)
 			where TInterface : class
 			where TImplementation : class, TInterface
 		{
 			services.TryAddScoped<TImplementation>();
 			return services.AddScoped<TInterface>(s =>
-				Interceptor.TargetedWithCallback<TInterface, TImplementation>(s.GetRequiredService<TImplementation>(), memberInvoked));
+				Intercept.TargetedWithCallback<TInterface, TImplementation>(s.GetRequiredService<TImplementation>(), memberInvoked));
 		}
 	}
 }
