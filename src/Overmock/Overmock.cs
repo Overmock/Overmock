@@ -70,8 +70,8 @@ public class Overmock<T> : Verifiable<T>, IOvermock<T>, IExpectAnyInvocation, IE
     /// <summary>
     /// Implements the == operator.
     /// </summary>
-    /// <param name="overmock">The overmock.</param>
     /// <param name="other">The other.</param>
+    /// <param name="overmock">The overmock.</param>
     /// <returns>The result of the operator.</returns>
     public static bool operator ==(object other, Overmock<T> overmock)
     {
@@ -81,8 +81,8 @@ public class Overmock<T> : Verifiable<T>, IOvermock<T>, IExpectAnyInvocation, IE
     /// <summary>
     /// Implements the != operator.
     /// </summary>
-    /// <param name="overmock">The overmock.</param>
     /// <param name="other">The other.</param>
+    /// <param name="overmock">The overmock.</param>
     /// <returns>The result of the operator.</returns>
     public static bool operator !=(object other, Overmock<T> overmock)
     {
