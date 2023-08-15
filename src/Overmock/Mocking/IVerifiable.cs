@@ -10,12 +10,12 @@ namespace Overmock.Mocking
 	[EditorBrowsable(EditorBrowsableState.Never)]
 	public interface IVerifiable : IFluentInterface
 	{
-		/// <summary>
-		/// Gets the type.
-		/// </summary>
-		/// <value>The type.</value>
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		Type Type { get; }
+		///// <summary>
+		///// Gets the type.
+		///// </summary>
+		///// <value>The type.</value>
+		//[EditorBrowsable(EditorBrowsableState.Never)]
+		//Type Type { get; }
 
 		/// <summary>
 		/// Verifies this instance.

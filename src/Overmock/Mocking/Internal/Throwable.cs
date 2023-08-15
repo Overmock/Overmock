@@ -1,14 +1,14 @@
 ﻿namespace Overmock.Mocking.Internal
 {
 
-	/// <summary>
-	/// Class Throwable.
-	/// Implements the <see cref="Overmock.Mocking.Internal.Overridable" />
-	/// Implements the <see cref="Overmock.Mocking.IThrowable" />
-	/// </summary>
-	/// <seealso cref="Overmock.Mocking.Internal.Overridable" />
-	/// <seealso cref="Overmock.Mocking.IThrowable" />
-	internal abstract class Throwable : Overridable, IThrowable
+    /// <summary>
+    /// Class Throwable.
+    /// Implements the <see cref="Overridable" />
+    /// Implements the <see cref="IThrowable" />
+    /// </summary>
+    /// <seealso cref="Overridable" />
+    /// <seealso cref="IThrowable" />
+    internal abstract class Throwable : Overridable, IThrowable
 	{
 		/// <summary>
 		/// Gets the exception.

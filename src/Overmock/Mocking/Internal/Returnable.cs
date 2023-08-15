@@ -24,7 +24,7 @@
 		}
 
 		/// <summary>
-		/// Callses the specified function.
+		/// Calls the specified function.
 		/// </summary>
 		/// <param name="func">The function.</param>
 		/// <param name="times">The times.</param>
@@ -35,7 +35,7 @@
 		}
 
 		/// <summary>
-		/// Returnses the specified value.
+		/// Returns the specified value.
 		/// </summary>
 		/// <param name="value">The value.</param>
 		public void Returns(TReturn value)
@@ -44,16 +44,26 @@
 		}
 
 		/// <summary>
-		/// Returnses the specified function.
+		/// Returns the specified function.
 		/// </summary>
 		/// <param name="func">The function.</param>
 		public void Returns(Func<TReturn> func)
 		{
 			Func = c => func();
-		}
+        }
 
-		/// <inheritdoc />
-		protected override void AddOverridesTo(List<IOverride> overrides)
+        public override void Verify()
+        {
+            var overrides = GetOverrides();
+
+            foreach (var item in overrides)
+            {
+                item.Verify();
+            }
+        }
+
+        /// <inheritdoc />
+        protected override void AddOverridesTo(List<IOverride> overrides)
 		{
 			if (Func != null)
 			{

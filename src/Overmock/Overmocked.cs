@@ -59,9 +59,9 @@ namespace Overmock
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="target">The target.</param>
-        /// <param name="use">The use.</param>
+        /// <param name="given">The use.</param>
         /// <returns>ISetup&lt;T&gt;.</returns>
-        public static ISetup<T> Mock<T>(T target, Expression<Action<T>> use) where T : class
+        public static ISetup<T> Mock<T>(T target, Expression<Action<T>> given) where T : class
         {
             Overmock<T>? overmock = null;
 
@@ -80,7 +80,7 @@ namespace Overmock
                 overmock = new Overmock<T>();
             }
 
-            return overmock.Override(use);
+            return overmock.Override(given);
         }
 
         /// <summary>
@@ -89,9 +89,9 @@ namespace Overmock
         /// <typeparam name="T"></typeparam>
         /// <typeparam name="TReturn">The type of the t return.</typeparam>
         /// <param name="target">The target.</param>
-        /// <param name="use">The use.</param>
+        /// <param name="given">The use.</param>
         /// <returns>ISetup&lt;T&gt;.</returns>
-        public static ISetup<T, TReturn> Mock<T, TReturn>(T target, Expression<Func<T, TReturn>> use) where T : class
+        public static ISetup<T, TReturn> Mock<T, TReturn>(T target, Expression<Func<T, TReturn>> given) where T : class
         {
             Overmock<T>? overmock = null;
 
@@ -110,7 +110,7 @@ namespace Overmock
                 overmock = new Overmock<T>();
             }
 
-            return overmock.Override(use);
+            return overmock.Override(given);
         }
 
         /// <summary>
@@ -118,11 +118,11 @@ namespace Overmock
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="overmock">The overmock.</param>
-        /// <param name="use">The use.</param>
+        /// <param name="given">The use.</param>
         /// <returns>ISetup&lt;T&gt;.</returns>
-        public static ISetup<T> Mock<T>(IOvermock<T> overmock, Expression<Action<T>> use) where T : class
+        public static ISetup<T> Mock<T>(IOvermock<T> overmock, Expression<Action<T>> given) where T : class
         {
-            return overmock.Override(use);
+            return overmock.Override(given);
         }
 
         /// <summary>
@@ -131,11 +131,11 @@ namespace Overmock
         /// <typeparam name="T"></typeparam>
         /// <typeparam name="TReturn">The type of the t return.</typeparam>
         /// <param name="overmock">The overmock.</param>
-        /// <param name="use">The use.</param>
+        /// <param name="given">The use.</param>
         /// <returns>ISetup&lt;T&gt;.</returns>
-        public static ISetup<T, TReturn> Mock<T, TReturn>(IOvermock<T> overmock, Expression<Func<T, TReturn>> use) where T : class
+        public static ISetup<T, TReturn> Mock<T, TReturn>(IOvermock<T> overmock, Expression<Func<T, TReturn>> given) where T : class
         {
-            return overmock.Override(use);
+            return overmock.Override(given);
         }
 
         /// <summary>

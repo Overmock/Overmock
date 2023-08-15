@@ -6,13 +6,15 @@ namespace Overmock.Mocking.Internal
 	/// Implements the <see cref="Overmock.Mocking.IOverride" />
 	/// </summary>
 	/// <seealso cref="Overmock.Mocking.IOverride" />
-	public class ReturnProviderOverride : IOverride
+	public class ReturnProviderOverride : Verifiable, IOverride
 	{
+        private bool _calledProvider;
+
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ReturnProviderOverride"/> class.
 		/// </summary>
 		/// <param name="returnProvider">The return provider.</param>
-		internal ReturnProviderOverride(Func<object> returnProvider)
+		internal ReturnProviderOverride(Func<object> returnProvider) 
 		{
 			ReturnProvider = returnProvider;
 		}
@@ -30,7 +32,20 @@ namespace Overmock.Mocking.Internal
 		/// <returns>System.Nullable&lt;System.Object&gt;.</returns>
 		public object? Handle(OvermockContext context)
 		{
-			return ReturnProvider();
+            _calledProvider = true;
+
+            return ReturnProvider();
 		}
-	}
+
+        /// <summary>
+        /// 
+        /// </summary>
+        protected override void Verify()
+        {
+            if (!_calledProvider)
+            {
+                throw new VerifyException(this, "ReturnProvider has not been invoked.");
+            }
+        }
+    }
 }

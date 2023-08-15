@@ -68,7 +68,7 @@ namespace Overmock.Mocking.Internal
 		{
 			return Method;
 		}
-	}
+    }
 
 	/// <summary>
 	/// Class MethodCall.
