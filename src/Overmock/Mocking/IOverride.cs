@@ -1,10 +1,10 @@
 ﻿
 namespace Overmock.Mocking
 {
-	/// <summary>
-	/// Represents a specific override of an overmock.
-	/// </summary>
-	public interface IOverride
+    /// <summary>
+    /// Represents a specific override of an overmock.
+    /// </summary>
+    public interface IOverride : IVerifiable
 	{
 		/// <summary>
 		/// Handles the specified context.

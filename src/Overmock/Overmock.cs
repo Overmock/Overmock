@@ -160,8 +160,16 @@ public class Overmock<T> : Verifiable<T>, IOvermock<T>, IExpectAnyInvocation, IE
     /// <inheritdoc/>
     protected override void Verify()
 	{
-		throw new VerifyException(this);
-	}
+        foreach (var method in _methods)
+        {
+            method.Verify();
+        }
+
+        foreach (var property in _properties)
+        {
+            property.Verify();
+        }
+    }
 
 	/// <summary>
 	/// Adds the method.

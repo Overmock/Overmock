@@ -6,12 +6,8 @@ namespace Overmock.Mocking.Internal
 	/// Implements the <see cref="Overmock.Mocking.IOverride" />
 	/// </summary>
 	/// <seealso cref="Overmock.Mocking.IOverride" />
-	internal sealed class MethodCallOverride : IOverride
+	internal sealed class MethodCallOverride : Override
 	{
-		/// <summary>
-		/// The call count
-		/// </summary>
-		private int _callCount;
 		/// <summary>
 		/// Initializes a new instance of the <see cref="MethodCallOverride"/> class.
 		/// </summary>
@@ -35,15 +31,15 @@ namespace Overmock.Mocking.Internal
 		/// <value>The times.</value>
 		public Times Times { get; }
 
-		/// <summary>
-		/// Handles the specified context.
-		/// </summary>
-		/// <param name="context">The context.</param>
-		/// <returns>System.Nullable&lt;System.Object&gt;.</returns>
-		public object? Handle(OvermockContext context)
-		{
-			Times.ThrowIfInvalid(++_callCount);
-			return Overmock.DynamicInvoke(context);
-		}
-	}
+        public override void Verify()
+        {
+            Times.ThrowIfInvalid(TimesCalled);
+        }
+
+        protected override object? HandleCore(OvermockContext context)
+        {
+            Times.ThrowIfInvalid(TimesCalled);
+            return Overmock.DynamicInvoke(context);
+        }
+    }
 }

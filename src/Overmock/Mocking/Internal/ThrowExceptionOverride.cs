@@ -6,8 +6,9 @@ namespace Overmock.Mocking.Internal
 	/// Implements the <see cref="Overmock.Mocking.IOverride" />
 	/// </summary>
 	/// <seealso cref="Overmock.Mocking.IOverride" />
-	public class ThrowExceptionOverride : IOverride
-	{
+	public class ThrowExceptionOverride : Verifiable, IOverride
+    {
+        private bool _thrownException;
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ThrowExceptionOverride"/> class.
 		/// </summary>
@@ -30,7 +31,21 @@ namespace Overmock.Mocking.Internal
 		/// <returns>System.Nullable&lt;System.Object&gt;.</returns>
 		public object? Handle(OvermockContext context)
 		{
-			throw Exception;
+            _thrownException = true;
+
+            throw Exception;
 		}
-	}
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <exception cref="VerifyException"></exception>
+        protected override void Verify()
+        {
+            if (!_thrownException)
+            {
+                throw new VerifyException(this, "Exception has not been thrown.");
+            }
+        }
+    }
 }

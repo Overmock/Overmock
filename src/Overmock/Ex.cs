@@ -42,7 +42,7 @@ namespace Overmock
 			public static string General(IVerifiable verifiable, string? message = null, Exception? innerException = default)
             {
                 return string.IsNullOrWhiteSpace(message)
-                    ? $"{verifiable.Type} failed with generic message: {innerException?.Message ?? "innerException is null"}"
+                    ? $"{verifiable.GetType()} failed with generic message: {innerException?.Message ?? "innerException is null"}"
                     : message;
             }
 
@@ -53,7 +53,7 @@ namespace Overmock
 			/// <returns>System.String.</returns>
 			public static string NotAnInterfaceType(IOvermock target)
             {
-                return $"Type is not an interface: {target.Type.FullName}";
+                return $"Type is not an interface: {target.GetTarget()?.GetType().FullName}";
             }
         }
 	}

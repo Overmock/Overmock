@@ -1,14 +1,14 @@
 ﻿
 namespace Overmock.Mocking.Internal
 {
-	/// <summary>
-	/// Class Callable.
-	/// Implements the <see cref="Overmock.Mocking.Internal.Throwable" />
-	/// Implements the <see cref="Overmock.Mocking.ICallable" />
-	/// </summary>
-	/// <seealso cref="Overmock.Mocking.Internal.Throwable" />
-	/// <seealso cref="Overmock.Mocking.ICallable" />
-	internal abstract class Callable : Throwable, ICallable
+    /// <summary>
+    /// Class Callable.
+    /// Implements the <see cref="Throwable" />
+    /// Implements the <see cref="ICallable" />
+    /// </summary>
+    /// <seealso cref="Throwable" />
+    /// <seealso cref="ICallable" />
+    internal abstract class Callable : Throwable, ICallable
 	{
 		/// <summary>
 		/// Gets the action.
@@ -50,15 +50,15 @@ namespace Overmock.Mocking.Internal
 		}
 	}
 
-	/// <summary>
-	/// Class Callable.
-	/// Implements the <see cref="Overmock.Mocking.Internal.Callable" />
-	/// Implements the <see cref="Overmock.Mocking.ICallable{T}" />
-	/// </summary>
-	/// <typeparam name="T"></typeparam>
-	/// <seealso cref="Overmock.Mocking.Internal.Callable" />
-	/// <seealso cref="Overmock.Mocking.ICallable{T}" />
-	internal abstract class Callable<T> : Callable, ICallable<T>
+    /// <summary>
+    /// Class Callable.
+    /// Implements the <see cref="Callable" />
+    /// Implements the <see cref="ICallable{T}" />
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <seealso cref="Callable" />
+    /// <seealso cref="ICallable{T}" />
+    internal abstract class Callable<T> : Callable, ICallable<T>
 	{
 	}
 }

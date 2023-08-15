@@ -5,7 +5,7 @@ namespace Overmock.Mocking
 	/// <summary>
 	/// Interface IOverridable
 	/// </summary>
-	public interface IOverridable
+	public interface IOverridable : IVerifiable
 	{
 		/// <summary>
 		/// Gets the overrides for this overmock.
