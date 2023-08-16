@@ -10,10 +10,16 @@ namespace Kimono
     public class InvocationContext : IInvocationContext
 	{
 		private readonly Func<object, object[]?, object?> _invokeTargetHandler;
-		private readonly object[] _arguments;
-		private readonly object? _target;
+        private readonly IInterceptor _interceptor;
+        private readonly RuntimeContext _runtimeContext;
+        private readonly RuntimeParameter[] _runtimeParameters;
+        private readonly object? _target;
+        private readonly MethodInfo _method;
+        private readonly MemberInfo _member;
 
-		private object? _defaultReturnValue;
+        private Parameters? _parameters;
+        private object[] _arguments;
+        private object? _defaultReturnValue;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="InvocationContext"/> class.
@@ -21,57 +27,61 @@ namespace Kimono
 		/// <param name="runtimeContext">The runtime context.</param>
 		/// <param name="interceptor">The interceptor.</param>
 		/// <param name="parameters">The parameters.</param>
-		public InvocationContext(RuntimeContext runtimeContext, IInterceptor interceptor, object[] parameters)
-		{
-			_arguments = parameters;
-			_target = interceptor.GetTarget();
-			_invokeTargetHandler = runtimeContext.GetTargetInvocationHandler();
+		public InvocationContext(RuntimeContext runtimeContext, IInterceptor interceptor, RuntimeParameter[] parameters)
+        {
+            _arguments = Array.Empty<object>();
 
-			Interceptor = interceptor;
-			MemberName = runtimeContext.MemberName;
-			Parameters = runtimeContext.MapParameters(parameters);
-			ProxiedMember = runtimeContext.ProxiedMember;
-			
-			var member = runtimeContext.ProxiedMember.Member;
+            _runtimeParameters = parameters;
+            _runtimeContext = runtimeContext;
+            _interceptor = interceptor;
 
-			Member = member;
+            _target = interceptor.GetTarget();
+            _member = runtimeContext.ProxiedMember.Member;
+            _method = runtimeContext.ProxiedMember.Method;
+
+            _invokeTargetHandler = runtimeContext.GetTargetInvocationHandler();
 		}
 
 		/// <summary>
 		/// Gets the interceptor.
 		/// </summary>
 		/// <value>The interceptor.</value>
-		public IInterceptor Interceptor { get; }
-
-		/// <summary>
-		/// Gets the member.
-		/// </summary>
-		/// <value>The member.</value>
-		public MemberInfo Member { get; }
+		public IInterceptor Interceptor => _interceptor;
 
 		/// <summary>
 		/// Gets the name of the member.
 		/// </summary>
 		/// <value>The name of the member.</value>
-		public string MemberName { get; }
+		public string MemberName => _member.Name;
 
-		/// <summary>
-		/// Gets the method.
-		/// </summary>
-		/// <value>The method.</value>
-		public MethodInfo Method => ProxiedMember.Method;
+        /// <summary>
+        /// Gets the member.
+        /// </summary>
+        /// <value>The member.</value>
+        public MemberInfo Member => _member;
+
+        /// <summary>
+        /// Gets the method.
+        /// </summary>
+        /// <value>The method.</value>
+        public MethodInfo Method => _method;
 
 		/// <summary>
 		/// Gets the parameters.
 		/// </summary>
 		/// <value>The parameters.</value>
-		public Parameters Parameters { get; }
+		public Parameters? Parameters
+        {
+            get
+            {
+                if (_parameters is null)
+                {
+                    _parameters = new Parameters(_runtimeParameters, _arguments);
+                }
 
-		/// <summary>
-		/// Gets the proxied member.
-		/// </summary>
-		/// <value>The proxied member.</value>
-		internal IProxyMember ProxiedMember { get; }
+                return _parameters;
+            }
+        }
 
 		/// <summary>
 		/// Gets or sets the return value.
@@ -102,24 +112,19 @@ namespace Kimono
 		{
 			// If the target's member has already been called and they
 			// haven't forced the invocation, then return to the caller;
-			if (TargetInvoked && !force)
-			{
-				return;
-			}
+			if (TargetInvoked && !force) { return; }
 
-			if (_target is null)
-			{
-				return;
-			}
+            // If the target's null then we don't have one to call;
+            if (_target is null) { return; }
 
 			var returnValue = _invokeTargetHandler(_target, _arguments);
 
-			if (setReturnValue)
+            TargetInvoked = true;
+
+            if (setReturnValue)
 			{
 				ReturnValue = returnValue;
 			}
-
-			TargetInvoked = true;
 		}
 
 		/// <summary>
@@ -137,19 +142,27 @@ namespace Kimono
 		/// <returns><c>true</c> if XXXX, <c>false</c> otherwise.</returns>
 		internal bool MemberReturnsValueType()
 		{
-			var member = ProxiedMember.Member;
-
-			if (member is MethodInfo method)
+			if (_member is MethodInfo method)
 			{
 				return method.ReturnType.IsValueType;
 			}
 
-			if (member is PropertyInfo property)
+			if (_member is PropertyInfo property)
 			{
 				return property.PropertyType.IsValueType;
 			}
 
 			return false;
-		}
-	}
+        }
+
+        internal InvocationContext Reset(object[] parameters)
+        {
+            _arguments = parameters;
+            _parameters?.SetParameterValues(parameters);
+            
+            TargetInvoked = false;
+
+            return this;
+        }
+    }
 }

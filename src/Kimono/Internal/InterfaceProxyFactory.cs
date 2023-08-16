@@ -46,7 +46,11 @@ namespace Kimono.Internal
 
             var context = (ProxyBuilderContext)builderContext;
 
-            ImplementConstructor(context, context.ProxyType.GetConstructor(bindingFlags, Type.EmptyTypes)!);
+            ImplementConstructor(context, context.ProxyType.GetConstructor(bindingFlags, new[]
+            {
+                Constants.ProxyContextType,
+                Constants.IInterceptorType
+            })!);
 
             (var methods, var properties) = AddInterfaceImplementations(context);
 			properties = properties.Distinct();
@@ -171,9 +175,9 @@ namespace Kimono.Internal
 
 		private static object CreateProxy(ProxyContext context, IInterceptor interceptor, Type proxyType)
 		{
-			var instance = Activator.CreateInstance(proxyType)!;
+			var instance = Activator.CreateInstance(proxyType, context, interceptor)!;
 
-			((IProxy)instance).InitializeProxyContext(interceptor, context);
+			//((IProxy)instance).InitializeProxyContext(interceptor, context);
 
 			return instance;
 		}

@@ -24,7 +24,7 @@ namespace Microsoft.Extensions.DependencyInjection
 		{
 			services.TryAddScoped<TImplementation>();
 			return services.AddScoped<TInterface>(s =>
-				Intercept.TargetedWithCallback<TInterface, TImplementation>(s.GetRequiredService<TImplementation>(), memberInvoked));
+				Intercept.WithCallback<TInterface, TImplementation>(s.GetRequiredService<TImplementation>(), memberInvoked));
 		}
 	}
 }

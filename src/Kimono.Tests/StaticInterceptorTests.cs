@@ -85,7 +85,7 @@ namespace Kimono.Tests
 			var called = false;
 			var saveCalled = false;
 
-			var interceptor = Intercept.TargetedWithCallback<IRepository, Repository>(new Repository(), context => {
+			var interceptor = Intercept.WithCallback<IRepository, Repository>(new Repository(), context => {
 				called = true;
 				if (context.MemberName == "Save")
 				{
@@ -104,7 +104,7 @@ namespace Kimono.Tests
 		[TestMethod]
 		public void TargetedWithHandlersInterceptorTest()
 		{
-			var interceptor = Intercept.TargetedWithHandlers<IRepository, Repository>(new Repository(), new TestHandler());
+			var interceptor = Intercept.WithHandlers<IRepository, Repository>(new Repository(), new TestHandler());
 
 			var returnedTrue = interceptor.Save(new Model { Id = 69 });
 
@@ -117,7 +117,7 @@ namespace Kimono.Tests
 			var firstCalled = false;
 			var secondCalled = false;
 
-			var interceptor = Intercept.TargetedWithInovcationChain<IRepository, Repository>(new Repository(), builder => {
+			var interceptor = Intercept.WithChain<IRepository, Repository>(new Repository(), builder => {
 				builder.Add((next, context) => {
 					firstCalled = true;
 					if (!secondCalled)
@@ -144,7 +144,7 @@ namespace Kimono.Tests
 			var firstCalled = false;
 			var secondCalled = false;
 
-			var interceptor = Intercept.TargetedWithInovcationChain<IRepository, Repository>(new Repository(), builder => {
+			var interceptor = Intercept.WithChain<IRepository, Repository>(new Repository(), builder => {
 				builder.Add((next, context) => {
 					firstCalled = true;
 				})

@@ -23,7 +23,7 @@ namespace Kimono.Tests.Examples
 		}
 		public void TargetWithCallbackInterceptorExample()
 		{
-			var interceptor = Intercept.TargetedWithCallback<IRepository, Repository>(new Repository(), context =>
+			var interceptor = Intercept.WithCallback<IRepository, Repository>(new Repository(), context =>
 			{
 				context.Invoke();
 
@@ -46,13 +46,13 @@ namespace Kimono.Tests.Examples
 		}
 		public void TargetWithHandlersInterceptorExample()
 		{
-			var interceptor = Intercept.TargetedWithHandlers<IRepository, Repository>(new Repository(), new BazReturnInvocationHandler());
+			var interceptor = Intercept.WithHandlers<IRepository, Repository>(new Repository(), new BazReturnInvocationHandler());
 
 			interceptor.Save(new Model { Id = 20 });
 		}
 		public void NoTargetWithInvocationChainInterceptorExample()
 		{
-			var interceptor = Intercept.TargetedWithInovcationChain<IRepository, Repository>(new Repository(), builder =>
+			var interceptor = Intercept.WithChain<IRepository, Repository>(new Repository(), builder =>
 			{
 				builder.Add((next, context) =>
 				{

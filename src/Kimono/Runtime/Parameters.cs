@@ -1,4 +1,6 @@
 ﻿using System.Collections;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace Kimono
 {
@@ -7,10 +9,12 @@ namespace Kimono
 	/// </summary>
 	public class Parameters : IReadOnlyList<object>
 	{
-		/// <summary>
-		/// The parameters
-		/// </summary>
-		private readonly (RuntimeParameter Parameter, object Value)[] _parameters;
+        private object[] _parameterValues;
+
+        /// <summary>
+        /// The parameters
+        /// </summary>
+        private readonly (RuntimeParameter Parameter, object? Value)[] _parameters;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Parameters"/> class.
@@ -19,7 +23,8 @@ namespace Kimono
 		/// <param name="parameterValues">The parameter values.</param>
 		public Parameters(RuntimeParameter[] parameters, object[] parameterValues)
 		{
-			_parameters = new (RuntimeParameter, object)[parameters.Length];
+            _parameterValues = parameterValues;
+			_parameters = new (RuntimeParameter, object?)[parameters.Length];
 
 			for (int i = 0; i < parameters.Length; i++)
 			{
@@ -41,12 +46,18 @@ namespace Kimono
 		/// <returns>System.Object.</returns>
 		public object this[string name] => Get(name);
 
-		/// <summary>
-		/// Gets the specified index.
-		/// </summary>
-		/// <param name="index">The index.</param>
-		/// <returns>System.Object.</returns>
-		public object Get(int index)
+        /// <summary>
+        /// Gets the count.
+        /// </summary>
+        /// <value>The count.</value>
+        public int Count => _parameters.Length;
+
+        /// <summary>
+        /// Gets the specified index.
+        /// </summary>
+        /// <param name="index">The index.</param>
+        /// <returns>System.Object.</returns>
+        public object? Get(int index)
 		{
 			return _parameters[index].Value;
 		}
@@ -57,9 +68,9 @@ namespace Kimono
 		/// <typeparam name="TParam">The type of the t parameter.</typeparam>
 		/// <param name="index">The index.</param>
 		/// <returns>TParam.</returns>
-		public TParam Get<TParam>(int index)
+		public TParam? Get<TParam>(int index)
 		{
-			return (TParam)Get(index);
+			return (TParam?)Get(index);
 		}
 
 		/// <summary>
@@ -68,7 +79,7 @@ namespace Kimono
 		/// <param name="name">The name.</param>
 		/// <returns>System.Object.</returns>
 		/// <exception cref="System.IndexOutOfRangeException"></exception>
-		public object Get(string name)
+		public object? Get(string name)
 		{
 			var param = Array.Find(_parameters, p => p.Parameter.Name == name);
 
@@ -86,22 +97,30 @@ namespace Kimono
 		/// <typeparam name="TParam">The type of the t parameter.</typeparam>
 		/// <param name="name">The name.</param>
 		/// <returns>TParam.</returns>
-		public TParam Get<TParam>(string name)
+		public TParam? Get<TParam>(string name)
 		{
 			return (TParam)Get(name);
 		}
 
-		/// <summary>
-		/// Gets the count.
-		/// </summary>
-		/// <value>The count.</value>
-		public int Count => _parameters.Length;
+        internal void SetParameterValues(object[] parameters)
+        {
+            _parameterValues = parameters;
 
-		/// <summary>
-		/// Gets the enumerator.
-		/// </summary>
-		/// <returns>IEnumerator&lt;System.Object&gt;.</returns>
-		public IEnumerator<object> GetEnumerator()
+            ref var reference = ref MemoryMarshal.GetReference(_parameters.AsSpan());
+
+            for (int i = 0; i < _parameters.Length; i++)
+            {
+                ref var parameter = ref Unsafe.Add(ref reference, i);
+                
+                parameter.Item2 = parameters[i];
+            }
+        }
+
+        /// <summary>
+        /// Gets the enumerator.
+        /// </summary>
+        /// <returns>IEnumerator&lt;System.Object&gt;.</returns>
+        public IEnumerator<object?> GetEnumerator()
 		{
 			foreach (var item in _parameters)
 			{

@@ -1,17 +1,20 @@
 ﻿using BenchmarkDotNet.Attributes;
 using Castle.DynamicProxy;
 using Kimono;
+using System.Reflection;
 
 namespace Overmock.Benchmarks
 {
-	public interface IBenchmarkTest
+	public interface IBenchmark
 	{
 		void VoidNoParams();
 		bool BoolNoParams();
 		object ObjectNoParams();
-	}
+        void VoidWith3Params(string name, int age, List<string> list);
 
-	public class BenchmarkTest : IBenchmarkTest
+    }
+
+	public class Benchmark : IBenchmark
 	{
 		public bool BoolNoParams()
 		{
@@ -26,118 +29,76 @@ namespace Overmock.Benchmarks
 		public void VoidNoParams()
 		{
 		}
-	}
 
-	public class BenchmarkDecorator : IBenchmarkTest
-	{
-		private readonly BenchmarkTest _benchmark;
-
-		public BenchmarkDecorator(BenchmarkTest benchmark)
-		{
-			_benchmark = benchmark;
-		}
-
-		public bool BoolNoParams()
-		{
-			return _benchmark.BoolNoParams();
-		}
-
-		public object ObjectNoParams()
-		{
-			return _benchmark.ObjectNoParams();
-		}
-
-		public void VoidNoParams()
-		{
-			_benchmark.VoidNoParams();
-		}
+        public void VoidWith3Params(string name, int age, List<string> list)
+        {
+        }
 	}
 
 	[MemoryDiagnoser]
+    [HardwareCounters]
 	public class TypeInterceptorBenchmark
 	{
-		private static readonly BenchmarkTest _benchmarkClass = new BenchmarkTest();
-
-		private static readonly IBenchmarkTest _kimonoProxy;
-
-		private static readonly IBenchmarkTest _benchmarkDecerator;
-
-		//private static readonly Moq.Mock<IBenchmarkTest> _moq;
-		//private static readonly IBenchmarkTest _moqProxy;
-
-		//private static readonly IBenchmarkTest _simplemock;
-
-		private static readonly IBenchmarkTest _castleProxy;
+		private static readonly Benchmark _benchmarkClass = new Benchmark();
+		private static readonly IBenchmark _kimonoProxy;
+		private static readonly IBenchmark _dispatchProxy;
+		private static readonly IBenchmark _castleProxy;
 
 		static TypeInterceptorBenchmark()
 		{
-			_kimonoProxy = Intercept.TargetedWithCallback<IBenchmarkTest, BenchmarkTest>(_benchmarkClass, c =>
-			{
-				c.Invoke();
-			});
+			_kimonoProxy = Intercept.WithHandlers<IBenchmark, Benchmark>(_benchmarkClass, new KimonoInvocationHandler());
 
-			_benchmarkDecerator = new BenchmarkDecorator(_benchmarkClass);
+            _dispatchProxy = DispatchProxy.Create<IBenchmark, DotnetProxy>();
 
-			var interceptors = new List<Castle.DynamicProxy.IInterceptor>();
-			var voidMethodInterceptor = new MethodInterceptor();
-			interceptors.Add(voidMethodInterceptor);
-
-			var generator = new Castle.DynamicProxy.ProxyGenerator();
-			_castleProxy = generator.CreateInterfaceProxyWithTarget<IBenchmarkTest>(_benchmarkClass, interceptors.ToArray());
-
-			//_moq = new Moq.Mock<IBenchmarkTest>();
-			//_moqProxy = _moq.Object;
-
-			//_simplemock = Simple.Mocking.Mock.Interface<IBenchmarkTest>();
-			//Simple.Mocking.Expect.MethodCall(() => _simplemock.VoidNoParams()).Executes(() =>
-			//{
-			//	_benchmarkClass.VoidNoParams();
-			//});
-
-			//_moq.Setup(m => m.VoidNoParams()).Callback(new Moq.InvocationAction(i =>
-			//{
-			//	_benchmarkClass.VoidNoParams();
-			//}));
-
-			//_moqProxy = _moq.Object;
+            var generator = new ProxyGenerator();
+            var interceptors = new List<Castle.DynamicProxy.IInterceptor> { new CastleInterceptor() };
+			_castleProxy = generator.CreateInterfaceProxyWithTarget<IBenchmark>(_benchmarkClass, interceptors.ToArray());
 		}
 
 		[Benchmark]
-		public void TypeInterceptor()
+		public void Kimono()
 		{
 			_kimonoProxy.VoidNoParams();
 		}
 
 		[Benchmark]
-		public void Decorator()
+		public void Dotnet()
 		{
-			_benchmarkDecerator.VoidNoParams();
+			_dispatchProxy.VoidNoParams();
 		}
 
 		[Benchmark]
-		public void CastleProxy()
+		public void Castle()
 		{
 			_castleProxy.VoidNoParams();
 		}
-
-		//[Benchmark]
-		//public void SimpleMockProxy()
-		//{
-		//	_simplemock.VoidNoParams();
-		////}
-
-		//[Benchmark]
-		//public void MoqProxy()
-		//{
-		//	_moqProxy.VoidNoParams();
-		//}
 	}
 
-	public class MethodInterceptor : Castle.DynamicProxy.IInterceptor
+	public class CastleInterceptor : Castle.DynamicProxy.IInterceptor
 	{
 		public void Intercept(IInvocation invocation)
 		{
 			invocation.Proceed();
 		}
-	}
+    }
+
+    public class KimonoInvocationHandler : IInvocationHandler
+    {
+        public void Handle(IInvocationContext context)
+        {
+            context.Invoke();
+        }
+    }
+
+    public class DotnetProxy : DispatchProxy
+    {
+        public IBenchmark? Benchmark { get; set; }
+
+        protected override object? Invoke(MethodInfo? targetMethod, object?[]? args)
+        {
+            Benchmark?.VoidNoParams();
+
+            return null;
+        }
+    }
 }

@@ -35,10 +35,10 @@ namespace Kimono
 		/// </summary>
 		public const string InvokeMethodName = "Invoke";
 
-		/// <summary>
-		/// The initialize kimono context method name
-		/// </summary>
-		public const string InitializeKimonoContextMethodName = nameof(IProxy.InitializeProxyContext);
+		///// <summary>
+		///// The initialize kimono context method name
+		///// </summary>
+		//public const string InitializeKimonoContextMethodName = nameof(IProxy.InitializeProxyContext);
 
 		/// <summary>
 		/// The object type
@@ -85,10 +85,15 @@ namespace Kimono
 		/// </summary>
 		public static readonly Type ProxyContextType = typeof(ProxyContext);
 
-		/// <summary>
-		/// The disposable type
-		/// </summary>
-		public static readonly Type DisposableType = typeof(IDisposable);
+        /// <summary>
+        /// The kimono context type
+        /// </summary>
+        public static readonly Type IInterceptorType = typeof(IInterceptor);
+
+        /// <summary>
+        /// The disposable type
+        /// </summary>
+        public static readonly Type DisposableType = typeof(IDisposable);
 
 		/// <summary>
 		/// The disposable method.

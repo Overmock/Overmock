@@ -13,12 +13,12 @@
 		/// <value>The interceptor.</value>
 		IInterceptor Interceptor { get; }
 
-		/// <summary>
-		/// Initializes the proxy context.
-		/// </summary>
-		/// <param name="interceptor">The interceptor.</param>
-		/// <param name="context">The context.</param>
-		void InitializeProxyContext(IInterceptor interceptor, ProxyContext context);
+		///// <summary>
+		///// Initializes the proxy context.
+		///// </summary>
+		///// <param name="interceptor">The interceptor.</param>
+		///// <param name="context">The context.</param>
+		//void InitializeProxyContext(IInterceptor interceptor, ProxyContext context);
 
 		/// <summary>
 		/// Gets the type of the target.

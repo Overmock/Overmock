@@ -28,7 +28,7 @@
         /// <returns>InvocationContext.</returns>
         internal InvocationContext GetInvocationContext(int methodId, IProxy proxy, object[] parameters)
         {
-            return _overrides[methodId].CreateInvocationContext(proxy.Interceptor, parameters);
+            return _overrides[methodId].GetInvocationContext(proxy.Interceptor, parameters);
         }
     }
 }

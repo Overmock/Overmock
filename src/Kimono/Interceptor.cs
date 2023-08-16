@@ -58,7 +58,22 @@ namespace Kimono
 		/// </summary>
 		/// <returns>System.Nullable&lt;System.Object&gt;.</returns>
 		protected abstract object? GetTarget();
-	}
+
+        /// <inheritdoc />
+        object? IInterceptor.MemberInvoked(ProxyContext proxyContext, IProxy proxy, int methodId, object[] parameters)
+        {
+            var context = proxyContext.GetInvocationContext(methodId, proxy, parameters);
+
+            MemberInvoked(context);
+
+            if (context.ReturnValue == null && context.MemberReturnsValueType())
+            {
+                return context.GetReturnTypeDefaultValue();
+            }
+
+            return context.ReturnValue;
+        }
+    }
 
 	/// <summary>
 	/// Class Interceptor.

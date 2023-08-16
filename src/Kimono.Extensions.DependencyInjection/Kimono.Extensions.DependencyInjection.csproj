@@ -9,7 +9,7 @@
     <AnalysisLevel>7.0-recommended</AnalysisLevel>
     <IncludeSymbols>True</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-	  
+    
     <!-- Nuget -->
     <Title>Kimono.Extensions.DependencyInjection</Title>
     <Description>Kimono.Extensions.DependencyInjection contains extension methods for adding of interceptors to DI.</Description>
