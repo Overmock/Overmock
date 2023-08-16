@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Version>0.0.6</Version>
+    <Version>0.0.7-RC01</Version>
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
@@ -9,7 +9,7 @@
     <AnalysisLevel>7.0-recommended</AnalysisLevel>
     <IncludeSymbols>True</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-
+	  
     <!-- Nuget -->
     <Title>Kimono</Title>
     <Description>Kimono is a proxy generation framework that allows for creating proxies for objects and intercepting methods and property invocations.</Description>

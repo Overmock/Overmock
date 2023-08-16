@@ -8,12 +8,12 @@ namespace Overmock.Mocking.Internal
 	/// <seealso cref="Overmock.Mocking.IOverride" />
 	internal sealed class ValueOverride : Verifiable, IOverride
     {
-		/// <summary>
-		/// Initializes a new instance of the <see cref="ValueOverride"/> class.
-		/// </summary>
-		/// <param name="value">The value.</param>
-		public ValueOverride(object value)
-		{
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ValueOverride" /> class.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        public ValueOverride(object value)
+        {
 			Value = value;
 		}
 

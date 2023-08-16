@@ -9,12 +9,12 @@ namespace Overmock.Mocking.Internal
 	public class ThrowExceptionOverride : Verifiable, IOverride
     {
         private bool _thrownException;
-		/// <summary>
-		/// Initializes a new instance of the <see cref="ThrowExceptionOverride"/> class.
-		/// </summary>
-		/// <param name="exception">The exception.</param>
-		internal ThrowExceptionOverride(Exception exception)
-		{
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ThrowExceptionOverride" /> class.
+        /// </summary>
+        /// <param name="exception">The exception.</param>
+        internal ThrowExceptionOverride(Exception exception)
+        {
 			Exception = exception;
 		}
 

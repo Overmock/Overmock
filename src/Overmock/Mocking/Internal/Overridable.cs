@@ -7,10 +7,17 @@ namespace Overmock.Mocking.Internal
 	/// Implements the <see cref="IOverridable" />
 	/// </summary>
 	/// <seealso cref="IOverridable" />
-	internal abstract class Overridable : IOverridable
+	internal abstract class Overridable : Verifiable, IOverridable
 	{
-		/// <inheritdoc />
-		public IEnumerable<IOverride> GetOverrides()
+        private readonly IOverride _exceptionOverride;
+
+        protected Overridable(string name)
+        {
+            _exceptionOverride = new ThrowExceptionOverride(new UnhandledMemberException(name));
+        }
+
+        /// <inheritdoc />
+        public IEnumerable<IOverride> GetOverrides()
 		{
 			var overrides = new List<IOverride>();
 
@@ -18,7 +25,7 @@ namespace Overmock.Mocking.Internal
 
 			if (overrides.Count == 0)
 			{
-				overrides.Add(new ThrowExceptionOverride(new UnhandledMemberException(GetTarget().Name)));
+				overrides.Add(_exceptionOverride);
 			}
 
 			return overrides.AsReadOnly();
@@ -30,7 +37,7 @@ namespace Overmock.Mocking.Internal
 		/// <returns>MemberInfo.</returns>
 		public abstract MemberInfo GetTarget();
 
-        public virtual void Verify()
+        protected override void Verify()
         {
             var overrides = GetOverrides();
 

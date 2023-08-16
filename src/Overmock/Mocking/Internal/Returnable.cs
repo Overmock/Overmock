@@ -11,27 +11,18 @@
 	/// <seealso cref="Overmock.Mocking.IReturnable{TReturn}" />
 	internal abstract class Returnable<T, TReturn> : Callable, IReturnable<TReturn>
 	{
-		/// <summary>
-		/// Gets the function.
-		/// </summary>
-		/// <value>The function.</value>
-		public Func<OvermockContext, TReturn>? Func { get; private set; }
+        protected Returnable(string name) : base(name)
+        {
+        }
 
-		/// <inheritdoc />
-		public override object? GetDefaultReturnValue()
+        /// <summary>
+        /// Calls the specified function.
+        /// </summary>
+        /// <param name="func">The function.</param>
+        /// <param name="times">The times.</param>
+        public void Calls(Func<OvermockContext, TReturn> func, Times times)
 		{
-			return default(TReturn);
-		}
-
-		/// <summary>
-		/// Calls the specified function.
-		/// </summary>
-		/// <param name="func">The function.</param>
-		/// <param name="times">The times.</param>
-		public void Calls(Func<OvermockContext, TReturn> func, Times times)
-		{
-			Func = func;
-			Times = times;
+			Override = new MethodCallOverride(times, c => func(c));
 		}
 
 		/// <summary>
@@ -49,10 +40,10 @@
 		/// <param name="func">The function.</param>
 		public void Returns(Func<TReturn> func)
 		{
-			Func = c => func();
+			Override = new MethodCallOverride(Times.Any, new Func<OvermockContext, object?>(c => func()));
         }
 
-        public override void Verify()
+        protected override void Verify()
         {
             var overrides = GetOverrides();
 
@@ -65,9 +56,9 @@
         /// <inheritdoc />
         protected override void AddOverridesTo(List<IOverride> overrides)
 		{
-			if (Func != null)
+			if (Override != null)
 			{
-				overrides.Add(new MethodCallOverride(overmock: Func, Times));
+				overrides.Add(Override);
 			}
 
 			base.AddOverridesTo(overrides);
