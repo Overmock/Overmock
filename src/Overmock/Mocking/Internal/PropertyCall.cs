@@ -23,7 +23,7 @@ namespace Overmock.Mocking.Internal
 		/// Initializes a new instance of the <see cref="PropertyCall{T, TReturn}"/> class.
 		/// </summary>
 		/// <param name="expression">The expression.</param>
-		internal PropertyCall(MemberExpression expression)
+		internal PropertyCall(MemberExpression expression) : base(expression.Member.Name)
 		{
 			_expression = expression;
 		}

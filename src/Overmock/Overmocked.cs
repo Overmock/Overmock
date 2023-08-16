@@ -1,4 +1,6 @@
-﻿using System.Collections.Concurrent;
+﻿using Kimono;
+using System.Collections.Concurrent;
+using System.Diagnostics;
 using System.Linq.Expressions;
 
 namespace Overmock
@@ -8,17 +10,25 @@ namespace Overmock
 	/// </summary>
 	public static class Overmocked
 	{
-		/// <summary>
-		/// The overmocks
-		/// </summary>
 		private static readonly ConcurrentQueue<IOvermock> _overmocks = new ConcurrentQueue<IOvermock>();
+        
+        private static IInvocationHandler? _invocationHandler;
 
 		/// <summary>
 		/// Initializes static members of the <see cref="Overmocked"/> class.
 		/// </summary>
 		static Overmocked()
-		{
-		}
+        {
+        }
+
+        /// <summary>
+        /// Uses the specified handler.
+        /// </summary>
+        /// <param name="handler">The handler.</param>
+        public static void Use(IInvocationHandler handler)
+        {
+            Interlocked.Exchange(ref _invocationHandler, handler);
+        }
 
 		/// <summary>
 		/// Signals the Overmock to expect any invocation.
@@ -41,17 +51,18 @@ namespace Overmock
 		/// <returns>An object used to configure overmocks</returns>
 		public static IOvermock<T> Overmock<T>() where T : class
 		{
-            return new Overmock<T>();
+            return new Overmock<T>(_invocationHandler);
         }
 
         /// <summary>
         /// Returns an overmocked <typeparamref name="T" />.
         /// </summary>
         /// <typeparam name="T">The type of interface.</typeparam>
+        /// <param name="secondaryHandler">The secondary handler.</param>
         /// <returns>The overmocked <typeparamref name="T" />.</returns>
-        public static T For<T>() where T : class
+        public static T For<T>(IInvocationHandler? secondaryHandler = null) where T : class
 		{
-			return new Overmock<T>();
+			return new Overmock<T>(secondaryHandler ?? _invocationHandler);
         }
 
         /// <summary>
@@ -77,7 +88,7 @@ namespace Overmock
 
             if (overmock is null)
             {
-                overmock = new Overmock<T>();
+                overmock = new Overmock<T>(_invocationHandler);
             }
 
             return overmock.Override(given);
@@ -143,9 +154,9 @@ namespace Overmock
         /// </summary>
         public static void Verify()
 		{
-            foreach (var verifiable in _overmocks)
+            foreach (var overmock in _overmocks)
             {
-                verifiable.Verify();
+                overmock.Verify();
             }
         }
 
@@ -162,6 +173,11 @@ namespace Overmock
         internal static IOvermock? GetRegistration<T>(T target) where T : class
         {
             return _overmocks.FirstOrDefault(o => o.GetTarget() == target);
+        }
+
+        internal static IOvermock? GetRegistration<T>(IOvermock<T> target) where T : class
+        {
+            return _overmocks.FirstOrDefault(o => o == target);
         }
 
         internal static IMethodCall<T> RegisterMethod<T>(IOvermock overmock, IMethodCall<T> method) where T : class

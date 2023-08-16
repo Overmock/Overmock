@@ -29,19 +29,19 @@ namespace Kimono.Interceptors
         {
             Span<IInvocationHandler> handlers = _interceptorsLazy.Value;
 
-            void InvokeHandlers(IInvocationHandler firstHandler, Span<IInvocationHandler> handlers)
+            void InvokeHandlers(ref IInvocationHandler firstHandler, Span<IInvocationHandler> handlers)
             {
                 if (firstHandler == null) { return; }
 
                 for (int i = 0; i < handlers.Length; i++)
                 {
-                    var handler = Unsafe.Add(ref firstHandler, i);
+                    ref var handler = ref Unsafe.Add(ref firstHandler, i);
 
                     handler.Handle(context);
                 }
             }
 
-            InvokeHandlers(MemoryMarshal.GetReference(handlers), handlers);
+            InvokeHandlers(ref MemoryMarshal.GetReference(handlers), handlers);
         }
     }
 }

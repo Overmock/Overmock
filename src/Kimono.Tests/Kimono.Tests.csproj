@@ -20,6 +20,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Kimono.Extensions.DependencyInjection\Kimono.Extensions.DependencyInjection.csproj" />
     <ProjectReference Include="..\Kimono\Kimono.csproj" />
+    <ProjectReference Include="..\Overmock\Overmock.csproj" />
   </ItemGroup>
 
 </Project>

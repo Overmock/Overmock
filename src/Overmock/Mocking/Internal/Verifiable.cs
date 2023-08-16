@@ -8,13 +8,7 @@ namespace Overmock.Mocking.Internal
 	/// </summary>
 	/// <seealso cref="Overmock.Mocking.IVerifiable" />
 	public abstract class Verifiable : IVerifiable
-	{
-		/// <summary>
-		/// Gets the type.
-		/// </summary>
-		/// <value>The type.</value>
-		public Type Type { get; protected set; }
-
+    {
 		/// <summary>
 		/// Verifies this instance.
 		/// </summary>
@@ -32,12 +26,12 @@ namespace Overmock.Mocking.Internal
 
 	/// <summary>
 	/// Class Verifiable.
-	/// Implements the <see cref="Overmock.Mocking.Internal.Verifiable" />
-	/// Implements the <see cref="Overmock.Mocking.IVerifiable{T}" />
+	/// Implements the <see cref="Verifiable" />
+	/// Implements the <see cref="IVerifiable{T}" />
 	/// </summary>
 	/// <typeparam name="T"></typeparam>
-	/// <seealso cref="Overmock.Mocking.Internal.Verifiable" />
-	/// <seealso cref="Overmock.Mocking.IVerifiable{T}" />
+	/// <seealso cref="Verifiable" />
+	/// <seealso cref="IVerifiable{T}" />
 	public abstract class Verifiable<T> : Verifiable, IVerifiable<T>
     {
         internal readonly string _typeName;
@@ -45,16 +39,14 @@ namespace Overmock.Mocking.Internal
         /// <summary>
         /// The type
         /// </summary>
-        private static readonly Type _type = typeof(T);
+        protected static readonly Type Type = typeof(T);
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Verifiable{T}"/> class.
 		/// </summary>
-		internal Verifiable() : base()
+		internal Verifiable()
         {
-            _typeName = $"{_type.Name}_{Guid.NewGuid():N}";
-
-            Type = _type;
+            _typeName = $"{Type.Name}_{Guid.NewGuid():N}";
         }
 	}
 }

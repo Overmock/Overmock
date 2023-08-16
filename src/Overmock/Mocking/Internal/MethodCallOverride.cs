@@ -8,16 +8,16 @@ namespace Overmock.Mocking.Internal
 	/// <seealso cref="Overmock.Mocking.IOverride" />
 	internal sealed class MethodCallOverride : Override
 	{
-		/// <summary>
-		/// Initializes a new instance of the <see cref="MethodCallOverride"/> class.
-		/// </summary>
-		/// <param name="overmock">The overmock.</param>
-		/// <param name="times">The times.</param>
-		public MethodCallOverride(Delegate overmock, Times times)
-		{
-			Overmock = overmock;
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MethodCallOverride"/> class.
+        /// </summary>
+        /// <param name="times">The times.</param>
+        /// <param name="overmock">The overmock.</param>
+        public MethodCallOverride(Times times, Func<OvermockContext, object?> overmock)
+        {
 			Times = times;
-		}
+            Overmock = overmock;
+        }
 
 		/// <summary>
 		/// Gets the overmock.

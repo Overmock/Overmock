@@ -22,7 +22,7 @@ namespace Overmock.Mocking.Internal
 		/// Initializes a new instance of the <see cref="MethodCall{T}"/> class.
 		/// </summary>
 		/// <param name="expression">The expression.</param>
-		internal MethodCall(MethodCallExpression expression)
+		internal MethodCall(MethodCallExpression expression) : base(expression.Method.Name)
 		{
 			_expression = expression;
 			BaseMethod = _expression.Method.IsGenericMethod
@@ -53,12 +53,6 @@ namespace Overmock.Mocking.Internal
 		/// </summary>
 		/// <value>The expression.</value>
 		MethodCallExpression IMethodCall.Expression => Expression;
-
-		/// <inheritdoc />
-		public override object? GetDefaultReturnValue()
-		{
-			return null;
-		}
 
 		/// <summary>
 		/// Gets the target.
@@ -90,7 +84,7 @@ namespace Overmock.Mocking.Internal
 		/// Initializes a new instance of the <see cref="MethodCall{T, TReturn}"/> class.
 		/// </summary>
 		/// <param name="expression">The expression.</param>
-		internal MethodCall(MethodCallExpression expression)
+		internal MethodCall(MethodCallExpression expression) : base(expression.Method.Name)
 		{
 			_expression = expression;
 			BaseMethod = _expression.Method.IsGenericMethod
@@ -121,15 +115,6 @@ namespace Overmock.Mocking.Internal
 		/// </summary>
 		/// <value>The expression.</value>
 		MethodCallExpression IMethodCall.Expression => Expression;
-
-		/// <summary>
-		/// Gets the default return value.
-		/// </summary>
-		/// <returns>System.Nullable&lt;System.Object&gt;.</returns>
-		public override object? GetDefaultReturnValue()
-		{
-			return default(TReturn);
-		}
 
 		/// <summary>
 		/// Gets the target.

@@ -10,16 +10,16 @@
     /// <seealso cref="IThrowable" />
     internal abstract class Throwable : Overridable, IThrowable
 	{
-		/// <summary>
-		/// Gets the exception.
-		/// </summary>
-		/// <value>The exception.</value>
-		public Exception? Exception { get; private set; }
+        protected Throwable(string name) : base(name)
+        {
+        }
+
+        public IOverride? Exception { get; private set; }
 
 		/// <inheritdoc />
 		public void Throws(Exception exception)
 		{
-			Exception = exception;
+			Exception = new ThrowExceptionOverride(exception);
 		}
 
 		/// <inheritdoc />
@@ -27,7 +27,7 @@
 		{
 			if (Exception != null)
 			{
-				overrides.Add(new ThrowExceptionOverride(Exception));
+				overrides.Add(Exception);
 			}
 		}
 	}
