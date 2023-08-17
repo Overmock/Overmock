@@ -13,7 +13,7 @@ namespace Overmock.Benchmarks
         private static readonly Benchmark _benchmarkClass = new Benchmark();
 		[Benchmark]
         [Arguments(1_000)]
-        //[Arguments(1_000_000)]
+        [Arguments(1_000_000)]
         //[Arguments(100_000_000)]
         public void NewKimono(int count)
 		{
@@ -25,7 +25,7 @@ namespace Overmock.Benchmarks
 
 		[Benchmark]
         [Arguments(1_000)]
-        //[Arguments(1_000_000)]
+        [Arguments(1_000_000)]
         //[Arguments(100_000_000)]
         public void NewDotnet(int count)
         {
@@ -37,16 +37,15 @@ namespace Overmock.Benchmarks
 
 		[Benchmark]
         [Arguments(1_000)]
-        //[Arguments(1_000_000)]
+        [Arguments(1_000_000)]
         //[Arguments(100_000_000)]
         public void NewCastle(int count)
         {
+            var generator = new ProxyGenerator();
+
             for (int i = 0; i < count; i++)
             {
-
-                var generator = new ProxyGenerator();
-                var interceptors = new List<Castle.DynamicProxy.IInterceptor> { new CastleInterceptor() };
-                var castleProxy = generator.CreateInterfaceProxyWithTarget<IBenchmark>(_benchmarkClass, interceptors.ToArray());
+                var castleProxy = generator.CreateInterfaceProxyWithTarget<IBenchmark>(_benchmarkClass, new[] { new CastleInterceptor() });
             }
 		}
 	}

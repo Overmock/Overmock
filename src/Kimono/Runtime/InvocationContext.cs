@@ -70,7 +70,7 @@ namespace Kimono
 		/// Gets the parameters.
 		/// </summary>
 		/// <value>The parameters.</value>
-		public Parameters? Parameters
+		public Parameters Parameters
         {
             get
             {

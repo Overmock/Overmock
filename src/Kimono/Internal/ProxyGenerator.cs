@@ -28,7 +28,7 @@ namespace Kimono.Internal
         /// Generates the proxy.
         /// </summary>
         /// <param name="interceptor">The interceptor.</param>
-        /// <returns><typeparamref name="T"/>.</returns>
+        /// <returns>The generated proxy.</returns>
         public object GenerateProxy(IInterceptor interceptor)
 		{
 			return _createProxy.Invoke(_proxyContext, interceptor);

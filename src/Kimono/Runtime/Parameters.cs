@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -70,7 +72,14 @@ namespace Kimono
 		/// <returns>TParam.</returns>
 		public TParam Get<TParam>(int index)
 		{
-			return (TParam)Get(index);
+            var result = Get(index);
+
+            if (typeof(TParam).IsAssignableFrom(result.GetType()))
+            {
+                return (TParam)result;
+            }
+
+            throw new InvalidCastException($"ParameterType:{result.GetType()} is not assignable to: {typeof(TParam)}");
 		}
 
 		/// <summary>
@@ -83,12 +92,12 @@ namespace Kimono
 		{
 			var param = Array.Find(_parameters, p => p.Parameter.Name == name);
 
-			if (param.Value == null)
+            if (param == default)
 			{
 				throw new KeyNotFoundException(name);
 			}
 
-			return param.Value;
+			return param.Value!;
 		}
 
 		/// <summary>
@@ -98,9 +107,16 @@ namespace Kimono
 		/// <param name="name">The name.</param>
 		/// <returns>TParam.</returns>
 		public TParam Get<TParam>(string name)
-		{
-			return (TParam)Get(name);
-		}
+        {
+            var result = Get(name);
+
+            if (typeof(TParam).IsAssignableFrom(result.GetType()))
+            {
+                return (TParam)result;
+            }
+
+            throw new InvalidCastException($"ParameterType:{result.GetType()} is not assignable to: {typeof(TParam)}");
+        }
 
         /// <summary>
         /// Gets the enumerator.
