@@ -1,41 +1,14 @@
 ﻿using BenchmarkDotNet.Attributes;
 using Castle.DynamicProxy;
 using Kimono;
+using Overmock.Benchmarks.Interceptors;
+using Overmock.Benchmarks.Models;
 using System.Reflection;
 
 namespace Overmock.Benchmarks
 {
-	public interface IBenchmark
-	{
-		void VoidNoParams();
-		bool BoolNoParams();
-		object ObjectNoParams();
-        void VoidWith3Params(string name, int age, List<string> list);
 
-    }
-
-	public class Benchmark : IBenchmark
-	{
-		public bool BoolNoParams()
-		{
-			return true;
-		}
-
-		public object ObjectNoParams()
-		{
-			return new object();
-		}
-
-		public void VoidNoParams()
-		{
-		}
-
-        public void VoidWith3Params(string name, int age, List<string> list)
-        {
-        }
-	}
-
-	[MemoryDiagnoser]
+    [MemoryDiagnoser]
     [HardwareCounters]
 	public class TypeInterceptorBenchmark
 	{
@@ -56,49 +29,39 @@ namespace Overmock.Benchmarks
 		}
 
 		[Benchmark]
-		public void Kimono()
+        [Arguments(1_000)]
+        [Arguments(1_000_000)]
+        //[Arguments(100_000_000)]
+        public void Kimono(int count)
 		{
-			_kimonoProxy.VoidNoParams();
+            for (int i = 0; i < count; i++)
+            {
+                _kimonoProxy.VoidWith3Params("hello", 20, new List<string> { "world" });
+            }
 		}
 
 		[Benchmark]
-		public void Dotnet()
-		{
-			_dispatchProxy.VoidNoParams();
-		}
+        [Arguments(1_000)]
+        [Arguments(1_000_000)]
+        //[Arguments(100_000_000)]
+        public void Dotnet(int count)
+        {
+            for (int i = 0; i < count; i++)
+            {
+                _dispatchProxy.VoidWith3Params("hello", 20, new List<string> { "world" });
+            }
+        }
 
 		[Benchmark]
-		public void Castle()
-		{
-			_castleProxy.VoidNoParams();
+        [Arguments(1_000)]
+        [Arguments(1_000_000)]
+        //[Arguments(100_000_000)]
+        public void Castle(int count)
+        {
+            for (int i = 0; i < count; i++)
+            {
+                _castleProxy.VoidWith3Params("hello", 20, new List<string> { "world" });
+            }
 		}
 	}
-
-	public class CastleInterceptor : Castle.DynamicProxy.IInterceptor
-	{
-		public void Intercept(IInvocation invocation)
-		{
-			invocation.Proceed();
-		}
-    }
-
-    public class KimonoInvocationHandler : IInvocationHandler
-    {
-        public void Handle(IInvocationContext context)
-        {
-            context.Invoke();
-        }
-    }
-
-    public class DotnetProxy : DispatchProxy
-    {
-        public IBenchmark? Benchmark { get; set; }
-
-        protected override object? Invoke(MethodInfo? targetMethod, object?[]? args)
-        {
-            Benchmark?.VoidNoParams();
-
-            return null;
-        }
-    }
 }

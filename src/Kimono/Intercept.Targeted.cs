@@ -36,17 +36,32 @@ namespace Kimono
 			where TTarget : T
 		{
 			return new TargetedHandlersInterceptor<T>(target, handlers);
-		}
+        }
 
-		/// <summary>
-		/// Intercepts member calls using the provided the handlers.
-		/// </summary>
-		/// <typeparam name="T">The interface type to proxy.</typeparam>
-		/// <typeparam name="TTarget">The target type to proxy to.</typeparam>
-		/// <param name="target"></param>
-		/// <param name="handlers">The handlers.</param>
-		/// <returns>The interceptor.</returns>
-		public static T WithHandlers<T, TTarget>(TTarget target, IEnumerable<IInvocationHandler> handlers)
+        /// <summary>
+        /// Intercepts member calls using the provided the handler.
+        /// </summary>
+        /// <typeparam name="T">The interface type to proxy.</typeparam>
+        /// <typeparam name="TTarget">The target type to proxy call to.</typeparam>
+        /// <param name="target"></param>
+        /// <param name="handler">The handler.</param>
+        /// <returns>The interceptor.</returns>
+        public static T WithHandler<T, TTarget>(TTarget target, IInvocationHandler handler)
+            where T : class
+            where TTarget : T
+        {
+            return new TargetedSingleHandlerInterceptor<T>(target, handler);
+        }
+
+        /// <summary>
+        /// Intercepts member calls using the provided the handlers.
+        /// </summary>
+        /// <typeparam name="T">The interface type to proxy.</typeparam>
+        /// <typeparam name="TTarget">The target type to proxy to.</typeparam>
+        /// <param name="target"></param>
+        /// <param name="handlers">The handlers.</param>
+        /// <returns>The interceptor.</returns>
+        public static T WithHandlers<T, TTarget>(TTarget target, IEnumerable<IInvocationHandler> handlers)
 			where T : class
 			where TTarget : T
 		{
@@ -56,22 +71,18 @@ namespace Kimono
         /// <summary>
         /// Withes the inovcation chain.
         /// </summary>
-        /// <typeparam name="TInterface">The type of the t interface.</typeparam>
+        /// <typeparam name="T">The type of the t interface.</typeparam>
         /// <typeparam name="TTarget">The target type to proxy call to.</typeparam>
         /// <param name="target"></param>
         /// <param name="builderAction">The builder action.</param>
         /// <returns>TInterface.</returns>
-        public static TInterface WithChain<TInterface, TTarget>(TTarget target, Action<IInvocationChainBuilder> builderAction)
-			where TInterface : class
-			where TTarget : TInterface
+        public static T WithChain<T, TTarget>(TTarget target, Action<IInvocationChainBuilder> builderAction)
+			where T : class
+			where TTarget : T
 		{
 			var builder = new InvocationChainBuilder();
-
 			builderAction(builder);
-
-			var handler = builder.Build();
-
-			return new TargetedSingleHandlerInterceptor<TInterface>(target, handler);
+			return new TargetedSingleHandlerInterceptor<T>(target, builder.Build());
 		}
 	}
 }

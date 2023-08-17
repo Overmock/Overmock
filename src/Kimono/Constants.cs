@@ -30,10 +30,15 @@ namespace Kimono
 		/// </summary>
 		public const string AssemblyAndTypeNameFormat = "Kimono-DyamicProxies.{0}";
 
-		/// <summary>
-		/// The invoke method name
-		/// </summary>
-		public const string InvokeMethodName = "Invoke";
+        /// <summary>
+        /// The kimono deleate type name format
+        /// </summary>
+        public static readonly string KimonoDeleateTypeNameFormat = "Kimono_Proxy_Factory_{0}";
+
+        /// <summary>
+        /// The invoke method name
+        /// </summary>
+        public const string InvokeMethodName = "Invoke";
 
 		///// <summary>
 		///// The initialize kimono context method name
@@ -95,10 +100,15 @@ namespace Kimono
         /// </summary>
         public static readonly Type DisposableType = typeof(IDisposable);
 
-		/// <summary>
-		/// The disposable method.
-		/// </summary>
-		public static readonly MethodInfo DisposeMethod = DisposableType.GetMethod(nameof(IDisposable.Dispose))!;
+        /// <summary>
+        /// The <see cref="Func{ProxyContext, IInterceptor, T}"/> type
+        /// </summary>
+        public static Type GetFuncProxyContextIInterceptorTType<T>() => typeof(Func<ProxyContext, IInterceptor, T>);
+
+        /// <summary>
+        /// The disposable method.
+        /// </summary>
+        public static readonly MethodInfo DisposeMethod = DisposableType.GetMethod(nameof(IDisposable.Dispose))!;
 
 		/// <summary>
 		/// The empty object array method
@@ -109,12 +119,12 @@ namespace Kimono
 		/// The method base type get current method
 		/// </summary>
 		public static readonly MethodInfo MethodBaseTypeGetCurrentMethod = MethodBaseType.GetMethod("GetCurrentMethod", BindingFlags.Static | BindingFlags.Public)!;
-
-		/// <summary>
-		/// Gets the proxy type handle method call method.
-		/// </summary>
-		/// <returns>MethodInfo.</returns>
-		public static MethodInfo ProxyTypeHandleMethodCallMethod = ProxyType.GetMethod("HandleMethodCall", BindingFlags.Instance | BindingFlags.NonPublic)!;
+        
+        /// <summary>
+        /// Gets the proxy type handle method call method.
+        /// </summary>
+        /// <returns>MethodInfo.</returns>
+        public static MethodInfo ProxyTypeHandleMethodCallMethod = ProxyType.GetMethod("HandleMethodCall", BindingFlags.Instance | BindingFlags.NonPublic)!;
 
 		/// <summary>
 		/// Gets the proxy type handle method call method.

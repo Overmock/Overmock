@@ -12,7 +12,7 @@ namespace Kimono.Proxies
 		/// </summary>
 		/// <param name="context">The context.</param>
 		/// <param name="methods">The methods.</param>
-		void Generate(IProxyBuilderContext context, IEnumerable<PropertyInfo> methods);
+		void Generate(IProxyContextBuilder context, IEnumerable<PropertyInfo> methods);
 
 	}
 }

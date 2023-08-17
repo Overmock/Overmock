@@ -156,11 +156,8 @@ namespace Kimono
 		/// <exception cref="System.InvalidOperationException">Generator not created by ProxyFactory. {TargetType}</exception>
 		protected T Create()
 		{
-			var proxyGenaerator = _factory.Create<T>(this);
-
-			return proxyGenaerator == null
-				? throw new InvalidOperationException($"Generator not created by ProxyFactory. {TargetType}")
-				: proxyGenaerator.GenerateProxy(this);
+			var genaerator = _factory.Create(this);
+			return genaerator.GenerateProxy(this);
 		}
 	}
 }

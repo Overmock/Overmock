@@ -3,7 +3,8 @@ using BenchmarkDotNet.Running;
 using Overmock.Benchmarks;
 
 
-BenchmarkRunner.Run<TypeInterceptorBenchmark>();
+//BenchmarkRunner.Run<TypeInterceptorBenchmark>();
+BenchmarkRunner.Run<NewProxyCreationBenchmark>();
 
 //var benchmark = new TypeInterceptorBenchmark();
 //benchmark.TypeInterceptor();

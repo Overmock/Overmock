@@ -5,8 +5,8 @@ namespace Kimono.Proxies
 	/// <summary>
 	/// Interface IProxyBuilderContext
 	/// </summary>
-	public interface IProxyBuilderContext
-	{
+	public interface IProxyContextBuilder
+    {
 		/// <summary>
 		/// Gets the interceptor.
 		/// </summary>

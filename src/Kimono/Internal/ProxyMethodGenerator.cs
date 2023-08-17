@@ -6,7 +6,7 @@ namespace Kimono.Internal
 {
 	internal sealed class ProxyMethodGenerator : ProxyMemberGenerator, IProxyMethodGenerator
 	{
-		public void Generate(IProxyBuilderContext context, IEnumerable<MethodInfo> methods)
+		public void Generate(IProxyContextBuilder context, IEnumerable<MethodInfo> methods)
 		{
 			ImplementMethods(context, methods);
 		}
@@ -16,7 +16,7 @@ namespace Kimono.Internal
 		/// </summary>
 		/// <param name="context">The context.</param>
 		/// <param name="methods">The methods.</param>
-		private static void ImplementMethods(IProxyBuilderContext context, IEnumerable<MethodInfo> methods)
+		private static void ImplementMethods(IProxyContextBuilder context, IEnumerable<MethodInfo> methods)
 		{
 			if (Constants.DisposableType.IsAssignableFrom(context.Interceptor.TargetType))
 			{
@@ -46,7 +46,7 @@ namespace Kimono.Internal
 			}
 		}
 
-		private static void EmitDisposeInterceptor(IProxyBuilderContext context, MethodInfo disposeMethod)
+		private static void EmitDisposeInterceptor(IProxyContextBuilder context, MethodInfo disposeMethod)
 		{
 			var methodBuilder = context.TypeBuilder.DefineMethod(disposeMethod.Name, disposeMethod.Attributes ^ MethodAttributes.Abstract);
 

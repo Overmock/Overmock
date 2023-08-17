@@ -168,7 +168,7 @@ namespace Kimono.Tests
 			var saveCalled = false;
 			var disposeCalled = false;
 
-			var interceptor = Intercept.DisposableTargetedWithCallback<IDisposableRepository, DisposableRepository>(new DisposableRepository(), context => {
+			var interceptor = Intercept.DisposableWithCallback<IDisposableRepository, DisposableRepository>(new DisposableRepository(), context => {
 				called = true;
 				if (context.MemberName == "Save")
 				{
@@ -200,7 +200,7 @@ namespace Kimono.Tests
 		[TestMethod]
 		public void DisposableTargetedWithHandlersInterceptorTest()
 		{
-			var interceptor = Intercept.DisposableTargetedWithHandlers<IDisposableRepository, DisposableRepository>(new DisposableRepository(), new TestHandler());
+			var interceptor = Intercept.DisposableWithHandlers<IDisposableRepository, DisposableRepository>(new DisposableRepository(), new TestHandler());
 
 			var returnedTrue = interceptor.Save(new Model { Id = 69 });
 
@@ -213,7 +213,7 @@ namespace Kimono.Tests
 			var firstCalled = false;
 			var secondCalled = false;
 
-			var interceptor = Intercept.DisposableTargetedWithInovcationChain<IDisposableRepository, DisposableRepository>(new DisposableRepository(), builder => {
+			var interceptor = Intercept.DisposableWithInovcationChain<IDisposableRepository, DisposableRepository>(new DisposableRepository(), builder => {
 				builder.Add((next, context) => {
 					firstCalled = true;
 					if (!secondCalled)
@@ -240,7 +240,7 @@ namespace Kimono.Tests
 			var firstCalled = false;
 			var secondCalled = false;
 
-			var interceptor = Intercept.DisposableTargetedWithInovcationChain<IDisposableRepository, DisposableRepository>(new DisposableRepository(), builder => {
+			var interceptor = Intercept.DisposableWithInovcationChain<IDisposableRepository, DisposableRepository>(new DisposableRepository(), builder => {
 				builder.Add((next, context) => {
 					firstCalled = true;
 				})

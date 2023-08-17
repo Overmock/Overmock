@@ -21,24 +21,36 @@ namespace Kimono
 		}
 
 		/// <summary>
-		/// Intercepts member calls using the provided the handlers.
+		/// Intercepts member calls using the provided the handler.
 		/// </summary>
 		/// <typeparam name="TInterface">The interface type to proxy.</typeparam>
-		/// <param name="handlers">The handlers.</param>
+		/// <param name="handler">The handler.</param>
 		/// <returns>The interceptor.</returns>
-		public static TInterface WithHandlers<TInterface>(params IInvocationHandler[] handlers)
+		public static TInterface WithHandler<TInterface>(IInvocationHandler handler)
 			where TInterface : class
 		{
-			return new HandlersInterceptor<TInterface>(handlers);
-		}
+			return new HandlerInterceptor<TInterface>(handler);
+        }
 
-		/// <summary>
-		/// Intercepts member calls using the provided the handlers.
-		/// </summary>
-		/// <typeparam name="TInterface">The interface type to proxy.</typeparam>
-		/// <param name="handlers">The handlers.</param>
-		/// <returns>The interceptor.</returns>
-		public static TInterface WithHandlers<TInterface>(IEnumerable<IInvocationHandler> handlers)
+        /// <summary>
+        /// Intercepts member calls using the provided the handlers.
+        /// </summary>
+        /// <typeparam name="TInterface">The interface type to proxy.</typeparam>
+        /// <param name="handlers">The handlers.</param>
+        /// <returns>The interceptor.</returns>
+        public static TInterface WithHandlers<TInterface>(params IInvocationHandler[] handlers)
+            where TInterface : class
+        {
+            return new HandlersInterceptor<TInterface>(handlers);
+        }
+
+        /// <summary>
+        /// Intercepts member calls using the provided the handlers.
+        /// </summary>
+        /// <typeparam name="TInterface">The interface type to proxy.</typeparam>
+        /// <param name="handlers">The handlers.</param>
+        /// <returns>The interceptor.</returns>
+        public static TInterface WithHandlers<TInterface>(IEnumerable<IInvocationHandler> handlers)
 			where TInterface : class
 		{
 			return new HandlersInterceptor<TInterface>(handlers);
@@ -54,12 +66,8 @@ namespace Kimono
 			where TInterface : class
 		{
 			var builder = new InvocationChainBuilder();
-
 			builderAction(builder);
-
-			var handler = builder.Build();
-
-			return new HandlerInterceptor<TInterface>(handler);
+			return new HandlerInterceptor<TInterface>(builder.Build());
 		}
 	}
 }
