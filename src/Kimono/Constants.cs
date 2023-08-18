@@ -40,10 +40,10 @@ namespace Kimono
         /// </summary>
         public const string InvokeMethodName = "Invoke";
 
-		///// <summary>
-		///// The initialize kimono context method name
-		///// </summary>
-		//public const string InitializeKimonoContextMethodName = nameof(IProxy.InitializeProxyContext);
+        /// <summary>
+        /// The void type
+        /// </summary>
+        public static readonly Type VoidType = typeof(void);
 
 		/// <summary>
 		/// The object type
@@ -119,7 +119,57 @@ namespace Kimono
 		/// The method base type get current method
 		/// </summary>
 		public static readonly MethodInfo MethodBaseTypeGetCurrentMethod = MethodBaseType.GetMethod("GetCurrentMethod", BindingFlags.Static | BindingFlags.Public)!;
-        
+
+        /// <summary>
+        /// The action type
+        /// </summary>
+        public static readonly Type ActionType = typeof(Action);
+
+        /// <summary>
+        /// The action type taking one object.
+        /// </summary>
+        public static readonly Type ActionObjectType = typeof(Action<object?>);
+
+        /// <summary>
+        /// The action type taking one object.
+        /// </summary>
+        public static readonly Type Action2ObjectType = typeof(Action<object?, object?>);
+
+        /// <summary>
+        /// The action type taking one object.
+        /// </summary>
+        public static readonly Type Action3ObjectType = typeof(Action<object?, object?, object?>);
+
+        /// <summary>
+        /// The action type taking one object.
+        /// </summary>
+        public static readonly Type Action4ObjectType = typeof(Action<object?, object?, object?, object?>);
+
+        /// <summary>
+        /// The action type taking one object.
+        /// </summary>
+        public static readonly Type FuncObjectType = typeof(Func<object?>);
+
+        /// <summary>
+        /// The action type taking one object.
+        /// </summary>
+        public static readonly Type Func1ObjectType = typeof(Func<object?, object?>);
+
+        /// <summary>
+        /// The action type taking one object.
+        /// </summary>
+        public static readonly Type Func2ObjectType = typeof(Func<object?, object?, object?>);
+
+        /// <summary>
+        /// The action type taking one object.
+        /// </summary>
+        public static readonly Type Func3ObjectType = typeof(Func<object?, object?, object?, object?>);
+
+        /// <summary>
+        /// The func type taking 3 objects.
+        /// </summary>
+        public static readonly Type Func4ObjectType = typeof(Func<object?, object?, object?, object?, object?>);
+
         /// <summary>
         /// Gets the proxy type handle method call method.
         /// </summary>

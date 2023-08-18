@@ -9,7 +9,7 @@ namespace Kimono
     /// </summary>
     public class InvocationContext : IInvocationContext
 	{
-		private readonly Func<object, object[]?, object?> _invokeTargetHandler;
+		private readonly IMethodDelegateInvoker _methodInvoker;
         private readonly IInterceptor _interceptor;
         private readonly RuntimeContext _runtimeContext;
         private readonly RuntimeParameter[] _runtimeParameters;
@@ -39,7 +39,7 @@ namespace Kimono
             _member = runtimeContext.ProxiedMember.Member;
             _method = runtimeContext.ProxiedMember.Method;
 
-            _invokeTargetHandler = runtimeContext.GetTargetInvocationHandler();
+            _methodInvoker = runtimeContext.GetMethodInvoker();
 		}
 
 		/// <summary>
@@ -117,7 +117,7 @@ namespace Kimono
             // If the target's null then we don't have one to call;
             if (_target is null) { return; }
 
-			var returnValue = _invokeTargetHandler(_target, _arguments);
+			var returnValue = _methodInvoker.Invoke(_target, _arguments);
 
             TargetInvoked = true;
 

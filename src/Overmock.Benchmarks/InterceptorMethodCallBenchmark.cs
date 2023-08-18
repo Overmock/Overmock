@@ -10,14 +10,14 @@ namespace Overmock.Benchmarks
 
     [MemoryDiagnoser]
     [HardwareCounters]
-	public class TypeInterceptorBenchmark
+	public class InterceptorMethodCallBenchmark
 	{
 		private static readonly Benchmark _benchmarkClass = new Benchmark();
 		private static readonly IBenchmark _kimonoProxy;
 		private static readonly IBenchmark _dispatchProxy;
 		private static readonly IBenchmark _castleProxy;
 
-		static TypeInterceptorBenchmark()
+		static InterceptorMethodCallBenchmark()
 		{
 			_kimonoProxy = Intercept.WithHandlers<IBenchmark, Benchmark>(_benchmarkClass, new KimonoInvocationHandler());
 

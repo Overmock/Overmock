@@ -75,9 +75,7 @@ namespace Kimono.Internal
             var proxyConstructor = proxyType.GetConstructor(bindingFlags, _proxyDelegateParameters)!;
 
             return Cache.SetGenerator(context.Interceptor.TargetType,
-                new ProxyGenerator<T>(context.ProxyContext, CreateProxyDelegate<T>(
-                    //proxyType,
-                    proxyConstructor)
+                new ProxyGenerator<T>(context.ProxyContext, CreateProxyDelegate<T>(proxyConstructor)
             ));
         }
 
@@ -97,7 +95,7 @@ namespace Kimono.Internal
             return new ProxyContextBuilder(interceptor, typeBuilder, proxyType);
         }
 
-		private static void ImplementConstructor(ProxyContextBuilder context, ConstructorInfo baseConstructor)
+		private void ImplementConstructor(ProxyContextBuilder context, ConstructorInfo baseConstructor)
         {
             const MethodAttributes methodAttributes = MethodAttributes.Public;
 
@@ -107,17 +105,8 @@ namespace Kimono.Internal
             var constructorBuilder = context.TypeBuilder.DefineConstructor(methodAttributes, callingConvention, parameterTypes.ToArray());
 
             var ilGenerator = constructorBuilder.GetILGenerator();
-            
-            EmitInitializer(ilGenerator, baseConstructor);
-        }
 
-        private static void EmitInitializer(ILGenerator ilGenerator, ConstructorInfo baseConstructor)
-        {
-            ilGenerator.Emit(OpCodes.Ldarg_0);
-            ilGenerator.Emit(OpCodes.Ldarg_1);
-            ilGenerator.Emit(OpCodes.Ldarg_2);
-            ilGenerator.Emit(OpCodes.Call, baseConstructor);
-            ilGenerator.Emit(OpCodes.Ret);
+            MethodGenerator.EmitTypeInitializer(ilGenerator, baseConstructor);
         }
 
         private static (IEnumerable<MethodInfo>, IEnumerable<PropertyInfo>) AddInterfaceImplementations(ProxyContextBuilder context)

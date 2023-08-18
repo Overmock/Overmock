@@ -13,7 +13,7 @@ namespace Kimono.Internal
 		/// <summary>
 		/// The delegate
 		/// </summary>
-		private readonly Func<object, object[]?, object?> _delegate;
+		private readonly Func<object?, object?[], object?> _delegate;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ProxyMember"/> class.
@@ -58,7 +58,7 @@ namespace Kimono.Internal
 		/// Creates the delegate.
 		/// </summary>
 		/// <returns>Func&lt;System.Object, System.Nullable&lt;System.Object&gt;[], System.Nullable&lt;System.Object&gt;&gt;.</returns>
-		public Func<object, object[]?, object?> CreateDelegate()
+		public Func<object?, object?[], object?> CreateDelegate()
 		{
 			return _delegate;
 		}

@@ -5,11 +5,20 @@ using Kimono.Proxies;
 namespace Kimono.Internal
 {
 	internal class ProxyMemberGenerator
-	{
-		/// <summary>
-		/// The kimono attribute constructor
-		/// </summary>
-		protected static readonly ConstructorInfo _kimonoAttributeConstructor = typeof(KimonoAttribute).GetConstructors().First();
+    {
+        private readonly IMethodDelegateGenerator _delegateDelegateGenerator;
+
+        public ProxyMemberGenerator(IMethodDelegateGenerator? delegateDelegateGenerator = null)
+        {
+            _delegateDelegateGenerator = delegateDelegateGenerator ?? new MethodDelegateGenerator();
+        }
+
+        protected IMethodDelegateGenerator DelegateGenerator => _delegateDelegateGenerator;
+
+        /// <summary>
+        /// The kimono attribute constructor
+        /// </summary>
+        protected static readonly ConstructorInfo _kimonoAttributeConstructor = typeof(KimonoAttribute).GetConstructors().First();
 
 		/// <summary>
 		/// Creates the method.
@@ -60,7 +69,7 @@ namespace Kimono.Internal
 		/// <param name="methodId">The method identifier.</param>
 		protected static void EmitMethodBody(IProxyContextBuilder context, ILGenerator emitter, Type returnType, Type[] parameters, int methodId)
 		{
-			var returnIsNotVoid = returnType != typeof(void);
+			var returnIsNotVoid = returnType != Constants.VoidType;
 
 			if (returnIsNotVoid)
 			{

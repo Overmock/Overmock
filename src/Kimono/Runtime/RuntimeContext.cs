@@ -1,4 +1,5 @@
-﻿using Kimono.Proxies;
+﻿using Kimono.Internal.MethodInvokers;
+using Kimono.Proxies;
 
 namespace Kimono
 {
@@ -9,8 +10,8 @@ namespace Kimono
 	{
 		private readonly IProxyMember _proxiedMember;
 		private readonly List<RuntimeParameter> _parameters;
-		private readonly Func<object, object[]?, object?> _invokeTargetHandler;
         private InvocationContext? _invocationContext;
+        private IMethodDelegateInvoker? _methodInvoker;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RuntimeContext" /> class.
@@ -22,7 +23,6 @@ namespace Kimono
 			_proxiedMember = proxyMember;
 			_parameters = new List<RuntimeParameter>();
 			_parameters.AddRange(parameters);
-			_invokeTargetHandler = proxyMember.CreateDelegate();
 		}
 
 		/// <summary>
@@ -43,7 +43,12 @@ namespace Kimono
 		/// <value>The proxied member.</value>
 		public IProxyMember ProxiedMember => _proxiedMember;
 
-		internal InvocationContext GetInvocationContext(IInterceptor interceptor, object[] parameters)
+        internal void UseMethodInvoker(IMethodDelegateInvoker methodInvoker)
+        {
+            _methodInvoker = methodInvoker;
+        }
+
+        internal InvocationContext GetInvocationContext(IInterceptor interceptor, object[] parameters)
 		{
             if (_invocationContext is null)
             {
@@ -53,9 +58,9 @@ namespace Kimono
             return _invocationContext.Reset(parameters);
 		}
 
-		internal Func<object, object[]?, object?> GetTargetInvocationHandler()
+		internal IMethodDelegateInvoker GetMethodInvoker()
 		{
-			return _invokeTargetHandler;
+			return _methodInvoker ?? new MethodInfoDelegateInvoker(ProxiedMember.Method);
 		}
 	}
 }
