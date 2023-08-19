@@ -1,4 +1,7 @@
-﻿namespace Kimono.Proxies
+﻿using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+
+namespace Kimono.Proxies
 {
     /// <summary>
     /// Class ProxyContext.
@@ -28,7 +31,7 @@
         /// <returns>InvocationContext.</returns>
         internal InvocationContext GetInvocationContext(int methodId, IProxy proxy, object[] parameters)
         {
-            return _overrides[methodId].CreateInvocationContext(proxy.Interceptor, parameters);
+            return _overrides[methodId].GetInvocationContext(proxy.Interceptor, parameters);
         }
     }
 }

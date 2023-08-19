@@ -5,11 +5,20 @@ using Kimono.Proxies;
 namespace Kimono.Internal
 {
 	internal class ProxyMemberGenerator
-	{
-		/// <summary>
-		/// The kimono attribute constructor
-		/// </summary>
-		protected static readonly ConstructorInfo _kimonoAttributeConstructor = typeof(KimonoAttribute).GetConstructors().First();
+    {
+        private readonly IMethodDelegateGenerator _delegateDelegateGenerator;
+
+        public ProxyMemberGenerator(IMethodDelegateGenerator? delegateDelegateGenerator = null)
+        {
+            _delegateDelegateGenerator = delegateDelegateGenerator ?? new DynamicMethodDelegateGenerator();
+        }
+
+        protected IMethodDelegateGenerator DelegateGenerator => _delegateDelegateGenerator;
+
+        /// <summary>
+        /// The kimono attribute constructor
+        /// </summary>
+        protected static readonly ConstructorInfo _kimonoAttributeConstructor = typeof(KimonoAttribute).GetConstructors().First();
 
 		/// <summary>
 		/// Creates the method.
@@ -18,7 +27,7 @@ namespace Kimono.Internal
 		/// <param name="methodInfo">The method information.</param>
 		/// <param name="methodId">The method identifier.</param>
 		/// <returns>MethodBuilder.</returns>
-		protected static MethodBuilder CreateMethod(IProxyBuilderContext context, MethodInfo methodInfo, int methodId)
+		protected static MethodBuilder CreateMethod(IProxyContextBuilder context, MethodInfo methodInfo, int methodId)
 		{
 			var parameterTypes = methodInfo.GetParameters()
 				.Select(p => p.ParameterType).ToArray();
@@ -58,9 +67,9 @@ namespace Kimono.Internal
 		/// <param name="returnType">Type of the return.</param>
 		/// <param name="parameters">The parameters.</param>
 		/// <param name="methodId">The method identifier.</param>
-		protected static void EmitMethodBody(IProxyBuilderContext context, ILGenerator emitter, Type returnType, Type[] parameters, int methodId)
+		protected static void EmitMethodBody(IProxyContextBuilder context, ILGenerator emitter, Type returnType, Type[] parameters, int methodId)
 		{
-			var returnIsNotVoid = returnType != typeof(void);
+			var returnIsNotVoid = returnType != Constants.VoidType;
 
 			if (returnIsNotVoid)
 			{

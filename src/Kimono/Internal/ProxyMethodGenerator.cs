@@ -1,27 +1,38 @@
-﻿using Kimono.Proxies;
+﻿using Kimono.Emit;
+using Kimono.Proxies;
+using System.Linq.Expressions;
 using System.Reflection;
 using System.Reflection.Emit;
 
 namespace Kimono.Internal
 {
-	internal sealed class ProxyMethodGenerator : ProxyMemberGenerator, IProxyMethodGenerator
+    internal sealed class ProxyMethodGenerator : ProxyMemberGenerator, IProxyMethodGenerator
 	{
-		public void Generate(IProxyBuilderContext context, IEnumerable<MethodInfo> methods)
+        public ProxyMethodGenerator(IMethodDelegateGenerator? delegateGenerator = null) : base(delegateGenerator)
+        {
+        }
+
+        public void Generate(IProxyContextBuilder context, IEnumerable<MethodInfo> methods)
 		{
 			ImplementMethods(context, methods);
 		}
 
-		/// <summary>
-		/// Implements the methods.
-		/// </summary>
-		/// <param name="context">The context.</param>
-		/// <param name="methods">The methods.</param>
-		private static void ImplementMethods(IProxyBuilderContext context, IEnumerable<MethodInfo> methods)
+        public void EmitTypeInitializer(ILGenerator ilGenerator, ConstructorInfo baseConstructor)
+        {
+            DelegateGenerator.EmitTypeInitializer(Emitter.For(ilGenerator), baseConstructor);
+        }
+
+        public void GenerateProxyDelegate(RuntimeContext context, MethodInfo method)
+        {
+            context.UseMethodInvoker(DelegateGenerator.GenerateDelegateInvoker(context, method));
+        }
+
+		private void ImplementMethods(IProxyContextBuilder context, IEnumerable<MethodInfo> methods)
 		{
 			if (Constants.DisposableType.IsAssignableFrom(context.Interceptor.TargetType))
 			{
 				methods = methods.Where(m => m.DeclaringType != Constants.DisposableType);
-				EmitDisposeInterceptor(context, Constants.DisposeMethod);
+                DelegateGenerator.EmitDisposeInterceptor(context, Constants.DisposeMethod);
 			}
 
 			foreach (var methodInfo in methods)
@@ -40,23 +51,14 @@ namespace Kimono.Internal
 					new object[] { methodId }
 				));
 
-				context.ProxyContext.Add(new RuntimeContext(method,
-					methodInfo.GetParameters().Select(p => new RuntimeParameter(p.Name!, type: p.ParameterType)))
-				);
-			}
-		}
+                var runtimeContext = new RuntimeContext(method,
+                    methodInfo.GetParameters().Select(p => 
+                        new RuntimeParameter(p.Name!, type: p.ParameterType)));
+				
+				context.ProxyContext.Add(runtimeContext);
 
-		private static void EmitDisposeInterceptor(IProxyBuilderContext context, MethodInfo disposeMethod)
-		{
-			var methodBuilder = context.TypeBuilder.DefineMethod(disposeMethod.Name, disposeMethod.Attributes ^ MethodAttributes.Abstract);
-
-			var emitter = methodBuilder.GetILGenerator();
-
-			emitter.Emit(OpCodes.Nop);
-			emitter.Emit(OpCodes.Ldarg_0);
-			emitter.EmitCall(OpCodes.Call, Constants.ProxyTypeHandleDisposeCallMethod, null);
-			emitter.Emit(OpCodes.Nop);
-			emitter.Emit(OpCodes.Ret);
+                GenerateProxyDelegate(runtimeContext, methodInfo);
+            }
 		}
 	}
 }

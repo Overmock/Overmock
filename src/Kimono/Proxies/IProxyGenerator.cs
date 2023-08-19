@@ -9,7 +9,7 @@
         /// Generates the proxy.
         /// </summary>
         /// <param name="interceptor">The interceptor.</param>
-        /// <returns>System.Object.</returns>
+        /// <returns>The generated proxy.</returns>
         object GenerateProxy(IInterceptor interceptor);
     }
 
@@ -25,7 +25,7 @@
         /// Generates the proxy.
         /// </summary>
         /// <param name="interceptor">The interceptor.</param>
-        /// <returns>T.</returns>
+        /// <returns><typeparamref name="T"/>.</returns>
         T GenerateProxy(IInterceptor<T> interceptor);
     }
 }

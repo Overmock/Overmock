@@ -11,7 +11,7 @@ namespace Kimono.Interceptors
     /// <typeparam name="T"></typeparam>
     /// <seealso cref="TargetedHandlersInterceptor{T}" />
     /// <seealso cref="IDisposable" />
-    public class DisposableTargetedSingleHandlerInterceptor<T> : TargetedSingleHandlerInterceptor<T>, IDisposableInterceptor where T : class, IDisposable
+    public sealed class DisposableTargetedSingleHandlerInterceptor<T> : TargetedSingleHandlerInterceptor<T>, IDisposableInterceptor where T : class, IDisposable
 	{
 		/// <summary>
 		/// Initializes a new instance of the <see cref="DisposableTargetedSingleHandlerInterceptor{T}" /> class.
@@ -28,7 +28,7 @@ namespace Kimono.Interceptors
 		/// Gets the disposer responsible for disposing of the <see cref="Interceptor{T}.Target"/>.
 		/// </summary>
 		/// <value>The disposer responsible for disposing of the <see cref="Interceptor{T}.Target"/>.</value>
-		protected ITargetDisposer<T> Disposer { get; }
+		private ITargetDisposer<T> Disposer { get; }
 
 		/// <inheritdoc />
 		public void Dispose()

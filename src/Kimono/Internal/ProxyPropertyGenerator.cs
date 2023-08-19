@@ -6,7 +6,7 @@ namespace Kimono.Internal
 {
 	internal sealed class ProxyPropertyGenerator : ProxyMemberGenerator, IProxyPropertyGenerator
 	{
-		public void Generate(IProxyBuilderContext context, IEnumerable<PropertyInfo> properties)
+		public void Generate(IProxyContextBuilder context, IEnumerable<PropertyInfo> properties)
 		{
 			ImplementProperties(context, properties);
 		}
@@ -16,7 +16,7 @@ namespace Kimono.Internal
 		/// </summary>
 		/// <param name="context">The context.</param>
 		/// <param name="properties">The properties.</param>
-		private static void ImplementProperties(IProxyBuilderContext context, IEnumerable<PropertyInfo> properties)
+		private static void ImplementProperties(IProxyContextBuilder context, IEnumerable<PropertyInfo> properties)
 		{
 			foreach (var propertyInfo in properties)
 			{

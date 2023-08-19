@@ -58,7 +58,22 @@ namespace Kimono
 		/// </summary>
 		/// <returns>System.Nullable&lt;System.Object&gt;.</returns>
 		protected abstract object? GetTarget();
-	}
+
+        /// <inheritdoc />
+        object? IInterceptor.MemberInvoked(ProxyContext proxyContext, IProxy proxy, int methodId, object[] parameters)
+        {
+            var context = proxyContext.GetInvocationContext(methodId, proxy, parameters);
+
+            MemberInvoked(context);
+
+            if (context.ReturnValue == null && context.ReturnsValueType())
+            {
+                return context.GetReturnTypeDefaultValue();
+            }
+
+            return context.ReturnValue;
+        }
+    }
 
 	/// <summary>
 	/// Class Interceptor.
@@ -141,11 +156,8 @@ namespace Kimono
 		/// <exception cref="System.InvalidOperationException">Generator not created by ProxyFactory. {TargetType}</exception>
 		protected T Create()
 		{
-			var proxyGenaerator = _factory.Create<T>(this);
-
-			return proxyGenaerator == null
-				? throw new InvalidOperationException($"Generator not created by ProxyFactory. {TargetType}")
-				: proxyGenaerator.GenerateProxy(this);
+			var genaerator = _factory.Create(this);
+			return genaerator.GenerateProxy(this);
 		}
 	}
 }

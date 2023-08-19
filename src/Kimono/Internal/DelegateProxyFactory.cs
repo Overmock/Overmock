@@ -23,7 +23,7 @@ namespace Kimono.Internal
 		/// <param name="interceptor">The interceptor.</param>
 		/// <returns>IProxyBuilderContext.</returns>
 		/// <exception cref="System.NotImplementedException"></exception>
-		protected override IProxyBuilderContext CreateContext(IInterceptor interceptor)
+		protected override IProxyContextBuilder CreateContext(IInterceptor interceptor)
         {
             throw new NotImplementedException();
         }
@@ -35,7 +35,7 @@ namespace Kimono.Internal
 		/// <param name="marshallerContext">The marshaller context.</param>
 		/// <returns>IProxyGenerator&lt;T&gt;.</returns>
 		/// <exception cref="System.NotImplementedException"></exception>
-		protected override IProxyGenerator<T> CreateCore<T>(IProxyBuilderContext marshallerContext)
+		protected override IProxyGenerator<T> CreateCore<T>(IProxyContextBuilder marshallerContext)
         {
             throw new NotImplementedException();
         }

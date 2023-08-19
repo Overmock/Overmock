@@ -1,9 +1,10 @@
-﻿// See https://aka.ms/new-console-template for more information
-using BenchmarkDotNet.Running;
+﻿using BenchmarkDotNet.Running;
 using Overmock.Benchmarks;
 
+BenchmarkRunner.Run<InterceptorMethodCallBenchmark>();
+//BenchmarkRunner.Run<NewProxyCreationBenchmark>();
 
-BenchmarkRunner.Run<TypeInterceptorBenchmark>();
+//new InterceptorMethodCallBenchmark().Kimono(100);
 
 //var benchmark = new TypeInterceptorBenchmark();
 //benchmark.TypeInterceptor();

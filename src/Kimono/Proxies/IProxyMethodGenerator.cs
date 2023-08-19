@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using System.Reflection.Emit;
 
 namespace Kimono.Proxies
 {
@@ -7,6 +8,8 @@ namespace Kimono.Proxies
 	/// </summary>
 	internal interface IProxyMethodGenerator
     {
-		void Generate(IProxyBuilderContext context, IEnumerable<MethodInfo> methods);
+		void Generate(IProxyContextBuilder context, IEnumerable<MethodInfo> methods);
+
+        void EmitTypeInitializer(ILGenerator ilGenerator, ConstructorInfo baseConstructor);
     }
 }

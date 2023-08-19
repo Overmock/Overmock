@@ -48,7 +48,7 @@ namespace Kimono.Proxies
         /// </summary>
         /// <param name="interceptor">The interceptor.</param>
         /// <returns>IProxyBuilderContext.</returns>
-        protected abstract IProxyBuilderContext CreateContext(IInterceptor interceptor);
+        protected abstract IProxyContextBuilder CreateContext(IInterceptor interceptor);
 
         /// <summary>
         /// Creates the core.
@@ -56,7 +56,7 @@ namespace Kimono.Proxies
         /// <typeparam name="T"></typeparam>
         /// <param name="marshallerContext">The marshaller context.</param>
         /// <returns>IProxyGenerator&lt;T&gt;.</returns>
-        protected abstract IProxyGenerator<T> CreateCore<T>(IProxyBuilderContext marshallerContext) where T : class;
+        protected abstract IProxyGenerator<T> CreateCore<T>(IProxyContextBuilder marshallerContext) where T : class;
 
         /// <summary>
         /// Gets the name.

@@ -30,15 +30,20 @@ namespace Kimono
 		/// </summary>
 		public const string AssemblyAndTypeNameFormat = "Kimono-DyamicProxies.{0}";
 
-		/// <summary>
-		/// The invoke method name
-		/// </summary>
-		public const string InvokeMethodName = "Invoke";
+        /// <summary>
+        /// The kimono deleate type name format
+        /// </summary>
+        public static readonly string KimonoDelegateTypeNameFormat = "Kimono_Proxy_Factory_{0}";
 
-		/// <summary>
-		/// The initialize kimono context method name
-		/// </summary>
-		public const string InitializeKimonoContextMethodName = nameof(IProxy.InitializeProxyContext);
+        /// <summary>
+        /// The invoke method name
+        /// </summary>
+        public const string InvokeMethodName = "Invoke";
+
+        /// <summary>
+        /// The void type
+        /// </summary>
+        public static readonly Type VoidType = typeof(void);
 
 		/// <summary>
 		/// The object type
@@ -85,15 +90,25 @@ namespace Kimono
 		/// </summary>
 		public static readonly Type ProxyContextType = typeof(ProxyContext);
 
-		/// <summary>
-		/// The disposable type
-		/// </summary>
-		public static readonly Type DisposableType = typeof(IDisposable);
+        /// <summary>
+        /// The kimono context type
+        /// </summary>
+        public static readonly Type IInterceptorType = typeof(IInterceptor);
 
-		/// <summary>
-		/// The disposable method.
-		/// </summary>
-		public static readonly MethodInfo DisposeMethod = DisposableType.GetMethod(nameof(IDisposable.Dispose))!;
+        /// <summary>
+        /// The disposable type
+        /// </summary>
+        public static readonly Type DisposableType = typeof(IDisposable);
+
+        /// <summary>
+        /// The <see cref="Func{ProxyContext, IInterceptor, T}"/> type
+        /// </summary>
+        public static Type GetFuncProxyContextIInterceptorTType<T>() => typeof(Func<ProxyContext, IInterceptor, T>);
+
+        /// <summary>
+        /// The disposable method.
+        /// </summary>
+        public static readonly MethodInfo DisposeMethod = DisposableType.GetMethod(nameof(IDisposable.Dispose))!;
 
 		/// <summary>
 		/// The empty object array method
@@ -104,12 +119,72 @@ namespace Kimono
 		/// The method base type get current method
 		/// </summary>
 		public static readonly MethodInfo MethodBaseTypeGetCurrentMethod = MethodBaseType.GetMethod("GetCurrentMethod", BindingFlags.Static | BindingFlags.Public)!;
+        
+        /// <summary>
+        /// The action type taking one object.
+        /// </summary>
+        public static readonly Type Action1ObjectType = typeof(Action<object?>);
 
-		/// <summary>
-		/// Gets the proxy type handle method call method.
-		/// </summary>
-		/// <returns>MethodInfo.</returns>
-		public static MethodInfo ProxyTypeHandleMethodCallMethod = ProxyType.GetMethod("HandleMethodCall", BindingFlags.Instance | BindingFlags.NonPublic)!;
+        /// <summary>
+        /// The action type taking one object.
+        /// </summary>
+        public static readonly Type Action2ObjectType = typeof(Action<object?, object?>);
+
+        /// <summary>
+        /// The action type taking one object.
+        /// </summary>
+        public static readonly Type Action3ObjectType = typeof(Action<object?, object?, object?>);
+
+        /// <summary>
+        /// The action type taking one object.
+        /// </summary>
+        public static readonly Type Action4ObjectType = typeof(Action<object?, object?, object?, object?>);
+
+        /// <summary>
+        /// The action type taking one object.
+        /// </summary>
+        public static readonly Type Action5ObjectType = typeof(Action<object?, object?, object?, object?, object?>);
+
+        /// <summary>
+        /// The action type taking one object.
+        /// </summary>
+        public static readonly Type Action6ObjectType = typeof(Action<object?, object?, object?, object?, object?, object?>);
+
+        /// <summary>
+        /// The action type taking one object.
+        /// </summary>
+        public static readonly Type Func1ObjectType = typeof(Func<object?, object?>);
+
+        /// <summary>
+        /// The action type taking one object.
+        /// </summary>
+        public static readonly Type Func2ObjectType = typeof(Func<object?, object?, object?>);
+
+        /// <summary>
+        /// The action type taking one object.
+        /// </summary>
+        public static readonly Type Func3ObjectType = typeof(Func<object?, object?, object?, object?>);
+
+        /// <summary>
+        /// The func type taking 3 objects.
+        /// </summary>
+        public static readonly Type Func4ObjectType = typeof(Func<object?, object?, object?, object?, object?>);
+
+        /// <summary>
+        /// The func type taking 5 objects.
+        /// </summary>
+        public static readonly Type Func5ObjectType = typeof(Func<object?, object?, object?, object?, object?, object?>);
+
+        /// <summary>
+        /// The func type taking 6 objects.
+        /// </summary>
+        public static readonly Type Func6ObjectType = typeof(Func<object?, object?, object?, object?, object?, object?, object?>);
+
+        /// <summary>
+        /// Gets the proxy type handle method call method.
+        /// </summary>
+        /// <returns>MethodInfo.</returns>
+        public static MethodInfo ProxyTypeHandleMethodCallMethod = ProxyType.GetMethod("HandleMethodCall", BindingFlags.Instance | BindingFlags.NonPublic)!;
 
 		/// <summary>
 		/// Gets the proxy type handle method call method.

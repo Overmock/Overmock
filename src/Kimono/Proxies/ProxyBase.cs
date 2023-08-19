@@ -7,16 +7,21 @@
 	/// <seealso cref="IProxy" />
 	public abstract class ProxyBase : IProxy
 	{
-		private ProxyContext? _proxyContext;
+		private readonly ProxyContext _proxyContext;
+        private readonly IInterceptor _interceptor;
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="ProxyBase{T}"/> class.
-		/// </summary>
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ProxyBase{T}" /> class.
+        /// </summary>
+        /// <param name="proxyContext">The proxy context.</param>
+        /// <param name="interceptor">The interceptor.</param>
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-		protected ProxyBase()
+        protected ProxyBase(ProxyContext proxyContext, IInterceptor interceptor)
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 		{
-		}
+            _proxyContext = proxyContext;
+            _interceptor = interceptor;
+        }
 
 		/// <summary>
 		/// The <see cref="Interceptor.GetTarget" />s <see cref="Type" />.
@@ -24,11 +29,11 @@
 		/// <value>The type of the target.</value>
 		public Type TargetType { get; protected set; }
 
-		/// <summary>
-		/// Gets the interceptor.
-		/// </summary>
-		/// <value>The interceptor.</value>
-		public IInterceptor Interceptor { get; private set; }
+        /// <summary>
+        /// Gets the interceptor.
+        /// </summary>
+        /// <value>The interceptor.</value>
+        public IInterceptor Interceptor => _interceptor;
 
 		/// <summary>
 		/// Handles the method call.
@@ -38,16 +43,7 @@
 		/// <returns>System.Nullable&lt;System.Object&gt;.</returns>
 		protected object? HandleMethodCall(int methodId, params object[] parameters)
 		{
-			var invocationContext = _proxyContext.GetInvocationContext(methodId, this, parameters);
-
-			Interceptor.MemberInvoked(invocationContext);
-
-			if (invocationContext.ReturnValue == null && invocationContext.MemberReturnsValueType())
-			{
-				return invocationContext.GetReturnTypeDefaultValue();
-			}
-
-			return invocationContext.ReturnValue;
+            return _interceptor.MemberInvoked(_proxyContext, this, methodId, parameters);
 		}
 
 		/// <summary>
@@ -58,16 +54,16 @@
 			(Interceptor as IDisposable)?.Dispose();
 		}
 
-		/// <summary>
-		/// Initializes the proxy context.
-		/// </summary>
-		/// <param name="interceptor">The interceptor.</param>
-		/// <param name="context">The context.</param>
-		void IProxy.InitializeProxyContext(IInterceptor interceptor, ProxyContext context)
-		{
-			Interceptor = interceptor;
-			_proxyContext = context;
-		}
+		///// <summary>
+		///// Initializes the proxy context.
+		///// </summary>
+		///// <param name="interceptor">The interceptor.</param>
+		///// <param name="context">The context.</param>
+		//void IProxy.InitializeProxyContext(IInterceptor interceptor, ProxyContext context)
+		//{
+		//	Interceptor = interceptor;
+		//	_proxyContext = context;
+		//}
 
 		/// <summary>
 		/// Gets the type of the target.
@@ -85,9 +81,9 @@
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ProxyBase{T}"/> class.
 		/// </summary>
-		public ProxyBase()
-		{
-			TargetType = typeof(T);
-		}
+        protected ProxyBase(ProxyContext proxyContext, IInterceptor interceptor) : base(proxyContext, interceptor)
+        {
+            TargetType = typeof(T);
+        }
     }
 }

@@ -9,69 +9,70 @@ namespace Kimono
     /// </summary>
     public class InvocationContext : IInvocationContext
 	{
-		private readonly Func<object, object[]?, object?> _invokeTargetHandler;
-		private readonly object[] _arguments;
-		private readonly object? _target;
+        private readonly IInterceptor _interceptor;
+        private readonly RuntimeContext _runtimeContext;
+        private readonly Func<Parameters> _parametersProvider;
 
-		private object? _defaultReturnValue;
+        private readonly Func<object[]> _parameterValuesProvider;
+        private bool _targetInvoked;
+        private Parameters? _parameters;
+        private object? _defaultReturnValue;
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="InvocationContext"/> class.
-		/// </summary>
-		/// <param name="runtimeContext">The runtime context.</param>
-		/// <param name="interceptor">The interceptor.</param>
-		/// <param name="parameters">The parameters.</param>
-		public InvocationContext(RuntimeContext runtimeContext, IInterceptor interceptor, object[] parameters)
-		{
-			_arguments = parameters;
-			_target = interceptor.GetTarget();
-			_invokeTargetHandler = runtimeContext.GetTargetInvocationHandler();
-
-			Interceptor = interceptor;
-			MemberName = runtimeContext.MemberName;
-			Parameters = runtimeContext.MapParameters(parameters);
-			ProxiedMember = runtimeContext.ProxiedMember;
-			
-			var member = runtimeContext.ProxiedMember.Member;
-
-			Member = member;
+        /// <summary>
+        /// Initializes a new instance of the <see cref="InvocationContext" /> class.
+        /// </summary>
+        /// <param name="runtimeContext">The runtime context.</param>
+        /// <param name="interceptor">The interceptor.</param>
+        /// <param name="parameters">The parameters.</param>
+        /// <param name="parameterValues">The parameter values.</param>
+        public InvocationContext(RuntimeContext runtimeContext, IInterceptor interceptor, RuntimeParameter[] parameters, object[] parameterValues)
+        {
+            _runtimeContext = runtimeContext;
+            _interceptor = interceptor;
+            _parameterValuesProvider = () => parameterValues;
+            _parametersProvider = () => new Parameters(parameters, parameterValues);
 		}
 
 		/// <summary>
 		/// Gets the interceptor.
 		/// </summary>
 		/// <value>The interceptor.</value>
-		public IInterceptor Interceptor { get; }
-
-		/// <summary>
-		/// Gets the member.
-		/// </summary>
-		/// <value>The member.</value>
-		public MemberInfo Member { get; }
+		public IInterceptor Interceptor => _interceptor;
 
 		/// <summary>
 		/// Gets the name of the member.
 		/// </summary>
 		/// <value>The name of the member.</value>
-		public string MemberName { get; }
+		public string MemberName => _runtimeContext.MemberName;
 
-		/// <summary>
-		/// Gets the method.
-		/// </summary>
-		/// <value>The method.</value>
-		public MethodInfo Method => ProxiedMember.Method;
+        /// <summary>
+        /// Gets the member.
+        /// </summary>
+        /// <value>The member.</value>
+        public MemberInfo Member => _runtimeContext.ProxiedMember.Member;
+
+        /// <summary>
+        /// Gets the method.
+        /// </summary>
+        /// <value>The method.</value>
+        public MethodInfo Method => _runtimeContext.ProxiedMember.Method;
 
 		/// <summary>
 		/// Gets the parameters.
 		/// </summary>
 		/// <value>The parameters.</value>
-		public Parameters Parameters { get; }
+		public Parameters Parameters
+        {
+            get
+            {
+                if (_parameters is null)
+                {
+                    _parameters = _parametersProvider();
+                }
 
-		/// <summary>
-		/// Gets the proxied member.
-		/// </summary>
-		/// <value>The proxied member.</value>
-		internal IProxyMember ProxiedMember { get; }
+                return _parameters;
+            }
+        }
 
 		/// <summary>
 		/// Gets or sets the return value.
@@ -79,8 +80,8 @@ namespace Kimono
 		/// <value>The return value.</value>
 		public object? ReturnValue { get; set; }
 
-		/// <inheritdoc />
-		public bool TargetInvoked { get; private set; }
+        /// <inheritdoc />
+        public bool TargetInvoked => _targetInvoked;
 
 		/// <summary>
 		/// Gets the specified name.
@@ -93,33 +94,32 @@ namespace Kimono
 			return Parameters.Get<T>(name);
 		}
 
-		/// <summary>
-		/// Invokes the target.
-		/// </summary>
-		/// <param name="setReturnValue">if set to <c>true</c> [set return value].</param>
-		/// <param name="force">if set to <c>true</c> forces the call to be invoked regardless if it's already been called successfully.</param>
-		public void Invoke(bool setReturnValue = true, bool force = false)
+        /// <summary>
+        /// Invokes the target.
+        /// </summary>
+        /// <param name="setReturnValue">if set to <c>true</c> [set return value].</param>
+        /// <param name="force">if set to <c>true</c> forces the call to be invoked regardless if it's already been called successfully.</param>
+        public void Invoke(bool setReturnValue = true, bool force = false)
 		{
 			// If the target's member has already been called and they
 			// haven't forced the invocation, then return to the caller;
-			if (TargetInvoked && !force)
-			{
-				return;
-			}
+			if (_targetInvoked && !force) { return; }
 
-			if (_target is null)
-			{
-				return;
-			}
+            var invoker = _runtimeContext.GetMethodInvoker();
 
-			var returnValue = _invokeTargetHandler(_target, _arguments);
+            var target = _interceptor.GetTarget();
 
-			if (setReturnValue)
+            // If the target's null then we don't have one to call;
+            if (target is null) { return; }
+
+			var returnValue = invoker.Invoke(target, _parameterValuesProvider());
+
+            _targetInvoked = true;
+
+            if (setReturnValue)
 			{
 				ReturnValue = returnValue;
 			}
-
-			TargetInvoked = true;
 		}
 
 		/// <summary>
@@ -135,9 +135,9 @@ namespace Kimono
 		/// Members the type of the returns value.
 		/// </summary>
 		/// <returns><c>true</c> if XXXX, <c>false</c> otherwise.</returns>
-		internal bool MemberReturnsValueType()
+		internal bool ReturnsValueType()
 		{
-			var member = ProxiedMember.Member;
+            var member = Member;
 
 			if (member is MethodInfo method)
 			{
@@ -150,6 +150,16 @@ namespace Kimono
 			}
 
 			return false;
-		}
-	}
+        }
+
+        //internal InvocationContext Reset(object[] parameters)
+        //{
+        //    _arguments = parameters;
+        //    _parameters?.SetParameterValues(parameters);
+            
+        //    TargetInvoked = false;
+
+        //    return this;
+        //}
+    }
 }

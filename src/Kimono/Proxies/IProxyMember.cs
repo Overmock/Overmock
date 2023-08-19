@@ -29,6 +29,6 @@ namespace Kimono.Proxies
         /// Creates the delegate.
         /// </summary>
         /// <returns>Func&lt;System.Object, System.Nullable&lt;System.Object&gt;[], System.Nullable&lt;System.Object&gt;&gt;.</returns>
-        Func<object, object[]?, object?> CreateDelegate();
+        Func<object?, object?[], object?> CreateDelegate();
     }
 }

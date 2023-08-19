@@ -5,23 +5,23 @@ namespace Kimono.Internal
 {
 	/// <summary>
 	/// Class ProxyBuilderContext.
-	/// Implements the <see cref="IProxyBuilderContext" />
+	/// Implements the <see cref="IProxyContextBuilder" />
 	/// </summary>
-	/// <seealso cref="IProxyBuilderContext" />
-	public sealed class ProxyBuilderContext : IProxyBuilderContext
-	{
+	/// <seealso cref="IProxyContextBuilder" />
+	public sealed class ProxyContextBuilder : IProxyContextBuilder
+    {
 		/// <summary>
 		/// The method counter
 		/// </summary>
 		private int _methodCounter;
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="ProxyBuilderContext"/> class.
+		/// Initializes a new instance of the <see cref="ProxyContextBuilder"/> class.
 		/// </summary>
 		/// <param name="target">The target.</param>
 		/// <param name="typeBuilder">The type builder.</param>
 		/// <param name="proxyType">Type of the proxy.</param>
-		public ProxyBuilderContext(IInterceptor target, TypeBuilder typeBuilder, Type proxyType)
+		public ProxyContextBuilder(IInterceptor target, TypeBuilder typeBuilder, Type proxyType)
 		{
 			Interceptor = target;
 			ProxyType = proxyType;

@@ -31,6 +31,15 @@ namespace Kimono
 		/// </summary>
 		/// <param name="context">The context.</param>
 		void MemberInvoked(IInvocationContext context);
+
+        /// <summary>
+        /// Members the invoked.
+        /// </summary>
+        /// <param name="context">The context.</param>
+        /// <param name="proxy">The proxy.</param>
+        /// <param name="methodId">The method identifier.</param>
+        /// <param name="parameters">The parameters.</param>
+        object? MemberInvoked(ProxyContext context, IProxy proxy, int methodId, object[] parameters);
 	}
 
 	/// <summary>

@@ -13,7 +13,11 @@ namespace Kimono.Tests.ProxyMembers
 
 	public class InterfaceImpl : ProxyBase<IInterface>, IInterface
 	{
-		public string Name => throw new NotImplementedException();
+        public InterfaceImpl() : base(null, null)
+        {
+        }
+
+        public string Name => throw new NotImplementedException();
 
 		public string DoSomething(string name)
 		{
