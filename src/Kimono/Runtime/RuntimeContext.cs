@@ -6,11 +6,10 @@ namespace Kimono
     /// <summary>
     /// The context for an overridden member.
     /// </summary>
-    public struct RuntimeContext
+    public sealed class RuntimeContext
 	{
 		private readonly IProxyMember _proxiedMember;
 		private readonly List<RuntimeParameter> _parameters;
-        private InvocationContext? _invocationContext;
         private IMethodDelegateInvoker? _methodInvoker;
 
         /// <summary>
@@ -50,17 +49,17 @@ namespace Kimono
 
         internal InvocationContext GetInvocationContext(IInterceptor interceptor, object[] parameters)
 		{
-            if (_invocationContext is null)
-            {
-                _invocationContext = new InvocationContext(this, interceptor, _parameters.ToArray());
-            }
+            //if (_invocationContext is null)
+            //{
+            //    _invocationContext = new InvocationContext(this, interceptor, _parameters.ToArray(), parameters);
+            //}
 
-            return _invocationContext.Reset(parameters);
+            return new InvocationContext(this, interceptor, _parameters.ToArray(), parameters);
 		}
 
 		internal IMethodDelegateInvoker GetMethodInvoker()
 		{
-			return _methodInvoker ?? new MethodInfoDelegateInvoker(ProxiedMember.Method);
+            return _methodInvoker ?? new MethodInfoDelegateInvoker(ProxiedMember.Method);
 		}
 	}
 }

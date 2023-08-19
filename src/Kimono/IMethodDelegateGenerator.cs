@@ -8,11 +8,9 @@ namespace Kimono
     {
         IMethodDelegateInvoker Generate(RuntimeContext context, MethodInfo method);
 
-        Delegate EmitMethodInvocation(MethodInfo method, Type delegateType, Type[] parameters);
+        Delegate EmitMethodInvocation(MethodInfo method, Type delegateType, Type[] parameters, bool returnsVoid = false);
 
         void EmitDisposeInterceptor(IProxyContextBuilder context, MethodInfo disposeMethod);
-
-        //void EmitMemberInvokeInterceptor(IProxyContextBuilder context, MethodInfo disposeMethod);
 
         void EmitTypeInitializer(ILGenerator ilGenerator, ConstructorInfo baseConstructor);
     }

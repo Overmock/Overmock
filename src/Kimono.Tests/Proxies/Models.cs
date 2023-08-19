@@ -61,5 +61,19 @@ namespace Kimono.Tests.Proxies
 				throw;
 			}
 		}
+        public static void Method()
+        {
+            Test.Delegate = (object target, object id, object name) => {
+                ((IVoidArgsIntString)target).VoidArgsIntString((int)id, (string)name);
+            };
+        }
 	}
+
+    public class Test
+    {
+
+        public static MethodArgIntStringReturnsVoid Delegate { get; set; }
+    }
+
+    public delegate void MethodArgIntStringReturnsVoid(object target, object id, object name);
 }

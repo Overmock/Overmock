@@ -2,13 +2,28 @@
 {
     internal abstract class MethodDelegateInvoker<TDelegate> : IMethodDelegateInvoker where TDelegate : Delegate
     {
-        protected readonly TDelegate _invokeMethod;
+        private TDelegate? _invokeMethod;
+        private readonly Func<TDelegate> _delegeteGenerator;
 
-        public MethodDelegateInvoker(TDelegate invokeMethod)
+        public MethodDelegateInvoker(Func<TDelegate> delegeteGenerator)
         {
-            _invokeMethod = invokeMethod;
+            _delegeteGenerator = delegeteGenerator;
         }
 
+        public TDelegate? InvokeMethod => _invokeMethod ??= _delegeteGenerator();
+
         public abstract object? Invoke(object? target, params object?[] parameters);
+    }
+
+    internal sealed class ObjectArrayArgsDelegateInvoker : MethodDelegateInvoker<Func<object?, object?[], object?>>
+    {
+        public ObjectArrayArgsDelegateInvoker(Func<Func<object?, object?[], object?>> delegeteGenerator) : base(delegeteGenerator)
+        {
+        }
+
+        public override object? Invoke(object? target, object?[] parameters)
+        {
+            return InvokeMethod(target, parameters);
+        }
     }
 }

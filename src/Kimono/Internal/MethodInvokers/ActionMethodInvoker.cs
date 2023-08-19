@@ -2,13 +2,13 @@
 {
     internal sealed class ActionMethodInvoker : MethodDelegateInvoker<Action>
     {
-        public ActionMethodInvoker(Action invokeMethod) : base(invokeMethod)
+        public ActionMethodInvoker(Func<Action> invokeMethod) : base(invokeMethod)
         {
         }
 
         public sealed override object? Invoke(object? target, params object?[] parameters)
         {
-            _invokeMethod();
+            InvokeMethod();
 
             return null;
         }
