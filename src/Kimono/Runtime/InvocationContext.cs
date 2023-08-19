@@ -9,37 +9,28 @@ namespace Kimono
     /// </summary>
     public class InvocationContext : IInvocationContext
 	{
-		private readonly IMethodDelegateInvoker _methodInvoker;
         private readonly IInterceptor _interceptor;
         private readonly RuntimeContext _runtimeContext;
-        private readonly RuntimeParameter[] _runtimeParameters;
-        private readonly object? _target;
-        private readonly MethodInfo _method;
-        private readonly MemberInfo _member;
+        private readonly Func<Parameters> _parametersProvider;
 
+        private readonly Func<object[]> _parameterValuesProvider;
+        private bool _targetInvoked;
         private Parameters? _parameters;
-        private object[] _arguments;
         private object? _defaultReturnValue;
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="InvocationContext"/> class.
-		/// </summary>
-		/// <param name="runtimeContext">The runtime context.</param>
-		/// <param name="interceptor">The interceptor.</param>
-		/// <param name="parameters">The parameters.</param>
-		public InvocationContext(RuntimeContext runtimeContext, IInterceptor interceptor, RuntimeParameter[] parameters)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="InvocationContext" /> class.
+        /// </summary>
+        /// <param name="runtimeContext">The runtime context.</param>
+        /// <param name="interceptor">The interceptor.</param>
+        /// <param name="parameters">The parameters.</param>
+        /// <param name="parameterValues">The parameter values.</param>
+        public InvocationContext(RuntimeContext runtimeContext, IInterceptor interceptor, RuntimeParameter[] parameters, object[] parameterValues)
         {
-            _arguments = Array.Empty<object>();
-
-            _runtimeParameters = parameters;
             _runtimeContext = runtimeContext;
             _interceptor = interceptor;
-
-            _target = interceptor.GetTarget();
-            _member = runtimeContext.ProxiedMember.Member;
-            _method = runtimeContext.ProxiedMember.Method;
-
-            _methodInvoker = runtimeContext.GetMethodInvoker();
+            _parameterValuesProvider = () => parameterValues;
+            _parametersProvider = () => new Parameters(parameters, parameterValues);
 		}
 
 		/// <summary>
@@ -52,19 +43,19 @@ namespace Kimono
 		/// Gets the name of the member.
 		/// </summary>
 		/// <value>The name of the member.</value>
-		public string MemberName => _member.Name;
+		public string MemberName => _runtimeContext.MemberName;
 
         /// <summary>
         /// Gets the member.
         /// </summary>
         /// <value>The member.</value>
-        public MemberInfo Member => _member;
+        public MemberInfo Member => _runtimeContext.ProxiedMember.Member;
 
         /// <summary>
         /// Gets the method.
         /// </summary>
         /// <value>The method.</value>
-        public MethodInfo Method => _method;
+        public MethodInfo Method => _runtimeContext.ProxiedMember.Method;
 
 		/// <summary>
 		/// Gets the parameters.
@@ -76,7 +67,7 @@ namespace Kimono
             {
                 if (_parameters is null)
                 {
-                    _parameters = new Parameters(_runtimeParameters, _arguments);
+                    _parameters = _parametersProvider();
                 }
 
                 return _parameters;
@@ -89,8 +80,8 @@ namespace Kimono
 		/// <value>The return value.</value>
 		public object? ReturnValue { get; set; }
 
-		/// <inheritdoc />
-		public bool TargetInvoked { get; private set; }
+        /// <inheritdoc />
+        public bool TargetInvoked => _targetInvoked;
 
 		/// <summary>
 		/// Gets the specified name.
@@ -103,23 +94,27 @@ namespace Kimono
 			return Parameters.Get<T>(name);
 		}
 
-		/// <summary>
-		/// Invokes the target.
-		/// </summary>
-		/// <param name="setReturnValue">if set to <c>true</c> [set return value].</param>
-		/// <param name="force">if set to <c>true</c> forces the call to be invoked regardless if it's already been called successfully.</param>
-		public void Invoke(bool setReturnValue = true, bool force = false)
+        /// <summary>
+        /// Invokes the target.
+        /// </summary>
+        /// <param name="setReturnValue">if set to <c>true</c> [set return value].</param>
+        /// <param name="force">if set to <c>true</c> forces the call to be invoked regardless if it's already been called successfully.</param>
+        public void Invoke(bool setReturnValue = true, bool force = false)
 		{
 			// If the target's member has already been called and they
 			// haven't forced the invocation, then return to the caller;
-			if (TargetInvoked && !force) { return; }
+			if (_targetInvoked && !force) { return; }
+
+            var invoker = _runtimeContext.GetMethodInvoker();
+
+            var target = _interceptor.GetTarget();
 
             // If the target's null then we don't have one to call;
-            if (_target is null) { return; }
+            if (target is null) { return; }
 
-			var returnValue = _methodInvoker.Invoke(_target, _arguments);
+			var returnValue = invoker.Invoke(target, _parameterValuesProvider());
 
-            TargetInvoked = true;
+            _targetInvoked = true;
 
             if (setReturnValue)
 			{
@@ -140,14 +135,16 @@ namespace Kimono
 		/// Members the type of the returns value.
 		/// </summary>
 		/// <returns><c>true</c> if XXXX, <c>false</c> otherwise.</returns>
-		internal bool MemberReturnsValueType()
+		internal bool ReturnsValueType()
 		{
-			if (_member is MethodInfo method)
+            var member = Member;
+
+			if (member is MethodInfo method)
 			{
 				return method.ReturnType.IsValueType;
 			}
 
-			if (_member is PropertyInfo property)
+			if (member is PropertyInfo property)
 			{
 				return property.PropertyType.IsValueType;
 			}
@@ -155,14 +152,14 @@ namespace Kimono
 			return false;
         }
 
-        internal InvocationContext Reset(object[] parameters)
-        {
-            _arguments = parameters;
-            _parameters?.SetParameterValues(parameters);
+        //internal InvocationContext Reset(object[] parameters)
+        //{
+        //    _arguments = parameters;
+        //    _parameters?.SetParameterValues(parameters);
             
-            TargetInvoked = false;
+        //    TargetInvoked = false;
 
-            return this;
-        }
+        //    return this;
+        //}
     }
 }

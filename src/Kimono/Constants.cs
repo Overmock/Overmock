@@ -33,7 +33,7 @@ namespace Kimono
         /// <summary>
         /// The kimono deleate type name format
         /// </summary>
-        public static readonly string KimonoDeleateTypeNameFormat = "Kimono_Proxy_Factory_{0}";
+        public static readonly string KimonoDelegateTypeNameFormat = "Kimono_Proxy_Factory_{0}";
 
         /// <summary>
         /// The invoke method name
@@ -119,16 +119,11 @@ namespace Kimono
 		/// The method base type get current method
 		/// </summary>
 		public static readonly MethodInfo MethodBaseTypeGetCurrentMethod = MethodBaseType.GetMethod("GetCurrentMethod", BindingFlags.Static | BindingFlags.Public)!;
-
-        /// <summary>
-        /// The action type
-        /// </summary>
-        public static readonly Type ActionType = typeof(Action);
-
+        
         /// <summary>
         /// The action type taking one object.
         /// </summary>
-        public static readonly Type ActionObjectType = typeof(Action<object?>);
+        public static readonly Type Action1ObjectType = typeof(Action<object?>);
 
         /// <summary>
         /// The action type taking one object.
@@ -148,7 +143,12 @@ namespace Kimono
         /// <summary>
         /// The action type taking one object.
         /// </summary>
-        public static readonly Type FuncObjectType = typeof(Func<object?>);
+        public static readonly Type Action5ObjectType = typeof(Action<object?, object?, object?, object?, object?>);
+
+        /// <summary>
+        /// The action type taking one object.
+        /// </summary>
+        public static readonly Type Action6ObjectType = typeof(Action<object?, object?, object?, object?, object?, object?>);
 
         /// <summary>
         /// The action type taking one object.
@@ -169,6 +169,16 @@ namespace Kimono
         /// The func type taking 3 objects.
         /// </summary>
         public static readonly Type Func4ObjectType = typeof(Func<object?, object?, object?, object?, object?>);
+
+        /// <summary>
+        /// The func type taking 5 objects.
+        /// </summary>
+        public static readonly Type Func5ObjectType = typeof(Func<object?, object?, object?, object?, object?, object?>);
+
+        /// <summary>
+        /// The func type taking 6 objects.
+        /// </summary>
+        public static readonly Type Func6ObjectType = typeof(Func<object?, object?, object?, object?, object?, object?, object?>);
 
         /// <summary>
         /// Gets the proxy type handle method call method.

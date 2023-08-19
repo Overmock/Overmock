@@ -89,6 +89,7 @@ namespace Kimono.Tests
 				called = true;
 				if (context.MemberName == "Save")
 				{
+                    context.Invoke();
 					saveCalled = true;
 					context.ReturnValue = true;
 				}

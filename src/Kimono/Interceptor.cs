@@ -66,7 +66,7 @@ namespace Kimono
 
             MemberInvoked(context);
 
-            if (context.ReturnValue == null && context.MemberReturnsValueType())
+            if (context.ReturnValue == null && context.ReturnsValueType())
             {
                 return context.GetReturnTypeDefaultValue();
             }

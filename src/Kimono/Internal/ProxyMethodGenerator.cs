@@ -1,4 +1,5 @@
-﻿using Kimono.Proxies;
+﻿using Kimono.Emit;
+using Kimono.Proxies;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Reflection.Emit;
@@ -18,12 +19,12 @@ namespace Kimono.Internal
 
         public void EmitTypeInitializer(ILGenerator ilGenerator, ConstructorInfo baseConstructor)
         {
-            DelegateGenerator.EmitTypeInitializer(ilGenerator, baseConstructor);
+            DelegateGenerator.EmitTypeInitializer(Emitter.For(ilGenerator), baseConstructor);
         }
 
         public void GenerateProxyDelegate(RuntimeContext context, MethodInfo method)
         {
-            context.UseMethodInvoker(DelegateGenerator.Generate(context, method));
+            context.UseMethodInvoker(DelegateGenerator.GenerateDelegateInvoker(context, method));
         }
 
 		private void ImplementMethods(IProxyContextBuilder context, IEnumerable<MethodInfo> methods)

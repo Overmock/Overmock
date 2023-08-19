@@ -2,7 +2,7 @@
 {
     internal sealed class ActionObjectMethodInvoker : MethodDelegateInvoker<Action<object?>>
     {
-        public ActionObjectMethodInvoker(Func<Action<object?>> invokeProvider) : base(invokeProvider)
+        public ActionObjectMethodInvoker(Func<Action<object?>> invokeMethod) : base(invokeMethod)
         {
         }
 

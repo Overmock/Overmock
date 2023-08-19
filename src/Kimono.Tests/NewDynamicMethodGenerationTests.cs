@@ -7,140 +7,158 @@ namespace Kimono.Tests
     public class NewDynamicMethodGenerationTests
     {
         [TestMethod]
-        public void IMethodNoArgsVoid_Test()
+        public void IVoidNoArgs_Test()
         {
             var called = true;
-            var target = new MethodNoArgsVoidClass();
-            var overmock = new TargetedCallbackInterceptor<IMethodNoArgsVoid>(target, c => {
+            var target = new VoidNoArgsClass();
+            var overmock = new TargetedCallbackInterceptor<IVoidNoArgs>(target, c => {
                 called = true;
                 c.Invoke();
             });
 
             var subject = overmock.Proxy;
 
-            subject.MethodNoArgsVoid();
+            subject.VoidNoArgs();
 
             Assert.IsTrue(called);
         }
 
         [TestMethod]
-        public void IMethodNoArgsInt_Test()
+        public void IIntNoArgs_Test()
         {
             var called = true;
-            var target = new MethodNoArgsIntClass();
-            var overmock = new TargetedCallbackInterceptor<IMethodNoArgsReturnsInt>(target, c => {
+            var target = new IntNoArgsClass();
+            var overmock = new TargetedCallbackInterceptor<IIntNoArgs>(target, c => {
                 called = true;
                 c.Invoke();
             });
 
             var subject = overmock.Proxy;
 
-            var result = subject.MethodNoArgsInt();
+            var result = subject.IntNoArgs();
 
             Assert.IsTrue(called);
             Assert.AreEqual(100, result);
         }
 
         [TestMethod]
-        public void IMethodStringArgReturnsInt_Test()
+        public void IStringNoArgs_Test()
         {
             var called = true;
-            var target = new MethodStringArgReturnsIntClass();
-            var overmock = new TargetedCallbackInterceptor<IMethodStringArgReturnsInt>(target, c => {
+            var target = new StringNoArgsClass();
+            var overmock = new TargetedCallbackInterceptor<IStringNoArgs>(target, c => {
                 called = true;
                 c.Invoke();
             });
 
             var subject = overmock.Proxy;
 
-            subject.MethodStringArgReturnsInt("hello");
+            var result = subject.StringNoArgs();
+
+            Assert.IsTrue(called);
+            Assert.AreEqual("hello, world!", result);
+        }
+
+        [TestMethod]
+        public void IIntArgsString_Test()
+        {
+            var called = true;
+            var target = new IntArgsStringClass();
+            var overmock = new TargetedCallbackInterceptor<IIntArgsString>(target, c => {
+                called = true;
+                c.Invoke();
+            });
+
+            var subject = overmock.Proxy;
+
+            subject.IntArgsString("hello");
 
             Assert.IsTrue(called);
         }
 
         [TestMethod]
-        public void IMethodStringStringArgVoid_Test()
+        public void IVoidArgsStringString_Test()
         {
             var called = true;
-            var target = new MethodStringStringArgVoidClass();
-            var overmock = new TargetedCallbackInterceptor<IMethodStringStringArgVoid>(target, c => {
+            var target = new VoidArgsStringStringClass();
+            var overmock = new TargetedCallbackInterceptor<IVoidArgsStringString>(target, c => {
                 called = true;
                 c.Invoke();
             });
 
             var subject = overmock.Proxy;
 
-            subject.MethodStringStringArgVoid("hello", "world");
+            subject.VoidArgsStringString("hello", "world");
 
             Assert.IsTrue(called);
         }
 
         [TestMethod]
-        public void IMethodArgsDoubleStringReturnsString_Test()
+        public void IStringArgsDoubleString_Test()
         {
             var called = true;
-            var target = new MethodArgsDoubleStringReturnsStringClass();
-            var overmock = new TargetedCallbackInterceptor<IMethodArgsDoubleStringReturnsString>(target, c => {
+            var target = new StringArgsDoubleStringClass();
+            var overmock = new TargetedCallbackInterceptor<IStringArgsDoubleString>(target, c => {
                 called = true;
                 c.Invoke();
             });
 
             var subject = overmock.Proxy;
 
-            var result = subject.MethodArgsDoubleStringReturnsString(420.69, "active");
+            var result = subject.StringArgsDoubleString(420.69, "active");
 
             Assert.IsTrue(called);
             Assert.AreEqual("420.69, active", result);
         }
 
         [TestMethod]
-        public void IMethodArgIntStringReturnsVoid_Test()
+        public void IVoidArgsIntString_Test()
         {
             var called = true;
-            var target = new MethodArgIntStringReturnsVoidClass();
-            var overmock = new TargetedCallbackInterceptor<IMethodArgIntStringReturnsVoid>(target, c => {
+            var target = new VoidArgsIntStringClass();
+            var overmock = new TargetedCallbackInterceptor<IVoidArgsIntString>(target, c => {
                 called = true;
                 c.Invoke();
             });
 
             var subject = overmock.Proxy;
 
-            subject.MethodArgIntStringReturnsVoid(69, "active");
+            subject.VoidArgsIntString(69, "active");
 
             Assert.IsTrue(called);
         }
 
         [TestMethod]
-        public void IMethodArgsIntDoubleStringReturnsString_Test()
+        public void IStringArgsIntDoubleString_Test()
         {
             var called = true;
-            var target = new MethodArgsIntDoubleStringReturnsStringClass();
-            var overmock = new TargetedCallbackInterceptor<IMethodArgsIntDoubleStringReturnsString>(target, c => {
+            var target = new StringArgsIntDoubleStringClass();
+            var overmock = new TargetedCallbackInterceptor<IStringArgsIntDoubleString>(target, c => {
                 called = true;
                 c.Invoke();
             });
 
             var subject = overmock.Proxy;
 
-            var result = subject.MethodArgsIntDoubleStringReturnsString(20, 420.69, "active");
+            var result = subject.StringArgsIntDoubleString(20, 420.69, "active");
 
             Assert.IsTrue(called);
             Assert.AreEqual("Account Id: 20 with the balance of $ with status: active", result);
         }
 
         [TestMethod]
-        public void IMethodArgIntDoubleStringReturnsVoid_Test()
+        public void IVoidArgsIntDoubleString_Test()
         {
             var called = true;
-            var target = new MethodArgIntDoubleStringReturnsVoidClass();
-            var overmock = new TargetedCallbackInterceptor<IMethodArgIntDoubleStringReturnsVoid>(target, c => {
+            var target = new VoidArgsIntDoubleStringClass();
+            var overmock = new TargetedCallbackInterceptor<IVoidArgsIntDoubleString>(target, c => {
                 called = true;
                 c.Invoke();
             });
 
             var subject = overmock.Proxy;
 
-            subject.MethodArgIntDoubleStringReturnsVoid(20, 420.69, "active");
+            subject.VoidArgsIntDoubleString(20, 420.69, "active");
 
             Assert.IsTrue(called);
         }

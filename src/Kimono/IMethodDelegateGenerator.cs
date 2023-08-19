@@ -1,17 +1,20 @@
-﻿using System.Reflection;
+﻿using Kimono.Emit;
+using Kimono.Proxies;
+using System.Reflection;
+using System.Reflection.Emit;
 
 namespace Kimono
 {
     internal interface IMethodDelegateGenerator
     {
-        IMethodDelegateInvoker Generate(RuntimeContext context, MethodInfo method);
+        IMethodDelegateInvoker GenerateDelegateInvoker(RuntimeContext context, MethodInfo method);
 
         //Delegate EmitMethodInvocation(MethodInfo method, Type delegateType, Type[] parameters);
 
-        //void EmitDisposeInterceptor(IProxyContextBuilder context, MethodInfo disposeMethod);
+        void EmitDisposeInterceptor(IProxyContextBuilder context, MethodInfo disposeMethod);
 
         //void EmitMemberInvokeInterceptor(IProxyContextBuilder context, MethodInfo disposeMethod);
 
-        //void EmitTypeInitializer(ILGenerator ilGenerator, ConstructorInfo baseConstructor);
+        void EmitTypeInitializer(IEmitter emitter, ConstructorInfo baseConstructor);
     }
 }

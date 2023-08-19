@@ -168,11 +168,6 @@ namespace Kimono.Internal
 
 		private static IEnumerable<MethodInfo> GetBaseMethods(ProxyContextBuilder context)
         {
-            if (context.Interceptor.IsDelegate())
-            {
-                return new[] { context.Interceptor.TargetType.GetMethod(Constants.InvokeMethodName)! };
-            }
-
             return typeof(object).GetMethods().Where(method => method.IsVirtual);
         }
 
@@ -190,7 +185,7 @@ namespace Kimono.Internal
         {
             var returnType = typeof(T);
             var dynamicMethod = new DynamicMethod(
-                Constants.KimonoDeleateTypeNameFormat.ApplyFormat(proxyType.Name),
+                Constants.KimonoDelegateTypeNameFormat.ApplyFormat(proxyType.Name),
                 returnType,
                 _proxyDelegateParameters,
                 proxyType

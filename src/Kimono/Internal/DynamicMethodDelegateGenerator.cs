@@ -1,134 +1,124 @@
 ﻿using Kimono.Internal.MethodInvokers;
 using Kimono.Proxies;
+using Kimono.Emit;
 using System;
 using System.Reflection;
 using System.Reflection.Emit;
 
 namespace Kimono.Internal
 {
-    internal sealed class DynamicMethodDelegateGenerator : IMethodDelegateGenerator
+    internal sealed class DynamicMethodDelegateGenerator : MethodDelegateGenerator
     {
-        public IMethodDelegateInvoker Generate(RuntimeContext context, MethodInfo method)
+        private static DynamicMethod CreateDynamicMethod(MethodInfo method, Type[] parameters, bool returnsVoid)
         {
-            var parameters = method.GetParameters().Select(p => p.ParameterType).ToArray();
-
-            if (method.ReturnType == Constants.VoidType)
-            {
-                return HandleAction(context, method, parameters);
-            }
-
-            return HandleFunction(context, method, parameters);
-        }
-
-        private IMethodDelegateInvoker HandleAction(RuntimeContext context, MethodInfo method, Type[] parameters)
-        {
-            if (parameters.Length == 0)
-            {
-                return new ActionMethodInvoker((Action)EmitMethodInvocation(method, Constants.ActionType, parameters));
-            }
-
-            if (parameters.Length == 1)
-            {
-                return new ActionObjectMethodInvoker((Action<object?>)EmitMethodInvocation(method, Constants.ActionObjectType, parameters));
-            }
-
-            if (parameters.Length == 2)
-            {
-                return new Action2ObjectMethodInvoker((Action<object?, object?>)EmitMethodInvocation(method, Constants.Action2ObjectType, parameters));
-            }
-
-            if (parameters.Length == 3)
-            {
-                return new Action3ObjectMethodInvoker((Action<object?, object?, object?>)EmitMethodInvocation(method, Constants.Action3ObjectType, parameters));
-            }
-
-            if (parameters.Length == 4)
-            {
-                return new Action4ObjectMethodInvoker((Action<object?, object?, object?, object?>)EmitMethodInvocation(method, Constants.Action4ObjectType, parameters));
-            }
-
-            // Fallback to the origonal MethodInfo approach
-            return new MethodInfoDelegateInvoker(context.ProxiedMember.CreateDelegate());
-        }
-
-        private IMethodDelegateInvoker HandleFunction(RuntimeContext context, MethodInfo method, Type[] parameters)
-        {
-            if (parameters.Length == 0)
-            {
-                return new FuncReturnMethodInvoker((Func<object?>)EmitMethodInvocation(method, Constants.FuncObjectType, parameters));
-            }
-
-            if (parameters.Length == 1)
-            {
-                return new FuncObjectReturnMethodInvoker((Func<object?, object?>)EmitMethodInvocation(method, Constants.Func1ObjectType, parameters));
-            }
-
-            if (parameters.Length == 2)
-            {
-                return new Func2ObjectReturnMethodInvoker((Func<object?, object?, object?>)EmitMethodInvocation(method, Constants.Func2ObjectType, parameters));
-            }
-
-            if (parameters.Length == 3)
-            {
-                return new Func3ObjectReturnMethodInvoker((Func<object?, object?, object?, object?>)EmitMethodInvocation(method, Constants.Func3ObjectType, parameters));
-            }
-
-            if (parameters.Length == 4)
-            {
-                return new Func4ObjectReturnMethodInvoker((Func<object?, object?, object?, object?, object?>)EmitMethodInvocation(method, Constants.Func4ObjectType, parameters));
-            }
-
-            // Fallback to the origonal MethodInfo approach
-            return new MethodInfoDelegateInvoker(context.ProxiedMember.CreateDelegate());
-        }
-
-        public Delegate EmitMethodInvocation(MethodInfo method, Type delegateType, Type[] parameters)
-        {
-            var returnType = method.ReturnType;
-            var returnsVoid = returnType == Constants.VoidType;
-
-            var dynamicMethod = new DynamicMethod(
-                Constants.KimonoDeleateTypeNameFormat.ApplyFormat(method.Name),
+            return new DynamicMethod(
+                Constants.KimonoDelegateTypeNameFormat.ApplyFormat(method.Name),
                 returnsVoid ? Constants.VoidType : Constants.ObjectType,
-                parameters.Length > 0 
-                    ? parameters.Select(p => Constants.ObjectType).ToArray()
-                    : null
+                parameters.Length > 0
+                    ? parameters.Select(p => Constants.ObjectType).Concat(new Type[] { Constants.ObjectType }).ToArray()
+                    : Type.EmptyTypes,
+                true
             );
+        }
 
-            var emitter = dynamicMethod.GetILGenerator();
-            emitter.Emit(OpCodes.Ldarg_0); // target
+        private static void GenerateActionInvocation(MethodInfo method, IEmitter body, Type[] parameters)
+        {
+            // Load the first parameter (object instance)
+            body.Emit(OpCodes.Ldarg_0);
 
             for (int i = 0; i < parameters.Length; i++)
             {
-                emitter.Emit(OpCodes.Ldarg, i + 1);
+                body.Emit(OpCodes.Ldarg, i + 1);
+
+                if (parameters[i].IsValueType)
+                {
+                    body.Emit(OpCodes.Unbox_Any, parameters[i]);
+                }
             }
 
-            emitter.Emit(OpCodes.Callvirt, method);
-            emitter.Emit(OpCodes.Ret);
+            // Call the method on the instance with parameters
+            body.Emit(OpCodes.Callvirt, method);
 
-            return dynamicMethod.CreateDelegate(delegateType);
+            body.Pop();
+
+            // Return the result
+            body.Emit(OpCodes.Ret);
         }
 
-        public void EmitDisposeInterceptor(IProxyContextBuilder context, MethodInfo disposeMethod)
+        private static void GenerateFuncInvocation(MethodInfo method, IEmitter body, Type[] parameters)
         {
-            var methodBuilder = context.TypeBuilder.DefineMethod(disposeMethod.Name, disposeMethod.Attributes ^ MethodAttributes.Abstract);
+            var returnType = method.ReturnType;
+            // Load the first parameter (object instance)
+            body.Emit(OpCodes.Ldarg_0);
 
-            var emitter = methodBuilder.GetILGenerator();
+            for (int i = 0; i < parameters.Length; i++)
+            {
+                body.Emit(OpCodes.Ldarg, i + 1);
 
-            emitter.Emit(OpCodes.Nop);
-            emitter.Emit(OpCodes.Ldarg_0);
-            emitter.EmitCall(OpCodes.Call, Constants.ProxyTypeHandleDisposeCallMethod, null);
-            emitter.Emit(OpCodes.Nop);
-            emitter.Emit(OpCodes.Ret);
+                if (parameters[i].IsValueType)
+                {
+                    body.Emit(OpCodes.Unbox, parameters[i]);
+                }
+            }
+
+            // Call the method on the instance with parameters
+            body.Emit(OpCodes.Callvirt, method);
+
+            // Return the result
+            body.Emit(OpCodes.Ret);
+
+            //var emitter = dynamicMethod.GetILGenerator();
+            ////emitter.Emit(OpCodes.Nop);
+
+            //emitter.Emit(OpCodes.Ldarg_0); // target
+
+            //for (int i = 0; i < parameters.Length; i++)
+            //{
+            //    emitter.Emit(OpCodes.Ldarg, i + 1);
+
+            //    if (parameters[i].IsValueType)
+            //    {
+            //        emitter.Emit(OpCodes.Unbox_Any, parameters[i]);
+            //    }
+            //}
+
+            //emitter.Emit(OpCodes.Callvirt, method);
+
+            //if (returnType.IsValueType)
+            //{
+            //    emitter.Emit(OpCodes.Box, Constants.ObjectType);
+            //}
+
+            //if (returnsVoid)
+            //{
+            //    emitter.Emit(OpCodes.Pop);
+            //}
+
+            ////if (returnsVoid)
+            ////{!returnsVoid &&
+            ////    emitter.Emit(OpCodes.);
+            ////}
+
+            //emitter.Emit(OpCodes.Ret);
         }
 
-        public void EmitTypeInitializer(ILGenerator ilGenerator, ConstructorInfo baseConstructor)
+        protected override TDelegate GenerateMethodInvoker<TDelegate>(MethodInfo method, Type delegateType, IReadOnlyList<RuntimeParameter> parameters, bool returnsVoid = false)
         {
-            ilGenerator.Emit(OpCodes.Ldarg_0);
-            ilGenerator.Emit(OpCodes.Ldarg_1);
-            ilGenerator.Emit(OpCodes.Ldarg_2);
-            ilGenerator.Emit(OpCodes.Call, baseConstructor);
-            ilGenerator.Emit(OpCodes.Ret);
+            var parameterArray = parameters.Select(p => p.Type).ToArray();
+            var dynamicMethod = CreateDynamicMethod(method, parameterArray, returnsVoid);
+
+            var emitter = dynamicMethod.GetEmitter();
+
+            if (returnsVoid)
+            {
+                GenerateActionInvocation(method, emitter, parameterArray);
+            }
+            else
+            {
+                GenerateFuncInvocation(method, emitter, parameterArray);
+            }
+
+            return (TDelegate)dynamicMethod.CreateDelegate(delegateType);
         }
     }
 }
