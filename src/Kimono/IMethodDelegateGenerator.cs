@@ -1,6 +1,4 @@
-﻿using Kimono.Proxies;
-using System.Reflection;
-using System.Reflection.Emit;
+﻿using System.Reflection;
 
 namespace Kimono
 {
@@ -8,12 +6,12 @@ namespace Kimono
     {
         IMethodDelegateInvoker Generate(RuntimeContext context, MethodInfo method);
 
-        Delegate EmitMethodInvocation(MethodInfo method, Type delegateType, Type[] parameters);
+        //Delegate EmitMethodInvocation(MethodInfo method, Type delegateType, Type[] parameters);
 
-        void EmitDisposeInterceptor(IProxyContextBuilder context, MethodInfo disposeMethod);
+        //void EmitDisposeInterceptor(IProxyContextBuilder context, MethodInfo disposeMethod);
 
         //void EmitMemberInvokeInterceptor(IProxyContextBuilder context, MethodInfo disposeMethod);
 
-        void EmitTypeInitializer(ILGenerator ilGenerator, ConstructorInfo baseConstructor);
+        //void EmitTypeInitializer(ILGenerator ilGenerator, ConstructorInfo baseConstructor);
     }
 }

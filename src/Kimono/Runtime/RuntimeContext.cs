@@ -43,6 +43,11 @@ namespace Kimono
 		/// <value>The proxied member.</value>
 		public IProxyMember ProxiedMember => _proxiedMember;
 
+        internal IReadOnlyList<RuntimeParameter> GetParameters()
+        {
+            return _parameters;
+        }
+
         internal void UseMethodInvoker(IMethodDelegateInvoker methodInvoker)
         {
             _methodInvoker = methodInvoker;

@@ -36,8 +36,8 @@ namespace Kimono.Internal
 
             DynamicModule = DynamicAssembly.DefineDynamicModule(Name);
 
-			MethodGenerator = methodGenerator ?? new ProxyMethodGenerator();
-			PropertyGenerator = propertyGenerator ?? new ProxyPropertyGenerator();
+			MethodGenerator = methodGenerator ?? new ProxyMethodGenerator(new ExpressionMethodDelegateGenerator());
+			PropertyGenerator = propertyGenerator ?? new ProxyPropertyGenerator(); //new ExpressionMethodDelegateGenerator()
         }
 
 		private AssemblyBuilder DynamicAssembly { get; }

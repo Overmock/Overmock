@@ -2,12 +2,16 @@
 {
     internal abstract class MethodDelegateInvoker<TDelegate> : IMethodDelegateInvoker where TDelegate : Delegate
     {
-        protected readonly TDelegate _invokeMethod;
+        private readonly Func<TDelegate> _invokeMethodProvider;
 
-        public MethodDelegateInvoker(TDelegate invokeMethod)
+        private TDelegate? _invokeMethod;
+
+        public MethodDelegateInvoker(Func<TDelegate> invokeMethodProvider)
         {
-            _invokeMethod = invokeMethod;
+            _invokeMethodProvider = invokeMethodProvider;
         }
+
+        protected TDelegate InvokeMethod => _invokeMethod ??= _invokeMethodProvider();
 
         public abstract object? Invoke(object? target, params object?[] parameters);
     }

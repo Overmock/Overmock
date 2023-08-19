@@ -10,7 +10,7 @@ namespace Kimono.Internal
 
         public ProxyMemberGenerator(IMethodDelegateGenerator? delegateDelegateGenerator = null)
         {
-            _delegateDelegateGenerator = delegateDelegateGenerator ?? new MethodDelegateGenerator();
+            _delegateDelegateGenerator = delegateDelegateGenerator ?? new DynamicMethodDelegateGenerator();
         }
 
         protected IMethodDelegateGenerator DelegateGenerator => _delegateDelegateGenerator;

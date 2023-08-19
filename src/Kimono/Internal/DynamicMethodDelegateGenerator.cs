@@ -6,7 +6,7 @@ using System.Reflection.Emit;
 
 namespace Kimono.Internal
 {
-    internal sealed class MethodDelegateGenerator : IMethodDelegateGenerator
+    internal sealed class DynamicMethodDelegateGenerator : IMethodDelegateGenerator
     {
         public IMethodDelegateInvoker Generate(RuntimeContext context, MethodInfo method)
         {
