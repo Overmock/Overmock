@@ -1,4 +1,4 @@
-﻿namespace Kimono.Internal.MethodInvokers
+﻿namespace Kimono.Proxies.Internal.MethodInvokers
 {
     internal sealed class Action2ObjectMethodInvoker : MethodDelegateInvoker<Action<object?, object?>>
     {

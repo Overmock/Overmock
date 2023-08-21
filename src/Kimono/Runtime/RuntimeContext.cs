@@ -1,4 +1,4 @@
-﻿using Kimono.Internal.MethodInvokers;
+﻿using Kimono.Proxies.Internal.MethodInvokers;
 using Kimono.Proxies;
 
 namespace Kimono

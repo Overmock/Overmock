@@ -1,4 +1,4 @@
-﻿namespace Kimono.Internal.MethodInvokers
+﻿namespace Kimono.Proxies.Internal.MethodInvokers
 {
     internal sealed class Func3ObjectReturnMethodInvoker : MethodDelegateInvoker<Func<object?, object?, object?, object?>>
     {

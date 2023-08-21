@@ -1,7 +1,7 @@
 ﻿using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-namespace Kimono.Internal
+namespace Kimono.Interceptors.Internal
 {
     internal sealed class InvocationChainBuilder : IInvocationChainBuilder
     {

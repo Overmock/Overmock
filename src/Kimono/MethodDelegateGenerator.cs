@@ -1,5 +1,5 @@
 ﻿using Kimono.Emit;
-using Kimono.Internal.MethodInvokers;
+using Kimono.Proxies.Internal.MethodInvokers;
 using Kimono.Proxies;
 using System.Reflection;
 

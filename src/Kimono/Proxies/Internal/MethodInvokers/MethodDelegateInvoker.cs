@@ -1,4 +1,4 @@
-﻿namespace Kimono.Internal.MethodInvokers
+﻿namespace Kimono.Proxies.Internal.MethodInvokers
 {
     internal abstract class MethodDelegateInvoker<TDelegate> : IMethodDelegateInvoker where TDelegate : Delegate
     {

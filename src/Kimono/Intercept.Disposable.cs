@@ -1,4 +1,5 @@
 ﻿using Kimono.Interceptors;
+using Kimono.Interceptors.Internal;
 using Kimono.Internal;
 
 namespace Kimono

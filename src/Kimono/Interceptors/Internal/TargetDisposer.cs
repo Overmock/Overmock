@@ -1,6 +1,6 @@
 ﻿using Kimono.Proxies;
 
-namespace Kimono.Internal
+namespace Kimono.Interceptors.Internal
 {
     internal sealed class TargetDisposer<T> : ITargetDisposer<T> where T : class, IDisposable
 	{
