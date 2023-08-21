@@ -4,7 +4,7 @@ using System.Reflection.Emit;
 
 namespace Kimono.Internal
 {
-	internal sealed class ProxyPropertyGenerator : ProxyMemberGenerator, IProxyPropertyGenerator
+	internal sealed class ProxyPropertyGenerator : ProxyMemberGenerator, IProxyPropertyFactory
 	{
 		public void Generate(IProxyContextBuilder context, IEnumerable<PropertyInfo> properties)
 		{

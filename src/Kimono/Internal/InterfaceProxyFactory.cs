@@ -27,7 +27,7 @@ namespace Kimono.Internal
         /// <param name="cache">The cache.</param>
         /// <param name="methodGenerator">The method generator.</param>
         /// <param name="propertyGenerator">The property generator.</param>
-        internal InterfaceProxyFactory(IProxyCache cache, IProxyMethodGenerator? methodGenerator = null, IProxyPropertyGenerator? propertyGenerator = null) : base(cache)
+        internal InterfaceProxyFactory(IProxyCache cache, IProxyMethodFactory? methodGenerator = null, IProxyPropertyFactory? propertyGenerator = null) : base(cache)
         {
             Name = GetName(Constants.AssemblyId);
             DynamicAssembly = AssemblyBuilder.DefineDynamicAssembly(
@@ -44,9 +44,9 @@ namespace Kimono.Internal
 
 		private ModuleBuilder DynamicModule { get; }
 
-		private IProxyMethodGenerator MethodGenerator { get; }
+		private IProxyMethodFactory MethodGenerator { get; }
 
-		private IProxyPropertyGenerator PropertyGenerator { get; }
+		private IProxyPropertyFactory PropertyGenerator { get; }
 
 		private string Name { get; }
 
@@ -67,7 +67,7 @@ namespace Kimono.Internal
 			methods = methods.Concat(GetBaseMethods(context))
                 .Distinct();
 
-			MethodGenerator.Generate(context, methods);
+			MethodGenerator.Create(context, methods);
             PropertyGenerator.Generate(context, properties);
 
             var proxyType = context.TypeBuilder.CreateType();

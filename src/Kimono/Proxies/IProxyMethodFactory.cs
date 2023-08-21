@@ -6,9 +6,9 @@ namespace Kimono.Proxies
 	/// <summary>
 	/// Interface IProxyMethodGenerator
 	/// </summary>
-	internal interface IProxyMethodGenerator
+	internal interface IProxyMethodFactory
     {
-		void Generate(IProxyContextBuilder context, IEnumerable<MethodInfo> methods);
+		void Create(IProxyContextBuilder context, IEnumerable<MethodInfo> methods);
 
         void EmitTypeInitializer(ILGenerator ilGenerator, ConstructorInfo baseConstructor);
     }

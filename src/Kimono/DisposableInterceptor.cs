@@ -5,12 +5,12 @@ namespace Kimono
 {
 	/// <summary>
 	/// Class DisposableInterceptor.
-	/// Implements the <see cref="Kimono.Interceptor{T}" />
-	/// Implements the <see cref="Kimono.IDisposableInterceptor" />
+	/// Implements the <see cref="Interceptor{T}" />
+	/// Implements the <see cref="IDisposableInterceptor" />
 	/// </summary>
 	/// <typeparam name="T"></typeparam>
-	/// <seealso cref="Kimono.Interceptor{T}" />
-	/// <seealso cref="Kimono.IDisposableInterceptor" />
+	/// <seealso cref="Interceptor{T}" />
+	/// <seealso cref="IDisposableInterceptor" />
 	public abstract class DisposableInterceptor<T> : Interceptor<T>, IDisposableInterceptor where T : class, IDisposable
 	{
 		/// <summary>

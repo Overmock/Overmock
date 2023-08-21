@@ -7,9 +7,6 @@ namespace Kimono.Runtime
 	/// </summary>
 	internal static class DefaultReturnValueCache
 	{
-		/// <summary>
-		/// The type cache
-		/// </summary>
 		private static readonly ConcurrentDictionary<Type, object?> _typeCache = new()
 		{
 			[typeof(sbyte)] = default(sbyte),

@@ -5,7 +5,7 @@ namespace Kimono.Proxies
 	/// <summary>
 	/// Interface IProxyPropertyGenerator
 	/// </summary>
-	public interface IProxyPropertyGenerator
+	public interface IProxyPropertyFactory
     {
 		/// <summary>
 		/// Generates the specified context.

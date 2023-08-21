@@ -24,7 +24,8 @@ namespace Kimono
             var methodBuilder = context.TypeBuilder.DefineMethod(disposeMethod.Name, disposeMethod.Attributes ^ MethodAttributes.Abstract);
 
             methodBuilder.GetEmitter()
-                .Nop().Load(0)
+                .Nop()
+                .Load(0)
                 .Invoke(Constants.ProxyTypeHandleDisposeCallMethod)
                 .Nop().Ret();
         }

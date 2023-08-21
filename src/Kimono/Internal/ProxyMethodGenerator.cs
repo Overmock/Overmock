@@ -6,13 +6,13 @@ using System.Reflection.Emit;
 
 namespace Kimono.Internal
 {
-    internal sealed class ProxyMethodGenerator : ProxyMemberGenerator, IProxyMethodGenerator
+    internal sealed class ProxyMethodGenerator : ProxyMemberGenerator, IProxyMethodFactory
 	{
         public ProxyMethodGenerator(IMethodDelegateGenerator? delegateGenerator = null) : base(delegateGenerator)
         {
         }
 
-        public void Generate(IProxyContextBuilder context, IEnumerable<MethodInfo> methods)
+        public void Create(IProxyContextBuilder context, IEnumerable<MethodInfo> methods)
 		{
 			ImplementMethods(context, methods);
 		}
