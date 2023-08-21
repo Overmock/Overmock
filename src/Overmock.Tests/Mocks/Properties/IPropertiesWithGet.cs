@@ -15,7 +15,7 @@ namespace Overmock.Tests.Mocks.Properties
 
     public class IPropertiesWithGetImpl : ProxyBase<IPropertiesWithGet>, IPropertiesWithGet
     {
-        public IPropertiesWithGetImpl() : base(null, null)
+        public IPropertiesWithGetImpl() : base(new ProxyContext(), null)
         {
         }
 

@@ -6,7 +6,7 @@ namespace Kimono
     /// <summary>
     /// Class InvocationContext.
     /// </summary>
-    public class InvocationContext : IInvocationContext
+    public sealed class InvocationContext : IInvocationContext
 	{
         private readonly IInterceptor _interceptor;
         private readonly RuntimeContext _runtimeContext;
@@ -15,6 +15,7 @@ namespace Kimono
         private readonly Func<object[]> _parameterValuesProvider;
         private bool _targetInvoked;
         private Parameters? _parameters;
+        private object? _returnValue;
         private object? _defaultReturnValue;
 
         /// <summary>
@@ -72,7 +73,17 @@ namespace Kimono
 		/// Gets or sets the return value.
 		/// </summary>
 		/// <value>The return value.</value>
-		public object? ReturnValue { get; set; }
+		public object? ReturnValue
+        {
+            get
+            {
+                return _returnValue;
+            }
+            set
+            {
+                _returnValue = value;
+            }
+        }
 
         /// <inheritdoc />
         public bool TargetInvoked => _targetInvoked;
@@ -112,7 +123,7 @@ namespace Kimono
 
             if (setReturnValue)
 			{
-				ReturnValue = returnValue;
+				_returnValue = returnValue;
 			}
 		}
 

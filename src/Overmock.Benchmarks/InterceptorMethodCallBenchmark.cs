@@ -67,8 +67,11 @@ namespace Overmock.Benchmarks
         void IInterceptorMethodCalls.Kimono(int count) => Kimono(count);
     }
 
+    [MinColumn]
+    [MaxColumn]
     [MemoryDiagnoser]
-    [HardwareCounters]
+    [ThreadingDiagnoser]
+    [ExceptionDiagnoser]
     public class InterceptorMethodCallBenchmark : IInterceptorMethodCalls
     {
         private readonly IInterceptorMethodCalls _methodCalls = new InterceptorMethodCalls();

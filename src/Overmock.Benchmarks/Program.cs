@@ -1,9 +1,10 @@
-﻿using Overmock.Benchmarks;
+﻿using BenchmarkDotNet.Running;
+using Overmock.Benchmarks;
 
-//BenchmarkRunner.Run<InterceptorMethodCallBenchmark>();
+BenchmarkRunner.Run<InterceptorMethodCallBenchmark>();
 //BenchmarkRunner.Run<NewProxyCreationBenchmark>();
 
-InterceptorMethodCalls.Kimono(1000); Console.ReadLine();
+//InterceptorMethodCalls.Kimono(1000); Console.ReadLine();
 
 
 

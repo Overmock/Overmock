@@ -13,7 +13,7 @@ namespace Kimono.Tests.ProxyMembers
 
 	public class InterfaceImpl : ProxyBase<IInterface>, IInterface
 	{
-        public InterfaceImpl() : base(null, null)
+        public InterfaceImpl() : base(new ProxyContext(), null)
         {
         }
 

@@ -3,12 +3,19 @@
     /// <summary>
     /// Class ProxyContext.
     /// </summary>
-    public sealed class ProxyContext
+    public struct ProxyContext
     {
         /// <summary>
         /// The overrides
         /// </summary>
         private readonly IList<RuntimeContext> _overrides = new List<RuntimeContext>();
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public ProxyContext()
+        {
+        }
 
         /// <summary>
         /// Adds the specified method identifier.
