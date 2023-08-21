@@ -1,9 +1,6 @@
-﻿
-using System;
-
-namespace Kimono.Tests.Proxies
+﻿namespace Kimono.Tests.Proxies
 {
-	public class Model
+    public class Model
 	{
 		public int Id { get; set; }
 	}

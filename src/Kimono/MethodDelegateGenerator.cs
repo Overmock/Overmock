@@ -2,7 +2,6 @@
 using Kimono.Internal.MethodInvokers;
 using Kimono.Proxies;
 using System.Reflection;
-using System.Reflection.Emit;
 
 namespace Kimono
 {

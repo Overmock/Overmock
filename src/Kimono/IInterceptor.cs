@@ -1,12 +1,26 @@
-﻿
-using Kimono.Proxies;
+﻿using Kimono.Proxies;
 
 namespace Kimono
 {
-	/// <summary>
-	/// Interface IInterceptor
-	/// </summary>
-	public interface IInterceptor : IFluentInterface
+    /// <summary>
+    /// Interface IInterceptor
+    /// Extends the <see cref="Kimono.IInterceptor" />
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <seealso cref="Kimono.IInterceptor" />
+    public interface IInterceptor<T> : IInterceptor where T : class
+    {
+        /// <summary>
+        /// Gets the target.
+        /// </summary>
+        /// <value>The target.</value>
+        T? Target { get; }
+    }
+
+    /// <summary>
+    /// Interface IInterceptor
+    /// </summary>
+    public interface IInterceptor : IFluentInterface
 	{
 		/// <summary>
 		/// Gets the name of the type.
@@ -40,20 +54,5 @@ namespace Kimono
         /// <param name="methodId">The method identifier.</param>
         /// <param name="parameters">The parameters.</param>
         object? MemberInvoked(ProxyContext context, IProxy proxy, int methodId, object[] parameters);
-	}
-
-	/// <summary>
-	/// Interface IInterceptor
-	/// Extends the <see cref="Kimono.IInterceptor" />
-	/// </summary>
-	/// <typeparam name="T"></typeparam>
-	/// <seealso cref="Kimono.IInterceptor" />
-	public interface IInterceptor<T> : IInterceptor where T : class
-	{
-		/// <summary>
-		/// Gets the target.
-		/// </summary>
-		/// <value>The target.</value>
-		T? Target { get; }
 	}
 }

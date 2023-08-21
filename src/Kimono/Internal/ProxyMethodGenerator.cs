@@ -1,6 +1,5 @@
 ﻿using Kimono.Emit;
 using Kimono.Proxies;
-using System.Linq.Expressions;
 using System.Reflection;
 using System.Reflection.Emit;
 

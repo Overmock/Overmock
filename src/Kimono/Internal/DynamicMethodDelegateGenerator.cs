@@ -1,7 +1,4 @@
-﻿using Kimono.Internal.MethodInvokers;
-using Kimono.Proxies;
-using Kimono.Emit;
-using System;
+﻿using Kimono.Emit;
 using System.Reflection;
 using System.Reflection.Emit;
 

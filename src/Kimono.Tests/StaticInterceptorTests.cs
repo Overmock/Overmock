@@ -1,12 +1,8 @@
-﻿
-using Kimono.Interceptors;
-using Kimono.Tests.Examples;
-using Kimono.Tests.Proxies;
-using System;
+﻿using Kimono.Tests.Proxies;
 
 namespace Kimono.Tests
 {
-	[TestClass]
+    [TestClass]
 	public class StaticInterceptorTests
 	{
 		[TestMethod]

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 using System.Reflection;
 using System.Reflection.Emit;
 
@@ -15,6 +14,7 @@ namespace Kimono.Emit
         /// </summary>
         /// <value>The il generator.</value>
         ILGenerator IlGenerator { get; }
+
         /// <summary>
         /// Emits the specified op code.
         /// </summary>

@@ -1,7 +1,6 @@
 ﻿using Kimono;
 using Kimono.Interceptors;
 using System.Reflection;
-using System.Reflection.Metadata;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -168,11 +167,31 @@ namespace Overmock
             private readonly Func<IMethodCall[]> _methodsProvider;
             private readonly Func<IPropertyCall[]> _propertiesProvider;
 
-            public OvermockInstanceInvocationHandler(Func<bool> expectAnyProvider, Func<IMethodCall[]> methodsProvider, Func<IPropertyCall[]> propertiesProvider)
+            internal OvermockInstanceInvocationHandler(Func<bool> expectAnyProvider, Func<IMethodCall[]> methodsProvider, Func<IPropertyCall[]> propertiesProvider)
             {
                 _expectAnyProvider = expectAnyProvider;
                 _methodsProvider = methodsProvider;
                 _propertiesProvider = propertiesProvider;
+            }
+            
+            internal static bool HandleMembers<TInfo, TCall>(IInvocationContext context, TInfo info, Span<TCall> overridables, Func<TInfo, TCall, bool> predicate) where TCall : IOverridable
+            {
+                ref var reference = ref MemoryMarshal.GetReference(overridables);
+
+                if (reference == null) { return false; }
+
+                for (int i = 0; i < overridables.Length; i++)
+                {
+                    ref var call = ref Unsafe.Add(ref reference, i);
+
+                    if (!predicate(info, call)) { continue; }
+
+                    var overmock = call.GetOverrides().First();
+                    context.ReturnValue = overmock.Handle(new OvermockContext(context));
+                    return true;
+                }
+
+                return false;
             }
 
             /// <exclude />
@@ -201,26 +220,6 @@ namespace Overmock
             private static bool HandleProperties(IInvocationContext context, PropertyInfo propertyInfo, Span<IPropertyCall> properties)
             {
                 return HandleMembers(context, propertyInfo, properties, (info, call) => info == call.PropertyInfo);
-            }
-
-            public static bool HandleMembers<TInfo, TCall>(IInvocationContext context, TInfo info, Span<TCall> overridables, Func<TInfo, TCall, bool> predicate) where TCall : IOverridable
-            {
-                ref var reference = ref MemoryMarshal.GetReference(overridables);
-
-                if (reference == null) { return false; }
-
-                for (int i = 0; i < overridables.Length; i++)
-                {
-                    ref var call = ref Unsafe.Add(ref reference, i);
-
-                    if (!predicate(info, call)) { continue; }
-
-                    var overmock = call.GetOverrides().First();
-                    context.ReturnValue = overmock.Handle(new OvermockContext(context));
-                    return true;
-                }
-
-                return false;
             }
         }
     }

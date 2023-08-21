@@ -1,5 +1,4 @@
-﻿using Kimono.Proxies;
-using Kimono.Runtime;
+﻿using Kimono.Runtime;
 using System.Reflection;
 
 namespace Kimono
@@ -65,12 +64,7 @@ namespace Kimono
         {
             get
             {
-                if (_parameters is null)
-                {
-                    _parameters = _parametersProvider();
-                }
-
-                return _parameters;
+                return _parameters ??= _parametersProvider();
             }
         }
 

@@ -1,7 +1,4 @@
-﻿using BenchmarkDotNet.Running;
-using Kimono;
-using Overmock.Benchmarks;
-using System.Diagnostics;
+﻿using Overmock.Benchmarks;
 
 //BenchmarkRunner.Run<InterceptorMethodCallBenchmark>();
 //BenchmarkRunner.Run<NewProxyCreationBenchmark>();
