@@ -1,4 +1,6 @@
 ﻿
+using System;
+
 namespace Overmock.Mocking.Internal
 {
 	/// <summary>

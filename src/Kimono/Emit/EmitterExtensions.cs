@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using System.Reflection.Emit;
 using System.Linq.Expressions;
+using System;
 
 namespace Kimono.Emit
 {
@@ -96,7 +97,9 @@ namespace Kimono.Emit
         /// <param name="emitter">The emitter.</param>
         /// <param name="memberExpression">The method expression.</param>
         /// <returns>IEmitter&lt;TDelegate&gt;.</returns>
-        public static IEmitter<TDelegate> Invoke<T, TReturn, TDelegate>(this IEmitter<TDelegate> emitter, Expression<Func<T, TReturn>> memberExpression) where TDelegate : Delegate
+        public static IEmitter<TDelegate> Invoke<T, TReturn, TDelegate>(
+            this IEmitter<TDelegate> emitter,
+            Expression<Func<T, TReturn>> memberExpression) where TDelegate : Delegate
         {
             emitter.Invoke(memberExpression);
             return emitter;

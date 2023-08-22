@@ -1,4 +1,6 @@
-﻿namespace Kimono.Proxies.Internal.MethodInvokers
+﻿using System;
+
+namespace Kimono.Proxies.Internal.MethodInvokers
 {
     internal sealed class Func2ObjectReturnMethodInvoker : MethodDelegateInvoker<Func<object?, object?, object?>>
     {

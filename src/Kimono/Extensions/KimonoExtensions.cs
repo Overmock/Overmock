@@ -1,4 +1,6 @@
-﻿namespace Kimono
+﻿using System;
+
+namespace Kimono
 {
 	/// <summary>
 	/// Class KimonoExtensions.

@@ -1,11 +1,14 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 namespace Kimono.Interceptors.Internal
 {
     internal sealed class InvocationChainBuilder : IInvocationChainBuilder
     {
-        private readonly List<InvocationChainAction> _invocationChain = new();
+        private readonly List<InvocationChainAction> _invocationChain = new List<InvocationChainAction>();
 
         public IInvocationChainBuilder Add(InvocationChainAction action)
         {

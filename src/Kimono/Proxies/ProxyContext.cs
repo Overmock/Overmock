@@ -1,21 +1,16 @@
-﻿namespace Kimono.Proxies
+﻿using System.Collections.Generic;
+
+namespace Kimono.Proxies
 {
     /// <summary>
     /// Class ProxyContext.
     /// </summary>
-    public struct ProxyContext
+    public class ProxyContext
     {
         /// <summary>
         /// The overrides
         /// </summary>
         private readonly IList<RuntimeContext> _overrides = new List<RuntimeContext>();
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public ProxyContext()
-        {
-        }
 
         /// <summary>
         /// Adds the specified method identifier.

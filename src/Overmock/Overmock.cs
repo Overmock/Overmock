@@ -1,5 +1,10 @@
 ﻿using Kimono;
 using Kimono.Interceptors;
+using Overmock.Mocking;
+using Overmock.Mocking.Internal;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -33,8 +38,8 @@ namespace Overmock
             }
 
             _interceptor = handler == null
-                ? new HandlerInterceptor<T>(_invocationHandler)
-                : new HandlersInterceptor<T>(new[] { _invocationHandler, handler });
+                ? (Interceptor<T>)new HandlerInterceptor<T>(_invocationHandler)
+                : (Interceptor<T>)new HandlersInterceptor<T>(new[] { _invocationHandler, handler });
 
             Overmocked.Register(this);
         }

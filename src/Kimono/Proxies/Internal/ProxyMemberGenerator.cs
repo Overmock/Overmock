@@ -1,6 +1,8 @@
 ﻿using System.Reflection.Emit;
 using System.Reflection;
 using Kimono.Proxies;
+using System;
+using System.Linq;
 
 namespace Kimono.Internal
 {

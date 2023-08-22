@@ -1,4 +1,6 @@
-﻿namespace Kimono.Interceptors
+﻿using System.Collections.Generic;
+
+namespace Kimono.Interceptors
 {
     /// <summary>
     /// Class HandlersInterceptor.

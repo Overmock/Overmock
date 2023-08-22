@@ -1,4 +1,6 @@
-﻿namespace Kimono.Proxies
+﻿using System;
+
+namespace Kimono.Proxies
 {
     /// <inheritdoc />
     public abstract class ProxyBase<T> : ProxyBase, IProxy<T> where T : class

@@ -1,4 +1,7 @@
-﻿namespace Overmock
+﻿using Overmock.Mocking;
+using System;
+
+namespace Overmock
 {
 	/// <summary>
 	/// Class SetupOvermock.

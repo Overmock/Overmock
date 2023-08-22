@@ -1,4 +1,6 @@
-﻿namespace Overmock.Mocking
+﻿using System;
+
+namespace Overmock.Mocking
 {
 	/// <summary>
 	/// Represents a member that is overridden

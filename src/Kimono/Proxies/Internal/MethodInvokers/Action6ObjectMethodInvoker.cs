@@ -1,4 +1,6 @@
-﻿namespace Kimono.Proxies.Internal.MethodInvokers
+﻿using System;
+
+namespace Kimono.Proxies.Internal.MethodInvokers
 {
     internal sealed class Action6ObjectMethodInvoker : MethodDelegateInvoker<Action<object?, object?, object?, object?, object?, object?>>
     {

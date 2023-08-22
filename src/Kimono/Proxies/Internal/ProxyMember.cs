@@ -1,13 +1,14 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 using Kimono.Proxies;
 
 namespace Kimono.Internal
 {
     /// <summary>
     /// Class ProxyMember.
-    /// Implements the <see cref="Proxies.IProxyMember" />
+    /// Implements the <see cref="IProxyMember" />
     /// </summary>
-    /// <seealso cref="Proxies.IProxyMember" />
+    /// <seealso cref="IProxyMember" />
     public sealed class ProxyMember : IProxyMember
 	{
 		/// <summary>
