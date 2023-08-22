@@ -1,8 +1,9 @@
 ﻿using Kimono.Emit;
-using Kimono.Internal.MethodInvokers;
+using Kimono.Proxies.Internal.MethodInvokers;
 using Kimono.Proxies;
 using System.Reflection;
-using System.Reflection.Emit;
+using System;
+using System.Collections.Generic;
 
 namespace Kimono
 {
@@ -24,7 +25,8 @@ namespace Kimono
             var methodBuilder = context.TypeBuilder.DefineMethod(disposeMethod.Name, disposeMethod.Attributes ^ MethodAttributes.Abstract);
 
             methodBuilder.GetEmitter()
-                .Nop().Load(0)
+                .Nop()
+                .Load(0)
                 .Invoke(Constants.ProxyTypeHandleDisposeCallMethod)
                 .Nop().Ret();
         }

@@ -1,5 +1,6 @@
-﻿using Kimono.Internal.MethodInvokers;
+﻿using Kimono.Proxies.Internal.MethodInvokers;
 using Kimono.Proxies;
+using System.Collections.Generic;
 
 namespace Kimono
 {

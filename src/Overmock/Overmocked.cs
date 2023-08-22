@@ -1,14 +1,17 @@
 ﻿using Kimono;
+using Overmock.Mocking;
+using System;
 using System.Collections.Concurrent;
-using System.Diagnostics;
+using System.Linq;
 using System.Linq.Expressions;
+using System.Threading;
 
 namespace Overmock
 {
-	/// <summary>
-	/// Contains methods used for configuring an overmock.
-	/// </summary>
-	public static class Overmocked
+    /// <summary>
+    /// Contains methods used for configuring an overmock.
+    /// </summary>
+    public static class Overmocked
 	{
 		private static readonly ConcurrentQueue<IOvermock> _overmocks = new ConcurrentQueue<IOvermock>();
         
@@ -86,12 +89,8 @@ namespace Overmock
                 overmock = (Overmock<T>)GetRegistration(target)!;
             }
 
-            if (overmock is null)
-            {
-                overmock = new Overmock<T>(_invocationHandler);
-            }
-
-            return overmock.Override(given);
+            return (overmock ??= new Overmock<T>(_invocationHandler))
+                .Override(given);
         }
 
         /// <summary>
@@ -105,11 +104,6 @@ namespace Overmock
         public static ISetup<T, TReturn> Mock<T, TReturn>(T target, Expression<Func<T, TReturn>> given) where T : class
         {
             Overmock<T>? overmock = null;
-
-            if (target is Overmock<T> mock)
-            {
-                overmock = mock;
-            }
 
             if (IsRegistered(target))
             {

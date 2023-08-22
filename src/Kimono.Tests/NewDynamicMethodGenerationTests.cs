@@ -94,6 +94,24 @@ namespace Kimono.Tests
         }
 
         [TestMethod]
+        public void ILongArgsIntString_Test()
+        {
+            var called = true;
+            var target = new LongArgsIntStringClass();
+            var overmock = new TargetedCallbackInterceptor<ILongArgsIntString>(target, c => {
+                called = true;
+                c.Invoke();
+            });
+
+            var subject = overmock.Proxy;
+
+            var result = subject.LongArgsIntString(69, "active");
+
+            Assert.IsTrue(called);
+            Assert.AreEqual(420, result);
+        }
+
+        [TestMethod]
         public void IStringArgsDoubleString_Test()
         {
             var called = true;

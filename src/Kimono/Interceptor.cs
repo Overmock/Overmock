@@ -1,14 +1,14 @@
-﻿using Kimono.Interceptors;
+﻿using System;
 using Kimono.Proxies;
 
 namespace Kimono
 {
-	/// <summary>
-	/// Class Interceptor.
-	/// Implements the <see cref="IInterceptor" />
-	/// </summary>
-	/// <seealso cref="IInterceptor" />
-	public abstract class Interceptor : IInterceptor
+    /// <summary>
+    /// Class Interceptor.
+    /// Implements the <see cref="IInterceptor" />
+    /// </summary>
+    /// <seealso cref="IInterceptor" />
+    public abstract class Interceptor : IInterceptor
 	{
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Interceptor"/> class.

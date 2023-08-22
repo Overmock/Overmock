@@ -13,13 +13,13 @@ namespace Overmock
 		/// <summary>
 		/// The times
 		/// </summary>
-		private readonly int _times = Any;
+		private readonly int _times;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="Times"/> struct.
 		/// </summary>
 		/// <param name="times">The times.</param>
-		public Times(int times)
+		public Times(int times = -1)
 		{
 			_times = times;
 		}

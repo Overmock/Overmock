@@ -1,4 +1,6 @@
-﻿namespace Overmock
+﻿using System;
+
+namespace Overmock
 {
 	/// <summary>
 	/// Used to pass constructor parameters when creating mocked objects.

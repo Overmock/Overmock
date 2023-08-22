@@ -1,4 +1,4 @@
-﻿using Kimono.Internal;
+﻿using System;
 using Kimono.Proxies;
 
 namespace Kimono.Interceptors

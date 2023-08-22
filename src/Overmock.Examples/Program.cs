@@ -1,5 +1,4 @@
 using DataCompany.Framework;
-using Overmock.Examples;
 using Overmock.Examples.Storage;
 using System.Diagnostics;
 

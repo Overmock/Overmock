@@ -1,4 +1,7 @@
-﻿namespace Overmock.Mocking.Internal
+﻿using System;
+using System.Collections.Generic;
+
+namespace Overmock.Mocking.Internal
 {
 	/// <summary>
 	/// Class Returnable.

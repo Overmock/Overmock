@@ -1,4 +1,6 @@
-﻿namespace Overmock
+﻿using System;
+
+namespace Overmock
 {
 	/// <summary>
 	/// Class Value.
@@ -10,8 +12,8 @@
 	/// <seealso cref="Overmock.IFluentInterface" />
 	public abstract class Value<T> : IEquatable<T>, IFluentInterface
 	{
-		/// <inheritdoc />
-		public abstract bool Equals(T? other);
+        /// <inheritdoc />
+        public abstract bool Equals(T other);
 	}
 
 	/// <summary>
@@ -43,7 +45,7 @@
 		/// <inheritdoc />
 		public override bool Equals(object? obj)
 		{
-			return ((IEquatable<Its>)this).Equals(obj as Its);
+			return ((IEquatable<Its>)this).Equals((obj as Its)!);
 		}
 
 		/// <inheritdoc />
@@ -105,7 +107,7 @@
 		/// <param name="other">The other.</param>
 		/// <returns><c>true</c> if XXXX, <c>false</c> otherwise.</returns>
 		/// <exception cref="System.NotImplementedException"></exception>
-		public override bool Equals(T? other)
+		public override bool Equals(T other)
 		{
 			return true;
 		}
@@ -168,13 +170,13 @@
 		/// <summary>
 		/// The value
 		/// </summary>
-		private readonly T? _value;
+		private readonly T _value;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="This{T}"/> class.
 		/// </summary>
 		/// <param name="value">The value.</param>
-		internal This(T? value)
+		internal This(T value)
 		{
 			_value = value;
 		}
@@ -191,7 +193,7 @@
 		/// <param name="other">The other.</param>
 		/// <returns><c>true</c> if XXXX, <c>false</c> otherwise.</returns>
 		/// <exception cref="NotImplementedException"></exception>
-		bool IEquatable<T>.Equals(T? other)
+		bool IEquatable<T>.Equals(T other)
 		{
 			return other != null && other.Equals(this);
 		}

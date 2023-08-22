@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System;
+using System.Globalization;
 using System.Reflection;
 using Kimono.Proxies;
 
@@ -94,6 +95,15 @@ namespace Kimono
         /// The kimono context type
         /// </summary>
         public static readonly Type IInterceptorType = typeof(IInterceptor);
+
+        /// <summary>
+        /// The proxy type
+        /// </summary>
+        public static readonly Type[] ProxyBaseCtorParameterTypes = new Type[]
+        {
+            ProxyContextType,
+            IInterceptorType
+        };
 
         /// <summary>
         /// The disposable type

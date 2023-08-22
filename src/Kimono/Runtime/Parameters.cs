@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections;
-using System.Reflection;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 namespace Kimono
 {
-	/// <summary>
-	/// Represents a colleciton of method parameters.
-	/// </summary>
-	public class Parameters : IReadOnlyList<object?>
+    /// <summary>
+    /// Represents a colleciton of method parameters.
+    /// </summary>
+    public class Parameters : IReadOnlyList<object?>
 	{
         private object[] _parameterValues;
 

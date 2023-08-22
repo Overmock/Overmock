@@ -1,4 +1,6 @@
-﻿using Kimono.Internal;
+﻿using System;
+using System.Threading;
+using Kimono.Internal;
 
 namespace Kimono.Proxies
 {

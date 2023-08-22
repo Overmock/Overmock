@@ -1,4 +1,6 @@
-﻿namespace Kimono.Emit
+﻿using System;
+
+namespace Kimono.Emit
 {
     /// <summary>
     /// Interface ICallPropertGetOrSetEmitter
@@ -19,7 +21,8 @@
     /// <typeparam name="TDelegate">The type of the t delegate.</typeparam>
     /// <seealso cref="ICallPropertyGet{TDelegate}" />
     /// <seealso cref="ICallPropertySet{TDelegate}" />
-    public interface ICallPropertyGetOrSet<TDelegate> : ICallPropertyGet<TDelegate>, ICallPropertySet<TDelegate> where TDelegate : Delegate
+    public interface ICallPropertyGetOrSet<TDelegate> : ICallPropertyGet<TDelegate>, ICallPropertySet<TDelegate>
+        where TDelegate : Delegate
     {
     }
 }

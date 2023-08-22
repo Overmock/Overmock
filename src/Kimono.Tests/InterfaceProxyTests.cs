@@ -1,9 +1,8 @@
-using Kimono.Tests.Examples;
 using Kimono.Tests.ProxyMembers;
 
 namespace Kimono.Tests
 {
-	[TestClass]
+    [TestClass]
 	public class InterfaceProxyTests
 	{
 		private IInterface _interface = new InterfaceImpl();

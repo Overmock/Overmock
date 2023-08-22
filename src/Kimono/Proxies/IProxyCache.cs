@@ -1,4 +1,6 @@
-﻿namespace Kimono.Proxies
+﻿using System;
+
+namespace Kimono.Proxies
 {
     /// <summary>
     /// Interface IProxyCache

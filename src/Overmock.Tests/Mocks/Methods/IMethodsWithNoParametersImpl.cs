@@ -6,7 +6,7 @@ namespace Overmock.Tests.Mocks.Methods
     {
         public string Name { get; set; }
 
-        public IMethodsWithNoParametersImpl() : base(null, null)
+        public IMethodsWithNoParametersImpl() : base(new ProxyContext(), null)
         {
         }
 

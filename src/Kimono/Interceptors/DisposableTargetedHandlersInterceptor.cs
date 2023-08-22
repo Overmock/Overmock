@@ -1,4 +1,7 @@
-﻿using Kimono.Internal;
+﻿using System;
+using System.Collections.Generic;
+using Kimono.Interceptors.Internal;
+using Kimono.Internal;
 using Kimono.Proxies;
 
 namespace Kimono.Interceptors

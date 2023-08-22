@@ -1,4 +1,6 @@
-﻿namespace Overmock
+﻿using System;
+
+namespace Overmock
 {
 	/// <summary>
 	/// Represents a member that can setup an Exception to throw when calling the overmock.

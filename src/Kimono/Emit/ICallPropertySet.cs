@@ -1,4 +1,6 @@
-﻿namespace Kimono.Emit
+﻿using System;
+
+namespace Kimono.Emit
 {
     /// <summary>
     /// Interface ICallPropertySetter

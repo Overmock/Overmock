@@ -1,10 +1,12 @@
-﻿namespace Overmock.Mocking
+﻿using System;
+
+namespace Overmock.Mocking
 {
 	/// <summary>
 	/// Interface IThrowable
-	/// Extends the <see cref="Overmock.Mocking.IOverridable" />
+	/// Extends the <see cref="IOverridable" />
 	/// </summary>
-	/// <seealso cref="Overmock.Mocking.IOverridable" />
+	/// <seealso cref="IOverridable" />
 	public interface IThrowable : IOverridable
 	{
 		/// <summary>

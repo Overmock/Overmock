@@ -1,4 +1,6 @@
-﻿namespace Kimono
+﻿using System;
+
+namespace Kimono
 {
 	/// <summary>
 	/// The base exception for all Kimono exceptions.

@@ -1,10 +1,5 @@
 ﻿using Kimono.Tests.Proxies;
 using Overmock;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Kimono.Tests
 {

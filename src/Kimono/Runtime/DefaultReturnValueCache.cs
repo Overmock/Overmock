@@ -1,4 +1,5 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
+using System.Collections.Concurrent;
 
 namespace Kimono.Runtime
 {
@@ -7,10 +8,7 @@ namespace Kimono.Runtime
 	/// </summary>
 	internal static class DefaultReturnValueCache
 	{
-		/// <summary>
-		/// The type cache
-		/// </summary>
-		private static readonly ConcurrentDictionary<Type, object?> _typeCache = new()
+		private static readonly ConcurrentDictionary<Type, object?> _typeCache = new ConcurrentDictionary<Type, object?>
 		{
 			[typeof(sbyte)] = default(sbyte),
 			[typeof(byte)] = default(byte),

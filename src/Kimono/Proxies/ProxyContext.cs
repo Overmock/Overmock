@@ -1,12 +1,11 @@
-﻿using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
+﻿using System.Collections.Generic;
 
 namespace Kimono.Proxies
 {
     /// <summary>
     /// Class ProxyContext.
     /// </summary>
-    public sealed class ProxyContext
+    public class ProxyContext
     {
         /// <summary>
         /// The overrides

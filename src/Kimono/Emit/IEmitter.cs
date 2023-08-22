@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Reflection.Emit;
@@ -11,6 +10,12 @@ namespace Kimono.Emit
     /// </summary>
     public interface IEmitter
     {
+        /// <summary>
+        /// Gets the backing MSIL generator.
+        /// </summary>
+        /// <value>The il generator.</value>
+        ILGenerator IlGenerator { get; }
+
         /// <summary>
         /// Emits the specified op code.
         /// </summary>
@@ -68,6 +73,13 @@ namespace Kimono.Emit
         /// </summary>
         /// <returns>IEmitter.</returns>
         IEmitter Ret();
+
+        /// <summary>
+        /// Loads <see cref="OpCodes.Ldarg"/> the specified indexes.
+        /// </summary>
+        /// <param name="indexes"></param>
+        /// <returns>IEmitter.</returns>
+        IEmitter Load(params int[] indexes);
 
         /// <summary>
         /// Loads the specified index.

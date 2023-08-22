@@ -1,13 +1,14 @@
-﻿using System.ComponentModel;
-using System.Reflection;
+﻿using Overmock.Mocking;
+using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace Overmock
 {
-	/// <summary>
-	/// An interface that represents an overmocked type.
-	/// </summary>
-	/// <seealso cref="IVerifiable" />
-	public interface IOvermock : IVerifiable
+    /// <summary>
+    /// An interface that represents an overmocked type.
+    /// </summary>
+    /// <seealso cref="IVerifiable" />
+    public interface IOvermock : IVerifiable
 	{
 		/// <summary>
 		/// Adds the method.

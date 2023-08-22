@@ -1,4 +1,5 @@
-﻿using System.Linq.Expressions;
+﻿using System;
+using System.Linq.Expressions;
 using System.Reflection;
 using System.Reflection.Emit;
 
@@ -29,7 +30,7 @@ namespace Kimono.Emit
             return this;
         }
 
-        /// <inheritdoc />b
+        /// <inheritdoc />
         IEmitter IEmitter.Invoke<T>(Expression<Action<T>> memberExpression)
         {
             if (memberExpression is MethodCallExpression method)

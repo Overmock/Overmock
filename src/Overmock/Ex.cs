@@ -11,6 +11,9 @@
 // </copyright>
 // <summary></summary>
 // ***********************************************************************
+using Overmock.Mocking;
+using System;
+
 namespace Overmock
 {
 	/// <summary>

@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
 using System.Reflection.Emit;
-using System.Text;
-using System.Threading.Tasks;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace Kimono.Emit
 {
@@ -20,6 +17,13 @@ namespace Kimono.Emit
         {
             _emitter = emitter;
         }
+
+        /// <summary>
+        /// Gets the il generator.
+        /// </summary>
+        /// <value>The il generator.</value>
+        public ILGenerator IlGenerator => _emitter;
+
         /// <summary>
         /// Creates an <see cref="IEmitter{TDelegate}"/> using the specified emitter.
         /// </summary>
@@ -63,6 +67,19 @@ namespace Kimono.Emit
         IEmitter IEmitter.Load(int i)
         {
             _emitter.Emit(OpCodes.Ldarg, i);
+            return this;
+        }
+
+        IEmitter IEmitter.Load(params int[] indexes)
+        {
+            ref var reference = ref MemoryMarshal.GetReference(indexes.AsSpan());
+
+            for (int i = 0; i < indexes.Length; i++)
+            {
+                ref var index = ref Unsafe.Add(ref reference, i);
+                _emitter.Emit(OpCodes.Ldarg, index);
+            }
+
             return this;
         }
 
