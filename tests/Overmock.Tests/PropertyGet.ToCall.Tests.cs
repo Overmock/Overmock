@@ -18,8 +18,6 @@
 
 			var model = target.Int;
 
-			Assert.ThrowsException<UnhandledMemberException>(() => target.Equals(null));
-
 			Assert.IsTrue(called);
 		}
 

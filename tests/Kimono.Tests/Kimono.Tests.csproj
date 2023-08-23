@@ -9,19 +9,17 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0-preview-23371-04" />
-    <PackageReference Include="Moq" Version="4.20.69" />
     <PackageReference Include="MSTest.TestAdapter" Version="3.1.1" />
     <PackageReference Include="MSTest.TestFramework" Version="3.1.1" />
     <PackageReference Include="coverlet.collector" Version="6.0.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Simple.Mocking" Version="6.0.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Kimono\Kimono.csproj" />
-    <ProjectReference Include="..\Overmock\Overmock.csproj" />
+    <ProjectReference Include="..\..\src\Kimono.Extensions.DependencyInjection\Kimono.Extensions.DependencyInjection.csproj" />
+    <ProjectReference Include="..\..\src\Kimono\Kimono.csproj" />
   </ItemGroup>
 
 </Project>

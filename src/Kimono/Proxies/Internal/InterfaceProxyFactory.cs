@@ -69,7 +69,7 @@ namespace Kimono.Internal
                 .Distinct();
 
 			MethodGenerator.Create(context, methods);
-            PropertyGenerator.Generate(context, properties);
+            PropertyGenerator.Create(context, properties);
 
             var proxyType = context.TypeBuilder.CreateType();
 

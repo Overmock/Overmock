@@ -1,7 +1,9 @@
-﻿using Kimono.Tests.Proxies;
+﻿using Kimono;
 using Overmock;
+using Overmock.Tests.Mocks;
+using Overmock.Tests.Mocks.Methods;
 
-namespace Kimono.Tests
+namespace Overmock.Tests
 {
     [TestClass]
     public class OvermockSecondaryInvocationHandlerTests
@@ -14,12 +16,12 @@ namespace Kimono.Tests
         [TestMethod]
         public void OvermockCallsSecondaryHandlerTest()
         {
-            var overmock = Overmocked.For<IRepository>(new TestInvocationHandler());
+            var overmock = Overmocked.For<IMethodsWith2Parameters>(new TestInvocationHandler());
 
-            Overmocked.Mock(overmock, o => o.Save(Its.Any<Model>()))
+            Overmocked.Mock(overmock, o => o.BoolMethodWithStringAndModel(Its.Any<string>(), Its.Any<Model>()))
                 .ToBeCalled();
 
-            var result = overmock.Save(new Model { Id = 420 });
+            var result = overmock.BoolMethodWithStringAndModel("hello", new Model { Id = 420 });
 
             Assert.IsTrue(result);
         }
@@ -29,12 +31,12 @@ namespace Kimono.Tests
         {
             Overmocked.Use(new TestInvocationHandler());
 
-            var overmock = Overmocked.For<IRepository>();
+			var overmock = Overmocked.For<IMethodsWith2Parameters>();
 
-            Overmocked.Mock(overmock, o => o.Save(Its.Any<Model>()))
-                .ToBeCalled();
+			Overmocked.Mock(overmock, o => o.BoolMethodWithStringAndModel(Its.Any<string>(), Its.Any<Model>()))
+				.ToBeCalled();
 
-            var result = overmock.Save(new Model { Id = 420 });
+			var result = overmock.BoolMethodWithStringAndModel("hello", new Model { Id = 420 });
 
             Assert.IsTrue(result);
 
