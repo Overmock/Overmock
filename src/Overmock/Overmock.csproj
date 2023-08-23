@@ -19,6 +19,7 @@
     <PackageId>Overmock</PackageId>
     <IncludeReferencedProjects>true</IncludeReferencedProjects>
     <EnablePackageValidation>true</EnablePackageValidation>
+    <PackageIcon>overmock-package-icon.png</PackageIcon>
     <PackageProjectUrl>https://github.com/Overmock</PackageProjectUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/Overmock/Overmock</RepositoryUrl>
@@ -34,6 +35,10 @@
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
+    <None Include="..\..\overmock-package-icon.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
@@ -42,5 +47,9 @@
 
   <ItemGroup>
 	  <ProjectReference Include="..\Kimono\Kimono.csproj" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All"/>
   </ItemGroup>
 </Project>
