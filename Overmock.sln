@@ -20,7 +20,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Overmock.Examples", "src\Ov
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".circleci", ".circleci", "{9FE16D9A-24BA-4136-A2E7-CEE7918C214E}"
 	ProjectSection(SolutionItems) = preProject
-		..\.circleci\config.yml = ..\.circleci\config.yml
+		.circleci\config.yml = .circleci\config.yml
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{113800AA-3ECA-4FB0-A77B-2F746BA7B494}"
