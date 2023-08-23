@@ -47,11 +47,6 @@ namespace Kimono.Internal
 					methodId
 				);
 
-				methodBuilder.SetCustomAttribute(new CustomAttributeBuilder(
-					_kimonoAttributeConstructor,
-					new object[] { methodId }
-				));
-
                 var runtimeContext = new RuntimeContext(method,
                     methodInfo.GetParameters().Select(p => 
                         new RuntimeParameter(p.Name!, type: p.ParameterType)));

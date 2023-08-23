@@ -8,12 +8,12 @@ namespace Kimono.Proxies
 	/// </summary>
 	public interface IProxyPropertyFactory
     {
-		/// <summary>
-		/// Generates the specified context.
-		/// </summary>
-		/// <param name="context">The context.</param>
-		/// <param name="methods">The methods.</param>
-		void Generate(IProxyContextBuilder context, IEnumerable<PropertyInfo> methods);
+        /// <summary>
+        /// Creates the specified properties.
+        /// </summary>
+        /// <param name="context">The context.</param>
+        /// <param name="properties">The properties.</param>
+        void Create(IProxyContextBuilder context, IEnumerable<PropertyInfo> properties);
 
 	}
 }

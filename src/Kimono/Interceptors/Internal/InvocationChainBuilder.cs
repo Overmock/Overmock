@@ -78,7 +78,7 @@ namespace Kimono.Interceptors.Internal
 
                 if (nextHandler != null)
                 {
-                    nextHandler.Invoke(c => Next(c, firstHandler, index), context);
+                    nextHandler(c => Next(c, firstHandler, index), context);
                 }
             }
         }

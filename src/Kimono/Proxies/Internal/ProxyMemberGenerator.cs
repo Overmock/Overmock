@@ -15,12 +15,9 @@ namespace Kimono.Internal
             _delegateDelegateGenerator = delegateDelegateGenerator ?? new DynamicMethodDelegateGenerator();
         }
 
-        protected IMethodDelegateGenerator DelegateGenerator => _delegateDelegateGenerator;
-
-        /// <summary>
-        /// The kimono attribute constructor
-        /// </summary>
         protected static readonly ConstructorInfo _kimonoAttributeConstructor = typeof(KimonoAttribute).GetConstructors().First();
+
+        protected IMethodDelegateGenerator DelegateGenerator => _delegateDelegateGenerator;
 
 		/// <summary>
 		/// Creates the method.
