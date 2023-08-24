@@ -80,17 +80,7 @@ namespace Kimono.Proxies
             /// <exception cref="NotImplementedException"></exception>
             public override IProxyFactory Provide(IInterceptor interceptor)
             {
-                if (interceptor.IsInterface())
-                {
-                    return _interfaceProxyFactory;
-                }
-
-                if (interceptor.IsDelegate())
-                {
-                    return new DelegateProxyFactory(GeneratedProxyCache.Cache);
-                }
-
-                throw new NotImplementedException();
+                return _interfaceProxyFactory;
             }
         }
     }

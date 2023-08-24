@@ -18,5 +18,20 @@ namespace Overmock.Tests
 			_models.Add(_model1);
 			_models.Add(_model2);
 		}
+
+		[TestMethod]
+		public void Test()
+		{
+            var overmock = Over.Mock<Model>();
+
+            overmock.Mock(m => m.Id)
+                .ToReturn(420);
+
+            var target = overmock.Target;
+
+            Assert.IsNotNull(target);
+
+            Assert.AreEqual(420, target.Id);
+		}
 	}
 }

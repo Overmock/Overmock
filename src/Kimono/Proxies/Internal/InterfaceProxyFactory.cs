@@ -65,8 +65,13 @@ namespace Kimono.Internal
 
             (var methods, var properties) = AddInterfaceImplementations(context);
 			properties = properties.Distinct();
-			methods = methods.Concat(GetBaseMethods())
-                .Distinct();
+
+            if (context.Interceptor.TargetType.IsInterface)
+            {
+                methods = methods.Union(GetBaseMethods());
+            }
+
+            methods = methods.Distinct();
 
 			MethodGenerator.Create(context, methods);
             PropertyGenerator.Create(context, properties);
@@ -90,7 +95,10 @@ namespace Kimono.Internal
             const TypeAttributes attributes = TypeAttributes.Class | TypeAttributes.Public;
 
             var proxyType = Constants.ProxyType.MakeGenericType(interceptor.TargetType);
-			var typeBuilder = DynamicModule.DefineType(Constants.AssemblyAndTypeNameFormat.ApplyFormat(interceptor.TypeName), attributes, proxyType);
+			var typeBuilder = DynamicModule.DefineType(
+                Constants.AssemblyAndTypeNameFormat.ApplyFormat(interceptor.TypeName),
+                attributes, proxyType);
+
             return new ProxyContextBuilder(interceptor, typeBuilder, proxyType);
         }
 
@@ -107,19 +115,26 @@ namespace Kimono.Internal
 
         private static (IEnumerable<MethodInfo>, IEnumerable<PropertyInfo>) AddInterfaceImplementations(ProxyContextBuilder context)
         {
-            if (!context.Interceptor.IsInterface())
-            {
-                throw new KimonoException($"Type must be an interface: {context.Interceptor}");
-            }
+            //if (!context.Interceptor.IsInterface())
+            //{
+            //    throw new KimonoException($"Type must be an interface: {context.Interceptor}");
+            //}
 
             return AddMembersRecursive(context, context.Interceptor.TargetType);
         }
 
 		private static (IEnumerable<MethodInfo>, IEnumerable<PropertyInfo>) AddMembersRecursive(ProxyContextBuilder context, Type interfaceType)
 		{
-			context.TypeBuilder.AddInterfaceImplementation(interfaceType);
+            if (interfaceType.IsInterface)
+            {
+                context.TypeBuilder.AddInterfaceImplementation(interfaceType);
 
-			context.AddInterfaces(interfaceType);
+                context.AddInterfaces(interfaceType);
+            }
+            else
+            {
+                context.TypeBuilder.BaseType = interfaceType;
+            }
 
 			var methods = GetMethods(interfaceType);
 			var properties = interfaceType.GetProperties().AsEnumerable();
@@ -147,7 +162,7 @@ namespace Kimono.Internal
 
 		private static IEnumerable<MethodInfo> GetMethods(Type interfaceType)
 		{
-			return interfaceType.GetMethods().Where(m => !m.IsSpecialName);
+			return interfaceType.GetMethods().Where(m => !m.IsSpecialName && m.IsVirtual);
 		}
 
 		private static IEnumerable<PropertyInfo> AddPropertiesRecursive(ProxyContextBuilder context, Type interfaceType)
