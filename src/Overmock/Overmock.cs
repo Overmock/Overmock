@@ -1,5 +1,6 @@
 ﻿using Kimono;
 using Kimono.Interceptors;
+using Kimono.Proxies;
 using Overmock.Mocking;
 using Overmock.Mocking.Internal;
 using System;
@@ -41,7 +42,34 @@ namespace Overmock
                 ? (Interceptor<T>)new HandlerInterceptor<T>(_invocationHandler)
                 : (Interceptor<T>)new HandlersInterceptor<T>(new[] { _invocationHandler, handler });
 
-            Overmocked.Register(this);
+            Over.Register(this);
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Overmock{T}"/> class.
+        /// </summary>
+        /// <param name="target">The target.</param>
+        /// <exception cref="System.InvalidOperationException">Type '{Type.Name}' cannot be a sealed class or enum.</exception>
+        internal Overmock(T target)
+        {
+            if (Type.IsSealed || Type.IsEnum)
+            {
+                throw new InvalidOperationException($"Type '{Type.Name}' cannot be a sealed class or enum.");
+            }
+
+            if (target is IProxy proxy && proxy.Interceptor is IInvocationHandlerProvider handler)
+            {
+                var overmock = Over.GetRegistration(proxy)!;
+                _methods = (List<IMethodCall>)overmock.GetOvermockedMethods();
+                _properties = (List<IPropertyCall>)overmock.GetOvermockedProperties();
+                _invocationHandler = handler.GetHandler();
+            }
+
+            _interceptor = new HandlerInterceptor<T>(_invocationHandler ??=
+                new OvermockInstanceInvocationHandler(() => _overrideAll, _methods.ToArray, _properties.ToArray)
+            );
+
+            Over.Register(this);
         }
 
         /// <summary>
@@ -52,7 +80,7 @@ namespace Overmock
         {
             get
             {
-                return _interceptor.Proxy;
+                return ((Interceptor<T>)_interceptor).Proxy;
             }
         }
 
@@ -65,6 +93,16 @@ namespace Overmock
         {
             return overmock.Target;
         }
+
+        ///// <summary>
+        ///// Performs an implicit conversion from <see cref="Overmock{T}"/> to <typeparamref name="T"/>.
+        ///// </summary>
+        ///// <param name="overmock">The overmock.</param>
+        ///// <returns>The result of the conversion.</returns>
+        //public static implicit operator Overmock<T>(T overmock)
+        //{
+        //    return overmock.Target;
+        //}
 
         /// <inheritdoc />
         public override bool Equals(object? obj)
@@ -140,13 +178,13 @@ namespace Overmock
         /// <inheritdoc />
         IEnumerable<IMethodCall> IOvermock.GetOvermockedMethods()
         {
-            return _methods.AsReadOnly();
+            return _methods;
         }
 
         /// <inheritdoc />
         IEnumerable<IPropertyCall> IOvermock.GetOvermockedProperties()
         {
-            return _properties.AsReadOnly();
+            return _properties;
         }
 
         /// <summary>
@@ -159,11 +197,10 @@ namespace Overmock
         }
 
         /// <inheritdoc />
-#pragma warning disable CS1066 // The default value specified will have no effect because it applies to a member that is used in contexts that do not allow optional arguments
-        void IExpectAnyInvocation.ExpectAny(bool value = false)
+        void IExpectAnyInvocation.ExpectAny()
 #pragma warning restore CS1066 // The default value specified will have no effect because it applies to a member that is used in contexts that do not allow optional arguments
         {
-            _overrideAll = value;
+            _overrideAll = true;
         }
 
         private sealed class OvermockInstanceInvocationHandler : IInvocationHandler

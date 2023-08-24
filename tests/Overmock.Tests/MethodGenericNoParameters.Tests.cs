@@ -11,7 +11,7 @@ namespace Overmock.Tests
 		[TestInitialize]
 		public void Initialize()
 		{
-			_genericMethodsTestInterface = Overmocked.Overmock<IGenericMethodsTestInterface>();
+			_genericMethodsTestInterface = Over.Mock<IGenericMethodsTestInterface>();
 		}
 
 		[TestMethod]
@@ -19,7 +19,7 @@ namespace Overmock.Tests
 		{
 			var expected = new List<Model> { new  Model() };
 
-			_genericMethodsTestInterface.Override(m => m.MethodWithNoParamsAndReturnsEnumerableOfT<Model>())
+			_genericMethodsTestInterface.Mock(m => m.MethodWithNoParamsAndReturnsEnumerableOfT<Model>())
 				.ToReturn(expected);
 
 			var target = _genericMethodsTestInterface.Target;

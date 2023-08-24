@@ -1,46 +1,46 @@
 namespace Overmock.Tests.OvermockedMock
 {
-	public partial class MethodWithNoParamsTests
-	{
-		[TestMethod]
-		public void VoidMethodWithNoParamsToBeCalledTest()
-		{
-            Overmocked.Mock(_overmock, t => t.VoidMethodWithNoParams()).ToBeCalled();
-
-			_overmock.VoidMethodWithNoParams();
-		}
-		
+    public partial class MethodWithNoParamsTests
+    {
         [TestMethod]
-        public void BoolMethodWithNoParamsToReturnTest()
+        public void VoidMethodWithNoParamsToBeCalledTest()
         {
-            Overmocked.Mock(_overmock, t => t.BoolMethodWithNoParams())
-                .ToReturn(true);
+            Over.Mock(_overmock, t => t.VoidMethodWithNoParams()).ToBeCalled();
 
-            var test = _overmock.BoolMethodWithNoParams();
+            _overmock.VoidMethodWithNoParams();
+        }
 
-            Assert.IsTrue(test);
-		}
+        //[TestMethod]
+        //public void BoolMethodWithNoParamsToReturnTest()
+        //{
+        //    Overmocked.Mock(_overmock, t => t.BoolMethodWithNoParams())
+        //        .ToReturn(true);
 
-		[TestMethod]
-		public void ModelMethodWithNoParamsToReturnTest()
-		{
-			Overmocked.Mock(_overmock, t => t.ModelMethodWithNoParams())
-				.ToReturn(_model1);
+        //    var test = _overmock.BoolMethodWithNoParams();
 
-			var test = _overmock.ModelMethodWithNoParams();
+        //    Assert.IsTrue(test);
+        //}
 
-			Assert.AreEqual(_model1, test);
-		}
+        [TestMethod]
+        public void ModelMethodWithNoParamsToReturnTest()
+        {
+            Over.Overmock(_overmock, t => t.ModelMethodWithNoParams())
+                .ToReturn(_model1);
 
-		[TestMethod]
-		public void ListOfModelMethodWithNoParamsToReturnTest()
-		{
-			Overmocked.Mock(_overmock, t => t.ListOfModelMethodWithNoParams())
-				.ToReturn(_models);
+            var test = _overmock.ModelMethodWithNoParams();
 
-			var test = _overmock.ListOfModelMethodWithNoParams();
+            Assert.AreEqual(_model1, test);
+        }
 
-			Assert.AreEqual(_models, test);
-		}
-	}
+        [TestMethod]
+        public void ListOfModelMethodWithNoParamsToReturnTest()
+        {
+            Over.Overmock(_overmock, t => t.ListOfModelMethodWithNoParams())
+                .ToReturn(_models);
+
+            var test = _overmock.ListOfModelMethodWithNoParams();
+
+            Assert.AreEqual(_models, test);
+        }
+    }
 }

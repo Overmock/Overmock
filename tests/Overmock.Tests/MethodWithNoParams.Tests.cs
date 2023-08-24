@@ -10,20 +10,20 @@ namespace Overmock.Tests
 		private readonly Model _model2 = new Model();
 		private readonly List<Model> _models = new List<Model>();
 
-		private IOvermock<IMethodsWithNoParameters> _testInterface = null!;
+		private IOvermock<IMethodsWithNoParameters> _overmock = null!;
 
 		[TestInitialize]
 		public void Initialize()
 		{
-            _testInterface = Overmocked.Overmock<IMethodsWithNoParameters>();
+            _overmock = Over.Mock<IMethodsWithNoParameters>();
 		}
 
 		[TestMethod]
 		public void MethodWith2Params()
 		{
-			var overmock = Overmocked.Overmock<IMethodsWith2Parameters>();
+			var overmock = Over.Mock<IMethodsWith2Parameters>();
 
-			overmock.Override(p => p.BoolMethodWithStringAndModel(Its.Any<string>(), Its.Any<Model>()))
+			overmock.Mock(p => p.BoolMethodWithStringAndModel(Its.Any<string>(), Its.Any<Model>()))
 				.ToCall(c => c.Get<string>("name"));
 			overmock.Target.BoolMethodWithStringAndModel("hello world", _model2);
 		}

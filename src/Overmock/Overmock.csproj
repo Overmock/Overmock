@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Version>0.0.7-RC03</Version>
+    <Version>0.0.7-RC04</Version>
     <!--<TargetFramework>net6.0</TargetFramework>-->
     <TargetFrameworks>net7.0;net6.0;netstandard2.1;</TargetFrameworks>
     <!--<ImplicitUsings>enable</ImplicitUsings>-->

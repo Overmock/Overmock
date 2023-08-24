@@ -8,7 +8,7 @@ namespace Overmock.Tests
         public void MethodWithNoParamsToThrowTest()
         {
             var exception = new Exception("fail");
-            _genericMethodsTestInterface.Override(m => m.MethodWithNoParamsAndReturnsEnumerableOfT<Model>())
+            _genericMethodsTestInterface.Mock(m => m.MethodWithNoParamsAndReturnsEnumerableOfT<Model>())
                 .ToThrow(exception);
             try
             {
@@ -26,7 +26,7 @@ namespace Overmock.Tests
         public void MethodWithN1ParamsToThrowTest()
         {
             var exception = new Exception("fail");
-            _genericMethodsTestInterface.Override(m => m.MethodWith1ParamsAndReturnsEnumerableOfT<Model, Model>(Its.Any<Model>()))
+            _genericMethodsTestInterface.Mock(m => m.MethodWith1ParamsAndReturnsEnumerableOfT<Model, Model>(Its.Any<Model>()))
                 .ToThrow(exception);
             try
             {
@@ -44,7 +44,7 @@ namespace Overmock.Tests
         public void MethodWithN2ParamsToThrowTest()
         {
             var exception = new Exception("fail");
-            _genericMethodsTestInterface.Override(m => m.MethodWith2ParamsAndReturnsEnumerableOfT<Model, Model, Model>(Its.Any<Model>(), Its.Any<Model>()))
+            _genericMethodsTestInterface.Mock(m => m.MethodWith2ParamsAndReturnsEnumerableOfT<Model, Model, Model>(Its.Any<Model>(), Its.Any<Model>()))
                 .ToThrow(exception);
             try
             {
@@ -62,7 +62,7 @@ namespace Overmock.Tests
         public void MethodWithNParamsToThrowTest()
         {
             var exception = new Exception("fail");
-            _genericMethodsTestInterface.Override(m => m.MethodWith3ParamsAndReturnsEnumerableOfT<Model, Model, Model, Model>(Its.Any<Model>(), Its.Any<Model>(), Its.Any<Model>()))
+            _genericMethodsTestInterface.Mock(m => m.MethodWith3ParamsAndReturnsEnumerableOfT<Model, Model, Model, Model>(Its.Any<Model>(), Its.Any<Model>(), Its.Any<Model>()))
                 .ToThrow(exception);
             try
             {

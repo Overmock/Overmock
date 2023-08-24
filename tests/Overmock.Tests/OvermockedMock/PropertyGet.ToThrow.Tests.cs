@@ -7,7 +7,7 @@
 		{
 			var exception = new Exception();
 
-			_overmock.Override(t => t.Int)
+			_overmock.Mock(t => t.Int)
 				.ToThrow(exception);
 
 			var target = _overmock.Target;
@@ -31,7 +31,7 @@
 		{
 			var exception = new Exception();
 
-			_overmock.Override(t => t.String)
+			_overmock.Mock(t => t.String)
 				.ToThrow(exception);
 
 			var target = _overmock.Target;
@@ -55,7 +55,7 @@
 		{
 			var exception = new Exception();
 
-			_overmock.Override(t => t.Model)
+			_overmock.Mock(t => t.Model)
 				.ToThrow(exception);
 
 			var target = _overmock.Target;
@@ -79,7 +79,7 @@
 		{
 			var exception = new Exception();
 
-			_overmock.Override(t => t.ListOfModels)
+			_overmock.Mock(t => t.ListOfModels)
 				.ToThrow(exception);
 
 			var target = _overmock.Target;

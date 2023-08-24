@@ -12,19 +12,19 @@ namespace Overmock.Mocking
 	public interface IReturnable<T> : ICallable
 	{
 		/// <summary>
-		/// Returnses the specified value.
+		/// Returns the specified value.
 		/// </summary>
 		/// <param name="value">The value.</param>
 		void Returns(T value);
 
 		/// <summary>
-		/// Returnses the specified function.
+		/// Returns the specified function.
 		/// </summary>
 		/// <param name="func">The function.</param>
 		void Returns(Func<T> func);
 
 		/// <summary>
-		/// Callses the specified function.
+		/// Calls the specified function.
 		/// </summary>
 		/// <param name="func">The function.</param>
 		/// <param name="times">The times.</param>

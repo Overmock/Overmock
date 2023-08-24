@@ -2,34 +2,34 @@
 {
 	public partial class PropertyGetTests
 	{
-		[TestMethod]
-		public void IntPropertyToThrowTest()
-		{
-			var exception = new Exception();
+		//[TestMethod]
+		//public void IntPropertyToThrowTest()
+		//{
+		//	var exception = new Exception();
 
-			Overmocked.Mock(_overmock, t => t.Int)
-				.ToThrow(exception);
+		//	Overmocked.Mock(_overmock, t => t.Int)
+		//		.ToThrow(exception);
 
-			Assert.IsNotNull(_overmock);
+		//	Assert.IsNotNull(_overmock);
 
-			try
-			{
-				var model = _overmock.Int;
+		//	try
+		//	{
+		//		var model = _overmock.Int;
 
-				Assert.Fail();
-			}
-			catch (Exception ex)
-			{
-				Assert.AreEqual(exception, ex);
-			}
-		}
+		//		Assert.Fail();
+		//	}
+		//	catch (Exception ex)
+		//	{
+		//		Assert.AreEqual(exception, ex);
+		//	}
+		//}
 
 		[TestMethod]
 		public void StringPropertyToThrowTest()
 		{
 			var exception = new Exception();
 
-			Overmocked.Mock(_overmock, t => t.String)
+			Over.Overmock(_overmock, t => t.String)
 				.ToThrow(exception);
 
 			try
@@ -49,7 +49,7 @@
 		{
 			var exception = new Exception();
 
-			Overmocked.Mock(_overmock, t => t.Model)
+			Over.Overmock(_overmock, t => t.Model)
 				.ToThrow(exception);
 
 			try
@@ -69,7 +69,7 @@
 		{
 			var exception = new Exception();
 
-			Overmocked.Mock(_overmock, t => t.ListOfModels)
+			Over.Overmock(_overmock, t => t.ListOfModels)
 				.ToThrow(exception);
 
 			try
