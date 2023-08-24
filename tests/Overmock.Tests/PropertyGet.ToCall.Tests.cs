@@ -7,10 +7,10 @@
 		{
 			var called = false;
 
-			_overmock.Override(t => t.Int)
+			_overmock.Mock(t => t.Int)
 				.ToCall(c => called = true);
 
-			_overmock.Override(t => t.GetHashCode()).ToBeCalled();
+			_overmock.Mock(t => t.GetHashCode()).ToBeCalled();
 
 			var target = _overmock.Target;
 
@@ -26,7 +26,7 @@
 		{
 			var called = false;
 
-			_overmock.Override(t => t.String)
+			_overmock.Mock(t => t.String)
 				.ToCall(c => called = true);
 
 			var target = _overmock.Target;
@@ -43,7 +43,7 @@
 		{
 			var called = false;
 
-			_overmock.Override(t => t.Model)
+			_overmock.Mock(t => t.Model)
 				.ToCall(c => called = true);
 
 			var target = _overmock.Target;
@@ -60,7 +60,7 @@
 		{
 			var called = false;
 
-			_overmock.Override(t => t.ListOfModels)
+			_overmock.Mock(t => t.ListOfModels)
 				.ToCall(c => called = true);
 
 			var target = _overmock.Target;

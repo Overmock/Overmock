@@ -7,7 +7,7 @@ namespace Overmock.Tests.OvermockedMock
 		{
 			var called = false;
 
-			Overmocked.Mock(_overmock, t => t.VoidMethodWithNoParams())
+			Over.Mock(_overmock, t => t.VoidMethodWithNoParams())
 				.ToCall(c => called = true);
 
             _overmock.VoidMethodWithNoParams();
@@ -20,7 +20,7 @@ namespace Overmock.Tests.OvermockedMock
 		{
 			var called = false;
 
-            Overmocked.Mock(_overmock, t => t.BoolMethodWithNoParams())
+            Over.Mock(_overmock, t => t.BoolMethodWithNoParams())
 				.ToCall(c => called = true);
 
 			_overmock.BoolMethodWithNoParams();
@@ -33,7 +33,7 @@ namespace Overmock.Tests.OvermockedMock
 		{
 			var called = false;
 
-            Overmocked.Mock(_overmock, t => t.ModelMethodWithNoParams())
+            Over.Overmock(_overmock, t => t.ModelMethodWithNoParams())
 				.ToCall(c => called = true);
 
 			_overmock.ModelMethodWithNoParams();
@@ -46,7 +46,7 @@ namespace Overmock.Tests.OvermockedMock
 		{
 			var called = false;
 
-            Overmocked.Mock(_overmock, t => t.ListOfModelMethodWithNoParams())
+            Over.Overmock(_overmock, t => t.ListOfModelMethodWithNoParams())
 				.ToCall(c => called = true);
 
 			_overmock.ListOfModelMethodWithNoParams();

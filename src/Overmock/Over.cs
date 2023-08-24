@@ -11,16 +11,16 @@ namespace Overmock
     /// <summary>
     /// Contains methods used for configuring an overmock.
     /// </summary>
-    public  static partial class Overmocked
+    public  static partial class Over
 	{
 		private static readonly ConcurrentQueue<IOvermock> _overmocks = new ConcurrentQueue<IOvermock>();
         
         private static IInvocationHandler? _invocationHandler;
 
 		/// <summary>
-		/// Initializes static members of the <see cref="Overmocked"/> class.
+		/// Initializes static members of the <see cref="Over"/> class.
 		/// </summary>
-		static Overmocked()
+		static Over()
         {
         }
 
@@ -37,7 +37,7 @@ namespace Overmock
         /// Verifies the mocks setup behave as expected.
         /// </summary>
         public static void Verify()
-		{
+        {
             foreach (var overmock in _overmocks)
             {
                 overmock.Verify();

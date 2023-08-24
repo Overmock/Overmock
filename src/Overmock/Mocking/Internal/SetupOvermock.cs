@@ -105,29 +105,29 @@ namespace Overmock
             _returnable = returnable;
 		}
 
-		/// <inheritdoc />
-		void ISetup<T, TReturn>.ToCall(Func<OvermockContext, TReturn> callback)
+        /// <inheritdoc />
+        public void ToCall(Func<OvermockContext, TReturn> callback)
 		{
 			_returnable.Calls(callback, Times.Any);
 		}
 
-		/// <inheritdoc />
-		void ISetup<T, TReturn>.ToCall(Func<OvermockContext, TReturn> callback, Times times)
+        /// <inheritdoc />
+        public void ToCall(Func<OvermockContext, TReturn> callback, Times times)
         {
             _returnable.Calls(callback, times);
         }
 
-		/// <inheritdoc />
-		void ISetupReturn<TReturn>.ToReturn(TReturn result)
+        /// <inheritdoc />
+        public void ToReturn(TReturn result)
         {
             _returnable.Returns(result);
         }
 
-		/// <summary>
-		/// Converts to return.
-		/// </summary>
-		/// <param name="returnProvider">The return provider.</param>
-		void ISetupReturn<TReturn>.ToReturn(Func<TReturn> returnProvider)
+        /// <summary>
+        /// Converts to return.
+        /// </summary>
+        /// <param name="returnProvider">The return provider.</param>
+        public void ToReturn(Func<TReturn> returnProvider)
         {
             _returnable.Returns(returnProvider);
         }
@@ -139,19 +139,21 @@ namespace Overmock
         {
         }
 
-        IOvermock<TReturn> ISetupReturnMocks<TReturn>.ToReturnMock()
+        public IOvermock<TReturn> ToReturnMock()
         {
-            throw new NotImplementedException();
+            return ToReturnMock<TReturn>();
         }
 
-        IOvermock<TReturn> ISetupReturnMocks<TReturn>.ToReturnMock<TMock>()
+        public IOvermock<TReturn> ToReturnMock<TMock>() where TMock : class, TReturn
         {
-            throw new NotImplementedException();
+            return ToReturnMock(new Overmock<TMock>()).AsMock<TReturn>();
         }
 
-        IOvermock<TReturn> ISetupReturnMocks<TReturn>.ToReturnMock<TMock>(IOvermock<TMock> overmock)
+        public IOvermock<TMock> ToReturnMock<TMock>(IOvermock<TMock> overmock) where TMock : class, TReturn
         {
-            return overmock.As<TReturn>();
+            ToReturn(() => overmock.Target);
+            
+            return overmock;
         }
     }
 }

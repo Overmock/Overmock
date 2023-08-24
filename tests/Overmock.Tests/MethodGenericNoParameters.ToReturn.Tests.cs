@@ -7,7 +7,7 @@ namespace Overmock.Tests
 		[TestMethod]
 		public void MethodWithNoParamsToReturnTest()
 		{
-			_genericMethodsTestInterface.Override(m => m.MethodWithNoParamsAndReturnsEnumerableOfT<Model>())
+			_genericMethodsTestInterface.Mock(m => m.MethodWithNoParamsAndReturnsEnumerableOfT<Model>())
 				.ToReturn(() => Enumerable.Empty<Model>());
 			
 			var target = _genericMethodsTestInterface.Target;
@@ -20,7 +20,7 @@ namespace Overmock.Tests
 		[TestMethod]
 		public void MethodWithN1ParamsToReturnTest()
 		{
-			_genericMethodsTestInterface.Override(m => m.MethodWith1ParamsAndReturnsEnumerableOfT<Model, Model>(Its.Any<Model>()))
+			_genericMethodsTestInterface.Mock(m => m.MethodWith1ParamsAndReturnsEnumerableOfT<Model, Model>(Its.Any<Model>()))
 				.ToReturn(() => Enumerable.Empty<Model>());
 
 			var target = _genericMethodsTestInterface.Target;
@@ -34,7 +34,7 @@ namespace Overmock.Tests
 		[TestMethod]
 		public void MethodWithN2ParamsToReturnTest()
 		{
-			_genericMethodsTestInterface.Override(m => m.MethodWith2ParamsAndReturnsEnumerableOfT<Model, Model, Model>(Its.Any<Model>(), Its.Any<Model>()))
+			_genericMethodsTestInterface.Mock(m => m.MethodWith2ParamsAndReturnsEnumerableOfT<Model, Model, Model>(Its.Any<Model>(), Its.Any<Model>()))
 				.ToReturn(() => Enumerable.Empty<Model>());
 
 			var target = _genericMethodsTestInterface.Target;
@@ -48,7 +48,7 @@ namespace Overmock.Tests
 		[TestMethod]
 		public void MethodWithNParamsToReturnTest()
 		{
-			_genericMethodsTestInterface.Override(m => m.MethodWith3ParamsAndReturnsEnumerableOfT<Model, Model, Model, Model>(Its.Any<Model>(),Its.Any<Model>(), Its.Any<Model>()))
+			_genericMethodsTestInterface.Mock(m => m.MethodWith3ParamsAndReturnsEnumerableOfT<Model, Model, Model, Model>(Its.Any<Model>(),Its.Any<Model>(), Its.Any<Model>()))
 				.ToReturn(() => Enumerable.Empty<Model>());
 
 			var target = _genericMethodsTestInterface.Target;

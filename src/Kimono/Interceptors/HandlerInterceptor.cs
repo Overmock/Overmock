@@ -1,5 +1,4 @@
 ﻿
-
 namespace Kimono.Interceptors
 {
 	/// <summary>
@@ -8,7 +7,7 @@ namespace Kimono.Interceptors
 	/// </summary>
 	/// <typeparam name="T"></typeparam>
 	/// <seealso cref="Kimono.Interceptor{T}" />
-	public class HandlerInterceptor<T> : Interceptor<T> where T : class
+	public class HandlerInterceptor<T> : Interceptor<T>, IInvocationHandlerProvider where T : class
 	{
 		private readonly IInvocationHandler _handler;
 
@@ -26,5 +25,7 @@ namespace Kimono.Interceptors
 		{
 			_handler.Handle(context);
 		}
+
+        IInvocationHandler IInvocationHandlerProvider.GetHandler() => _handler;
 	}
 }

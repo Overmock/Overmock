@@ -29,7 +29,7 @@
 		{
 			var exception = new Exception();
 
-			Overmocked.Mock(_overmock, t => t.String)
+			Over.Overmock(_overmock, t => t.String)
 				.ToThrow(exception);
 
 			try
@@ -49,7 +49,7 @@
 		{
 			var exception = new Exception();
 
-			Overmocked.Mock(_overmock, t => t.Model)
+			Over.Overmock(_overmock, t => t.Model)
 				.ToThrow(exception);
 
 			try
@@ -69,7 +69,7 @@
 		{
 			var exception = new Exception();
 
-			Overmocked.Mock(_overmock, t => t.ListOfModels)
+			Over.Overmock(_overmock, t => t.ListOfModels)
 				.ToThrow(exception);
 
 			try

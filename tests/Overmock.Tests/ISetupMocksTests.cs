@@ -6,36 +6,56 @@ namespace Overmock.Tests
     public class ISetupMocksTests
     {
         [TestMethod]
-        public void ISetupMocksTestsAllowsReturnsToBeMocked()
+        public void ISetupMocksTestsAllowsReturnsToReturnMock()
         {
-            var overmock = Overmocked.ExpectAnyInvocation<IMethodsWithNoParameters>();
+            var overmock = Over.MockAnyInvocation<IInterfaceNoArgs>();
 
-            for (int i = 0; i < 10; i++)
-            {
-                overmock.Target.BoolMethodWithNoParams();
-            }
+            var imOvermocked = overmock.Overmock(m => m.Get())
+                .ToReturnMock();
+
+            imOvermocked.Mock(m => m.IDoNothing()).ToBeCalled();
+
+            var target = imOvermocked.Target;
+
+            Assert.IsNotNull(target);
+            
+            target.IDoNothing();
         }
 
         [TestMethod]
-        public void ExpectAnyInvocationOfTAllowsAnyInvocationOnAnyMemberOfAnExistingTarget()
+        public void ISetupMocksTestsAllowsReturnsToReturnMockOfT()
         {
-            var overmock = Overmocked.ExpectAnyInvocation<IMethodsWithNoParameters>();
+            var overmock = Over.Mock<IInterfaceNoArgs>();
 
-            for (int i = 0; i < 10; i++)
-            {
-                overmock.Target.BoolMethodWithNoParams();
-            }
+            var imOvermocked = overmock.Overmock(m => m.Get())
+                .ToReturnMock<IInheritReturned>();
+
+            imOvermocked.Mock(m => m.IDoNothing()).ToBeCalled();
+
+            var target = overmock.Target;
+
+            Assert.IsNotNull(target);
+
+            var imtargeted = target.Get();
+
+            ((IInheritReturned)imtargeted).IDoNothing();
         }
 
         [TestMethod]
-        public void ExpectAnyInvocationOfTAllowsAnyInvocationOnAnyMemberOfAnExistingOvermock()
+        public void ISetupMocksTestsAllowsReturnsToReturnMockOfOvermockOfT()
         {
-            var overmock = Overmocked.ExpectAnyInvocation<IMethodsWithNoParameters>();
+            var overmock = Over.MockAnyInvocation<IInterfaceNoArgs>();
+            var imReturned = Over.MockAnyInvocation<IInheritReturned>();
+            var imOvermocked = overmock.Overmock(m => m.Get())
+                .ToReturnMock(imReturned);
 
-            for (int i = 0; i < 10; i++)
-            {
-                overmock.Target.BoolMethodWithNoParams();
-            }
+            imOvermocked.Mock(m => m.IDoNothing()).ToBeCalled();
+
+            var target = imOvermocked.Target;
+
+            Assert.IsNotNull(target);
+
+            target.IDoNothing();
         }
     }
 }

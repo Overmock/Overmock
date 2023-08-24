@@ -16,7 +16,7 @@ namespace Overmock
         /// <typeparam name="TReturn"></typeparam>
         /// <param name="overmock"></param>
         /// <returns></returns>
-        public static IOvermock<TReturn> As<TReturn>(this IOvermock overmock) where TReturn : class
+        public static IOvermock<TReturn> AsMock<TReturn>(this IOvermock overmock) where TReturn : class
         {
             return new Overmock<TReturn>((TReturn)overmock.GetTarget());
         }

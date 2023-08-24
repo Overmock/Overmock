@@ -5,7 +5,7 @@ namespace Overmock.Tests.OvermockedMock
         [TestMethod]
         public void VoidMethodWithNoParamsToBeCalledTest()
         {
-            Overmocked.Mock(_overmock, t => t.VoidMethodWithNoParams()).ToBeCalled();
+            Over.Mock(_overmock, t => t.VoidMethodWithNoParams()).ToBeCalled();
 
             _overmock.VoidMethodWithNoParams();
         }
@@ -24,7 +24,7 @@ namespace Overmock.Tests.OvermockedMock
         [TestMethod]
         public void ModelMethodWithNoParamsToReturnTest()
         {
-            Overmocked.Mock(_overmock, t => t.ModelMethodWithNoParams())
+            Over.Overmock(_overmock, t => t.ModelMethodWithNoParams())
                 .ToReturn(_model1);
 
             var test = _overmock.ModelMethodWithNoParams();
@@ -35,7 +35,7 @@ namespace Overmock.Tests.OvermockedMock
         [TestMethod]
         public void ListOfModelMethodWithNoParamsToReturnTest()
         {
-            Overmocked.Mock(_overmock, t => t.ListOfModelMethodWithNoParams())
+            Over.Overmock(_overmock, t => t.ListOfModelMethodWithNoParams())
                 .ToReturn(_models);
 
             var test = _overmock.ListOfModelMethodWithNoParams();

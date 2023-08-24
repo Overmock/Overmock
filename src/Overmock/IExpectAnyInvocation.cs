@@ -8,7 +8,6 @@
 		/// <summary>
 		/// Expects any.
 		/// </summary>
-		/// <param name="value">if set to <c>true</c> [value].</param>
-		void ExpectAny(bool value = true);
+		void ExpectAny();
 	}
 }

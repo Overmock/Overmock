@@ -13,18 +13,37 @@ namespace Overmock
     /// <summary>
     /// Contains methods used for configuring an overmock.
     /// </summary>
-    public  static partial class Overmocked
-	{
+    public  static partial class Over
+    {
         /// <summary>
-        /// Fors the specified target.
+        /// Mocks the given interface type.
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="overmock">The overmock.</param>
-        /// <param name="given">The use.</param>
-        /// <returns>ISetup&lt;T&gt;.</returns>
-        public static IOvermock<T> Overmock<T>() where T : class
+        /// <returns></returns>
+        public static T MockInterface<T>() where T : class
         {
             return new Overmock<T>();
+        }
+
+        /// <summary>
+        /// Sets up the specified <typeparamref name="T" /> type with overmock using the constructor arguments.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns>An object used to configure overmocks</returns>
+        public static IOvermock<T> Mock<T>() where T : class
+        {
+            return new Overmock<T>(_invocationHandler);
+        }
+
+        /// <summary>
+        /// Returns an overmocked <typeparamref name="T" />.
+        /// </summary>
+        /// <typeparam name="T">The type of interface.</typeparam>
+        /// <param name="secondaryHandler">The secondary handler.</param>
+        /// <returns>The overmocked <typeparamref name="T" />.</returns>
+        public static IOvermock<T> Mock<T>(IInvocationHandler? secondaryHandler = null) where T : class
+        {
+            return new Overmock<T>(secondaryHandler ?? _invocationHandler);
         }
 
         /// <summary>
@@ -35,19 +54,7 @@ namespace Overmock
         /// <returns>ISetup&lt;T&gt;.</returns>
         public static ISetup<T> Mock<T>(Expression<Action<T>> given) where T : class
         {
-            return Overmock<T>().Override(given);
-        }
-
-        /// <summary>
-        /// For the specified target.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <typeparam name="TReturn">The type of the t return.</typeparam>
-        /// <param name="given">The use.</param>
-        /// <returns>ISetup&lt;T&gt;.</returns>
-        public static ISetupMocks<T, TReturn> Mock<T, TReturn>(Expression<Func<T, TReturn>> given) where T : class where TReturn : class
-        {
-            return Overmock<T>().Mock(given);
+            return new Overmock<T>().Mock(given);
         }
 
         /// <summary>
@@ -58,19 +65,6 @@ namespace Overmock
         /// <param name="given">The use.</param>
         /// <returns>ISetup&lt;T&gt;.</returns>
         public static ISetup<T> Mock<T>(T target, Expression<Action<T>> given) where T : class
-        {
-            return GetOvermock(target).Override(given);
-        }
-
-        /// <summary>
-        /// Fors the specified target.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="target"></param>
-        /// <typeparam name="TReturn">The type of the t return.</typeparam>
-        /// <param name="given">The use.</param>
-        /// <returns>ISetup&lt;T&gt;.</returns>
-        public static ISetupMocks<T, TReturn> Mock<T, TReturn>(T target, Expression<Func<T, TReturn>> given) where T : class where TReturn : class
         {
             return GetOvermock(target).Mock(given);
         }
@@ -84,7 +78,7 @@ namespace Overmock
         /// <returns>ISetup&lt;T&gt;.</returns>
         public static ISetup<T> Mock<T>(IOvermock<T> overmock, Expression<Action<T>> given) where T : class
         {
-            return overmock.Override(given);
+            return overmock.Mock(given);
         }
 
         /// <summary>

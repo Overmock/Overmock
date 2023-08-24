@@ -10,13 +10,11 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C0BFD13F-48EE-40EA-8AF1-FB2055D0C416}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
-		..\.gitignore = ..\.gitignore
-		..\LICENSE = ..\LICENSE
-		..\README.md = ..\README.md
-		..\SECURITY.md = ..\SECURITY.md
+		.gitignore = .gitignore
+		LICENSE = LICENSE
+		README.md = README.md
+		SECURITY.md = SECURITY.md
 	EndProjectSection
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Overmock.Examples", "src\Overmock.Examples\Overmock.Examples.csproj", "{0634BB8A-BF33-4878-889B-0E8FAC343C83}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".circleci", ".circleci", "{9FE16D9A-24BA-4136-A2E7-CEE7918C214E}"
 	ProjectSection(SolutionItems) = preProject
@@ -54,10 +52,6 @@ Global
 		{3924F495-CAD5-4A38-AA51-6DA1FA5AD6ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3924F495-CAD5-4A38-AA51-6DA1FA5AD6ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3924F495-CAD5-4A38-AA51-6DA1FA5AD6ED}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0634BB8A-BF33-4878-889B-0E8FAC343C83}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0634BB8A-BF33-4878-889B-0E8FAC343C83}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0634BB8A-BF33-4878-889B-0E8FAC343C83}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0634BB8A-BF33-4878-889B-0E8FAC343C83}.Release|Any CPU.Build.0 = Release|Any CPU
 		{94FEF884-701E-4617-8C81-1450DDE2B3B9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{94FEF884-701E-4617-8C81-1450DDE2B3B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{94FEF884-701E-4617-8C81-1450DDE2B3B9}.Release|Any CPU.ActiveCfg = Release|Any CPU

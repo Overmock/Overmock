@@ -1,30 +1,21 @@
-﻿using Kimono;
-using Kimono.Proxies;
-using Overmock.Mocking;
-using System;
-using System.Collections.Concurrent;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Threading;
-
+﻿
 namespace Overmock
 {
     /// <summary>
     /// Contains methods used for configuring an overmock.
     /// </summary>
-    public  static partial class Overmocked
+    public  static partial class Over
 	{
 		/// <summary>
 		/// Signals the Overmock to expect any invocation.
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
 		/// <returns>IOvermock&lt;T&gt;.</returns>
-		public static IOvermock<T> ExpectAnyInvocation<T>() where T : class
+		public static IOvermock<T> MockAnyInvocation<T>() where T : class
 		{
 			var result = new Overmock<T>();
 
-			((IExpectAnyInvocation)result).ExpectAny(true);
+			((IExpectAnyInvocation)result).ExpectAny();
 
 			return result;
         }

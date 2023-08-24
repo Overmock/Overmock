@@ -16,7 +16,7 @@
         [TestMethod]
 		public void StringPropertyToReturnTest()
 		{
-			Overmocked.Mock(_overmock, t => t.String)
+			Over.Overmock(_overmock, t => t.String)
 				.ToReturn("testing-name");
 
 			var test = _overmock.String;
@@ -27,7 +27,7 @@
 		[TestMethod]
 		public void ModelPropertyToReturnTest()
 		{
-			Overmocked.Mock(_overmock, t => t.Model)
+			Over.Overmock(_overmock, t => t.Model)
 				.ToReturn(_model1);
 
 			var test = _overmock.Model;
@@ -38,7 +38,7 @@
 		[TestMethod]
 		public void ListOfModelPropertyToReturnTest()
 		{
-            Overmocked.Mock(_overmock, t => t.ListOfModels)
+            Over.Overmock(_overmock, t => t.ListOfModels)
 				.ToReturn(_models);
 
 			var test = _overmock.ListOfModels;

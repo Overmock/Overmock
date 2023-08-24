@@ -15,18 +15,7 @@ namespace Overmock.Tests.OvermockedMock
         [TestInitialize]
         public void Initialize()
         {
-            _overmock = Overmocked.For<IMethodsWithNoParameters>();
+            _overmock = Over.MockInterface<IMethodsWithNoParameters>();
         }
-
-        //[TestMethod]
-        //public void MethodWith2Params()
-        //{
-        //    Overmocked.Mock(_overmock, p => p.BoolMethodWithNoParams())
-        //  .ToReturn(true);
-
-        //    var result = _overmock.BoolMethodWithNoParams();
-
-        //    Assert.IsTrue(result);
-        //}
     }
 }

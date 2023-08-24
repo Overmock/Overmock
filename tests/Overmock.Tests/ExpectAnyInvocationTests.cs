@@ -8,7 +8,7 @@ namespace Overmock.Tests
         [TestMethod]
         public void ExpectAnyInvocationOfTAllowsAnyInvocationOnAnyMemberOfANewOvermock()
         {
-            var overmock = Overmocked.ExpectAnyInvocation<IMethodsWithNoParameters>();
+            var overmock = Over.MockAnyInvocation<IMethodsWithNoParameters>();
 
             for (int i = 0; i < 10; i++)
             {
@@ -19,7 +19,7 @@ namespace Overmock.Tests
         [TestMethod]
         public void ExpectAnyInvocationOfTAllowsAnyInvocationOnAnyMemberOfAnExistingTarget()
         {
-            var overmock = Overmocked.ExpectAnyInvocation<IMethodsWithNoParameters>();
+            var overmock = Over.MockAnyInvocation<IMethodsWithNoParameters>();
 
 
             for (int i = 0; i < 10; i++)
@@ -31,7 +31,7 @@ namespace Overmock.Tests
         [TestMethod]
         public void ExpectAnyInvocationOfTAllowsAnyInvocationOnAnyMemberOfAnExistingOvermock()
         {
-            var overmock = Overmocked.ExpectAnyInvocation<IMethodsWithNoParameters>();
+            var overmock = Over.MockAnyInvocation<IMethodsWithNoParameters>();
 
             for (int i = 0; i < 10; i++)
             {

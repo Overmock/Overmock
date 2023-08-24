@@ -16,12 +16,12 @@ namespace Overmock.Tests
         [TestMethod]
         public void OvermockCallsSecondaryHandlerTest()
         {
-            var overmock = Overmocked.For<IMethodsWith2Parameters>(new TestInvocationHandler());
+            var overmock = Over.Mock<IMethodsWith2Parameters>(new TestInvocationHandler());
 
-            Overmocked.Mock(overmock, o => o.BoolMethodWithStringAndModel(Its.Any<string>(), Its.Any<Model>()))
+            Over.Mock(overmock, o => o.BoolMethodWithStringAndModel(Its.Any<string>(), Its.Any<Model>()))
                 .ToBeCalled();
 
-            var result = overmock.BoolMethodWithStringAndModel("hello", new Model { Id = 420 });
+            var result = overmock.Target.BoolMethodWithStringAndModel("hello", new Model { Id = 420 });
 
             Assert.IsTrue(result);
         }
@@ -29,18 +29,18 @@ namespace Overmock.Tests
         [TestMethod]
         public void OvermockCallsGlobalHandlerTest()
         {
-            Overmocked.Use(new TestInvocationHandler());
+            Over.Use(new TestInvocationHandler());
 
-			var overmock = Overmocked.For<IMethodsWith2Parameters>();
+			var overmock = Over.Mock<IMethodsWith2Parameters>();
 
-			Overmocked.Mock(overmock, o => o.BoolMethodWithStringAndModel(Its.Any<string>(), Its.Any<Model>()))
+            Over.Mock(overmock, o => o.BoolMethodWithStringAndModel(Its.Any<string>(), Its.Any<Model>()))
 				.ToBeCalled();
 
-			var result = overmock.BoolMethodWithStringAndModel("hello", new Model { Id = 420 });
+			var result = overmock.Target.BoolMethodWithStringAndModel("hello", new Model { Id = 420 });
 
             Assert.IsTrue(result);
 
-            Overmocked.Use(null);
+            Over.Use(null);
         }
 
         private class TestInvocationHandler : IInvocationHandler

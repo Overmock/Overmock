@@ -4,7 +4,6 @@ using System.Linq.Expressions;
 
 namespace Overmock
 {
-
 	/// <summary>
 	/// Contains extension methods used to override mocked members
 	/// </summary>
@@ -18,12 +17,12 @@ namespace Overmock
 		/// <param name="expression">The expression.</param>
 		/// <returns>ISetup&lt;T&gt;.</returns>
 		/// <exception cref="System.ArgumentException">Parameter must be a method call expression.</exception>
-		public static ISetup<T> Override<T>(this IOvermock<T> overmock, Expression<Action<T>> expression) where T : class
+		public static ISetup<T> Mock<T>(this IOvermock<T> overmock, Expression<Action<T>> expression) where T : class
 		{
 			if (expression.Body is MethodCallExpression methodCall)
 			{
 				return new SetupOvermock<T>(
-					Overmocked.RegisterMethod(overmock, new MethodCall<T>(methodCall))
+					Over.RegisterMethod(overmock, new MethodCall<T>(methodCall))
 				);
 			}
 
@@ -39,19 +38,19 @@ namespace Overmock
 		/// <param name="expression">The expression.</param>
 		/// <returns>ISetup&lt;T, TResult&gt;.</returns>
 		/// <exception cref="System.ArgumentException">Parameter must be a method or property call expression.</exception>
-		public static ISetup<T, TResult> Override<T, TResult>(this IOvermock<T> overmock, Expression<Func<T, TResult>> expression) where T : class
+		public static ISetup<T, TResult> Mock<T, TResult>(this IOvermock<T> overmock, Expression<Func<T, TResult>> expression) where T : class
 		{
 			if (expression.Body is MethodCallExpression method)
 			{
 				return new SetupOvermock<T, TResult>(
-					Overmocked.RegisterMethod(overmock, new MethodCall<T, TResult>(method))
+					Over.RegisterMethod(overmock, new MethodCall<T, TResult>(method))
 				);
 			}
 
 			if (expression.Body is MemberExpression property)
 			{
 				return new SetupOvermock<T, TResult>(
-					Overmocked.RegisterProperty(overmock, new PropertyCall<T, TResult>(property))
+					Over.RegisterProperty(overmock, new PropertyCall<T, TResult>(property))
 				);
 			}
 
@@ -67,19 +66,19 @@ namespace Overmock
         /// <param name="expression">The expression.</param>
         /// <returns>ISetup&lt;T, TResult&gt;.</returns>
         /// <exception cref="System.ArgumentException">Parameter must be a method or property call expression.</exception>
-        public static ISetupMocks<T, TResult> Mock<T, TResult>(this IOvermock<T> overmock, Expression<Func<T, TResult>> expression) where T : class where TResult : class
+        public static ISetupMocks<T, TResult> Overmock<T, TResult>(this IOvermock<T> overmock, Expression<Func<T, TResult>> expression) where T : class where TResult : class
         {
             if (expression.Body is MethodCallExpression method)
             {
                 return new SetupOvermockWithMockReturns<T, TResult>(
-                    Overmocked.RegisterMethod(overmock, new MethodCall<T, TResult>(method))
+                    Over.RegisterMethod(overmock, new MethodCall<T, TResult>(method))
                 );
             }
 
             if (expression.Body is MemberExpression property)
             {
                 return new SetupOvermockWithMockReturns<T, TResult>(
-                    Overmocked.RegisterProperty(overmock, new PropertyCall<T, TResult>(property))
+                    Over.RegisterProperty(overmock, new PropertyCall<T, TResult>(property))
                 );
             }
 

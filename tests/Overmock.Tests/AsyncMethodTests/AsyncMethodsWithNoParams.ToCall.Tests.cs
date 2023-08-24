@@ -5,7 +5,7 @@
 		[TestMethod]
 		public async Task AsyncMethodWithNoParamsToCallTest()
 		{
-			_overmock.Override(a  => a.ReturnsTask())
+			_overmock.Mock(a  => a.ReturnsTask())
 				.ToCall(c => Task.CompletedTask);
 
 			var overmock = _overmock.Target;
@@ -16,7 +16,7 @@
 		[TestMethod]
 		public async Task AsyncBoolMethodWithNoParamsToCallTest()
 		{
-			_overmock.Override(a => a.ReturnsTaskOfBoolWithNoParams())
+			_overmock.Mock(a => a.ReturnsTaskOfBoolWithNoParams())
 				.ToCall(c => Task.FromResult(true));
 
 			var overmock = _overmock.Target;

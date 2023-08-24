@@ -9,8 +9,8 @@ namespace Overmock.Tests
         [TestMethod]
 		public void ProxyCallsMethodWithParametersToReturn()
 		{
-			var overmock = Overmocked.Overmock<IInterfaceWithBothMethodsAndProperties>();
-			overmock.Override(t => t.MethodWithReturn(Its.Any<string>()))
+			var overmock = Over.Mock<IInterfaceWithBothMethodsAndProperties>();
+			overmock.Mock(t => t.MethodWithReturn(Its.Any<string>()))
 				.ToReturn(() => _helloWorld);
 
 			var actual = overmock.Target.MethodWithReturn(_helloWorld);
@@ -21,8 +21,8 @@ namespace Overmock.Tests
         [TestMethod]
         public void ProxyCallsDoSomethingToBeCalled()
         {
-            var overmock = Overmocked.Overmock<IInterfaceWithBothMethodsAndProperties>();
-            overmock.Override(t => t.DoSomething(Its.Any<string>()))
+            var overmock = Over.Mock<IInterfaceWithBothMethodsAndProperties>();
+            overmock.Mock(t => t.DoSomething(Its.Any<string>()))
                 .ToBeCalled();
 
             overmock.Target.DoSomething(_helloWorld);
@@ -35,8 +35,8 @@ namespace Overmock.Tests
         {
             var exception = new Exception("fail");
 
-            var overmock = Overmocked.Overmock<IInterfaceWithBothMethodsAndProperties>();
-            overmock.Override(t => t.MethodWithReturn(Its.Any<string>()))
+            var overmock = Over.Mock<IInterfaceWithBothMethodsAndProperties>();
+            overmock.Mock(t => t.MethodWithReturn(Its.Any<string>()))
                 .ToThrow(exception);
 
             try
