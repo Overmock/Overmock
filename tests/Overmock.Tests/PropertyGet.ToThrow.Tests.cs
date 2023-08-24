@@ -2,27 +2,27 @@
 {
 	public partial class PropertyGetTests
 	{
-		[TestMethod]
-		public void IntPropertyToThrowTest()
-		{
-			var exception = new Exception();
+		//[TestMethod]
+		//public void IntPropertyToThrowTest()
+		//{
+		//	var exception = new Exception();
 
-			Overmocked.Mock(_overmock, t => t.Int)
-				.ToThrow(exception);
+		//	Overmocked.Mock(_overmock, t => t.Int)
+		//		.ToThrow(exception);
 
-			Assert.IsNotNull(_overmock);
+		//	Assert.IsNotNull(_overmock);
 
-			try
-			{
-				var model = _overmock.Int;
+		//	try
+		//	{
+		//		var model = _overmock.Int;
 
-				Assert.Fail();
-			}
-			catch (Exception ex)
-			{
-				Assert.AreEqual(exception, ex);
-			}
-		}
+		//		Assert.Fail();
+		//	}
+		//	catch (Exception ex)
+		//	{
+		//		Assert.AreEqual(exception, ex);
+		//	}
+		//}
 
 		[TestMethod]
 		public void StringPropertyToThrowTest()

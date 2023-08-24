@@ -10,12 +10,12 @@ namespace Overmock.Tests
 		private readonly Model _model2 = new Model();
 		private readonly List<Model> _models = new List<Model>();
 
-		private IOvermock<IMethodsWithNoParameters> _testInterface = null!;
+		private IOvermock<IMethodsWithNoParameters> _overmock = null!;
 
 		[TestInitialize]
 		public void Initialize()
 		{
-            _testInterface = Overmocked.Overmock<IMethodsWithNoParameters>();
+            _overmock = Overmocked.Overmock<IMethodsWithNoParameters>();
 		}
 
 		[TestMethod]

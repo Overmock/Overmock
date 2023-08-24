@@ -1,5 +1,6 @@
 ﻿using Kimono;
 using Kimono.Interceptors;
+using Kimono.Proxies;
 using Overmock.Mocking;
 using Overmock.Mocking.Internal;
 using System;
@@ -42,6 +43,30 @@ namespace Overmock
                 : (Interceptor<T>)new HandlersInterceptor<T>(new[] { _invocationHandler, handler });
 
             Overmocked.Register(this);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="target"></param>
+        internal Overmock(T target)
+        {
+            _invocationHandler = new OvermockInstanceInvocationHandler(() => _overrideAll, _methods.ToArray, _properties.ToArray);
+
+            if (Type.IsSealed || Type.IsEnum)
+            {
+                throw new InvalidOperationException($"Type '{Type.Name}' cannot be a sealed class or enum.");
+            }
+
+            //if (typeof(T).Implements<IProxy>())
+            //{
+
+            //}
+
+            if (target is IProxy proxy)
+            {
+                _interceptor = (Interceptor<T>)proxy.Interceptor;
+            }
         }
 
         /// <summary>

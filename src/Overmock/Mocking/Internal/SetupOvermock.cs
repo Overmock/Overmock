@@ -89,7 +89,7 @@ namespace Overmock
 	/// <typeparam name="TReturn">The type of the t return.</typeparam>
 	/// <seealso cref="Overmock.SetupOvermock" />
 	/// <seealso cref="Overmock.ISetup{T, TReturn}" />
-	internal sealed class SetupOvermock<T, TReturn> : SetupOvermock, ISetup<T, TReturn> where T : class
+	internal class SetupOvermock<T, TReturn> : SetupOvermock, ISetup<T, TReturn> where T : class
     {
 		/// <summary>
 		/// The returnable
@@ -130,6 +130,28 @@ namespace Overmock
 		void ISetupReturn<TReturn>.ToReturn(Func<TReturn> returnProvider)
         {
             _returnable.Returns(returnProvider);
+        }
+    }
+
+    internal sealed class SetupOvermockWithMockReturns<T, TReturn> : SetupOvermock<T, TReturn>, ISetupMocks<T, TReturn> where T : class where TReturn : class
+    {
+        internal SetupOvermockWithMockReturns(IReturnable<TReturn> returnable) : base(returnable)
+        {
+        }
+
+        IOvermock<TReturn> ISetupReturnMocks<TReturn>.ToReturnMock()
+        {
+            throw new NotImplementedException();
+        }
+
+        IOvermock<TReturn> ISetupReturnMocks<TReturn>.ToReturnMock<TMock>()
+        {
+            throw new NotImplementedException();
+        }
+
+        IOvermock<TReturn> ISetupReturnMocks<TReturn>.ToReturnMock<TMock>(IOvermock<TMock> overmock)
+        {
+            return overmock.As<TReturn>();
         }
     }
 }

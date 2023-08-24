@@ -7,10 +7,10 @@ namespace Overmock.Tests
 		{
 			var called = false;
 
-			_testInterface.Override(t => t.VoidMethodWithNoParams())
+			_overmock.Override(t => t.VoidMethodWithNoParams())
 				.ToCall(c => called = true);
 
-			var target = _testInterface.Target;
+			var target = _overmock.Target;
 
 			Assert.IsNotNull(target);
 
@@ -24,10 +24,10 @@ namespace Overmock.Tests
 		{
 			var called = false;
 
-			_testInterface.Override(t => t.BoolMethodWithNoParams())
+			_overmock.Override(t => t.BoolMethodWithNoParams())
 				.ToCall(c => called = true);
 
-			var target = _testInterface.Target;
+			var target = _overmock.Target;
 
 			Assert.IsNotNull(target);
 
@@ -41,10 +41,10 @@ namespace Overmock.Tests
 		{
 			var called = false;
 
-			_testInterface.Override(t => t.ModelMethodWithNoParams())
+			_overmock.Override(t => t.ModelMethodWithNoParams())
 				.ToCall(c => called = true);
 
-			var target = _testInterface.Target;
+			var target = _overmock.Target;
 
 			Assert.IsNotNull(target);
 
@@ -58,10 +58,10 @@ namespace Overmock.Tests
 		{
 			var called = false;
 
-			_testInterface.Override(t => t.ListOfModelMethodWithNoParams())
+			_overmock.Override(t => t.ListOfModelMethodWithNoParams())
 				.ToCall(c => called = true);
 
-			var target = _testInterface.Target;
+			var target = _overmock.Target;
 
 			Assert.IsNotNull(target);
 

@@ -7,10 +7,10 @@ namespace Overmock.Tests
 		{
 			var exception = new Exception();
 
-			_testInterface.Override(t => t.VoidMethodWithNoParams())
+			_overmock.Override(t => t.VoidMethodWithNoParams())
 				.ToThrow(exception);
 
-			var target = _testInterface.Target;
+			var target = _overmock.Target;
 
 			Assert.IsNotNull(target);
 
@@ -31,10 +31,10 @@ namespace Overmock.Tests
 		{
 			var exception = new Exception();
 
-			_testInterface.Override(t => t.BoolMethodWithNoParams())
+			_overmock.Override(t => t.BoolMethodWithNoParams())
 				.ToThrow(exception);
 
-			var target = _testInterface.Target;
+			var target = _overmock.Target;
 
 			Assert.IsNotNull(target);
 
@@ -55,10 +55,10 @@ namespace Overmock.Tests
 		{
 			var exception = new Exception();
 
-			_testInterface.Override(t => t.ModelMethodWithNoParams())
+			_overmock.Override(t => t.ModelMethodWithNoParams())
 				.ToThrow(exception);
 
-			var target = _testInterface.Target;
+			var target = _overmock.Target;
 
 			Assert.IsNotNull(target);
 
@@ -79,10 +79,10 @@ namespace Overmock.Tests
 		{
 			var exception = new Exception();
 
-			_testInterface.Override(t => t.ListOfModelMethodWithNoParams())
+			_overmock.Override(t => t.ListOfModelMethodWithNoParams())
 				.ToThrow(exception);
 
-			var target = _testInterface.Target;
+			var target = _overmock.Target;
 
 			Assert.IsNotNull(target);
 

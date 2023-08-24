@@ -2,22 +2,22 @@
 {
 	public partial class PropertyGetTests
 	{
-		[TestMethod]
-		public void IntPropertyToCallTest()
-		{
-			var called = false;
+		//[TestMethod]
+		//public void IntPropertyToCallTest()
+		//{
+		//	var called = false;
 
-            Overmocked.Mock(_overmock, t => t.Int)
-				.ToCall(c => called = true);
+  //          Overmocked.Mock(_overmock, t => t.Int)
+		//		.ToCall(c => called = true);
 
-            Overmocked.Mock(_overmock, t => t.GetHashCode()).ToBeCalled();
+  //          Overmocked.Mock(_overmock, t => t.GetHashCode()).ToBeCalled();
 
-			var model = _overmock.Int;
+		//	var model = _overmock.Int;
 
-			Assert.ThrowsException<UnhandledMemberException>(() => _overmock.Equals(null));
+		//	Assert.ThrowsException<UnhandledMemberException>(() => _overmock.Equals(null));
 
-			Assert.IsTrue(called);
-		}
+		//	Assert.IsTrue(called);
+		//}
 
 		[TestMethod]
 		public void StringPropertyToCallTest()

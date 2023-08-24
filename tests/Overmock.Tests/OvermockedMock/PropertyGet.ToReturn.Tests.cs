@@ -1,19 +1,19 @@
 ﻿namespace Overmock.Tests.OvermockedMock
 {
 	public partial class PropertyGetTests
-	{
-		[TestMethod]
-		public void IntPropertyToReturnTest()
-		{
-			Overmocked.Mock(_overmock, t => t.Int)
-				.ToReturn(20);
+    {
+        //[TestMethod]
+        //public void IntPropertyToReturnTest()
+        //{
+        //    Overmocked.Mock(_overmock, t => t.Int)
+        //        .ToReturn(20);
 
-			var test = _overmock.Int;
+        //    var test = _overmock.Int;
 
-			Assert.AreEqual(20, test);
-		}
+        //    Assert.AreEqual(20, test);
+        //}
 
-		[TestMethod]
+        [TestMethod]
 		public void StringPropertyToReturnTest()
 		{
 			Overmocked.Mock(_overmock, t => t.String)

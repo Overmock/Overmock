@@ -1,9 +1,9 @@
 ﻿using Kimono;
+using Kimono.Proxies;
 using Overmock.Mocking;
-using System;
 using System.Collections.Concurrent;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Threading;
 
 namespace Overmock
@@ -11,7 +11,7 @@ namespace Overmock
     /// <summary>
     /// Contains methods used for configuring an overmock.
     /// </summary>
-    public static class Overmocked
+    public  static partial class Overmocked
 	{
 		private static readonly ConcurrentQueue<IOvermock> _overmocks = new ConcurrentQueue<IOvermock>();
         
@@ -33,116 +33,6 @@ namespace Overmock
             Interlocked.Exchange(ref _invocationHandler, handler);
         }
 
-		/// <summary>
-		/// Signals the Overmock to expect any invocation.
-		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <returns>IOvermock&lt;T&gt;.</returns>
-		public static IOvermock<T> ExpectAnyInvocation<T>() where T : class
-		{
-			var result = new Overmock<T>();
-
-			((IExpectAnyInvocation)result).ExpectAny(true);
-
-			return result;
-		}
-
-		/// <summary>
-		/// Sets up the specified <typeparamref name="T" /> type with overmock using the constructor arguments.
-		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <returns>An object used to configure overmocks</returns>
-		public static IOvermock<T> Overmock<T>() where T : class
-		{
-            return new Overmock<T>(_invocationHandler);
-        }
-
-        /// <summary>
-        /// Returns an overmocked <typeparamref name="T" />.
-        /// </summary>
-        /// <typeparam name="T">The type of interface.</typeparam>
-        /// <param name="secondaryHandler">The secondary handler.</param>
-        /// <returns>The overmocked <typeparamref name="T" />.</returns>
-        public static T For<T>(IInvocationHandler? secondaryHandler = null) where T : class
-		{
-			return new Overmock<T>(secondaryHandler ?? _invocationHandler);
-        }
-
-        /// <summary>
-        /// Fors the specified target.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="target">The target.</param>
-        /// <param name="given">The use.</param>
-        /// <returns>ISetup&lt;T&gt;.</returns>
-        public static ISetup<T> Mock<T>(T target, Expression<Action<T>> given) where T : class
-        {
-            Overmock<T>? overmock = null;
-
-            if (target is Overmock<T> mock)
-            {
-                overmock = mock;
-            }
-
-            if (IsRegistered(target))
-            {
-                overmock = (Overmock<T>)GetRegistration(target)!;
-            }
-
-            return (overmock ??= new Overmock<T>(_invocationHandler))
-                .Override(given);
-        }
-
-        /// <summary>
-        /// Fors the specified target.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <typeparam name="TReturn">The type of the t return.</typeparam>
-        /// <param name="target">The target.</param>
-        /// <param name="given">The use.</param>
-        /// <returns>ISetup&lt;T&gt;.</returns>
-        public static ISetup<T, TReturn> Mock<T, TReturn>(T target, Expression<Func<T, TReturn>> given) where T : class
-        {
-            Overmock<T>? overmock = null;
-
-            if (IsRegistered(target))
-            {
-                overmock = (Overmock<T>)GetRegistration(target)!;
-            }
-
-            if (overmock is null)
-            {
-                overmock = new Overmock<T>();
-            }
-
-            return overmock.Override(given);
-        }
-
-        /// <summary>
-        /// Fors the specified target.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="overmock">The overmock.</param>
-        /// <param name="given">The use.</param>
-        /// <returns>ISetup&lt;T&gt;.</returns>
-        public static ISetup<T> Mock<T>(IOvermock<T> overmock, Expression<Action<T>> given) where T : class
-        {
-            return overmock.Override(given);
-        }
-
-        /// <summary>
-        /// Fors the specified target.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <typeparam name="TReturn">The type of the t return.</typeparam>
-        /// <param name="overmock">The overmock.</param>
-        /// <param name="given">The use.</param>
-        /// <returns>ISetup&lt;T&gt;.</returns>
-        public static ISetup<T, TReturn> Mock<T, TReturn>(IOvermock<T> overmock, Expression<Func<T, TReturn>> given) where T : class
-        {
-            return overmock.Override(given);
-        }
-
         /// <summary>
         /// Verifies the mocks setup behave as expected.
         /// </summary>
@@ -154,7 +44,34 @@ namespace Overmock
             }
         }
 
-		internal static void Register<T>(IOvermock<T> overmock) where T : class
+        internal static Overmock<T> GetOvermock<T>([NotNull]T target) where T : class
+        {
+            Overmock<T>? overmock = null;
+
+            if (target is Overmock<T> mock)
+            {
+                return mock;
+            }
+
+            if (IsRegistered(target))
+            {
+                overmock = (Overmock<T>)GetRegistration(target)!;
+            }
+
+            if (typeof(T).Implements<IProxy>())
+            {
+                throw new KimonoException($"{typeof(T)} must be one of ({nameof(IOvermock<T>.Target)}, {nameof(IOvermock<T>)})");
+            }
+
+            if (overmock is null)
+            {
+                throw new KimonoException($"{typeof(T)} cannot be used as an overmock.");
+            }
+
+            return overmock;
+        }
+
+        internal static void Register<T>(IOvermock<T> overmock) where T : class
         {
             _overmocks.Enqueue(overmock);
         }
