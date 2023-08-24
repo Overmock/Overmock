@@ -6,7 +6,7 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/src/Overmock.Benchmarks/bin/Debug/.net7.0/Overmock.Benchmarks.dll>",
+            "program": "${workspaceFolder}/tests/Overmock.Benchmarks/bin/Debug/.net7.0/Overmock.Benchmarks.dll>",
             "args": [],
             "cwd": "${workspaceFolder}",
             "stopAtEntry": false,
