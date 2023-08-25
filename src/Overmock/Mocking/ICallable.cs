@@ -17,10 +17,10 @@ namespace Overmock.Mocking
 
     /// <summary>
     /// Interface ICallable
-    /// Extends the <see cref="Overmock.Mocking.ICallable" />
+    /// Extends the <see cref="ICallable" />
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    /// <seealso cref="Overmock.Mocking.ICallable" />
+    /// <seealso cref="ICallable" />
     public interface ICallable<T> : ICallable
     {
     }

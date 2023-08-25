@@ -1,5 +1,6 @@
 ﻿using Kimono.Proxies;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
@@ -8,27 +9,26 @@ namespace Kimono.Internal
 {
     internal class ProxyMemberFactory
     {
-        private readonly IMethodDelegateFactory _delegateDelegateGenerator;
+        private readonly IDelegateFactory _delegateDelegateGenerator;
 
-        public ProxyMemberFactory(IMethodDelegateFactory? delegateDelegateGenerator = null)
+        public ProxyMemberFactory(IDelegateFactory? delegateDelegateGenerator = null)
         {
-            _delegateDelegateGenerator = delegateDelegateGenerator ?? ProxyFactoryProvider.DelegateFactory;
+            _delegateDelegateGenerator = delegateDelegateGenerator ?? FactoryProvider.DelegateFactory;
         }
 
-        protected IMethodDelegateFactory DelegateFactory => _delegateDelegateGenerator;
+        protected IDelegateFactory DelegateFactory => _delegateDelegateGenerator;
 
         /// <summary>
         /// Creates the method.
         /// </summary>
         /// <param name="context">The context.</param>
         /// <param name="methodInfo">The method information.</param>
+        /// <param name="parameters"></param>
         /// <param name="methodId">The method identifier.</param>
         /// <returns>MethodBuilder.</returns>
-        protected static MethodBuilder CreateMethod(IProxyContextBuilder context, MethodInfo methodInfo, int methodId)
+        protected static MethodBuilder CreateMethod(IProxyContextBuilder context, MethodInfo methodInfo, IReadOnlyList<RuntimeParameter> parameters, int methodId)
         {
-            var parameterTypes = methodInfo.GetParameters()
-                .Select(p => p.ParameterType).ToArray();
-
+            var parameterTypes = parameters.Select(p => p.Type).ToArray();
             var methodBuilder = context.TypeBuilder.DefineMethod(
                 methodInfo.Name,
                 methodInfo.IsAbstract

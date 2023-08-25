@@ -4,12 +4,12 @@ namespace Overmock
 {
     /// <summary>
     /// Class Value.
-    /// Implements the <see cref="System.IEquatable{T}" />
-    /// Implements the <see cref="Overmock.IFluentInterface" />
+    /// Implements the <see cref="IEquatable{T}" />
+    /// Implements the <see cref="IFluentInterface" />
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    /// <seealso cref="System.IEquatable{T}" />
-    /// <seealso cref="Overmock.IFluentInterface" />
+    /// <seealso cref="IEquatable{T}" />
+    /// <seealso cref="IFluentInterface" />
     public abstract class Value<T> : IEquatable<T>, IFluentInterface
     {
         /// <inheritdoc />
@@ -57,10 +57,10 @@ namespace Overmock
 
     /// <summary>
     /// Interface IAny
-    /// Extends the <see cref="Overmock.IFluentInterface" />
+    /// Extends the <see cref="IFluentInterface" />
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    /// <seealso cref="Overmock.IFluentInterface" />
+    /// <seealso cref="IFluentInterface" />
     public interface IAny<T> : IFluentInterface
     {
         /// <summary>
@@ -106,7 +106,7 @@ namespace Overmock
         /// </summary>
         /// <param name="other">The other.</param>
         /// <returns><c>true</c> if XXXX, <c>false</c> otherwise.</returns>
-        /// <exception cref="System.NotImplementedException"></exception>
+        /// <exception cref="NotImplementedException"></exception>
         public override bool Equals(T other)
         {
             return true;
@@ -145,26 +145,26 @@ namespace Overmock
 
     /// <summary>
     /// Interface IAm
-    /// Extends the <see cref="Overmock.IAny{T}" />
-    /// Extends the <see cref="Overmock.IFluentInterface" />
+    /// Extends the <see cref="IAny{T}" />
+    /// Extends the <see cref="IFluentInterface" />
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    /// <seealso cref="Overmock.IAny{T}" />
-    /// <seealso cref="Overmock.IFluentInterface" />
+    /// <seealso cref="IAny{T}" />
+    /// <seealso cref="IFluentInterface" />
     public interface IAm<T> : IAny<T>, IFluentInterface
     {
     }
 
     /// <summary>
     /// Class This.
-    /// Implements the <see cref="Overmock.Any{T}" />
-    /// Implements the <see cref="Overmock.IAm{T}" />
-    /// Implements the <see cref="System.IEquatable{T}" />
+    /// Implements the <see cref="Any{T}" />
+    /// Implements the <see cref="IAm{T}" />
+    /// Implements the <see cref="IEquatable{T}" />
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    /// <seealso cref="Overmock.Any{T}" />
-    /// <seealso cref="Overmock.IAm{T}" />
-    /// <seealso cref="System.IEquatable{T}" />
+    /// <seealso cref="Any{T}" />
+    /// <seealso cref="IAm{T}" />
+    /// <seealso cref="IEquatable{T}" />
     public class This<T> : Any<T>, IAm<T>, IEquatable<T>
     {
         /// <summary>

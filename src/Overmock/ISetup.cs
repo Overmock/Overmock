@@ -27,12 +27,17 @@ namespace Overmock
 
     /// <summary>
     /// Interface ISetup
-    /// Extends the <see cref="Overmock.ISetup" />
+    /// Extends the <see cref="ISetup" />
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    /// <seealso cref="Overmock.ISetup" />
-    public interface ISetup<in T> : ISetup where T : class
+    /// <seealso cref="ISetup" />
+    public interface ISetup<T> : ISetup where T : class
     {
+        /// <summary>
+        /// The current item being mocked.
+        /// </summary>
+        IOvermock<T> Overmock { get; }
+
         /// <summary>
         /// Converts to call.
         /// </summary>
@@ -49,14 +54,14 @@ namespace Overmock
 
     /// <summary>
     /// Interface ISetup
-    /// Extends the <see cref="Overmock.ISetup{T}" />
-    /// Extends the <see cref="Overmock.ISetupReturn{TReturn}" />
+    /// Extends the <see cref="ISetup{T}" />
+    /// Extends the <see cref="ISetupReturn{TReturn}" />
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <typeparam name="TReturn">The type of the t return.</typeparam>
-    /// <seealso cref="Overmock.ISetup{T}" />
-    /// <seealso cref="Overmock.ISetupReturn{TReturn}" />
-    public interface ISetup<in T, TReturn> : ISetup<T>, ISetupReturn<TReturn> where T : class
+    /// <seealso cref="ISetup{T}" />
+    /// <seealso cref="ISetupReturn{TReturn}" />
+    public interface ISetup<T, TReturn> : ISetup<T>, ISetupReturn<TReturn> where T : class
     {
         /// <summary>
         /// Converts to call.
@@ -83,7 +88,7 @@ namespace Overmock
     /// <seealso cref="ISetup{T}" />
     /// <seealso cref="ISetupReturn{TReturn}" />
     /// <seealso cref="ISetupReturnMocks{TReturn}" />
-    public interface ISetupMocks<in T, TReturn> : ISetup<T, TReturn>, ISetupReturnMocks<TReturn> where T : class where TReturn : class
+    public interface ISetupMocks<T, TReturn> : ISetup<T, TReturn>, ISetupReturnMocks<TReturn> where T : class where TReturn : class
     {
     }
 }

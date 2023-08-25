@@ -99,7 +99,7 @@ namespace Kimono
         protected Interceptor(T? target = null, IProxyFactory? factory = null) : base(typeof(T))
         {
             _target = target;
-            _factory = factory ?? ProxyFactoryProvider.Proxy(this);
+            _factory = factory ?? FactoryProvider.Proxy(this);
         }
 
         /// <summary>

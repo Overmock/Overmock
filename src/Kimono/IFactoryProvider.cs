@@ -5,7 +5,7 @@ namespace Kimono
     /// <summary>
     /// Interface IProxyFactoryProvider
     /// </summary>
-    public interface IProxyFactoryProvider
+    public interface IFactoryProvider
     {
         /// <summary>
         /// Provides the specified interceptor.

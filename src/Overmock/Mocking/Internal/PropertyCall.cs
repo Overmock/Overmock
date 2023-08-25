@@ -5,13 +5,13 @@ namespace Overmock.Mocking.Internal
 {
     /// <summary>
     /// Class PropertyCall.
-    /// Implements the <see cref="Overmock.Mocking.Internal.Returnable{T, TReturn}" />
-    /// Implements the <see cref="Overmock.Mocking.IPropertyCall{T, TReturn}" />
+    /// Implements the <see cref="Returnable{T, TReturn}" />
+    /// Implements the <see cref="IPropertyCall{T, TReturn}" />
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <typeparam name="TReturn">The type of the t return.</typeparam>
-    /// <seealso cref="Overmock.Mocking.Internal.Returnable{T, TReturn}" />
-    /// <seealso cref="Overmock.Mocking.IPropertyCall{T, TReturn}" />
+    /// <seealso cref="Returnable{T, TReturn}" />
+    /// <seealso cref="IPropertyCall{T, TReturn}" />
     internal sealed class PropertyCall<T, TReturn> : Returnable<T, TReturn>, IPropertyCall<T, TReturn>
     {
         /// <summary>

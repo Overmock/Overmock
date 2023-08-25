@@ -4,7 +4,7 @@ namespace Overmock
     /// <summary>
     /// Contains methods used for configuring an overmock.
     /// </summary>
-    public static partial class Over
+    public static partial class Overmock
     {
         /// <summary>
         /// Signals the Overmock to expect any invocation.

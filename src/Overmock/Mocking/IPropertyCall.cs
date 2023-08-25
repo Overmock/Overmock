@@ -5,9 +5,9 @@ namespace Overmock.Mocking
 {
     /// <summary>
     /// Interface IPropertyCall
-    /// Extends the <see cref="Overmock.Mocking.ICallable" />
+    /// Extends the <see cref="ICallable" />
     /// </summary>
-    /// <seealso cref="Overmock.Mocking.ICallable" />
+    /// <seealso cref="ICallable" />
     public interface IPropertyCall : ICallable
     {
         /// <summary>
@@ -25,13 +25,13 @@ namespace Overmock.Mocking
 
     /// <summary>
     /// Interface IPropertyCall
-    /// Extends the <see cref="Overmock.Mocking.IPropertyCall" />
-    /// Extends the <see cref="Overmock.Mocking.IReturnable{TReturn}" />
+    /// Extends the <see cref="IPropertyCall" />
+    /// Extends the <see cref="IReturnable{TReturn}" />
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <typeparam name="TReturn">The type of the t return.</typeparam>
-    /// <seealso cref="Overmock.Mocking.IPropertyCall" />
-    /// <seealso cref="Overmock.Mocking.IReturnable{TReturn}" />
+    /// <seealso cref="IPropertyCall" />
+    /// <seealso cref="IReturnable{TReturn}" />
     public interface IPropertyCall<T, TReturn> : IPropertyCall, IReturnable<TReturn>
     {
     }

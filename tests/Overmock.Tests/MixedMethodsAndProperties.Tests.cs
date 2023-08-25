@@ -10,7 +10,7 @@ namespace Overmock.Tests
         {
             var called = false;
 
-            var overmock = Over.Mock<IInterfaceWithBothMethodsAndProperties>();
+            var overmock = Overmock.Mock<IInterfaceWithBothMethodsAndProperties>();
             overmock.Mock(t => t.MethodWithReturn(Its.Any<string>()))
                 .ToCall(c => {
                     called = true;

@@ -11,7 +11,7 @@ namespace Kimono
     {
         private readonly IProxyMember _proxiedMember;
         private readonly List<RuntimeParameter> _parameters;
-        private IMethodDelegateInvoker? _methodInvoker;
+        private IDelegateInvoker? _methodInvoker;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RuntimeContext" /> class.
@@ -48,7 +48,7 @@ namespace Kimono
             return _parameters;
         }
 
-        internal void UseMethodInvoker(IMethodDelegateInvoker methodInvoker)
+        internal void UseMethodInvoker(IDelegateInvoker methodInvoker)
         {
             _methodInvoker = methodInvoker;
         }
@@ -63,7 +63,7 @@ namespace Kimono
             return new InvocationContext(this, interceptor, _parameters.ToArray(), parameters);
         }
 
-        internal IMethodDelegateInvoker GetMethodInvoker()
+        internal IDelegateInvoker GetMethodInvoker()
         {
             return _methodInvoker ?? new MethodInfoDelegateInvoker(ProxiedMember.Method);
         }

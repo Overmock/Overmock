@@ -5,13 +5,13 @@ namespace Overmock.Mocking.Internal
 {
     /// <summary>
     /// Class Returnable.
-    /// Implements the <see cref="Overmock.Mocking.Internal.Callable" />
-    /// Implements the <see cref="Overmock.Mocking.IReturnable{TReturn}" />
+    /// Implements the <see cref="Callable" />
+    /// Implements the <see cref="IReturnable{TReturn}" />
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <typeparam name="TReturn">The type of the t return.</typeparam>
-    /// <seealso cref="Overmock.Mocking.Internal.Callable" />
-    /// <seealso cref="Overmock.Mocking.IReturnable{TReturn}" />
+    /// <seealso cref="Callable" />
+    /// <seealso cref="IReturnable{TReturn}" />
     internal abstract class Returnable<T, TReturn> : Callable, IReturnable<TReturn>
     {
         protected Returnable(string name) : base(name)
@@ -46,6 +46,9 @@ namespace Overmock.Mocking.Internal
             Override = new MethodCallOverride(Times.Any, new Func<OvermockContext, object?>(c => func()));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         protected override void Verify()
         {
             var overrides = GetOverrides();

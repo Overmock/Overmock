@@ -1,6 +1,8 @@
 ﻿using Kimono.Proxies;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Reflection;
 
 namespace Kimono
@@ -104,6 +106,11 @@ namespace Kimono
             ProxyContextType,
             IInterceptorType
         };
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public static readonly IReadOnlyList<RuntimeParameter> EmptyRuntimParametersList = Array.Empty<RuntimeParameter>().ToList();
 
         /// <summary>
         /// The disposable type

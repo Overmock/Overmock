@@ -5,9 +5,9 @@ namespace Overmock
 {
     /// <summary>
     /// Class SetupOvermock.
-    /// Implements the <see cref="Overmock.ISetup" />
+    /// Implements the <see cref="ISetup" />
     /// </summary>
-    /// <seealso cref="Overmock.ISetup" />
+    /// <seealso cref="ISetup" />
     internal class SetupOvermock : ISetup
     {
         /// <summary>
@@ -63,47 +63,61 @@ namespace Overmock
     }
     /// <summary>
     /// Class SetupOvermock.
-    /// Implements the <see cref="Overmock.SetupOvermock" />
-    /// Implements the <see cref="Overmock.ISetup{T}" />
+    /// Implements the <see cref="SetupOvermock" />
+    /// Implements the <see cref="ISetup{T}" />
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    /// <seealso cref="Overmock.SetupOvermock" />
-    /// <seealso cref="Overmock.ISetup{T}" />
+    /// <seealso cref="SetupOvermock" />
+    /// <seealso cref="ISetup{T}" />
     internal sealed class SetupOvermock<T> : SetupOvermock, ISetup<T> where T : class
     {
+        private readonly IOvermock<T> _overmock;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="SetupOvermock{T}"/> class.
         /// </summary>
+        /// <param name="overmock"></param>
         /// <param name="callable">The callable.</param>
-        internal SetupOvermock(ICallable<T> callable) : base(callable)
+        internal SetupOvermock(IOvermock<T> overmock, ICallable<T> callable) : base(callable)
         {
+            _overmock = overmock;
         }
+
+        /// <summary>
+        /// /
+        /// </summary>
+        public IOvermock<T> Overmock => _overmock;
     }
 
     /// <summary>
     /// Class SetupOvermock. This class cannot be inherited.
-    /// Implements the <see cref="Overmock.SetupOvermock" />
-    /// Implements the <see cref="Overmock.ISetup{T, TReturn}" />
+    /// Implements the <see cref="SetupOvermock" />
+    /// Implements the <see cref="ISetup{T, TReturn}" />
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <typeparam name="TReturn">The type of the t return.</typeparam>
-    /// <seealso cref="Overmock.SetupOvermock" />
-    /// <seealso cref="Overmock.ISetup{T, TReturn}" />
+    /// <seealso cref="SetupOvermock" />
+    /// <seealso cref="ISetup{T, TReturn}" />
     internal class SetupOvermock<T, TReturn> : SetupOvermock, ISetup<T, TReturn> where T : class
     {
-        /// <summary>
-        /// The returnable
-        /// </summary>
         private readonly IReturnable<TReturn> _returnable;
+        private readonly IOvermock<T> _overmock;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SetupOvermock{T, TReturn}"/> class.
         /// </summary>
+        /// <param name="overmock"></param>
         /// <param name="returnable">The returnable.</param>
-        internal SetupOvermock(IReturnable<TReturn> returnable) : base(returnable)
+        internal SetupOvermock(IOvermock<T> overmock, IReturnable<TReturn> returnable) : base(returnable)
         {
+            _overmock = overmock;
             _returnable = returnable;
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public IOvermock<T> Overmock => _overmock;
 
         /// <inheritdoc />
         public void ToCall(Func<OvermockContext, TReturn> callback)
@@ -135,7 +149,7 @@ namespace Overmock
 
     internal sealed class SetupOvermockWithMockReturns<T, TReturn> : SetupOvermock<T, TReturn>, ISetupMocks<T, TReturn> where T : class where TReturn : class
     {
-        internal SetupOvermockWithMockReturns(IReturnable<TReturn> returnable) : base(returnable)
+        internal SetupOvermockWithMockReturns(IOvermock<T> overmock, IReturnable<TReturn> returnable) : base(overmock, returnable)
         {
         }
 

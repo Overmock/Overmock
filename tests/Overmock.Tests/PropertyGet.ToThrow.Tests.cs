@@ -29,12 +29,12 @@
         {
             var exception = new Exception();
 
-            Over.Overmock(_overmock, t => t.String)
+            Overmock.OverMock(_overmock, t => t.String)
                 .ToThrow(exception);
 
             try
             {
-                var model = _overmock.String;
+                var model = _overmock.Target.String;
 
                 Assert.Fail();
             }
@@ -49,12 +49,12 @@
         {
             var exception = new Exception();
 
-            Over.Overmock(_overmock, t => t.Model)
+            Overmock.OverMock(_overmock, t => t.Model)
                 .ToThrow(exception);
 
             try
             {
-                var model = _overmock.Model;
+                var model = _overmock.Target.Model;
 
                 Assert.Fail();
             }
@@ -69,12 +69,12 @@
         {
             var exception = new Exception();
 
-            Over.Overmock(_overmock, t => t.ListOfModels)
+            Overmock.OverMock(_overmock, t => t.ListOfModels)
                 .ToThrow(exception);
 
             try
             {
-                var model = _overmock.ListOfModels;
+                var model = _overmock.Target.ListOfModels;
 
                 Assert.Fail();
             }

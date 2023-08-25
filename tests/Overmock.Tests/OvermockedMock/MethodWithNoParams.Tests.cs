@@ -15,7 +15,7 @@ namespace Overmock.Tests.OvermockedMock
         [TestInitialize]
         public void Initialize()
         {
-            _overmock = Over.MockInterface<IMethodsWithNoParameters>();
+            _overmock = Overmock.Interface<IMethodsWithNoParameters>();
         }
     }
 }

@@ -5,12 +5,12 @@ namespace Overmock.Mocking.Internal
 {
     /// <summary>
     /// Class MethodCall.
-    /// Implements the <see cref="Overmock.Mocking.Internal.Callable{T}" />
-    /// Implements the <see cref="Overmock.Mocking.IMethodCall{T}" />
+    /// Implements the <see cref="Callable{T}" />
+    /// Implements the <see cref="IMethodCall{T}" />
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    /// <seealso cref="Overmock.Mocking.Internal.Callable{T}" />
-    /// <seealso cref="Overmock.Mocking.IMethodCall{T}" />
+    /// <seealso cref="Callable{T}" />
+    /// <seealso cref="IMethodCall{T}" />
     internal sealed class MethodCall<T> : Callable<T>, IMethodCall<T> where T : class
     {
         /// <summary>

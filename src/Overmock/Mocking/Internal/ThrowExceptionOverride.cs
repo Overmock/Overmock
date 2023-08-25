@@ -5,9 +5,9 @@ namespace Overmock.Mocking.Internal
 {
     /// <summary>
     /// Class ThrowExceptionOverride.
-    /// Implements the <see cref="Overmock.Mocking.IOverride" />
+    /// Implements the <see cref="IOverride" />
     /// </summary>
-    /// <seealso cref="Overmock.Mocking.IOverride" />
+    /// <seealso cref="IOverride" />
     public class ThrowExceptionOverride : Verifiable, IOverride
     {
         private bool _thrownException;

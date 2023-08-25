@@ -48,8 +48,8 @@
         {
             var id = 22;
             var wasSaved = false;
-            var log = Over.MockAnyInvocation<ILog>();
-            var repository = Over.Mock<IRepository>();
+            var log = Overmock.MockAnyInvocation<ILog>();
+            var repository = Overmock.Mock<IRepository>();
 
             repository.Mock(r => r.Save(Its.Any<Model>())).ToCall(c => {
                 wasSaved = true;
@@ -66,8 +66,8 @@
         public void ThrowsExceptionWhenSaveFailsTest()
         {
             var expected = "Failed to save";
-            var log = Over.MockAnyInvocation<ILog>();
-            var repository = Over.Mock<IRepository>();
+            var log = Overmock.MockAnyInvocation<ILog>();
+            var repository = Overmock.Mock<IRepository>();
 
             repository.Mock(r => r.Save(Its.Any<Model>())).ToThrow(new Exception(expected));
 

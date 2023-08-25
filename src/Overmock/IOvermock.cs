@@ -53,7 +53,7 @@ namespace Overmock
     /// Represents a mocked type who's members can be overridden.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    /// <seealso cref="Overmock.Mocking.IVerifiable" />
+    /// <seealso cref="IVerifiable" />
     public interface IOvermock<T> : IVerifiable<T>, IOvermock where T : class
     {
         /// <summary>

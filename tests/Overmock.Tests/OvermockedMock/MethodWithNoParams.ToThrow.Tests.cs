@@ -7,7 +7,7 @@ namespace Overmock.Tests.OvermockedMock
         {
             var exception = new Exception();
 
-            Over.Mock(_overmock, t => t.VoidMethodWithNoParams())
+            Overmock.Mock(_overmock, t => t.VoidMethodWithNoParams())
                 .ToThrow(exception);
 
             try
@@ -27,7 +27,7 @@ namespace Overmock.Tests.OvermockedMock
         {
             var exception = new Exception();
 
-            Over.Mock(_overmock, t => t.BoolMethodWithNoParams())
+            Overmock.Mock(_overmock, t => t.BoolMethodWithNoParams())
                 .ToThrow(exception);
 
             try
@@ -47,7 +47,7 @@ namespace Overmock.Tests.OvermockedMock
         {
             var exception = new Exception();
 
-            Over.Overmock(_overmock, t => t.ModelMethodWithNoParams())
+            Overmock.OverMock(_overmock, t => t.ModelMethodWithNoParams())
                 .ToThrow(exception);
 
             try
@@ -67,7 +67,7 @@ namespace Overmock.Tests.OvermockedMock
         {
             var exception = new Exception();
 
-            Over.Overmock(_overmock, t => t.ListOfModelMethodWithNoParams())
+            Overmock.OverMock(_overmock, t => t.ListOfModelMethodWithNoParams())
                 .ToThrow(exception);
 
             try

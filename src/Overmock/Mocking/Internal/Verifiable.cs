@@ -5,9 +5,9 @@ namespace Overmock.Mocking.Internal
 {
     /// <summary>
     /// Class Verifiable.
-    /// Implements the <see cref="Overmock.Mocking.IVerifiable" />
+    /// Implements the <see cref="IVerifiable" />
     /// </summary>
-    /// <seealso cref="Overmock.Mocking.IVerifiable" />
+    /// <seealso cref="IVerifiable" />
     public abstract class Verifiable : IVerifiable
     {
         /// <summary>

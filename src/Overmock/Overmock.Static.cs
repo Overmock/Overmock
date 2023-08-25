@@ -11,16 +11,16 @@ namespace Overmock
     /// <summary>
     /// Contains methods used for configuring an overmock.
     /// </summary>
-    public static partial class Over
+    public static partial class Overmock
     {
         private static readonly ConcurrentQueue<IOvermock> _overmocks = new ConcurrentQueue<IOvermock>();
 
         private static IInvocationHandler? _invocationHandler;
 
         /// <summary>
-        /// Initializes static members of the <see cref="Over"/> class.
+        /// Initializes static members of the <see cref="global::Overmock.Overmock"/> class.
         /// </summary>
-        static Over()
+        static Overmock()
         {
         }
 

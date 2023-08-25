@@ -5,9 +5,9 @@ namespace Overmock.Mocking
 {
     /// <summary>
     /// Interface IMethodCall
-    /// Extends the <see cref="Overmock.Mocking.ICallable" />
+    /// Extends the <see cref="ICallable" />
     /// </summary>
-    /// <seealso cref="Overmock.Mocking.ICallable" />
+    /// <seealso cref="ICallable" />
     public interface IMethodCall : ICallable
     {
         /// <summary>

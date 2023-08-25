@@ -6,7 +6,7 @@ namespace Overmock.Tests
     [TestClass]
     public partial class PropertyGetTests
     {
-        private readonly IOvermock<IPropertiesWithGet> _overmock = Over.Mock<IPropertiesWithGet>();
+        private readonly IOvermock<IPropertiesWithGet> _overmock = Overmock.Mock<IPropertiesWithGet>();
 
         private readonly Model _model1 = new Model();
         private readonly Model _model2 = new Model();

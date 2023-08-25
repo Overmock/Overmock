@@ -4,9 +4,9 @@ namespace Overmock.Mocking
 {
     /// <summary>
     /// Interface IVerifiable
-    /// Extends the <see cref="Overmock.IFluentInterface" />
+    /// Extends the <see cref="IFluentInterface" />
     /// </summary>
-    /// <seealso cref="Overmock.IFluentInterface" />
+    /// <seealso cref="IFluentInterface" />
     [EditorBrowsable(EditorBrowsableState.Never)]
     public interface IVerifiable : IFluentInterface
     {
@@ -26,10 +26,10 @@ namespace Overmock.Mocking
 
     /// <summary>
     /// Interface IVerifiable
-    /// Extends the <see cref="Overmock.Mocking.IVerifiable" />
+    /// Extends the <see cref="IVerifiable" />
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    /// <seealso cref="Overmock.Mocking.IVerifiable" />
+    /// <seealso cref="IVerifiable" />
     public interface IVerifiable<T> : IVerifiable
     {
     }

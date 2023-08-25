@@ -1,4 +1,5 @@
 ﻿using Kimono.Proxies;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -21,29 +22,37 @@ namespace Kimono.Internal
         {
             foreach (var propertyInfo in properties)
             {
-                if (propertyInfo.CanRead)
-                {
-                    var methodId = context.GetNextMethodId();
-                    var property = new ProxyMember(propertyInfo, propertyInfo.GetGetMethod()!);
-                    var methodBuilder = CreateMethod(context, property.Method, methodId);
+                CreateProperty(context, propertyInfo);
+            }
+        }
 
-                    context.ProxyContext.Add(new RuntimeContext(
-                        property,
-                        Enumerable.Empty<RuntimeParameter>())
-                    );
-                }
+        private static void CreateProperty(IProxyContextBuilder context, PropertyInfo propertyInfo)
+        {
+            if (propertyInfo.CanRead)
+            {
+                var methodId = context.GetNextMethodId();
+                var property = new ProxyMember(propertyInfo, propertyInfo.GetGetMethod()!);
+                var methodBuilder = CreateMethod(context, property.Method, Constants.EmptyRuntimParametersList, methodId);
 
-                if (propertyInfo.CanWrite)
-                {
-                    var methodId = context.GetNextMethodId();
-                    var property = new ProxyMember(propertyInfo, propertyInfo.GetSetMethod()!);
-                    var methodBuilder = CreateMethod(context, property.Method, methodId);
+                context.ProxyContext.Add(new RuntimeContext(
+                    property,
+                    Enumerable.Empty<RuntimeParameter>())
+                );
+            }
 
-                    context.ProxyContext.Add(new RuntimeContext(
-                        property,
-                        Enumerable.Empty<RuntimeParameter>())
-                    );
-                }
+            if (propertyInfo.CanWrite)
+            {
+                var methodId = context.GetNextMethodId();
+                var property = new ProxyMember(propertyInfo, propertyInfo.GetSetMethod()!);
+                var methodBuilder = CreateMethod(context, property.Method,
+                    new List<RuntimeParameter> { new RuntimeParameter("value", propertyInfo.PropertyType) },
+                    methodId
+                );
+
+                context.ProxyContext.Add(new RuntimeContext(
+                    property,
+                    Enumerable.Empty<RuntimeParameter>())
+                );
             }
         }
     }

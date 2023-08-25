@@ -5,18 +5,18 @@
         //[TestMethod]
         //public void IntPropertyToCallTest()
         //{
-        //	var called = false;
+        //    var called = false;
 
-        //          Overmocked.Mock(_overmock, t => t.Int)
-        //		.ToCall(c => called = true);
+        //    Overmock.Mock(_overmock, t => t.Int)
+        //        .ToCall(c => called = true);
 
-        //          Overmocked.Mock(_overmock, t => t.GetHashCode()).ToBeCalled();
+        //    Overmock.Mock(_overmock, t => t.GetHashCode()).ToBeCalled();
 
-        //	var model = _overmock.Int;
+        //    var model = _overmock.Int;
 
-        //	Assert.ThrowsException<UnhandledMemberException>(() => _overmock.Equals(null));
+        //    Assert.ThrowsException<UnhandledMemberException>(() => _overmock.Equals(null));
 
-        //	Assert.IsTrue(called);
+        //    Assert.IsTrue(called);
         //}
 
         [TestMethod]
@@ -24,10 +24,10 @@
         {
             var called = false;
 
-            Over.Overmock(_overmock, t => t.String)
+            Overmock.OverMock(_overmock, t => t.String)
                 .ToCall(c => called = true);
 
-            var model = _overmock.String;
+            var model = _overmock.Target.String;
 
             Assert.IsTrue(called);
         }
@@ -37,10 +37,10 @@
         {
             var called = false;
 
-            Over.Overmock(_overmock, t => t.Model)
+            Overmock.OverMock(_overmock, t => t.Model)
                 .ToCall(c => called = true);
 
-            var model = _overmock.Model;
+            var model = _overmock.Target.Model;
 
             Assert.IsTrue(called);
         }
@@ -50,10 +50,10 @@
         {
             var called = false;
 
-            Over.Overmock(_overmock, t => t.ListOfModels)
+            Overmock.OverMock(_overmock, t => t.ListOfModels)
                 .ToCall(c => called = true);
 
-            var model = _overmock.ListOfModels;
+            var model = _overmock.Target.ListOfModels;
 
             Assert.IsTrue(called);
         }
