@@ -1,11 +1,11 @@
 ﻿namespace Overmock.Tests.Mocks.Mixed
 {
-	public interface IInterfaceWithBothMethodsAndProperties
-	{
-		string Name { get; }
+    public interface IInterfaceWithBothMethodsAndProperties
+    {
+        string Name { get; }
 
-		void DoSomething(string name);
+        void DoSomething(string name);
 
-		string MethodWithReturn(string name);
-	}
+        string MethodWithReturn(string name);
+    }
 }

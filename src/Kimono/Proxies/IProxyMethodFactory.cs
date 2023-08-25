@@ -1,16 +1,18 @@
-﻿using System.Collections.Generic;
+﻿using Kimono.Emit;
+using System.Collections.Generic;
 using System.Reflection;
-using System.Reflection.Emit;
 
 namespace Kimono.Proxies
 {
-	/// <summary>
-	/// Interface IProxyMethodGenerator
-	/// </summary>
-	internal interface IProxyMethodFactory
+    /// <summary>
+    /// Interface IProxyMethodGenerator
+    /// </summary>
+    internal interface IProxyMethodFactory
     {
-		void Create(IProxyContextBuilder context, IEnumerable<MethodInfo> methods);
+        void Create(IProxyContextBuilder context, IEnumerable<MethodInfo> methods);
 
-        void EmitTypeInitializer(ILGenerator ilGenerator, ConstructorInfo baseConstructor);
+        void EmitConstructor(IEmitter emitter, ConstructorInfo baseConstructor);
+
+        void CreateMethod(IProxyContextBuilder context, MethodInfo methodInfo);
     }
 }

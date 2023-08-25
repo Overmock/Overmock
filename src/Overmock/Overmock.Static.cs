@@ -11,16 +11,16 @@ namespace Overmock
     /// <summary>
     /// Contains methods used for configuring an overmock.
     /// </summary>
-    public  static partial class Over
-	{
-		private static readonly ConcurrentQueue<IOvermock> _overmocks = new ConcurrentQueue<IOvermock>();
-        
+    public static partial class Overmock
+    {
+        private static readonly ConcurrentQueue<IOvermock> _overmocks = new ConcurrentQueue<IOvermock>();
+
         private static IInvocationHandler? _invocationHandler;
 
-		/// <summary>
-		/// Initializes static members of the <see cref="Over"/> class.
-		/// </summary>
-		static Over()
+        /// <summary>
+        /// Initializes static members of the <see cref="global::Overmock.Overmock"/> class.
+        /// </summary>
+        static Overmock()
         {
         }
 
@@ -44,7 +44,7 @@ namespace Overmock
             }
         }
 
-        internal static Overmock<T> GetOvermock<T>([NotNull]T target) where T : class
+        internal static Overmock<T> GetOvermock<T>([NotNull] T target) where T : class
         {
             Overmock<T>? overmock = null;
 
@@ -92,18 +92,18 @@ namespace Overmock
         }
 
         internal static IMethodCall<T> RegisterMethod<T>(IOvermock overmock, IMethodCall<T> method) where T : class
-		{
-			return overmock.AddMethod(method);
-		}
+        {
+            return overmock.AddMethod(method);
+        }
 
-		internal static IMethodCall<T, TReturn> RegisterMethod<T, TReturn>(IOvermock overmock, IMethodCall<T, TReturn> method) where T : class
-		{
-			return overmock.AddMethod(method);
-		}
+        internal static IMethodCall<T, TReturn> RegisterMethod<T, TReturn>(IOvermock overmock, IMethodCall<T, TReturn> method) where T : class
+        {
+            return overmock.AddMethod(method);
+        }
 
-		internal static IPropertyCall<T, TProperty> RegisterProperty<T, TProperty>(IOvermock overmock, IPropertyCall<T, TProperty> property) where T : class
-		{
-			return overmock.AddProperty(property);
-		}
+        internal static IPropertyCall<T, TProperty> RegisterProperty<T, TProperty>(IOvermock overmock, IPropertyCall<T, TProperty> property) where T : class
+        {
+            return overmock.AddProperty(property);
+        }
     }
 }

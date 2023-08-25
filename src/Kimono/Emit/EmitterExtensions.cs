@@ -1,7 +1,7 @@
-﻿using System.Reflection;
-using System.Reflection.Emit;
+﻿using System;
 using System.Linq.Expressions;
-using System;
+using System.Reflection;
+using System.Reflection.Emit;
 
 namespace Kimono.Emit
 {
@@ -16,6 +16,13 @@ namespace Kimono.Emit
         /// <param name="builder">The builder.</param>
         /// <returns>IEmitter.</returns>
         public static IEmitter GetEmitter(this MethodBuilder builder) => Emitter.For(builder.GetILGenerator());
+
+        /// <summary>
+        /// Gets the emitter for the MethodBuilder.
+        /// </summary>
+        /// <param name="builder">The builder.</param>
+        /// <returns>IEmitter.</returns>
+        public static IEmitter GetEmitter(this ConstructorBuilder builder) => Emitter.For(builder.GetILGenerator());
 
         /// <summary>
         /// Gets the emitter for the MethodBuilder.

@@ -3,13 +3,13 @@ using System;
 
 namespace Overmock.Mocking.Internal
 {
-	/// <summary>
-	/// Class ReturnProviderOverride.
-	/// Implements the <see cref="IOverride" />
-	/// </summary>
-	/// <seealso cref="IOverride" />
-	public class ReturnProviderOverride : Verifiable, IOverride
-	{
+    /// <summary>
+    /// Class ReturnProviderOverride.
+    /// Implements the <see cref="IOverride" />
+    /// </summary>
+    /// <seealso cref="IOverride" />
+    public class ReturnProviderOverride : Verifiable, IOverride
+    {
         private bool _calledProvider;
 
         /// <summary>
@@ -17,27 +17,27 @@ namespace Overmock.Mocking.Internal
         /// </summary>
         /// <param name="returnProvider">The return provider.</param>
         internal ReturnProviderOverride(Func<object> returnProvider)
-		{
-			ReturnProvider = returnProvider;
-		}
+        {
+            ReturnProvider = returnProvider;
+        }
 
-		/// <summary>
-		/// Gets the return provider.
-		/// </summary>
-		/// <value>The return provider.</value>
-		public Func<object> ReturnProvider { get; }
+        /// <summary>
+        /// Gets the return provider.
+        /// </summary>
+        /// <value>The return provider.</value>
+        public Func<object> ReturnProvider { get; }
 
-		/// <summary>
-		/// Handles the specified context.
-		/// </summary>
-		/// <param name="context">The context.</param>
-		/// <returns>System.Nullable&lt;System.Object&gt;.</returns>
-		public object? Handle(OvermockContext context)
-		{
+        /// <summary>
+        /// Handles the specified context.
+        /// </summary>
+        /// <param name="context">The context.</param>
+        /// <returns>System.Nullable&lt;System.Object&gt;.</returns>
+        public object? Handle(OvermockContext context)
+        {
             _calledProvider = true;
 
             return ReturnProvider();
-		}
+        }
 
         /// <summary>
         /// 

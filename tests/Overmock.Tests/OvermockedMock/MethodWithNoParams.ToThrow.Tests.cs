@@ -1,85 +1,85 @@
 namespace Overmock.Tests.OvermockedMock
 {
-	public partial class MethodWithNoParamsTests
-	{
-		[TestMethod]
-		public void VoidMethodWithNoParamsTest()
-		{
-			var exception = new Exception();
+    public partial class MethodWithNoParamsTests
+    {
+        [TestMethod]
+        public void VoidMethodWithNoParamsTest()
+        {
+            var exception = new Exception();
 
-			Over.Mock(_overmock, t => t.VoidMethodWithNoParams())
-				.ToThrow(exception);
+            Overmock.Mock(_overmock, t => t.VoidMethodWithNoParams())
+                .ToThrow(exception);
 
-			try
-			{
-				_overmock.VoidMethodWithNoParams();
+            try
+            {
+                _overmock.VoidMethodWithNoParams();
 
-				Assert.Fail();
-			}
-			catch (Exception ex)
-			{
-				Assert.AreEqual(exception, ex);
-			}
-		}
-		
+                Assert.Fail();
+            }
+            catch (Exception ex)
+            {
+                Assert.AreEqual(exception, ex);
+            }
+        }
+
         [TestMethod]
         public void BoolMethodWithNoParamsTest()
-		{
-			var exception = new Exception();
+        {
+            var exception = new Exception();
 
-			Over.Mock(_overmock, t => t.BoolMethodWithNoParams())
-				.ToThrow(exception);
+            Overmock.Mock(_overmock, t => t.BoolMethodWithNoParams())
+                .ToThrow(exception);
 
-			try
-			{
-				_overmock.BoolMethodWithNoParams();
+            try
+            {
+                _overmock.BoolMethodWithNoParams();
 
-				Assert.Fail();
-			}
-			catch (Exception ex)
-			{
-				Assert.AreEqual(exception, ex);
-			}
-		}
+                Assert.Fail();
+            }
+            catch (Exception ex)
+            {
+                Assert.AreEqual(exception, ex);
+            }
+        }
 
-		[TestMethod]
-		public void ModelMethodWithNoParamsTest()
-		{
-			var exception = new Exception();
+        [TestMethod]
+        public void ModelMethodWithNoParamsTest()
+        {
+            var exception = new Exception();
 
-			Over.Overmock(_overmock, t => t.ModelMethodWithNoParams())
-				.ToThrow(exception);
+            Overmock.OverMock(_overmock, t => t.ModelMethodWithNoParams())
+                .ToThrow(exception);
 
-			try
-			{
-				_overmock.ModelMethodWithNoParams();
+            try
+            {
+                _overmock.ModelMethodWithNoParams();
 
-				Assert.Fail();
-			}
-			catch (Exception ex)
-			{
-				Assert.AreEqual(exception, ex);
-			}
-		}
+                Assert.Fail();
+            }
+            catch (Exception ex)
+            {
+                Assert.AreEqual(exception, ex);
+            }
+        }
 
-		[TestMethod]
-		public void ListOfModelMethodWithNoParamsTest()
-		{
-			var exception = new Exception();
+        [TestMethod]
+        public void ListOfModelMethodWithNoParamsTest()
+        {
+            var exception = new Exception();
 
-			Over.Overmock(_overmock, t => t.ListOfModelMethodWithNoParams())
-				.ToThrow(exception);
+            Overmock.OverMock(_overmock, t => t.ListOfModelMethodWithNoParams())
+                .ToThrow(exception);
 
-			try
-			{
-				_overmock.ListOfModelMethodWithNoParams();
+            try
+            {
+                _overmock.ListOfModelMethodWithNoParams();
 
-				Assert.Fail();
-			}
-			catch (Exception ex)
-			{
-				Assert.AreEqual(exception, ex);
-			}
-		}
-	}
+                Assert.Fail();
+            }
+            catch (Exception ex)
+            {
+                Assert.AreEqual(exception, ex);
+            }
+        }
+    }
 }

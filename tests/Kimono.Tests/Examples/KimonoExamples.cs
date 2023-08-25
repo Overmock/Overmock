@@ -2,113 +2,107 @@
 
 namespace Kimono.Tests.Examples
 {
-	public class KimonoExamples
-	{
-		public void NoTargetWithCallbackInterceptorExample()
-		{
-			var interceptor = Intercept.WithCallback<IRepository>(context =>
-			{
-				if (context.MemberName == "Baz")
-				{
-					context.ReturnValue = context.GetParameter<Model>("model");
-				}
+    public class KimonoExamples
+    {
+        public void NoTargetWithCallbackInterceptorExample()
+        {
+            var interceptor = Intercept.WithCallback<IRepository>(context => {
+                if (context.MemberName == "Baz")
+                {
+                    context.ReturnValue = context.GetParameter<Model>("model");
+                }
 
-				if (context.MemberName == nameof(IRepository.Save))
-				{
-					context.Invoke();
-				}
-			});
+                if (context.MemberName == nameof(IRepository.Save))
+                {
+                    context.Invoke();
+                }
+            });
 
-			interceptor.Save(new Model { Id = 20 });
-		}
-		public void TargetWithCallbackInterceptorExample()
-		{
-			var interceptor = Intercept.WithCallback<IRepository, Repository>(new Repository(), context =>
-			{
-				context.Invoke();
+            interceptor.Save(new Model { Id = 20 });
+        }
+        public void TargetWithCallbackInterceptorExample()
+        {
+            var interceptor = Intercept.WithCallback<IRepository, Repository>(new Repository(), context => {
+                context.Invoke();
 
-				if (context.MemberName == nameof(IRepository.Save))
-				{
-					if (context.ReturnValue is false)
-					{
-						//Log failure
-					}
-				}
-			});
+                if (context.MemberName == nameof(IRepository.Save))
+                {
+                    if (context.ReturnValue is false)
+                    {
+                        //Log failure
+                    }
+                }
+            });
 
-			interceptor.Save(new Model { Id = 20 });
-		}
-		public void NoTargetWithHandlersInterceptorExample()
-		{
-			var interceptor = Intercept.WithHandlers<IRepository>(new BazReturnInvocationHandler());
+            interceptor.Save(new Model { Id = 20 });
+        }
+        public void NoTargetWithHandlersInterceptorExample()
+        {
+            var interceptor = Intercept.WithHandlers<IRepository>(new BazReturnInvocationHandler());
 
-			interceptor.Save(new Model { Id = 20 });
-		}
-		public void TargetWithHandlersInterceptorExample()
-		{
-			var interceptor = Intercept.WithHandlers<IRepository, Repository>(new Repository(), new BazReturnInvocationHandler());
+            interceptor.Save(new Model { Id = 20 });
+        }
+        public void TargetWithHandlersInterceptorExample()
+        {
+            var interceptor = Intercept.WithHandlers<IRepository, Repository>(new Repository(), new BazReturnInvocationHandler());
 
-			interceptor.Save(new Model { Id = 20 });
-		}
-		public void NoTargetWithInvocationChainInterceptorExample()
-		{
-			var interceptor = Intercept.WithChain<IRepository, Repository>(new Repository(), builder =>
-			{
-				builder.Add((next, context) =>
-				{
-					context.Invoke();
+            interceptor.Save(new Model { Id = 20 });
+        }
+        public void NoTargetWithInvocationChainInterceptorExample()
+        {
+            var interceptor = Intercept.WithChain<IRepository, Repository>(new Repository(), builder => {
+                builder.Add((next, context) => {
+                    context.Invoke();
 
-					if (context.MemberName == nameof(IRepository.Save))
-					{
-						if (context.ReturnValue is false)
-						{
-							//Log failure
-							return;
-						}
-					}
+                    if (context.MemberName == nameof(IRepository.Save))
+                    {
+                        if (context.ReturnValue is false)
+                        {
+                            //Log failure
+                            return;
+                        }
+                    }
 
-					next(context);
-				});
-			});
+                    next(context);
+                });
+            });
 
-			interceptor.Save(new Model { Id = 20 });
-		}
-		public void TargetWithInvocationChainInterceptorExample()
-		{
-			var interceptor = Intercept.WithInovcationChain<IRepository>(builder =>
-			{
-				builder.Add((next, context) =>
-				{
-					if (context.MemberName == nameof(IRepository.Save))
-					{
-						context.ReturnValue = true;
-					}
+            interceptor.Save(new Model { Id = 20 });
+        }
+        public void TargetWithInvocationChainInterceptorExample()
+        {
+            var interceptor = Intercept.WithInovcationChain<IRepository>(builder => {
+                builder.Add((next, context) => {
+                    if (context.MemberName == nameof(IRepository.Save))
+                    {
+                        context.ReturnValue = true;
+                    }
 
-					// Call next regardless of condition
-					next(context);
-				});
-			});
+                    // Call next regardless of condition
+                    next(context);
+                });
+            });
 
-			interceptor.Save(new Model { Id = 20 });
-		}
-		private class BazReturnInvocationHandler : IInvocationHandler
-		{
-			public void Handle(IInvocationContext context)
-			{
-				if (context.MemberName == "Baz")
-				{
-					context.ReturnValue = context.GetParameter<Model>("model");
-				}
+            interceptor.Save(new Model { Id = 20 });
+        }
+        private class BazReturnInvocationHandler : IInvocationHandler
+        {
+            public void Handle(IInvocationContext context)
+            {
+                if (context.MemberName == "Baz")
+                {
+                    context.ReturnValue = context.GetParameter<Model>("model");
+                }
 
-				if (context.MemberName == nameof(IRepository.Save))
-				{
-					if (context.ReturnValue is false)
-					{
-						//Log failure
-						return;
-					}
-				}
-			}
-		}
-	}
+                if (context.MemberName == nameof(IRepository.Save))
+                {
+                    if (context.ReturnValue is false)
+                    {
+                        //Log failure
+                        return;
+                    }
+                }
+            }
+        }
+    }
 }

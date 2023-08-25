@@ -19,8 +19,8 @@ namespace Kimono.Proxies
     /// </summary>
     /// <seealso cref="IProxy" />
     public abstract class ProxyBase : IProxy
-	{
-		private readonly ProxyContext _proxyContext;
+    {
+        private readonly ProxyContext _proxyContext;
         private readonly IInterceptor _interceptor;
         private readonly Type _targetType;
 
@@ -31,7 +31,7 @@ namespace Kimono.Proxies
         /// <param name="interceptor">The interceptor.</param>
         /// <param name="targetType"></param>
         protected ProxyBase(ProxyContext proxyContext, IInterceptor interceptor, Type targetType)
-		{
+        {
             _proxyContext = proxyContext;
             _interceptor = interceptor;
             _targetType = targetType;
@@ -49,32 +49,32 @@ namespace Kimono.Proxies
         /// <value>The interceptor.</value>
         public IInterceptor Interceptor => _interceptor;
 
-		/// <summary>
-		/// Handles the method call.
-		/// </summary>
-		/// <param name="methodId">The method identifier.</param>
-		/// <param name="parameters">The parameters.</param>
-		/// <returns>System.Nullable&lt;System.Object&gt;.</returns>
-		protected object? HandleMethodCall(int methodId, params object[] parameters)
-		{
+        /// <summary>
+        /// Handles the method call.
+        /// </summary>
+        /// <param name="methodId">The method identifier.</param>
+        /// <param name="parameters">The parameters.</param>
+        /// <returns>System.Nullable&lt;System.Object&gt;.</returns>
+        protected object? HandleMethodCall(int methodId, params object[] parameters)
+        {
             return _interceptor.MemberInvoked(_proxyContext, this, methodId, parameters);
-		}
+        }
 
-		/// <summary>
-		/// Handles the calling dispose if the interceptor is <see cref="IDisposableInterceptor"/>.
-		/// </summary>
-		protected void HandleDisposeCall()
-		{
-			(Interceptor as IDisposable)?.Dispose();
-		}
+        /// <summary>
+        /// Handles the calling dispose if the interceptor is <see cref="IDisposableInterceptor"/>.
+        /// </summary>
+        protected void HandleDisposeCall()
+        {
+            (Interceptor as IDisposable)?.Dispose();
+        }
 
-		/// <summary>
-		/// Gets the type of the target.
-		/// </summary>
-		/// <returns>Type.</returns>
-		Type IProxy.GetTargetType()
-		{
-			return TargetType;
-		}
-	}
+        /// <summary>
+        /// Gets the type of the target.
+        /// </summary>
+        /// <returns>Type.</returns>
+        Type IProxy.GetTargetType()
+        {
+            return TargetType;
+        }
+    }
 }

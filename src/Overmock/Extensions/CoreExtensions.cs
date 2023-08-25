@@ -4,15 +4,14 @@ using System.Globalization;
 
 namespace Overmock
 {
-	/// <summary>
-	/// Class OvermockExtensions.
-	/// </summary>
-	public static partial class OvermockExtensions
+    /// <summary>
+    /// Class OvermockExtensions.
+    /// </summary>
+    public static partial class OvermockExtensions
     {
         /// <summary>
         /// 
         /// </summary>
-        /// <typeparam name="T"></typeparam>
         /// <typeparam name="TReturn"></typeparam>
         /// <param name="overmock"></param>
         /// <returns></returns>
@@ -33,7 +32,7 @@ namespace Overmock
         }
 
         /// <summary>
-        /// Generic overload for <see cref="Type.IsAssignableTo(Type)"/>
+        /// Generic overload for <see cref="Type.IsAssignableFrom(Type)"/>
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="type"></param>

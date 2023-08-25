@@ -42,7 +42,7 @@ namespace Overmock
                 ? (Interceptor<T>)new HandlerInterceptor<T>(_invocationHandler)
                 : (Interceptor<T>)new HandlersInterceptor<T>(new[] { _invocationHandler, handler });
 
-            Over.Register(this);
+            Overmock.Register(this);
         }
 
         /// <summary>
@@ -59,7 +59,7 @@ namespace Overmock
 
             if (target is IProxy proxy && proxy.Interceptor is IInvocationHandlerProvider handler)
             {
-                var overmock = Over.GetRegistration(proxy)!;
+                var overmock = Overmock.GetRegistration(proxy)!;
                 _methods = (List<IMethodCall>)overmock.GetOvermockedMethods();
                 _properties = (List<IPropertyCall>)overmock.GetOvermockedProperties();
                 _invocationHandler = handler.GetHandler();
@@ -69,7 +69,7 @@ namespace Overmock
                 new OvermockInstanceInvocationHandler(() => _overrideAll, _methods.ToArray, _properties.ToArray)
             );
 
-            Over.Register(this);
+            Overmock.Register(this);
         }
 
         /// <summary>
@@ -112,7 +112,7 @@ namespace Overmock
                 return true;
             }
 
-            if (ReferenceEquals(obj, null))
+            if (obj is null)
             {
                 return false;
             }
@@ -134,7 +134,7 @@ namespace Overmock
                 return true;
             }
 
-            if (ReferenceEquals(obj, null))
+            if (obj is null)
             {
                 return false;
             }
@@ -198,7 +198,6 @@ namespace Overmock
 
         /// <inheritdoc />
         void IExpectAnyInvocation.ExpectAny()
-#pragma warning restore CS1066 // The default value specified will have no effect because it applies to a member that is used in contexts that do not allow optional arguments
         {
             _overrideAll = true;
         }
@@ -215,7 +214,7 @@ namespace Overmock
                 _methodsProvider = methodsProvider;
                 _propertiesProvider = propertiesProvider;
             }
-            
+
             internal static bool HandleMembers<TInfo, TCall>(IInvocationContext context, TInfo info, Span<TCall> overridables, Func<TInfo, TCall, bool> predicate) where TCall : IOverridable
             {
                 ref var reference = ref MemoryMarshal.GetReference(overridables);

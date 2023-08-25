@@ -12,7 +12,7 @@ namespace Overmock.Mocking.Internal
     /// <seealso cref="Throwable" />
     /// <seealso cref="ICallable" />
     internal abstract class Callable : Throwable, ICallable
-	{
+    {
         protected Callable(string name) : base(name)
         {
         }
@@ -23,29 +23,29 @@ namespace Overmock.Mocking.Internal
         /// <value>The action.</value>
         public IOverride? Override { get; protected set; }
 
-		/// <inheritdoc />
-		public void Calls(Action<OvermockContext> action, Times times)
-		{
-			Override = new MethodCallOverride(times, c => {
+        /// <inheritdoc />
+        public void Calls(Action<OvermockContext> action, Times times)
+        {
+            Override = new MethodCallOverride(times, c => {
                 action(c);
                 return null;
             });
-		}
+        }
 
-		/// <summary>
-		/// Adds the overrides to.
-		/// </summary>
-		/// <param name="overrides">The overrides.</param>
-		protected override void AddOverridesTo(List<IOverride> overrides) 
-		{
-			if (Override != null)
-			{
-				overrides.Add(Override);
-			}
+        /// <summary>
+        /// Adds the overrides to.
+        /// </summary>
+        /// <param name="overrides">The overrides.</param>
+        protected override void AddOverridesTo(List<IOverride> overrides)
+        {
+            if (Override != null)
+            {
+                overrides.Add(Override);
+            }
 
-			base.AddOverridesTo(overrides);
-		}
-	}
+            base.AddOverridesTo(overrides);
+        }
+    }
 
     /// <summary>
     /// Class Callable.
@@ -56,9 +56,9 @@ namespace Overmock.Mocking.Internal
     /// <seealso cref="Callable" />
     /// <seealso cref="ICallable{T}" />
     internal abstract class Callable<T> : Callable, ICallable<T>
-	{
+    {
         protected Callable(string name) : base(name)
         {
         }
-	}
+    }
 }

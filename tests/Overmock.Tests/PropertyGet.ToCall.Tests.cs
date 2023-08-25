@@ -1,75 +1,75 @@
 ﻿namespace Overmock.Tests
 {
-	public partial class PropertyGetTests
-	{
-		[TestMethod]
-		public void IntPropertyToCallTest()
-		{
-			var called = false;
+    public partial class PropertyGetTests
+    {
+        [TestMethod]
+        public void IntPropertyToCallTest()
+        {
+            var called = false;
 
-			_overmock.Mock(t => t.Int)
-				.ToCall(c => called = true);
+            _overmock.Mock(t => t.Int)
+                .ToCall(c => called = true);
 
-			_overmock.Mock(t => t.GetHashCode()).ToBeCalled();
+            _overmock.Mock(t => t.GetHashCode()).ToBeCalled();
 
-			var target = _overmock.Target;
+            var target = _overmock.Target;
 
-			Assert.IsNotNull(target);
+            Assert.IsNotNull(target);
 
-			var model = target.Int;
+            var model = target.Int;
 
-			Assert.IsTrue(called);
-		}
+            Assert.IsTrue(called);
+        }
 
-		[TestMethod]
-		public void StringPropertyToCallTest()
-		{
-			var called = false;
+        [TestMethod]
+        public void StringPropertyToCallTest()
+        {
+            var called = false;
 
-			_overmock.Mock(t => t.String)
-				.ToCall(c => called = true);
+            _overmock.Mock(t => t.String)
+                .ToCall(c => called = true);
 
-			var target = _overmock.Target;
+            var target = _overmock.Target;
 
-			Assert.IsNotNull(target);
+            Assert.IsNotNull(target);
 
-			var model = target.String;
+            var model = target.String;
 
-			Assert.IsTrue(called);
-		}
+            Assert.IsTrue(called);
+        }
 
-		[TestMethod]
-		public void ModelPropertyToCallTest()
-		{
-			var called = false;
+        [TestMethod]
+        public void ModelPropertyToCallTest()
+        {
+            var called = false;
 
-			_overmock.Mock(t => t.Model)
-				.ToCall(c => called = true);
+            _overmock.Mock(t => t.Model)
+                .ToCall(c => called = true);
 
-			var target = _overmock.Target;
+            var target = _overmock.Target;
 
-			Assert.IsNotNull(target);
+            Assert.IsNotNull(target);
 
-			var model = target.Model;
+            var model = target.Model;
 
-			Assert.IsTrue(called);
-		}
+            Assert.IsTrue(called);
+        }
 
-		[TestMethod]
-		public void ListOfModelPropertyToCallTest()
-		{
-			var called = false;
+        [TestMethod]
+        public void ListOfModelPropertyToCallTest()
+        {
+            var called = false;
 
-			_overmock.Mock(t => t.ListOfModels)
-				.ToCall(c => called = true);
+            _overmock.Mock(t => t.ListOfModels)
+                .ToCall(c => called = true);
 
-			var target = _overmock.Target;
+            var target = _overmock.Target;
 
-			Assert.IsNotNull(target);
+            Assert.IsNotNull(target);
 
-			var model = target.ListOfModels;
+            var model = target.ListOfModels;
 
-			Assert.IsTrue(called);
-		}
-	}
+            Assert.IsTrue(called);
+        }
+    }
 }

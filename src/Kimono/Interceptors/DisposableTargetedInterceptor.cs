@@ -1,5 +1,5 @@
-﻿using System;
-using Kimono.Proxies;
+﻿using Kimono.Proxies;
+using System;
 
 namespace Kimono.Interceptors
 {
@@ -12,14 +12,14 @@ namespace Kimono.Interceptors
     /// <seealso cref="Interceptor{T}" />
     /// <seealso cref="IDisposable" />
     public abstract class DisposableTargetedInterceptor<T> : DisposableInterceptor<T>, IDisposableInterceptor where T : class, IDisposable
-	{
-		/// <summary>
-		/// Initializes a new instance of the <see cref="DisposableTargetedInterceptor{T}" /> class.
-		/// </summary>
-		/// <param name="target">The target.</param>
-		/// <param name="disposer">The disposer.</param>
-		public DisposableTargetedInterceptor(T target, ITargetDisposer<T>? disposer = null) : base(target, disposer)
-		{
-		}
-	}
+    {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DisposableTargetedInterceptor{T}" /> class.
+        /// </summary>
+        /// <param name="target">The target.</param>
+        /// <param name="disposer">The disposer.</param>
+        public DisposableTargetedInterceptor(T target, ITargetDisposer<T>? disposer = null) : base(target, disposer)
+        {
+        }
+    }
 }

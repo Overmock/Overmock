@@ -1,57 +1,57 @@
 namespace Overmock.Tests.OvermockedMock
 {
-	public partial class MethodWithNoParamsTests
-	{
-		[TestMethod]
-		public void VoidMethodWithNoParamsToCallTest()
-		{
-			var called = false;
+    public partial class MethodWithNoParamsTests
+    {
+        [TestMethod]
+        public void VoidMethodWithNoParamsToCallTest()
+        {
+            var called = false;
 
-			Over.Mock(_overmock, t => t.VoidMethodWithNoParams())
-				.ToCall(c => called = true);
+            Overmock.Mock(_overmock, t => t.VoidMethodWithNoParams())
+                .ToCall(c => called = true);
 
             _overmock.VoidMethodWithNoParams();
 
-			Assert.IsTrue(called);
-		}
-		
+            Assert.IsTrue(called);
+        }
+
         [TestMethod]
         public void BoolMethodWithNoParamsToCallTest()
-		{
-			var called = false;
+        {
+            var called = false;
 
-            Over.Mock(_overmock, t => t.BoolMethodWithNoParams())
-				.ToCall(c => called = true);
+            Overmock.Mock(_overmock, t => t.BoolMethodWithNoParams())
+                .ToCall(c => called = true);
 
-			_overmock.BoolMethodWithNoParams();
+            _overmock.BoolMethodWithNoParams();
 
-			Assert.IsTrue(called);
-		}
+            Assert.IsTrue(called);
+        }
 
-		[TestMethod]
-		public void ModelMethodWithNoParamsToCallTest()
-		{
-			var called = false;
+        [TestMethod]
+        public void ModelMethodWithNoParamsToCallTest()
+        {
+            var called = false;
 
-            Over.Overmock(_overmock, t => t.ModelMethodWithNoParams())
-				.ToCall(c => called = true);
+            Overmock.OverMock(_overmock, t => t.ModelMethodWithNoParams())
+                .ToCall(c => called = true);
 
-			_overmock.ModelMethodWithNoParams();
+            _overmock.ModelMethodWithNoParams();
 
-			Assert.IsTrue(called);
-		}
+            Assert.IsTrue(called);
+        }
 
-		[TestMethod]
-		public void ListOfModelMethodWithNoParamsToCallTest()
-		{
-			var called = false;
+        [TestMethod]
+        public void ListOfModelMethodWithNoParamsToCallTest()
+        {
+            var called = false;
 
-            Over.Overmock(_overmock, t => t.ListOfModelMethodWithNoParams())
-				.ToCall(c => called = true);
+            Overmock.OverMock(_overmock, t => t.ListOfModelMethodWithNoParams())
+                .ToCall(c => called = true);
 
-			_overmock.ListOfModelMethodWithNoParams();
+            _overmock.ListOfModelMethodWithNoParams();
 
-			Assert.IsTrue(called);
-		}
-	}
+            Assert.IsTrue(called);
+        }
+    }
 }

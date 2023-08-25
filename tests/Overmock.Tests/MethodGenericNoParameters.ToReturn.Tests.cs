@@ -2,61 +2,61 @@
 
 namespace Overmock.Tests
 {
-	public partial class GenericMethodNoParametersTests
-	{
-		[TestMethod]
-		public void MethodWithNoParamsToReturnTest()
-		{
-			_genericMethodsTestInterface.Mock(m => m.MethodWithNoParamsAndReturnsEnumerableOfT<Model>())
-				.ToReturn(() => Enumerable.Empty<Model>());
-			
-			var target = _genericMethodsTestInterface.Target;
+    public partial class GenericMethodNoParametersTests
+    {
+        [TestMethod]
+        public void MethodWithNoParamsToReturnTest()
+        {
+            _genericMethodsTestInterface.Mock(m => m.MethodWithNoParamsAndReturnsEnumerableOfT<Model>())
+                .ToReturn(() => Enumerable.Empty<Model>());
 
-			Assert.IsNotNull(target);
+            var target = _genericMethodsTestInterface.Target;
 
-			target.MethodWithNoParamsAndReturnsEnumerableOfT<Model>();
-		}
+            Assert.IsNotNull(target);
 
-		[TestMethod]
-		public void MethodWithN1ParamsToReturnTest()
-		{
-			_genericMethodsTestInterface.Mock(m => m.MethodWith1ParamsAndReturnsEnumerableOfT<Model, Model>(Its.Any<Model>()))
-				.ToReturn(() => Enumerable.Empty<Model>());
+            target.MethodWithNoParamsAndReturnsEnumerableOfT<Model>();
+        }
 
-			var target = _genericMethodsTestInterface.Target;
+        [TestMethod]
+        public void MethodWithN1ParamsToReturnTest()
+        {
+            _genericMethodsTestInterface.Mock(m => m.MethodWith1ParamsAndReturnsEnumerableOfT<Model, Model>(Its.Any<Model>()))
+                .ToReturn(() => Enumerable.Empty<Model>());
 
-			Assert.IsNotNull(target);
+            var target = _genericMethodsTestInterface.Target;
 
-			
-			target.MethodWith1ParamsAndReturnsEnumerableOfT<Model, Model>(new Model());
-		}
-
-		[TestMethod]
-		public void MethodWithN2ParamsToReturnTest()
-		{
-			_genericMethodsTestInterface.Mock(m => m.MethodWith2ParamsAndReturnsEnumerableOfT<Model, Model, Model>(Its.Any<Model>(), Its.Any<Model>()))
-				.ToReturn(() => Enumerable.Empty<Model>());
-
-			var target = _genericMethodsTestInterface.Target;
-
-			Assert.IsNotNull(target);
+            Assert.IsNotNull(target);
 
 
-			target.MethodWith2ParamsAndReturnsEnumerableOfT<Model, Model, Model>(new Model(), new Model());
-		}
+            target.MethodWith1ParamsAndReturnsEnumerableOfT<Model, Model>(new Model());
+        }
 
-		[TestMethod]
-		public void MethodWithNParamsToReturnTest()
-		{
-			_genericMethodsTestInterface.Mock(m => m.MethodWith3ParamsAndReturnsEnumerableOfT<Model, Model, Model, Model>(Its.Any<Model>(),Its.Any<Model>(), Its.Any<Model>()))
-				.ToReturn(() => Enumerable.Empty<Model>());
+        [TestMethod]
+        public void MethodWithN2ParamsToReturnTest()
+        {
+            _genericMethodsTestInterface.Mock(m => m.MethodWith2ParamsAndReturnsEnumerableOfT<Model, Model, Model>(Its.Any<Model>(), Its.Any<Model>()))
+                .ToReturn(() => Enumerable.Empty<Model>());
 
-			var target = _genericMethodsTestInterface.Target;
+            var target = _genericMethodsTestInterface.Target;
 
-			Assert.IsNotNull(target);
+            Assert.IsNotNull(target);
 
 
-			target.MethodWith3ParamsAndReturnsEnumerableOfT<Model, Model, Model, Model>(new Model(), new Model(), new Model());
-		}
-	}
+            target.MethodWith2ParamsAndReturnsEnumerableOfT<Model, Model, Model>(new Model(), new Model());
+        }
+
+        [TestMethod]
+        public void MethodWithNParamsToReturnTest()
+        {
+            _genericMethodsTestInterface.Mock(m => m.MethodWith3ParamsAndReturnsEnumerableOfT<Model, Model, Model, Model>(Its.Any<Model>(), Its.Any<Model>(), Its.Any<Model>()))
+                .ToReturn(() => Enumerable.Empty<Model>());
+
+            var target = _genericMethodsTestInterface.Target;
+
+            Assert.IsNotNull(target);
+
+
+            target.MethodWith3ParamsAndReturnsEnumerableOfT<Model, Model, Model, Model>(new Model(), new Model(), new Model());
+        }
+    }
 }

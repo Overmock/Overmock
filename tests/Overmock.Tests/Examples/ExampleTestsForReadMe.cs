@@ -1,6 +1,6 @@
 ﻿namespace Overmock.Tests.Examples
 {
-	[TestClass]
+    [TestClass]
     public class ExampleTestsForReadMe
     {
         public class Model
@@ -23,36 +23,35 @@
             {
                 _log = log;
                 _repo = repo;
-			}
-			public Model SaveModel(Model model)
-			{
-				try
-				{
-					var saved = _repo.Save(model);
-					if (!saved)
-					{
-						_log.Log("Failed to save");
-					}
-					return model;
-				}
-				catch (Exception ex)
-				{
-					_log.Log(ex.Message);
-					throw;
-				}
-			}
-		}
+            }
+            public Model SaveModel(Model model)
+            {
+                try
+                {
+                    var saved = _repo.Save(model);
+                    if (!saved)
+                    {
+                        _log.Log("Failed to save");
+                    }
+                    return model;
+                }
+                catch (Exception ex)
+                {
+                    _log.Log(ex.Message);
+                    throw;
+                }
+            }
+        }
 
         [TestMethod]
         public void CallsSaveTest()
         {
             var id = 22;
             var wasSaved = false;
-            var log = Over.MockAnyInvocation<ILog>();
-            var repository = Over.Mock<IRepository>();
+            var log = Overmock.MockAnyInvocation<ILog>();
+            var repository = Overmock.Mock<IRepository>();
 
-            repository.Mock(r => r.Save(Its.Any<Model>())).ToCall(c =>
-            {
+            repository.Mock(r => r.Save(Its.Any<Model>())).ToCall(c => {
                 wasSaved = true;
                 return c.Get<Model>("model")?.Id == id;
             }, Times.Once);
@@ -67,8 +66,8 @@
         public void ThrowsExceptionWhenSaveFailsTest()
         {
             var expected = "Failed to save";
-            var log = Over.MockAnyInvocation<ILog>();
-            var repository = Over.Mock<IRepository>();
+            var log = Overmock.MockAnyInvocation<ILog>();
+            var repository = Overmock.Mock<IRepository>();
 
             repository.Mock(r => r.Save(Its.Any<Model>())).ToThrow(new Exception(expected));
 

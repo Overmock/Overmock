@@ -1,11 +1,11 @@
 ﻿namespace Overmock.Tests.OvermockedMock
 {
-	public partial class PropertyGetTests
+    public partial class PropertyGetTests
     {
         //[TestMethod]
         //public void IntPropertyToReturnTest()
         //{
-        //    Overmocked.Mock(_overmock, t => t.Int)
+        //    Overmock.Mock(_overmock, t => t.Int)
         //        .ToReturn(20);
 
         //    var test = _overmock.Int;
@@ -14,36 +14,36 @@
         //}
 
         [TestMethod]
-		public void StringPropertyToReturnTest()
-		{
-			Over.Overmock(_overmock, t => t.String)
-				.ToReturn("testing-name");
+        public void StringPropertyToReturnTest()
+        {
+            Overmock.OverMock(_overmock, t => t.String)
+                .ToReturn("testing-name");
 
-			var test = _overmock.String;
+            var test = _overmock.Target.String;
 
-			Assert.AreEqual("testing-name", test);
-		}
+            Assert.AreEqual("testing-name", test);
+        }
 
-		[TestMethod]
-		public void ModelPropertyToReturnTest()
-		{
-			Over.Overmock(_overmock, t => t.Model)
-				.ToReturn(_model1);
+        [TestMethod]
+        public void ModelPropertyToReturnTest()
+        {
+            Overmock.OverMock(_overmock, t => t.Model)
+                .ToReturn(_model1);
 
-			var test = _overmock.Model;
+            var test = _overmock.Target.Model;
 
-			Assert.AreEqual(_model1, test);
-		}
+            Assert.AreEqual(_model1, test);
+        }
 
-		[TestMethod]
-		public void ListOfModelPropertyToReturnTest()
-		{
-            Over.Overmock(_overmock, t => t.ListOfModels)
-				.ToReturn(_models);
+        [TestMethod]
+        public void ListOfModelPropertyToReturnTest()
+        {
+            Overmock.OverMock(_overmock, t => t.ListOfModels)
+                .ToReturn(_models);
 
-			var test = _overmock.ListOfModels;
+            var test = _overmock.Target.ListOfModels;
 
-			Assert.AreEqual(_models, test);
-		}
-	}
+            Assert.AreEqual(_models, test);
+        }
+    }
 }

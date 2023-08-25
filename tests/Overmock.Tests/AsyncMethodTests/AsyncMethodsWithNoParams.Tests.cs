@@ -2,15 +2,15 @@
 
 namespace Overmock.Tests
 {
-	[TestClass]
-	public partial class AsyncMethodsWithNoParamsTests
-	{
-		private readonly IOvermock<IAsyncMethodsWithNoParams> _overmock = new Overmock<IAsyncMethodsWithNoParams>();
+    [TestClass]
+    public partial class AsyncMethodsWithNoParamsTests
+    {
+        private readonly IOvermock<IAsyncMethodsWithNoParams> _overmock = new Overmock<IAsyncMethodsWithNoParams>();
 
-		[TestInitialize]
-		public void Initialize()
-		{
+        [TestInitialize]
+        public void Initialize()
+        {
 
-		}
-	}
+        }
+    }
 }

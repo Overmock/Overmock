@@ -1,28 +1,37 @@
-﻿using System;
-using System.Threading;
+﻿/* Unmerged change from project 'Kimono (netstandard2.1)'
+Before:
 using Kimono.Internal;
+After:
+using Kimono;
+using Kimono;
+using Kimono.Internal;
+*/
+using Kimono.Internal;
+using Kimono.Proxies;
+using System;
+using System.Threading;
 
-namespace Kimono.Proxies
+namespace Kimono
 {
     /// <summary>
     /// Class ProxyFactoryProvider.
-    /// Implements the <see cref="IProxyFactoryProvider" />
+    /// Implements the <see cref="IFactoryProvider" />
     /// </summary>
-    /// <seealso cref="IProxyFactoryProvider" />
-    public abstract class ProxyFactoryProvider : IProxyFactoryProvider
+    /// <seealso cref="IFactoryProvider" />
+    public abstract class FactoryProvider : IFactoryProvider
     {
-        private static readonly IProxyFactoryProvider _proxyFactory = new CachedProxyFactoryProvider();
-        private static IProxyFactoryProvider _current = _proxyFactory;
+        private static IDelegateFactory _delegateFactory = new ExpressionMethodDelegateGenerator();
+        private static IFactoryProvider _proxyFactory = new CachedProxyFactoryProvider();
 
         /// <summary>
-        /// The default <see cref="IProxyFactoryProvider" />
+        /// The default <see cref="IFactoryProvider" />
         /// </summary>
-        public static readonly IProxyFactoryProvider Default = _proxyFactory;
+        public static readonly IFactoryProvider ProxyFactory = _proxyFactory;
 
         /// <summary>
-        /// Prevents a default instance of the <see cref="ProxyFactoryProvider"/> class from being created.
+        /// Prevents a default instance of the <see cref="FactoryProvider"/> class from being created.
         /// </summary>
-        private ProxyFactoryProvider()
+        private FactoryProvider()
         {
         }
 
@@ -30,16 +39,26 @@ namespace Kimono.Proxies
         /// Gets the current.
         /// </summary>
         /// <value>The current.</value>
-        public static IProxyFactoryProvider Current => _current;
+        public static IDelegateFactory DelegateFactory => _delegateFactory;
 
         /// <summary>
         /// Uses the specified factory.
         /// </summary>
         /// <param name="factory">The factory.</param>
         /// <returns>IProxyFactoryProvider.</returns>
-        public static IProxyFactoryProvider Use(IProxyFactoryProvider factory)
+        public static IFactoryProvider Use(IFactoryProvider factory)
         {
-            return Interlocked.Exchange(ref _current, factory);
+            return Interlocked.Exchange(ref _proxyFactory, factory);
+        }
+
+        /// <summary>
+        /// Uses the specified factory.
+        /// </summary>
+        /// <param name="factory">The factory.</param>
+        /// <returns>IProxyFactoryProvider.</returns>
+        public static IDelegateFactory Use(IDelegateFactory factory)
+        {
+            return Interlocked.Exchange(ref _delegateFactory, factory);
         }
 
         /// <summary>
@@ -63,15 +82,13 @@ namespace Kimono.Proxies
 
         /// <summary>
         /// Class CachedProxyFactoryProvider.
-        /// Implements the <see cref="ProxyFactoryProvider" />
+        /// Implements the <see cref="FactoryProvider" />
         /// </summary>
-        /// <seealso cref="ProxyFactoryProvider" />
-        private sealed class CachedProxyFactoryProvider : ProxyFactoryProvider
+        /// <seealso cref="FactoryProvider" />
+        private sealed class CachedProxyFactoryProvider : FactoryProvider
         {
-            /// <summary>
-            /// The interface proxy factory
-            /// </summary>
             private readonly IProxyFactory _interfaceProxyFactory = new InterfaceProxyFactory(GeneratedProxyCache.Cache);
+
             /// <summary>
             /// Provides the specified interceptor.
             /// </summary>
@@ -83,11 +100,6 @@ namespace Kimono.Proxies
                 if (interceptor.IsInterface())
                 {
                     return _interfaceProxyFactory;
-                }
-
-                if (interceptor.IsDelegate())
-                {
-                    return new DelegateProxyFactory(GeneratedProxyCache.Cache);
                 }
 
                 throw new NotImplementedException();

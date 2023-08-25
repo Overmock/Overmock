@@ -7,7 +7,7 @@ using System.Reflection.Emit;
 
 namespace Kimono.Internal
 {
-    internal sealed class DynamicMethodDelegateGenerator : MethodDelegateGenerator
+    internal sealed class DynamicMethodDelegateGenerator : DelegateFactory
     {
         private static DynamicMethod CreateDynamicMethod(MethodInfo method, Type[] parameters, bool returnsVoid)
         {
@@ -102,7 +102,7 @@ namespace Kimono.Internal
             //emitter.Emit(OpCodes.Ret);
         }
 
-        protected override TDelegate GenerateMethodInvoker<TDelegate>(MethodInfo method, Type delegateType, IReadOnlyList<RuntimeParameter> parameters, bool returnsVoid = false)
+        protected override TDelegate CreateMethodInvoker<TDelegate>(MethodInfo method, Type delegateType, IReadOnlyList<RuntimeParameter> parameters, bool returnsVoid = false)
         {
             var parameterArray = parameters.Select(p => p.Type).ToArray();
             var dynamicMethod = CreateDynamicMethod(method, parameterArray, returnsVoid);

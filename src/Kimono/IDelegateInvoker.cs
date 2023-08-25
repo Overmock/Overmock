@@ -3,7 +3,7 @@
     /// <summary>
     /// Interface IMethodDelegateInvoker
     /// </summary>
-    public interface IMethodDelegateInvoker
+    public interface IDelegateInvoker
     {
         /// <summary>
         /// Invokes the specified target.
