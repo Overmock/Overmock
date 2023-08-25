@@ -112,7 +112,7 @@ namespace Overmock
                 return true;
             }
 
-            if (ReferenceEquals(obj, null))
+            if (obj is null)
             {
                 return false;
             }
@@ -134,7 +134,7 @@ namespace Overmock
                 return true;
             }
 
-            if (ReferenceEquals(obj, null))
+            if (obj is null)
             {
                 return false;
             }
@@ -215,7 +215,7 @@ namespace Overmock
                 _methodsProvider = methodsProvider;
                 _propertiesProvider = propertiesProvider;
             }
-            
+
             internal static bool HandleMembers<TInfo, TCall>(IInvocationContext context, TInfo info, Span<TCall> overridables, Func<TInfo, TCall, bool> predicate) where TCall : IOverridable
             {
                 ref var reference = ref MemoryMarshal.GetReference(overridables);

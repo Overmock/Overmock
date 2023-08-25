@@ -1,19 +1,13 @@
 ﻿using Kimono;
-using Kimono.Proxies;
-using Overmock.Mocking;
 using System;
-using System.Collections.Concurrent;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Threading;
 
 namespace Overmock
 {
     /// <summary>
     /// Contains methods used for configuring an overmock.
     /// </summary>
-    public  static partial class Over
+    public static partial class Over
     {
         /// <summary>
         /// Mocks the given interface type.

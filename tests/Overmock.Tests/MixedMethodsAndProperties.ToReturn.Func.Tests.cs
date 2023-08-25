@@ -2,20 +2,20 @@
 
 namespace Overmock.Tests
 {
-	public partial class MixedMethodsAndPropertiesTests
-	{
+    public partial class MixedMethodsAndPropertiesTests
+    {
         private const string _helloWorld = "hello world";
 
         [TestMethod]
-		public void ProxyCallsMethodWithParametersToReturn()
-		{
-			var overmock = Over.Mock<IInterfaceWithBothMethodsAndProperties>();
-			overmock.Mock(t => t.MethodWithReturn(Its.Any<string>()))
-				.ToReturn(() => _helloWorld);
+        public void ProxyCallsMethodWithParametersToReturn()
+        {
+            var overmock = Over.Mock<IInterfaceWithBothMethodsAndProperties>();
+            overmock.Mock(t => t.MethodWithReturn(Its.Any<string>()))
+                .ToReturn(() => _helloWorld);
 
-			var actual = overmock.Target.MethodWithReturn(_helloWorld);
+            var actual = overmock.Target.MethodWithReturn(_helloWorld);
 
-			Assert.AreEqual(_helloWorld, actual);
+            Assert.AreEqual(_helloWorld, actual);
         }
 
         [TestMethod]

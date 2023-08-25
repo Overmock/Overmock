@@ -1,73 +1,73 @@
 namespace Overmock.Tests
 {
-	public partial class MethodWithNoParamsTests
-	{
-		[TestMethod]
-		public void VoidMethodWithNoParamsToCallTest()
-		{
-			var called = false;
+    public partial class MethodWithNoParamsTests
+    {
+        [TestMethod]
+        public void VoidMethodWithNoParamsToCallTest()
+        {
+            var called = false;
 
-			_overmock.Mock(t => t.VoidMethodWithNoParams())
-				.ToCall(c => called = true);
+            _overmock.Mock(t => t.VoidMethodWithNoParams())
+                .ToCall(c => called = true);
 
-			var target = _overmock.Target;
+            var target = _overmock.Target;
 
-			Assert.IsNotNull(target);
+            Assert.IsNotNull(target);
 
-			target.VoidMethodWithNoParams();
+            target.VoidMethodWithNoParams();
 
-			Assert.IsTrue(called);
-		}
-		
+            Assert.IsTrue(called);
+        }
+
         [TestMethod]
         public void BoolMethodWithNoParamsToCallTest()
-		{
-			var called = false;
+        {
+            var called = false;
 
-			_overmock.Mock(t => t.BoolMethodWithNoParams())
-				.ToCall(c => called = true);
+            _overmock.Mock(t => t.BoolMethodWithNoParams())
+                .ToCall(c => called = true);
 
-			var target = _overmock.Target;
+            var target = _overmock.Target;
 
-			Assert.IsNotNull(target);
+            Assert.IsNotNull(target);
 
-			target.BoolMethodWithNoParams();
+            target.BoolMethodWithNoParams();
 
-			Assert.IsTrue(called);
-		}
+            Assert.IsTrue(called);
+        }
 
-		[TestMethod]
-		public void ModelMethodWithNoParamsToCallTest()
-		{
-			var called = false;
+        [TestMethod]
+        public void ModelMethodWithNoParamsToCallTest()
+        {
+            var called = false;
 
-			_overmock.Mock(t => t.ModelMethodWithNoParams())
-				.ToCall(c => called = true);
+            _overmock.Mock(t => t.ModelMethodWithNoParams())
+                .ToCall(c => called = true);
 
-			var target = _overmock.Target;
+            var target = _overmock.Target;
 
-			Assert.IsNotNull(target);
+            Assert.IsNotNull(target);
 
-			target.ModelMethodWithNoParams();
+            target.ModelMethodWithNoParams();
 
-			Assert.IsTrue(called);
-		}
+            Assert.IsTrue(called);
+        }
 
-		[TestMethod]
-		public void ListOfModelMethodWithNoParamsToCallTest()
-		{
-			var called = false;
+        [TestMethod]
+        public void ListOfModelMethodWithNoParamsToCallTest()
+        {
+            var called = false;
 
-			_overmock.Mock(t => t.ListOfModelMethodWithNoParams())
-				.ToCall(c => called = true);
+            _overmock.Mock(t => t.ListOfModelMethodWithNoParams())
+                .ToCall(c => called = true);
 
-			var target = _overmock.Target;
+            var target = _overmock.Target;
 
-			Assert.IsNotNull(target);
+            Assert.IsNotNull(target);
 
-			target.ListOfModelMethodWithNoParams();
+            target.ListOfModelMethodWithNoParams();
 
-			Assert.IsTrue(called);
-		}
-	}
+            Assert.IsTrue(called);
+        }
+    }
 }

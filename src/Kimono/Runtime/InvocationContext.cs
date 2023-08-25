@@ -8,7 +8,7 @@ namespace Kimono
     /// Class InvocationContext.
     /// </summary>
     public sealed class InvocationContext : IInvocationContext
-	{
+    {
         private readonly IInterceptor _interceptor;
         private readonly RuntimeContext _runtimeContext;
         private readonly Func<Parameters> _parametersProvider;
@@ -32,19 +32,19 @@ namespace Kimono
             _interceptor = interceptor;
             _parameterValuesProvider = () => parameterValues;
             _parametersProvider = () => new Parameters(parameters, parameterValues);
-		}
+        }
 
-		/// <summary>
-		/// Gets the interceptor.
-		/// </summary>
-		/// <value>The interceptor.</value>
-		public IInterceptor Interceptor => _interceptor;
+        /// <summary>
+        /// Gets the interceptor.
+        /// </summary>
+        /// <value>The interceptor.</value>
+        public IInterceptor Interceptor => _interceptor;
 
-		/// <summary>
-		/// Gets the name of the member.
-		/// </summary>
-		/// <value>The name of the member.</value>
-		public string MemberName => _runtimeContext.MemberName;
+        /// <summary>
+        /// Gets the name of the member.
+        /// </summary>
+        /// <value>The name of the member.</value>
+        public string MemberName => _runtimeContext.MemberName;
 
         /// <summary>
         /// Gets the member.
@@ -58,11 +58,11 @@ namespace Kimono
         /// <value>The method.</value>
         public MethodInfo Method => _runtimeContext.ProxiedMember.Method;
 
-		/// <summary>
-		/// Gets the parameters.
-		/// </summary>
-		/// <value>The parameters.</value>
-		public Parameters Parameters
+        /// <summary>
+        /// Gets the parameters.
+        /// </summary>
+        /// <value>The parameters.</value>
+        public Parameters Parameters
         {
             get
             {
@@ -70,11 +70,11 @@ namespace Kimono
             }
         }
 
-		/// <summary>
-		/// Gets or sets the return value.
-		/// </summary>
-		/// <value>The return value.</value>
-		public object? ReturnValue
+        /// <summary>
+        /// Gets or sets the return value.
+        /// </summary>
+        /// <value>The return value.</value>
+        public object? ReturnValue
         {
             get
             {
@@ -89,16 +89,16 @@ namespace Kimono
         /// <inheritdoc />
         public bool TargetInvoked => _targetInvoked;
 
-		/// <summary>
-		/// Gets the specified name.
-		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <param name="name">The name.</param>
-		/// <returns>T.</returns>
-		public T GetParameter<T>(string name)
-		{
-			return Parameters.Get<T>(name);
-		}
+        /// <summary>
+        /// Gets the specified name.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="name">The name.</param>
+        /// <returns>T.</returns>
+        public T GetParameter<T>(string name)
+        {
+            return Parameters.Get<T>(name);
+        }
 
         /// <summary>
         /// Invokes the target.
@@ -106,10 +106,10 @@ namespace Kimono
         /// <param name="setReturnValue">if set to <c>true</c> [set return value].</param>
         /// <param name="force">if set to <c>true</c> forces the call to be invoked regardless if it's already been called successfully.</param>
         public void Invoke(bool setReturnValue = true, bool force = false)
-		{
-			// If the target's member has already been called and they
-			// haven't forced the invocation, then return to the caller;
-			if (_targetInvoked && !force) { return; }
+        {
+            // If the target's member has already been called and they
+            // haven't forced the invocation, then return to the caller;
+            if (_targetInvoked && !force) { return; }
 
             var invoker = _runtimeContext.GetMethodInvoker();
 
@@ -118,51 +118,51 @@ namespace Kimono
             // If the target's null then we don't have one to call;
             if (target is null) { return; }
 
-			var returnValue = invoker.Invoke(target, _parameterValuesProvider());
+            var returnValue = invoker.Invoke(target, _parameterValuesProvider());
 
             _targetInvoked = true;
 
             if (setReturnValue)
-			{
-				_returnValue = returnValue;
-			}
-		}
+            {
+                _returnValue = returnValue;
+            }
+        }
 
-		/// <summary>
-		/// Gets the return type default value.
-		/// </summary>
-		/// <returns>System.Nullable&lt;System.Object&gt;.</returns>
-		internal object? GetReturnTypeDefaultValue()
-		{
-			return _defaultReturnValue ??= DefaultReturnValueCache.GetDefaultValue(Method.ReturnType);
-		}
+        /// <summary>
+        /// Gets the return type default value.
+        /// </summary>
+        /// <returns>System.Nullable&lt;System.Object&gt;.</returns>
+        internal object? GetReturnTypeDefaultValue()
+        {
+            return _defaultReturnValue ??= DefaultReturnValueCache.GetDefaultValue(Method.ReturnType);
+        }
 
-		/// <summary>
-		/// Members the type of the returns value.
-		/// </summary>
-		/// <returns><c>true</c> if XXXX, <c>false</c> otherwise.</returns>
-		internal bool ReturnsValueType()
-		{
+        /// <summary>
+        /// Members the type of the returns value.
+        /// </summary>
+        /// <returns><c>true</c> if XXXX, <c>false</c> otherwise.</returns>
+        internal bool ReturnsValueType()
+        {
             var member = Member;
 
-			if (member is MethodInfo method)
-			{
-				return method.ReturnType.IsValueType;
-			}
+            if (member is MethodInfo method)
+            {
+                return method.ReturnType.IsValueType;
+            }
 
-			if (member is PropertyInfo property)
-			{
-				return property.PropertyType.IsValueType;
-			}
+            if (member is PropertyInfo property)
+            {
+                return property.PropertyType.IsValueType;
+            }
 
-			return false;
+            return false;
         }
 
         //internal InvocationContext Reset(object[] parameters)
         //{
         //    _arguments = parameters;
         //    _parameters?.SetParameterValues(parameters);
-            
+
         //    TargetInvoked = false;
 
         //    return this;

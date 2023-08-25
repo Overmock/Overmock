@@ -10,5 +10,5 @@ namespace Overmock.Tests.Mocks.Methods
         Model ModelMethodWithNoParams();
 
         List<Model> ListOfModelMethodWithNoParams();
-	}
+    }
 }

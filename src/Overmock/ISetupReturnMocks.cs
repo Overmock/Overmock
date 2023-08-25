@@ -19,6 +19,6 @@
         /// <summary>
         /// Sets up an new overmock for the return type.
         /// </summary>
-        IOvermock<TMock> ToReturnMock<TMock>(IOvermock<TMock> overmock)  where TMock : class, TReturn;
+        IOvermock<TMock> ToReturnMock<TMock>(IOvermock<TMock> overmock) where TMock : class, TReturn;
     }
 }

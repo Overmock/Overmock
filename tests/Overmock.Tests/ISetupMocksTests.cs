@@ -18,7 +18,7 @@ namespace Overmock.Tests
             var target = imOvermocked.Target;
 
             Assert.IsNotNull(target);
-            
+
             target.IDoNothing();
         }
 

@@ -1,9 +1,9 @@
 ﻿using Kimono.Emit;
-using Kimono.Proxies.Internal.MethodInvokers;
 using Kimono.Proxies;
-using System.Reflection;
+using Kimono.Proxies.Internal.MethodInvokers;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 
 namespace Kimono
 {

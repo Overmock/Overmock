@@ -1,5 +1,4 @@
 ﻿using Kimono;
-using Overmock;
 using Overmock.Tests.Mocks;
 using Overmock.Tests.Mocks.Methods;
 
@@ -31,12 +30,12 @@ namespace Overmock.Tests
         {
             Over.Use(new TestInvocationHandler());
 
-			var overmock = Over.Mock<IMethodsWith2Parameters>();
+            var overmock = Over.Mock<IMethodsWith2Parameters>();
 
             Over.Mock(overmock, o => o.BoolMethodWithStringAndModel(Its.Any<string>(), Its.Any<Model>()))
-				.ToBeCalled();
+                .ToBeCalled();
 
-			var result = overmock.Target.BoolMethodWithStringAndModel("hello", new Model { Id = 420 });
+            var result = overmock.Target.BoolMethodWithStringAndModel("hello", new Model { Id = 420 });
 
             Assert.IsTrue(result);
 

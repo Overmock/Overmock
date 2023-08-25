@@ -3,19 +3,18 @@ using Kimono.Proxies;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Reflection.Emit;
 
 namespace Kimono.Internal
 {
     internal sealed class ProxyMethodFactory : ProxyMemberFactory, IProxyMethodFactory
-	{
+    {
         public ProxyMethodFactory(IMethodDelegateFactory? delegateGenerator = null) : base(delegateGenerator)
         {
         }
 
         public void Create(IProxyContextBuilder context, IEnumerable<MethodInfo> methods)
-		{
-			CreateMethods(context, methods);
+        {
+            CreateMethods(context, methods);
         }
 
         public void CreateMethod(IProxyContextBuilder context, MethodInfo methodInfo)
@@ -45,15 +44,15 @@ namespace Kimono.Internal
             DelegateFactory.EmitConstructor(emitter, baseConstructor);
         }
 
-		private void CreateMethods(IProxyContextBuilder context, IEnumerable<MethodInfo> methods)
-		{
-			if (Constants.DisposableType.IsAssignableFrom(context.Interceptor.TargetType))
-			{
-				methods = methods.Where(m => m.DeclaringType != Constants.DisposableType);
+        private void CreateMethods(IProxyContextBuilder context, IEnumerable<MethodInfo> methods)
+        {
+            if (Constants.DisposableType.IsAssignableFrom(context.Interceptor.TargetType))
+            {
+                methods = methods.Where(m => m.DeclaringType != Constants.DisposableType);
                 DelegateFactory.EmitDisposeMethod(context, Constants.DisposeMethod);
-			}
+            }
 
-			foreach (var methodInfo in methods)
+            foreach (var methodInfo in methods)
             {
                 CreateMethod(context, methodInfo);
             }

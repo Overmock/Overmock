@@ -3,13 +3,13 @@ using System;
 
 namespace Overmock.Mocking.Internal
 {
-	/// <summary>
-	/// Class MethodCallOverride.
-	/// Implements the <see cref="Overmock.Mocking.IOverride" />
-	/// </summary>
-	/// <seealso cref="Overmock.Mocking.IOverride" />
-	internal sealed class MethodCallOverride : Override
-	{
+    /// <summary>
+    /// Class MethodCallOverride.
+    /// Implements the <see cref="Overmock.Mocking.IOverride" />
+    /// </summary>
+    /// <seealso cref="Overmock.Mocking.IOverride" />
+    internal sealed class MethodCallOverride : Override
+    {
         /// <summary>
         /// Initializes a new instance of the <see cref="MethodCallOverride"/> class.
         /// </summary>
@@ -17,21 +17,21 @@ namespace Overmock.Mocking.Internal
         /// <param name="overmock">The overmock.</param>
         public MethodCallOverride(Times times, Func<OvermockContext, object?> overmock)
         {
-			Times = times;
+            Times = times;
             Overmock = overmock;
         }
 
-		/// <summary>
-		/// Gets the overmock.
-		/// </summary>
-		/// <value>The overmock.</value>
-		public Delegate Overmock { get; }
+        /// <summary>
+        /// Gets the overmock.
+        /// </summary>
+        /// <value>The overmock.</value>
+        public Delegate Overmock { get; }
 
-		/// <summary>
-		/// Gets the times.
-		/// </summary>
-		/// <value>The times.</value>
-		public Times Times { get; }
+        /// <summary>
+        /// Gets the times.
+        /// </summary>
+        /// <value>The times.</value>
+        public Times Times { get; }
 
         public override void Verify()
         {

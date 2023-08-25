@@ -3,13 +3,13 @@ using System.Reflection;
 
 namespace Overmock.Mocking.Internal
 {
-	/// <summary>
-	/// Class Overridable.
-	/// Implements the <see cref="IOverridable" />
-	/// </summary>
-	/// <seealso cref="IOverridable" />
-	internal abstract class Overridable : Verifiable, IOverridable
-	{
+    /// <summary>
+    /// Class Overridable.
+    /// Implements the <see cref="IOverridable" />
+    /// </summary>
+    /// <seealso cref="IOverridable" />
+    internal abstract class Overridable : Verifiable, IOverridable
+    {
         private readonly IOverride _exceptionOverride;
 
         protected Overridable(string name)
@@ -19,24 +19,24 @@ namespace Overmock.Mocking.Internal
 
         /// <inheritdoc />
         public IEnumerable<IOverride> GetOverrides()
-		{
-			var overrides = new List<IOverride>();
+        {
+            var overrides = new List<IOverride>();
 
-			AddOverridesTo(overrides);
+            AddOverridesTo(overrides);
 
-			if (overrides.Count == 0)
-			{
-				overrides.Add(_exceptionOverride);
-			}
+            if (overrides.Count == 0)
+            {
+                overrides.Add(_exceptionOverride);
+            }
 
-			return overrides.AsReadOnly();
-		}
+            return overrides.AsReadOnly();
+        }
 
-		/// <summary>
-		/// Gets the target.
-		/// </summary>
-		/// <returns>MemberInfo.</returns>
-		public abstract MemberInfo GetTarget();
+        /// <summary>
+        /// Gets the target.
+        /// </summary>
+        /// <returns>MemberInfo.</returns>
+        public abstract MemberInfo GetTarget();
 
         protected override void Verify()
         {
@@ -53,5 +53,5 @@ namespace Overmock.Mocking.Internal
         /// </summary>
         /// <param name="overrides">The overrides.</param>
         protected abstract void AddOverridesTo(List<IOverride> overrides);
-	}
+    }
 }

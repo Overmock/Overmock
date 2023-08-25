@@ -1,7 +1,4 @@
-﻿using System;
-using System.Threading;
-
-/* Unmerged change from project 'Kimono (netstandard2.1)'
+﻿/* Unmerged change from project 'Kimono (netstandard2.1)'
 Before:
 using Kimono.Internal;
 After:
@@ -11,6 +8,8 @@ using Kimono.Internal;
 */
 using Kimono.Internal;
 using Kimono.Proxies;
+using System;
+using System.Threading;
 
 namespace Kimono
 {

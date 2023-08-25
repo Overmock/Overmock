@@ -8,22 +8,22 @@ using System.Reflection;
 namespace Overmock.Benchmarks
 {
     [MemoryDiagnoser]
-	public class NewProxyCreationBenchmark
+    public class NewProxyCreationBenchmark
     {
         private static readonly Benchmark _benchmarkClass = new Benchmark();
-		[Benchmark]
+        [Benchmark]
         [Arguments(1_000)]
         [Arguments(1_000_000)]
         //[Arguments(100_000_000)]
         public void NewKimono(int count)
-		{
+        {
             for (int i = 0; i < count; i++)
             {
                 var kimonoProxy = Intercept.WithHandler<IBenchmark, Benchmark>(_benchmarkClass, new KimonoInvocationHandler());
             }
-		}
+        }
 
-		[Benchmark]
+        [Benchmark]
         [Arguments(1_000)]
         [Arguments(1_000_000)]
         //[Arguments(100_000_000)]
@@ -35,7 +35,7 @@ namespace Overmock.Benchmarks
             }
         }
 
-		[Benchmark]
+        [Benchmark]
         [Arguments(1_000)]
         [Arguments(1_000_000)]
         //[Arguments(100_000_000)]
@@ -47,6 +47,6 @@ namespace Overmock.Benchmarks
             {
                 var castleProxy = generator.CreateInterfaceProxyWithTarget<IBenchmark>(_benchmarkClass, new[] { new CastleInterceptor() });
             }
-		}
-	}
+        }
+    }
 }

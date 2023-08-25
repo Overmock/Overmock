@@ -1,13 +1,13 @@
 ﻿
-using System.Linq.Expressions;
 using System;
+using System.Linq.Expressions;
 
 namespace Overmock
 {
     /// <summary>
     /// Contains methods used for configuring an overmock.
     /// </summary>
-    public  static partial class Over
+    public static partial class Over
     {
         /// <summary>
         /// For the specified target.

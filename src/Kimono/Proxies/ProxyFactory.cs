@@ -2,12 +2,12 @@
 
 namespace Kimono.Proxies
 {
-	/// <summary>
-	/// Provides a base implementation for <see cref="IProxyFactory"/>.
-	/// Implements the <see cref="IProxyFactory" />
-	/// </summary>
-	/// <seealso cref="IProxyFactory" />
-	public abstract class ProxyFactory : IProxyFactory
+    /// <summary>
+    /// Provides a base implementation for <see cref="IProxyFactory"/>.
+    /// Implements the <see cref="IProxyFactory" />
+    /// </summary>
+    /// <seealso cref="IProxyFactory" />
+    public abstract class ProxyFactory : IProxyFactory
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ProxyFactory"/> class.

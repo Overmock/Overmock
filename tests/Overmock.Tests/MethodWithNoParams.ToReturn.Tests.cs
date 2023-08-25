@@ -1,19 +1,19 @@
 namespace Overmock.Tests
 {
-	public partial class MethodWithNoParamsTests
-	{
-		[TestMethod]
-		public void VoidMethodWithNoParamsToBeCalledTest()
-		{
+    public partial class MethodWithNoParamsTests
+    {
+        [TestMethod]
+        public void VoidMethodWithNoParamsToBeCalledTest()
+        {
             _overmock.Mock(t => t.VoidMethodWithNoParams()).ToBeCalled();
 
-			var target = _overmock.Target;
+            var target = _overmock.Target;
 
-			Assert.IsNotNull(target);
+            Assert.IsNotNull(target);
 
-			target.VoidMethodWithNoParams();
-		}
-		
+            target.VoidMethodWithNoParams();
+        }
+
         [TestMethod]
         public void BoolMethodWithNoParamsToReturnTest()
         {
@@ -27,36 +27,36 @@ namespace Overmock.Tests
             var test = target.BoolMethodWithNoParams();
 
             Assert.IsTrue(test);
-		}
+        }
 
-		[TestMethod]
-		public void ModelMethodWithNoParamsToReturnTest()
-		{
-			_overmock.Mock(t => t.ModelMethodWithNoParams())
-				.ToReturn(_model1);
+        [TestMethod]
+        public void ModelMethodWithNoParamsToReturnTest()
+        {
+            _overmock.Mock(t => t.ModelMethodWithNoParams())
+                .ToReturn(_model1);
 
-			var target = _overmock.Target;
+            var target = _overmock.Target;
 
-			Assert.IsNotNull(target);
+            Assert.IsNotNull(target);
 
-			var test = target.ModelMethodWithNoParams();
+            var test = target.ModelMethodWithNoParams();
 
-			Assert.AreEqual(_model1, test);
-		}
+            Assert.AreEqual(_model1, test);
+        }
 
-		[TestMethod]
-		public void ListOfModelMethodWithNoParamsToReturnTest()
-		{
-			_overmock.Mock(t => t.ListOfModelMethodWithNoParams())
-				.ToReturn(_models);
+        [TestMethod]
+        public void ListOfModelMethodWithNoParamsToReturnTest()
+        {
+            _overmock.Mock(t => t.ListOfModelMethodWithNoParams())
+                .ToReturn(_models);
 
-			var target = _overmock.Target;
+            var target = _overmock.Target;
 
-			Assert.IsNotNull(target);
+            Assert.IsNotNull(target);
 
-			var test = target.ListOfModelMethodWithNoParams();
+            var test = target.ListOfModelMethodWithNoParams();
 
-			Assert.AreEqual(_models, test);
-		}
-	}
+            Assert.AreEqual(_models, test);
+        }
+    }
 }

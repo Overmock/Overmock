@@ -4,20 +4,20 @@ namespace Overmock
     /// <summary>
     /// Contains methods used for configuring an overmock.
     /// </summary>
-    public  static partial class Over
-	{
-		/// <summary>
-		/// Signals the Overmock to expect any invocation.
-		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <returns>IOvermock&lt;T&gt;.</returns>
-		public static IOvermock<T> MockAnyInvocation<T>() where T : class
-		{
-			var result = new Overmock<T>();
+    public static partial class Over
+    {
+        /// <summary>
+        /// Signals the Overmock to expect any invocation.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns>IOvermock&lt;T&gt;.</returns>
+        public static IOvermock<T> MockAnyInvocation<T>() where T : class
+        {
+            var result = new Overmock<T>();
 
-			((IExpectAnyInvocation)result).ExpectAny();
+            ((IExpectAnyInvocation)result).ExpectAny();
 
-			return result;
+            return result;
         }
 
         ///// <summary>

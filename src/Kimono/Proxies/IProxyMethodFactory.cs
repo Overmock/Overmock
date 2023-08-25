@@ -4,12 +4,12 @@ using System.Reflection;
 
 namespace Kimono.Proxies
 {
-	/// <summary>
-	/// Interface IProxyMethodGenerator
-	/// </summary>
-	internal interface IProxyMethodFactory
+    /// <summary>
+    /// Interface IProxyMethodGenerator
+    /// </summary>
+    internal interface IProxyMethodFactory
     {
-		void Create(IProxyContextBuilder context, IEnumerable<MethodInfo> methods);
+        void Create(IProxyContextBuilder context, IEnumerable<MethodInfo> methods);
 
         void EmitConstructor(IEmitter emitter, ConstructorInfo baseConstructor);
 
