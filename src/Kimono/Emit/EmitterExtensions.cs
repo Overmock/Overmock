@@ -20,6 +20,13 @@ namespace Kimono.Emit
         /// <summary>
         /// Gets the emitter for the MethodBuilder.
         /// </summary>
+        /// <param name="builder">The builder.</param>
+        /// <returns>IEmitter.</returns>
+        public static IEmitter GetEmitter(this ConstructorBuilder builder) => Emitter.For(builder.GetILGenerator());
+
+        /// <summary>
+        /// Gets the emitter for the MethodBuilder.
+        /// </summary>
         /// <param name="method">The method.</param>
         /// <returns>IEmitter.</returns>
         public static IEmitter GetEmitter(this DynamicMethod method) => Emitter.For(method.GetILGenerator());

@@ -13,9 +13,6 @@ namespace Kimono.Internal
 	/// <seealso cref="IProxyContextBuilder" />
 	public sealed class ProxyContextBuilder : IProxyContextBuilder
     {
-		/// <summary>
-		/// The method counter
-		/// </summary>
 		private int _methodCounter;
 
 		/// <summary>
@@ -29,7 +26,6 @@ namespace Kimono.Internal
 			Interceptor = target;
 			ProxyType = proxyType;
 			TypeBuilder = typeBuilder;
-			Interfaces = new List<Type>();
 			ProxyContext = new ProxyContext();
 		}
 
@@ -56,23 +52,6 @@ namespace Kimono.Internal
 		/// </summary>
 		/// <value>The proxy context.</value>
 		public ProxyContext ProxyContext { get; }
-
-		/// <summary>
-		/// Gets or sets the interfaces.
-		/// </summary>
-		/// <value>The interfaces.</value>
-		private List<Type> Interfaces { get; set; }
-
-		/// <summary>
-		/// Adds the interfaces.
-		/// </summary>
-		/// <param name="interfaceTypes">The interface types.</param>
-		public void AddInterfaces(params Type[] interfaceTypes)
-		{
-			var interfaces = Interfaces.ToArray();
-
-			Interfaces = interfaces.Union(interfaceTypes).Distinct().ToList();
-		}
 
 		/// <summary>
 		/// Gets the next method identifier.

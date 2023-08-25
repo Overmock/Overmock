@@ -9,10 +9,10 @@ namespace Kimono
 {
     /// <summary>
     /// Class MethodDelegateGenerator.
-    /// Implements the <see cref="IMethodDelegateGenerator" />
+    /// Implements the <see cref="IMethodDelegateFactory" />
     /// </summary>
-    /// <seealso cref="IMethodDelegateGenerator" />
-    public abstract class MethodDelegateGenerator : IMethodDelegateGenerator
+    /// <seealso cref="IMethodDelegateFactory" />
+    public abstract class MethodDelegateFactory : IMethodDelegateFactory
     {
         /// <summary>
         /// Emits the dispose interceptor.
@@ -20,7 +20,7 @@ namespace Kimono
         /// <param name="context">The context.</param>
         /// <param name="disposeMethod">The dispose method.</param>
         /// <exception cref="NotImplementedException"></exception>
-        public void EmitDisposeInterceptor(IProxyContextBuilder context, MethodInfo disposeMethod)
+        public void EmitDisposeMethod(IProxyContextBuilder context, MethodInfo disposeMethod)
         {
             var methodBuilder = context.TypeBuilder.DefineMethod(disposeMethod.Name, disposeMethod.Attributes ^ MethodAttributes.Abstract);
 
@@ -37,7 +37,7 @@ namespace Kimono
         /// <param name="emitter">The il generator.</param>
         /// <param name="baseConstructor">The base constructor.</param>
         /// <exception cref="NotImplementedException"></exception>
-        public void EmitTypeInitializer(IEmitter emitter, ConstructorInfo baseConstructor)
+        public void EmitConstructor(IEmitter emitter, ConstructorInfo baseConstructor)
         {
             emitter.Load(0).Load(1).Load(2)
                 .BaseCtor(baseConstructor)
@@ -51,7 +51,7 @@ namespace Kimono
         /// <param name="method">The method.</param>
         /// <returns>IMethodDelegateInvoker.</returns>
         /// <exception cref="NotImplementedException"></exception>
-        public IMethodDelegateInvoker GenerateDelegateInvoker(RuntimeContext context, MethodInfo method)
+        public IMethodDelegateInvoker CreateDelegateInvoker(RuntimeContext context, MethodInfo method)
         {
             var parameters = context.GetParameters();
 

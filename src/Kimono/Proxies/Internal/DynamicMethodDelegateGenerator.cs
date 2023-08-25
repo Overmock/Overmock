@@ -7,7 +7,7 @@ using System.Reflection.Emit;
 
 namespace Kimono.Internal
 {
-    internal sealed class DynamicMethodDelegateGenerator : MethodDelegateGenerator
+    internal sealed class DynamicMethodDelegateGenerator : MethodDelegateFactory
     {
         private static DynamicMethod CreateDynamicMethod(MethodInfo method, Type[] parameters, bool returnsVoid)
         {

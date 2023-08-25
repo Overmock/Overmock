@@ -4,16 +4,17 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Reflection.Emit;
+using Kimono.Emit;
 using Kimono.Proxies;
 
 namespace Kimono.Internal
 {
-	/// <summary>
-	/// Class InterfaceProxyFactory.
-	/// Implements the <see cref="Proxies.ProxyFactory" />
-	/// </summary>
-	/// <seealso cref="Proxies.ProxyFactory" />
-	internal sealed class InterfaceProxyFactory : ProxyFactory
+    /// <summary>
+    /// Class InterfaceProxyFactory.
+    /// Implements the <see cref="Proxies.ProxyFactory" />
+    /// </summary>
+    /// <seealso cref="Proxies.ProxyFactory" />
+    internal sealed class InterfaceProxyFactory : ProxyFactory
     {
         private static readonly ParameterExpression[] _proxyDelegateParameterExpressions = new ParameterExpression[] {
             Expression.Parameter(Constants.ProxyContextType),
@@ -28,9 +29,9 @@ namespace Kimono.Internal
         /// Initializes a new instance of the <see cref="InterfaceProxyFactory" /> class.
         /// </summary>
         /// <param name="cache">The cache.</param>
-        /// <param name="methodGenerator">The method generator.</param>
-        /// <param name="propertyGenerator">The property generator.</param>
-        internal InterfaceProxyFactory(IProxyCache cache, IProxyMethodFactory? methodGenerator = null, IProxyPropertyFactory? propertyGenerator = null) : base(cache)
+        /// <param name="methodFactory">The method factory.</param>
+        /// <param name="propertyFactory">The property factory.</param>
+        internal InterfaceProxyFactory(IProxyCache cache, IProxyMethodFactory? methodFactory = null, IProxyPropertyFactory? propertyFactory = null) : base(cache)
         {
             Name = GetName(Constants.AssemblyId);
             DynamicAssembly = AssemblyBuilder.DefineDynamicAssembly(
@@ -39,44 +40,46 @@ namespace Kimono.Internal
 
             DynamicModule = DynamicAssembly.DefineDynamicModule(Name);
 
-			MethodGenerator = methodGenerator ?? new ProxyMethodGenerator(new ExpressionMethodDelegateGenerator());
-			PropertyGenerator = propertyGenerator ?? new ProxyPropertyGenerator(); //new ExpressionMethodDelegateGenerator()
+            DelegateFactory = ProxyFactoryProvider.DelegateFactory;
+            MethodFactory = methodFactory ?? new ProxyMethodFactory();
+            PropertyFactory = propertyFactory ?? new ProxyPropertyFactory();
         }
 
-		private AssemblyBuilder DynamicAssembly { get; }
+        private AssemblyBuilder DynamicAssembly { get; }
 
-		private ModuleBuilder DynamicModule { get; }
+        private ModuleBuilder DynamicModule { get; }
 
-		private IProxyMethodFactory MethodGenerator { get; }
+        public IMethodDelegateFactory DelegateFactory { get; }
 
-		private IProxyPropertyFactory PropertyGenerator { get; }
+        private IProxyMethodFactory MethodFactory { get; }
 
-		private string Name { get; }
+        private IProxyPropertyFactory PropertyFactory { get; }
 
-		protected override IProxyGenerator<T> CreateCore<T>(IProxyContextBuilder builderContext)
+        private string Name { get; }
+
+        protected override IProxyGenerator<T> CreateCore<T>(IProxyContextBuilder builderContext)
         {
             const BindingFlags bindingFlags = BindingFlags.NonPublic | BindingFlags.Instance;
 
             var context = (ProxyContextBuilder)builderContext;
-
-            var constructor = context.ProxyType.GetConstructor(bindingFlags, null, Constants.ProxyBaseCtorParameterTypes, null)!;
+            var constructor = context.ProxyType.GetConstructor(
+                bindingFlags, null,
+                Constants.ProxyBaseCtorParameterTypes, null
+            )!;
 
             ImplementConstructor(context, constructor);
 
             (var methods, var properties) = AddInterfaceImplementations(context);
-			properties = properties.Distinct();
-			methods = methods.Concat(GetBaseMethods())
-                .Distinct();
 
-			MethodGenerator.Create(context, methods);
-            PropertyGenerator.Create(context, properties);
+            MethodFactory.Create(context, methods
+                .Concat(GetBaseMethods())
+                .Distinct());
+            PropertyFactory.Create(context, properties.Distinct());
 
             var proxyType = context.TypeBuilder.CreateType();
-
             var proxyConstructor = proxyType.GetConstructor(_proxyDelegateParameters)!;
-
             return Cache.SetGenerator(context.Interceptor.TargetType,
-                new ProxyGenerator<T>(context.ProxyContext, CreateProxyDelegate<T>(proxyConstructor)
+                new ProxyGenerator<T>(context.ProxyContext, CreateProxyDelegate<T>(proxyType, proxyConstructor)
             ));
         }
 
@@ -90,19 +93,25 @@ namespace Kimono.Internal
             const TypeAttributes attributes = TypeAttributes.Class | TypeAttributes.Public;
 
             var proxyType = Constants.ProxyType.MakeGenericType(interceptor.TargetType);
-			var typeBuilder = DynamicModule.DefineType(Constants.AssemblyAndTypeNameFormat.ApplyFormat(interceptor.TypeName), attributes, proxyType);
+            var typeBuilder = DynamicModule.DefineType(Constants.AssemblyAndTypeNameFormat.ApplyFormat(interceptor.TypeName), attributes, proxyType);
             return new ProxyContextBuilder(interceptor, typeBuilder, proxyType);
         }
 
-		private void ImplementConstructor(ProxyContextBuilder context, ConstructorInfo baseConstructor)
+        private void ImplementConstructor(ProxyContextBuilder context, ConstructorInfo baseConstructor)
         {
-            const MethodAttributes methodAttributes = MethodAttributes.Public;
+            const MethodAttributes attributes = MethodAttributes.Public;
 
-            var callingConvention = baseConstructor.CallingConvention;
-            var parameterTypes = baseConstructor.GetParameters().Select(p => p.ParameterType).ToList();
-            var constructorBuilder = context.TypeBuilder.DefineConstructor(methodAttributes, callingConvention, parameterTypes.ToArray());
-            var ilGenerator = constructorBuilder.GetILGenerator();
-            MethodGenerator.EmitTypeInitializer(ilGenerator, baseConstructor);
+            var parameterTypes = baseConstructor.GetParameters()
+                .Select(p => p.ParameterType)
+                .ToList();
+
+            var constructorBuilder = context.TypeBuilder.DefineConstructor(
+                attributes,
+                baseConstructor.CallingConvention,
+                parameterTypes.ToArray()
+            );
+
+            MethodFactory.EmitConstructor(constructorBuilder.GetEmitter(), baseConstructor);
         }
 
         private static (IEnumerable<MethodInfo>, IEnumerable<PropertyInfo>) AddInterfaceImplementations(ProxyContextBuilder context)
@@ -115,87 +124,84 @@ namespace Kimono.Internal
             return AddMembersRecursive(context, context.Interceptor.TargetType);
         }
 
-		private static (IEnumerable<MethodInfo>, IEnumerable<PropertyInfo>) AddMembersRecursive(ProxyContextBuilder context, Type interfaceType)
-		{
-			context.TypeBuilder.AddInterfaceImplementation(interfaceType);
+        private static (IEnumerable<MethodInfo>, IEnumerable<PropertyInfo>) AddMembersRecursive(ProxyContextBuilder context, Type interfaceType)
+        {
+            context.TypeBuilder.AddInterfaceImplementation(interfaceType);
 
-			context.AddInterfaces(interfaceType);
+            var methods = GetMethods(interfaceType);
+            var properties = interfaceType.GetProperties().AsEnumerable();
 
-			var methods = GetMethods(interfaceType);
-			var properties = interfaceType.GetProperties().AsEnumerable();
+            foreach (Type type in interfaceType.GetInterfaces())
+            {
+                methods = AddMethodsRecursive(type).Concat(methods);
+                properties = AddPropertiesRecursive(type).Concat(properties);
+            }
 
-			foreach (Type type in interfaceType.GetInterfaces())//.Where(i => i != Constants.DisposableType)
-			{
-				methods = AddMethodsRecursive(context, type).Concat(methods);
-				properties = AddPropertiesRecursive(context, type).Concat(properties);
-			}
+            return (methods.Distinct(), properties.Distinct());
+        }
 
-			return (methods.Distinct(), properties.Distinct());
-		}
-
-		private static IEnumerable<MethodInfo> AddMethodsRecursive(ProxyContextBuilder context, Type interfaceType)
+        private static IEnumerable<MethodInfo> AddMethodsRecursive(Type interfaceType)
         {
             var methods = GetMethods(interfaceType);
 
             foreach (Type type in interfaceType.GetInterfaces())
             {
-                methods = AddMethodsRecursive(context, type).Concat(methods);
+                methods = AddMethodsRecursive(type).Concat(methods);
             }
 
             return methods.Distinct();
-		}
+        }
 
-		private static IEnumerable<MethodInfo> GetMethods(Type interfaceType)
-		{
-			return interfaceType.GetMethods().Where(m => !m.IsSpecialName);
-		}
+        private static IEnumerable<MethodInfo> GetMethods(Type interfaceType)
+        {
+            return interfaceType.GetMethods().Where(m => !m.IsSpecialName);
+        }
 
-		private static IEnumerable<PropertyInfo> AddPropertiesRecursive(ProxyContextBuilder context, Type interfaceType)
+        private static IEnumerable<PropertyInfo> AddPropertiesRecursive(Type interfaceType)
         {
             var properties = interfaceType.GetProperties().AsEnumerable();
 
             foreach (Type type in interfaceType.GetInterfaces())
             {
-                properties = AddPropertiesRecursive(context, type).Concat(properties);
+                properties = AddPropertiesRecursive(type).Concat(properties);
             }
 
             return properties.Distinct();
         }
 
-		private static IEnumerable<MethodInfo> GetBaseMethods()
+        private static IEnumerable<MethodInfo> GetBaseMethods()
         {
             return typeof(object).GetMethods().Where(method => method.IsVirtual);
         }
 
-		private static Func<ProxyContext, IInterceptor, T> CreateProxyDelegate<T>(ConstructorInfo proxyConstructor)
-		{
-            var proxyFactory = Expression.Lambda<Func<ProxyContext, IInterceptor, T>>(
-                Expression.New(proxyConstructor, _proxyDelegateParameterExpressions),
-                _proxyDelegateParameterExpressions
-            );
-
-            return proxyFactory.Compile();
-        }
-
         //private static Func<ProxyContext, IInterceptor, T> CreateProxyDelegate<T>(Type proxyType, ConstructorInfo proxyConstructor)
         //{
-        //    var returnType = typeof(T);
-        //    var dynamicMethod = new DynamicMethod(
-        //        Constants.KimonoDelegateTypeNameFormat.ApplyFormat(proxyType.Name),
-        //        returnType,
-        //        _proxyDelegateParameters,
-        //        proxyType
+        //    var proxyFactory = Expression.Lambda<Func<ProxyContext, IInterceptor, T>>(
+        //        Expression.New(proxyConstructor, _proxyDelegateParameterExpressions),
+        //        _proxyDelegateParameterExpressions
         //    );
-            
-        //    var iLGenerator = dynamicMethod.GetILGenerator();
-        //    iLGenerator.Emit(OpCodes.Ldarg_0);
-        //    iLGenerator.Emit(OpCodes.Ldarg_1);
-        //    iLGenerator.Emit(OpCodes.Newobj, proxyConstructor);
-        //    iLGenerator.Emit(OpCodes.Ret);
-            
-        //    return (Func<ProxyContext, IInterceptor, T>)dynamicMethod.CreateDelegate(
-        //        Constants.GetFuncProxyContextIInterceptorTType<T>()
-        //    );
+
+        //    return proxyFactory.Compile();
         //}
+
+        private static Func<ProxyContext, IInterceptor, T> CreateProxyDelegate<T>(Type proxyType, ConstructorInfo proxyConstructor)
+        {
+            var dynamicMethod = new DynamicMethod(
+                Constants.KimonoDelegateTypeNameFormat.ApplyFormat(proxyType.Name),
+                typeof(T),
+                _proxyDelegateParameters,
+                proxyType
+            );
+
+            var iLGenerator = dynamicMethod.GetILGenerator();
+            iLGenerator.Emit(OpCodes.Ldarg_0);
+            iLGenerator.Emit(OpCodes.Ldarg_1);
+            iLGenerator.Emit(OpCodes.Newobj, proxyConstructor);
+            iLGenerator.Emit(OpCodes.Ret);
+
+            return (Func<ProxyContext, IInterceptor, T>)dynamicMethod.CreateDelegate(
+                Constants.GetFuncProxyContextIInterceptorTType<T>()
+            );
+        }
     }
 }

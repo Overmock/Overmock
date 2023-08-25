@@ -1,8 +1,18 @@
 ﻿using System;
 using System.Threading;
-using Kimono.Internal;
 
-namespace Kimono.Proxies
+/* Unmerged change from project 'Kimono (netstandard2.1)'
+Before:
+using Kimono.Internal;
+After:
+using Kimono;
+using Kimono;
+using Kimono.Internal;
+*/
+using Kimono.Internal;
+using Kimono.Proxies;
+
+namespace Kimono
 {
     /// <summary>
     /// Class ProxyFactoryProvider.
@@ -11,13 +21,13 @@ namespace Kimono.Proxies
     /// <seealso cref="IProxyFactoryProvider" />
     public abstract class ProxyFactoryProvider : IProxyFactoryProvider
     {
-        private static readonly IProxyFactoryProvider _proxyFactory = new CachedProxyFactoryProvider();
-        private static IProxyFactoryProvider _current = _proxyFactory;
+        private static IMethodDelegateFactory _delegateFactory = new ExpressionMethodDelegateGenerator();
+        private static IProxyFactoryProvider _proxyFactory = new CachedProxyFactoryProvider();
 
         /// <summary>
         /// The default <see cref="IProxyFactoryProvider" />
         /// </summary>
-        public static readonly IProxyFactoryProvider Default = _proxyFactory;
+        public static readonly IProxyFactoryProvider ProxyFactory = _proxyFactory;
 
         /// <summary>
         /// Prevents a default instance of the <see cref="ProxyFactoryProvider"/> class from being created.
@@ -30,7 +40,7 @@ namespace Kimono.Proxies
         /// Gets the current.
         /// </summary>
         /// <value>The current.</value>
-        public static IProxyFactoryProvider Current => _current;
+        public static IMethodDelegateFactory DelegateFactory => _delegateFactory;
 
         /// <summary>
         /// Uses the specified factory.
@@ -39,7 +49,17 @@ namespace Kimono.Proxies
         /// <returns>IProxyFactoryProvider.</returns>
         public static IProxyFactoryProvider Use(IProxyFactoryProvider factory)
         {
-            return Interlocked.Exchange(ref _current, factory);
+            return Interlocked.Exchange(ref _proxyFactory, factory);
+        }
+
+        /// <summary>
+        /// Uses the specified factory.
+        /// </summary>
+        /// <param name="factory">The factory.</param>
+        /// <returns>IProxyFactoryProvider.</returns>
+        public static IMethodDelegateFactory Use(IMethodDelegateFactory factory)
+        {
+            return Interlocked.Exchange(ref _delegateFactory, factory);
         }
 
         /// <summary>
@@ -68,10 +88,8 @@ namespace Kimono.Proxies
         /// <seealso cref="ProxyFactoryProvider" />
         private sealed class CachedProxyFactoryProvider : ProxyFactoryProvider
         {
-            /// <summary>
-            /// The interface proxy factory
-            /// </summary>
             private readonly IProxyFactory _interfaceProxyFactory = new InterfaceProxyFactory(GeneratedProxyCache.Cache);
+
             /// <summary>
             /// Provides the specified interceptor.
             /// </summary>
@@ -83,11 +101,6 @@ namespace Kimono.Proxies
                 if (interceptor.IsInterface())
                 {
                     return _interfaceProxyFactory;
-                }
-
-                if (interceptor.IsDelegate())
-                {
-                    return new DelegateProxyFactory(GeneratedProxyCache.Cache);
                 }
 
                 throw new NotImplementedException();

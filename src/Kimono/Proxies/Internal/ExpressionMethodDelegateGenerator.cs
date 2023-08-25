@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 
 namespace Kimono.Internal
 {
-    internal sealed class ExpressionMethodDelegateGenerator : MethodDelegateGenerator
+    internal sealed class ExpressionMethodDelegateGenerator : MethodDelegateFactory
     {
         protected override TDelegate GenerateMethodInvoker<TDelegate>(MethodInfo method, Type delegateType, IReadOnlyList<RuntimeParameter> parameters, bool returnsVoid = false)
         {

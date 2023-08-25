@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Kimono.Emit;
+using System.Collections.Generic;
 using System.Reflection;
-using System.Reflection.Emit;
 
 namespace Kimono.Proxies
 {
@@ -11,6 +11,8 @@ namespace Kimono.Proxies
     {
 		void Create(IProxyContextBuilder context, IEnumerable<MethodInfo> methods);
 
-        void EmitTypeInitializer(ILGenerator ilGenerator, ConstructorInfo baseConstructor);
+        void EmitConstructor(IEmitter emitter, ConstructorInfo baseConstructor);
+
+        void CreateMethod(IProxyContextBuilder context, MethodInfo methodInfo);
     }
 }

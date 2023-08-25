@@ -6,18 +6,16 @@ using System.Linq;
 
 namespace Kimono.Internal
 {
-	internal class ProxyMemberGenerator
+	internal class ProxyMemberFactory
     {
-        private readonly IMethodDelegateGenerator _delegateDelegateGenerator;
+        private readonly IMethodDelegateFactory _delegateDelegateGenerator;
 
-        public ProxyMemberGenerator(IMethodDelegateGenerator? delegateDelegateGenerator = null)
+        public ProxyMemberFactory(IMethodDelegateFactory? delegateDelegateGenerator = null)
         {
-            _delegateDelegateGenerator = delegateDelegateGenerator ?? new DynamicMethodDelegateGenerator();
+            _delegateDelegateGenerator = delegateDelegateGenerator ?? ProxyFactoryProvider.DelegateFactory;
         }
 
-        protected static readonly ConstructorInfo _kimonoAttributeConstructor = typeof(KimonoAttribute).GetConstructors().First();
-
-        protected IMethodDelegateGenerator DelegateGenerator => _delegateDelegateGenerator;
+        protected IMethodDelegateFactory DelegateFactory => _delegateDelegateGenerator;
 
 		/// <summary>
 		/// Creates the method.

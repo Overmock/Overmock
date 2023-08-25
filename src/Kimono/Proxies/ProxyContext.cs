@@ -7,9 +7,6 @@ namespace Kimono.Proxies
     /// </summary>
     public class ProxyContext
     {
-        /// <summary>
-        /// The overrides
-        /// </summary>
         private readonly IList<RuntimeContext> _overrides = new List<RuntimeContext>();
 
         /// <summary>

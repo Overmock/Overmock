@@ -2,15 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Reflection.Emit;
 
 namespace Kimono.Internal
 {
-	internal sealed class ProxyPropertyGenerator : ProxyMemberGenerator, IProxyPropertyFactory
+	internal sealed class ProxyPropertyFactory : ProxyMemberFactory, IProxyPropertyFactory
 	{
 		public void Create(IProxyContextBuilder context, IEnumerable<PropertyInfo> properties)
 		{
-			ImplementProperties(context, properties);
+			CreateProperties(context, properties);
 		}
 
 		/// <summary>
@@ -18,7 +17,7 @@ namespace Kimono.Internal
 		/// </summary>
 		/// <param name="context">The context.</param>
 		/// <param name="properties">The properties.</param>
-		private static void ImplementProperties(IProxyContextBuilder context, IEnumerable<PropertyInfo> properties)
+		private static void CreateProperties(IProxyContextBuilder context, IEnumerable<PropertyInfo> properties)
 		{
 			foreach (var propertyInfo in properties)
 			{

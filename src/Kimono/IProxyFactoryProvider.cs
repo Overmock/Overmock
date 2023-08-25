@@ -1,4 +1,6 @@
-﻿namespace Kimono.Proxies
+﻿using Kimono.Proxies;
+
+namespace Kimono
 {
     /// <summary>
     /// Interface IProxyFactoryProvider
