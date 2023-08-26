@@ -1,13 +1,6 @@
-﻿/* Unmerged change from project 'Kimono (netstandard2.1)'
-Before:
-using Kimono.Internal;
-After:
-using Kimono;
-using Kimono;
-using Kimono.Internal;
-*/
-using Kimono.Internal;
+﻿using Kimono.Internal;
 using Kimono.Proxies;
+using Kimono.Proxies.Internal;
 using System;
 using System.Threading;
 
@@ -20,7 +13,7 @@ namespace Kimono
     /// <seealso cref="IFactoryProvider" />
     public abstract class FactoryProvider : IFactoryProvider
     {
-        private static IDelegateFactory _delegateFactory = new ExpressionMethodDelegateGenerator();
+        private static IDelegateFactory _delegateFactory = new ExpressionDelegateFactory();
         private static IFactoryProvider _proxyFactory = new CachedProxyFactoryProvider();
 
         /// <summary>

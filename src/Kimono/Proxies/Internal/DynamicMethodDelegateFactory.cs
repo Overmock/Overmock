@@ -5,16 +5,15 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 
-namespace Kimono.Internal
+namespace Kimono.Proxies.Internal
 {
-    internal sealed class DynamicMethodDelegateGenerator : DelegateFactory
+    internal sealed class DynamicMethodDelegateFactory : DelegateFactory
     {
-        private static DynamicMethod CreateDynamicMethod(MethodInfo method, Type[] parameters, bool returnsVoid)
+        private static DynamicMethod CreateDynamicMethod(MethodInfo method, Type[] parameters, Type returnType)
         {
             return new DynamicMethod(
                 Constants.KimonoDelegateTypeNameFormat.ApplyFormat(method.Name),
-                returnsVoid ? Constants.VoidType : Constants.ObjectType,
-                parameters.Length > 0
+                returnType, parameters.Length > 0
                     ? parameters.Select(p => Constants.ObjectType).Concat(new Type[] { Constants.ObjectType }).ToArray()
                     : Type.EmptyTypes,
                 true
@@ -102,22 +101,30 @@ namespace Kimono.Internal
             //emitter.Emit(OpCodes.Ret);
         }
 
-        protected override TDelegate CreateMethodInvoker<TDelegate>(MethodInfo method, Type delegateType, IReadOnlyList<RuntimeParameter> parameters, bool returnsVoid = false)
+        protected override TDelegate CreateActionInvoker<TDelegate>(MethodInfo method, Type delegateType, IReadOnlyList<RuntimeParameter> parameters)
+        {
+            return CreateInvocation<TDelegate>(method, delegateType, Constants.VoidType, parameters, GenerateActionInvocation);
+        }
+
+        protected override TDelegate CreateFuncInvoker<TDelegate>(MethodInfo method, Type delegateType, IReadOnlyList<RuntimeParameter> parameters)
+        {
+            return CreateInvocation<TDelegate>(method, delegateType, Constants.ObjectType, parameters, GenerateFuncInvocation);
+        }
+
+        private static TDelegate CreateInvocation<TDelegate>(
+            MethodInfo methodInfo,
+            Type delegateType,
+            Type returnType,
+            IReadOnlyList<RuntimeParameter> parameters,
+            Action<MethodInfo, IEmitter, Type[]> bodyEmitter) where TDelegate : Delegate
         {
             var parameterArray = parameters.Select(p => p.Type).ToArray();
-            var dynamicMethod = CreateDynamicMethod(method, parameterArray, returnsVoid);
+            var dynamicMethod = CreateDynamicMethod(methodInfo, parameterArray, returnType);
 
             var emitter = dynamicMethod.GetEmitter();
 
-            if (returnsVoid)
-            {
-                GenerateActionInvocation(method, emitter, parameterArray);
-            }
-            else
-            {
-                GenerateFuncInvocation(method, emitter, parameterArray);
-            }
-
+            bodyEmitter(methodInfo, emitter, parameterArray);
+            
             return (TDelegate)dynamicMethod.CreateDelegate(delegateType);
         }
     }

@@ -1,24 +1,8 @@
-﻿
-/* Unmerged change from project 'Kimono (netstandard2.1)'
-Before:
-using System;
-After:
-using Kimono.Proxies;
-using System;
-*/
-
-/* Unmerged change from project 'Kimono (net6.0)'
-Before:
-using System;
-After:
-using Kimono.Proxies;
-using System;
-*/
-using Kimono.Proxies;
+﻿using Kimono.Proxies;
 using System;
 using System.Reflection.Emit;
 
-namespace Kimono.Internal
+namespace Kimono.Proxies.Internal
 {
     /// <summary>
     /// Class ProxyBuilderContext.

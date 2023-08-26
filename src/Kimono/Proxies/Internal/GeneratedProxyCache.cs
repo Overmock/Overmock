@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Concurrent;
 
-namespace Kimono.Internal
+namespace Kimono.Proxies.Internal
 {
     /// <summary>
     /// Class GeneratedProxyCache.
