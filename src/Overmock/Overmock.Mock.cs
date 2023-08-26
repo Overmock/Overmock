@@ -10,16 +10,6 @@ namespace Overmock
     public static partial class Overmock
     {
         /// <summary>
-        /// Mocks the given interface type.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
-        public static T Interface<T>() where T : class
-        {
-            return new Overmock<T>();
-        }
-
-        /// <summary>
         /// Returns an overmocked <typeparamref name="T" />.
         /// </summary>
         /// <typeparam name="T">The type of interface.</typeparam>

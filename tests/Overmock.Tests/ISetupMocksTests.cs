@@ -8,9 +8,9 @@ namespace Overmock.Tests
         [TestMethod]
         public void ISetupMocksTestsAllowsReturnsToReturnMock()
         {
-            var overmock = Overmock.MockAnyInvocation<IInterfaceNoArgs>();
+            var overmock = Overmock.AnyInvocation<IInterfaceNoArgs>();
 
-            var imOvermocked = overmock.Overmock(m => m.Get())
+            var imOvermocked = Overmock.OverMock(overmock, m => m.Get())
                 .ToReturnMock();
 
             imOvermocked.Mock(m => m.IDoNothing()).ToBeCalled();
@@ -44,9 +44,9 @@ namespace Overmock.Tests
         [TestMethod]
         public void ISetupMocksTestsAllowsReturnsToReturnMockOfOvermockOfT()
         {
-            var overmock = Overmock.MockAnyInvocation<IInterfaceNoArgs>();
-            var imReturned = Overmock.MockAnyInvocation<IInheritReturned>();
-            var imOvermocked = overmock.Overmock(m => m.Get())
+            var overmock = Overmock.AnyInvocation<IInterfaceNoArgs>();
+            var imReturned = Overmock.Mock<IInheritReturned>();
+            var imOvermocked = Overmock.OverMock(overmock, m => m.Get())
                 .ToReturnMock(imReturned);
 
             imOvermocked.Mock(m => m.IDoNothing()).ToBeCalled();
