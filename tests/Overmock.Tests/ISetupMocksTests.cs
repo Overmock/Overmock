@@ -26,10 +26,8 @@ namespace Overmock.Tests
         public void ISetupMocksTestsAllowsReturnsToReturnMockOfT()
         {
             var overmock = Overmock.Mock<IInterfaceNoArgs>();
-
-            var imOvermocked = overmock.Overmock(m => m.Get())
+            var imOvermocked = overmock.OverMock(m => m.Get())
                 .ToReturnMock<IInheritReturned>();
-
             imOvermocked.Mock(m => m.IDoNothing()).ToBeCalled();
 
             var target = overmock.Target;

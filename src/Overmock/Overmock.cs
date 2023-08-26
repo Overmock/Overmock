@@ -16,7 +16,7 @@ namespace Overmock
     /// Allows for mocking classes and interfaces.
     /// </summary>
     /// <typeparam name="T">The type going to be mocked.</typeparam>
-    public class Overmock<T> : Verifiable<T>, IOvermock<T>, IExpectAnyInvocation, IEquatable<Overmock<T>> where T : class
+    public class Overmock<T> : Verifiable<T>, IOvermock<T>, IOvermockable, IOvermocked, IExpectAnyInvocation, IEquatable<Overmock<T>> where T : class
     {
         private readonly List<IMethodCall> _methods = new List<IMethodCall>();
         private readonly List<IPropertyCall> _properties = new List<IPropertyCall>();
@@ -57,12 +57,11 @@ namespace Overmock
                 throw new InvalidOperationException($"Type '{Type.Name}' cannot be a sealed class or enum.");
             }
 
-            if (target is IProxy proxy && proxy.Interceptor is IInvocationHandlerProvider handler)
+            if (target is IProxy proxy)
             {
                 var overmock = Overmock.GetRegistration(proxy)!;
-                _methods = (List<IMethodCall>)overmock.GetOvermockedMethods();
-                _properties = (List<IPropertyCall>)overmock.GetOvermockedProperties();
-                _invocationHandler = handler.GetHandler();
+                _methods = (List<IMethodCall>)((IOvermocked)overmock).GetMethods();
+                _properties = (List<IPropertyCall>)((IOvermocked)overmock).GetProperties();
             }
 
             _interceptor = new HandlerInterceptor<T>(_invocationHandler ??=
@@ -70,6 +69,16 @@ namespace Overmock
             );
 
             Overmock.Register(this);
+        }
+
+        /// <summary>
+        /// Performs an implicit conversion from <see cref="Overmock{T}"/> to <typeparamref name="T"/>.
+        /// </summary>
+        /// <param name="overmock">The overmock.</param>
+        /// <returns>The result of the conversion.</returns>
+        public static implicit operator T(Overmock<T> overmock)
+        {
+            return overmock.Target;
         }
 
         /// <summary>
@@ -82,16 +91,6 @@ namespace Overmock
             {
                 return ((Interceptor<T>)_interceptor).Proxy;
             }
-        }
-
-        /// <summary>
-        /// Performs an implicit conversion from <see cref="Overmock{T}"/> to <typeparamref name="T"/>.
-        /// </summary>
-        /// <param name="overmock">The overmock.</param>
-        /// <returns>The result of the conversion.</returns>
-        public static implicit operator T(Overmock<T> overmock)
-        {
-            return overmock.Target;
         }
 
         ///// <summary>
@@ -162,27 +161,27 @@ namespace Overmock
         /// <typeparam name="TMethod">The type of the t method.</typeparam>
         /// <param name="methodCall">The method call.</param>
         /// <returns>TMethod.</returns>
-        TMethod IOvermock.AddMethod<TMethod>(TMethod methodCall)
+        TMethod IOvermockable.AddMethod<TMethod>(TMethod methodCall)
         {
             _methods.Add(methodCall);
             return methodCall;
         }
 
         /// <inheritdoc />
-        TProperty IOvermock.AddProperty<TProperty>(TProperty propertyCall)
+        TProperty IOvermockable.AddProperty<TProperty>(TProperty propertyCall)
         {
             _properties.Add(propertyCall);
             return propertyCall;
         }
 
         /// <inheritdoc />
-        IEnumerable<IMethodCall> IOvermock.GetOvermockedMethods()
+        IEnumerable<IMethodCall> IOvermocked.GetMethods()
         {
             return _methods;
         }
 
         /// <inheritdoc />
-        IEnumerable<IPropertyCall> IOvermock.GetOvermockedProperties()
+        IEnumerable<IPropertyCall> IOvermocked.GetProperties()
         {
             return _properties;
         }

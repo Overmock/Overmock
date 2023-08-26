@@ -11,38 +11,6 @@ namespace Overmock
     public interface IOvermock : IVerifiable
     {
         /// <summary>
-        /// Adds the method.
-        /// </summary>
-        /// <typeparam name="TMethod">The type of the method.</typeparam>
-        /// <param name="method">The method.</param>
-        /// <returns>TMethod.</returns>
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        TMethod AddMethod<TMethod>(TMethod method) where TMethod : IMethodCall;
-
-        /// <summary>
-        /// Adds the property.
-        /// </summary>
-        /// <typeparam name="TProperty">The type of the property.</typeparam>
-        /// <param name="propertyCall">The property.</param>
-        /// <returns>TProperty.</returns>
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        TProperty AddProperty<TProperty>(TProperty propertyCall) where TProperty : IPropertyCall;
-
-        /// <summary>
-        /// Gets the overmocked methods.
-        /// </summary>
-        /// <returns>IEnumerable&lt;IMethodCall&gt;.</returns>
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        IEnumerable<IMethodCall> GetOvermockedMethods();
-
-        /// <summary>
-        /// Gets the overmocked properties.
-        /// </summary>
-        /// <returns>IEnumerable&lt;IPropertyCall&gt;.</returns>
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        IEnumerable<IPropertyCall> GetOvermockedProperties();
-
-        /// <summary>
         /// Gets the target.
         /// </summary>
         /// <returns>System.Object.</returns>

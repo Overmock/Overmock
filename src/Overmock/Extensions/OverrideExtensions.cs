@@ -19,10 +19,12 @@ namespace Overmock
         /// <exception cref="System.ArgumentException">Parameter must be a method call expression.</exception>
         public static ISetup<T> Mock<T>(this IOvermock<T> overmock, Expression<Action<T>> expression) where T : class
         {
+            var overmockable = GetOvermockableOrThrow(overmock);
+
             if (expression.Body is MethodCallExpression method)
             {
                 var methodCall = global::Overmock.Overmock.RegisterMethod(
-                    overmock,
+                    overmockable,
                     new MethodCall<T>(method)
                 );
                 return new SetupOvermock<T>(overmock, methodCall);
@@ -51,10 +53,12 @@ namespace Overmock
         /// <exception cref="System.ArgumentException">Parameter must be a method or property call expression.</exception>
         public static ISetup<T, TResult> Mock<T, TResult>(this IOvermock<T> overmock, Expression<Func<T, TResult>> expression) where T : class
         {
+            var overmockable = GetOvermockableOrThrow(overmock);
+
             if (expression.Body is MethodCallExpression method)
             {
                 var methodCall = global::Overmock.Overmock.RegisterMethod(
-                    overmock,
+                    overmockable,
                     new MethodCall<T, TResult>(method)
                 );
                 return new SetupOvermock<T, TResult>(overmock, methodCall);
@@ -63,7 +67,7 @@ namespace Overmock
             if (expression.Body is MemberExpression property)
             {
                 var propertyCall = global::Overmock.Overmock.RegisterProperty(
-                    overmock,
+                    overmockable,
                     new PropertyCall<T, TResult>(property)
                 );
                 return new SetupOvermock<T, TResult>(overmock, propertyCall);
@@ -81,12 +85,14 @@ namespace Overmock
         /// <param name="expression">The expression.</param>
         /// <returns>ISetup&lt;T, TResult&gt;.</returns>
         /// <exception cref="System.ArgumentException">Parameter must be a method or property call expression.</exception>
-        public static ISetupMocks<T, TResult> Overmock<T, TResult>(this IOvermock<T> overmock, Expression<Func<T, TResult>> expression) where T : class where TResult : class
+        public static ISetupMocks<T, TResult> OverMock<T, TResult>(this IOvermock<T> overmock, Expression<Func<T, TResult>> expression) where T : class where TResult : class
         {
+            var overmockable = GetOvermockableOrThrow(overmock);
+
             if (expression.Body is MethodCallExpression method)
             {
                 var methodCall = global::Overmock.Overmock.RegisterMethod(
-                    overmock,
+                    overmockable,
                     new MethodCall<T, TResult>(method)
                 );
                 return new SetupOvermockWithMockReturns<T, TResult>(overmock, methodCall);
@@ -95,13 +101,23 @@ namespace Overmock
             if (expression.Body is MemberExpression property)
             {
                 var propertyCall = global::Overmock.Overmock.RegisterProperty(
-                    overmock,
+                    overmockable,
                     new PropertyCall<T, TResult>(property)
                 );
                 return new SetupOvermockWithMockReturns<T, TResult>(overmock, propertyCall);
             }
 
             throw new ArgumentException("Parameter must be a method or property call expression.");
+        }
+        
+        private static IOvermockable GetOvermockableOrThrow<T>(IOvermock<T> overmock) where T : class
+        {
+            if (overmock is IOvermockable overmockable)
+            {
+                return overmockable;
+            }
+
+            throw new OvermockException($"Cannot overmock a type that is not {nameof(IOvermockable)}");
         }
     }
 }
