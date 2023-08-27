@@ -75,6 +75,19 @@ namespace Kimono.Emit
         IEmitter Ret();
 
         /// <summary>
+        /// Pops this instance.
+        /// </summary>
+        /// <returns>IEmitter.</returns>
+        IEmitter Pop();
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        IEmitter Box(Type type);
+
+        /// <summary>
         /// Loads <see cref="OpCodes.Ldarg"/> the specified indexes.
         /// </summary>
         /// <param name="indexes"></param>
@@ -158,16 +171,29 @@ namespace Kimono.Emit
         IEmitter CastTo(Type type);
 
         /// <summary>
-        /// Pops this instance.
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        Label Label();
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="label"></param>
+        IEmitter Mark(Label label);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="code"></param>
+        /// <param name="label"></param>
+        IEmitter Emit(OpCode code, Label label);
+
+        /// <summary>
+        /// Nops this instance.
         /// </summary>
         /// <returns>IEmitter.</returns>
-        IEmitter Pop();
-
-        ///// <summary>
-        ///// Nops this instance.
-        ///// </summary>
-        ///// <returns>IEmitter.</returns>
-        //public IEmitter DeclareLocal();
+        IEmitter DeclareLocal(Type type);
     }
 
     /// <summary>

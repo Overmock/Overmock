@@ -13,4 +13,12 @@ namespace Kimono.Tests.Proxies
             return 420;
         }
     }
+
+    public class ICallLongArgsIntString
+    {
+        public object CallLongArgsIntString(object obj, int id, string str)
+        {
+            return ((ILongArgsIntString)obj).LongArgsIntString(id, str);
+        }
+    }
 }

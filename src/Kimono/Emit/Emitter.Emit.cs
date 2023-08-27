@@ -43,6 +43,12 @@ namespace Kimono.Emit
             return this;
         }
 
+        IEmitter IEmitter.Emit(OpCode code, Label label)
+        {
+            _emitter.Emit(code, label);
+            return this;
+        }
+
         IEmitter IEmitter.EmitCall(OpCode opcode, MethodInfo method)
         {
             _emitter.EmitCall(opcode, method, null);

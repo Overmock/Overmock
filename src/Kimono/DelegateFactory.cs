@@ -22,8 +22,7 @@ namespace Kimono
         /// <exception cref="NotImplementedException"></exception>
         public void EmitDisposeDelegate(IEmitter emitter, MethodInfo disposeMethod)
         {
-            emitter.Nop()
-                .Load(0)
+            emitter.Nop().Load(0)
                 .Invoke(Constants.ProxyTypeHandleDisposeCallMethod)
                 .Nop().Ret();
         }

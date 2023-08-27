@@ -10,6 +10,23 @@ namespace Kimono.Proxies.Internal
 {
     internal sealed class ExpressionDelegateFactory : DelegateFactory
     {
+        protected override TDelegate CreateActionInvoker<TDelegate>(MethodInfo method, Type delegateType, IReadOnlyList<RuntimeParameter> parameters)
+        {
+            var (methodCallExpression, parameterExpressions) = GenerateMethodCall(method, parameters);
+            return GenerateFinalDelegate<TDelegate>(methodCallExpression, parameterExpressions);
+        }
+
+        protected override TDelegate CreateFuncInvoker<TDelegate>(MethodInfo method, Type delegateType, IReadOnlyList<RuntimeParameter> parameters)
+        {
+            var (methodCallExpression, parameterExpressions) = GenerateMethodCall(method, parameters);
+
+            return GenerateFinalDelegate<TDelegate>(
+                methodCallExpression,
+                parameterExpressions,
+                methodCall => Expression.Convert(methodCall, Constants.ObjectType)
+            );
+        }
+
         private static (MethodCallExpression, ParameterExpression[]) GenerateMethodCall(MethodInfo method, IReadOnlyList<RuntimeParameter> parameters)
         {
 #if NET7_0
@@ -56,23 +73,6 @@ namespace Kimono.Proxies.Internal
 
             var compiledExpression = lambda.Compile();
             return compiledExpression;
-        }
-
-        protected override TDelegate CreateActionInvoker<TDelegate>(MethodInfo method, Type delegateType, IReadOnlyList<RuntimeParameter> parameters)
-        {
-            var (methodCallExpression, parameterExpressions) = GenerateMethodCall(method, parameters);
-            return GenerateFinalDelegate<TDelegate>(methodCallExpression, parameterExpressions);
-        }
-
-        protected override TDelegate CreateFuncInvoker<TDelegate>(MethodInfo method, Type delegateType, IReadOnlyList<RuntimeParameter> parameters)
-        {
-            var (methodCallExpression, parameterExpressions) = GenerateMethodCall(method, parameters);
-
-            return GenerateFinalDelegate<TDelegate>(
-                methodCallExpression,
-                parameterExpressions,
-                methodCall => Expression.Convert(methodCall, Constants.ObjectType)
-            );
         }
     }
 }

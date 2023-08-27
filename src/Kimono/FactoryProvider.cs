@@ -13,7 +13,8 @@ namespace Kimono
     /// <seealso cref="IFactoryProvider" />
     public abstract class FactoryProvider : IFactoryProvider
     {
-        private static IDelegateFactory _delegateFactory = new ExpressionDelegateFactory();
+        //private static IDelegateFactory _delegateFactory = new ExpressionDelegateFactory();
+        private static IDelegateFactory _delegateFactory = new DynamicMethodDelegateFactory();
         private static IFactoryProvider _proxyFactory = new CachedProxyFactoryProvider();
 
         /// <summary>
