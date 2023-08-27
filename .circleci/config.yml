@@ -12,7 +12,7 @@ jobs:
           working_directory: ./
           name: Run tests
           command: |
-            dotnet test
+            dotnet test ./Overmock.sln
 
   pack:
     docker:
@@ -24,7 +24,7 @@ jobs:
           working_directory: ./
           name: Run dotnet pack
           command: |
-            dotnet pack --configuration Release
+            dotnet pack --configuration Release ./Overmock.sln
       - store_artifacts:
           path: ./src/Overmock/bin/Release/
           destination: ./pack
