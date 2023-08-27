@@ -38,7 +38,7 @@ namespace Overmock
         /// </summary>
         public static void Verify()
         {
-            foreach (var overmock in _overmocks)
+            while (_overmocks.TryDequeue(out var overmock))
             {
                 overmock.Verify();
             }
@@ -91,17 +91,17 @@ namespace Overmock
             return _overmocks.FirstOrDefault(o => o == target);
         }
 
-        internal static IMethodCall<T> RegisterMethod<T>(IOvermock overmock, IMethodCall<T> method) where T : class
+        internal static IMethodCall<T> RegisterMethod<T>(IOvermockable overmock, IMethodCall<T> method) where T : class
         {
             return overmock.AddMethod(method);
         }
 
-        internal static IMethodCall<T, TReturn> RegisterMethod<T, TReturn>(IOvermock overmock, IMethodCall<T, TReturn> method) where T : class
+        internal static IMethodCall<T, TReturn> RegisterMethod<T, TReturn>(IOvermockable overmock, IMethodCall<T, TReturn> method) where T : class
         {
             return overmock.AddMethod(method);
         }
 
-        internal static IPropertyCall<T, TProperty> RegisterProperty<T, TProperty>(IOvermock overmock, IPropertyCall<T, TProperty> property) where T : class
+        internal static IPropertyCall<T, TProperty> RegisterProperty<T, TProperty>(IOvermockable overmock, IPropertyCall<T, TProperty> property) where T : class
         {
             return overmock.AddProperty(property);
         }

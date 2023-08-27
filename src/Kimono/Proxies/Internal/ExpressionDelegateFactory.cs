@@ -6,29 +6,17 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-namespace Kimono.Internal
+namespace Kimono.Proxies.Internal
 {
-    internal sealed class ExpressionMethodDelegateGenerator : DelegateFactory
+    internal sealed class ExpressionDelegateFactory : DelegateFactory
     {
-        protected override TDelegate CreateMethodInvoker<TDelegate>(MethodInfo method, Type delegateType, IReadOnlyList<RuntimeParameter> parameters, bool returnsVoid = false)
-        {
-            if (returnsVoid)
-            {
-                return GenerateAction<TDelegate>(method, parameters);
-            }
-
-            return GenerateFunc<TDelegate>(method, parameters);
-        }
-
-        private static TDelegate GenerateAction<TDelegate>(MethodInfo method, IReadOnlyList<RuntimeParameter> parameters)
-            where TDelegate : Delegate
+        protected override TDelegate CreateActionInvoker<TDelegate>(MethodInfo method, Type delegateType, IReadOnlyList<RuntimeParameter> parameters)
         {
             var (methodCallExpression, parameterExpressions) = GenerateMethodCall(method, parameters);
             return GenerateFinalDelegate<TDelegate>(methodCallExpression, parameterExpressions);
         }
 
-        private static TDelegate GenerateFunc<TDelegate>(MethodInfo method, IReadOnlyList<RuntimeParameter> parameters)
-            where TDelegate : Delegate
+        protected override TDelegate CreateFuncInvoker<TDelegate>(MethodInfo method, Type delegateType, IReadOnlyList<RuntimeParameter> parameters)
         {
             var (methodCallExpression, parameterExpressions) = GenerateMethodCall(method, parameters);
 

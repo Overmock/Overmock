@@ -1,17 +1,4 @@
-﻿// ***********************************************************************
-// Assembly         : Overmock
-// Author           : sbake
-// Created          : 06-07-2023
-//
-// Last Modified By : sbake
-// Last Modified On : 08-10-2023
-// ***********************************************************************
-// <copyright file="Ex.cs" company="Overmock">
-//     Copyright (c) . All rights reserved.
-// </copyright>
-// <summary></summary>
-// ***********************************************************************
-using Overmock.Mocking;
+﻿using Overmock.Mocking;
 using System;
 
 namespace Overmock
@@ -30,6 +17,7 @@ namespace Overmock
             /// The namespace and class are required to build
             /// </summary>
             public const string NamespaceAndClassAreRequiredToBuild = "NamespaceDeclaration and ClassDeclaration are required to build a CompilationUnitSyntax";
+            
             /// <summary>
             /// The number of parameter mismatch
             /// </summary>

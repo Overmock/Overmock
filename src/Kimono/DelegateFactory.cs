@@ -22,8 +22,7 @@ namespace Kimono
         /// <exception cref="NotImplementedException"></exception>
         public void EmitDisposeDelegate(IEmitter emitter, MethodInfo disposeMethod)
         {
-            emitter.Nop()
-                .Load(0)
+            emitter.Nop().Load(0)
                 .Invoke(Constants.ProxyTypeHandleDisposeCallMethod)
                 .Nop().Ret();
         }
@@ -68,32 +67,32 @@ namespace Kimono
         {
             if (parameters.Count == 0)
             {
-                return new ActionObjectMethodInvoker(() => CreateMethodInvoker<Action<object?>>(method, Constants.Action1ObjectType, parameters, true));
+                return new ActionObjectMethodInvoker(() => CreateActionInvoker<Action<object?>>(method, Constants.Action1ObjectType, parameters));
             }
 
             if (parameters.Count == 1)
             {
-                return new Action2ObjectMethodInvoker(() => CreateMethodInvoker<Action<object?, object?>>(method, Constants.Action2ObjectType, parameters, true));
+                return new Action2ObjectMethodInvoker(() => CreateActionInvoker<Action<object?, object?>>(method, Constants.Action2ObjectType, parameters));
             }
 
             if (parameters.Count == 2)
             {
-                return new Action3ObjectMethodInvoker(() => CreateMethodInvoker<Action<object?, object?, object?>>(method, Constants.Action3ObjectType, parameters, true));
+                return new Action3ObjectMethodInvoker(() => CreateActionInvoker<Action<object?, object?, object?>>(method, Constants.Action3ObjectType, parameters));
             }
 
             if (parameters.Count == 3)
             {
-                return new Action4ObjectMethodInvoker(() => CreateMethodInvoker<Action<object?, object?, object?, object?>>(method, Constants.Action4ObjectType, parameters, true));
+                return new Action4ObjectMethodInvoker(() => CreateActionInvoker<Action<object?, object?, object?, object?>>(method, Constants.Action4ObjectType, parameters));
             }
 
             if (parameters.Count == 4)
             {
-                return new Action5ObjectMethodInvoker(() => CreateMethodInvoker<Action<object?, object?, object?, object?, object?>>(method, Constants.Action5ObjectType, parameters, true));
+                return new Action5ObjectMethodInvoker(() => CreateActionInvoker<Action<object?, object?, object?, object?, object?>>(method, Constants.Action5ObjectType, parameters));
             }
 
             if (parameters.Count == 5)
             {
-                return new Action6ObjectMethodInvoker(() => CreateMethodInvoker<Action<object?, object?, object?, object?, object?, object?>>(method, Constants.Action6ObjectType, parameters, true));
+                return new Action6ObjectMethodInvoker(() => CreateActionInvoker<Action<object?, object?, object?, object?, object?, object?>>(method, Constants.Action6ObjectType, parameters));
             }
 
             return new MethodInfoDelegateInvoker(method);
@@ -109,32 +108,32 @@ namespace Kimono
         {
             if (parameters.Count == 0)
             {
-                return new FuncObjectReturnMethodInvoker(() => CreateMethodInvoker<Func<object?, object?>>(method, Constants.Func1ObjectType, parameters));
+                return new FuncObjectReturnMethodInvoker(() => CreateFuncInvoker<Func<object?, object?>>(method, Constants.Func1ObjectType, parameters));
             }
 
             if (parameters.Count == 1)
             {
-                return new Func2ObjectReturnMethodInvoker(() => CreateMethodInvoker<Func<object?, object?, object?>>(method, Constants.Func2ObjectType, parameters));
+                return new Func2ObjectReturnMethodInvoker(() => CreateFuncInvoker<Func<object?, object?, object?>>(method, Constants.Func2ObjectType, parameters));
             }
 
             if (parameters.Count == 2)
             {
-                return new Func3ObjectReturnMethodInvoker(() => CreateMethodInvoker<Func<object?, object?, object?, object?>>(method, Constants.Func3ObjectType, parameters));
+                return new Func3ObjectReturnMethodInvoker(() => CreateFuncInvoker<Func<object?, object?, object?, object?>>(method, Constants.Func3ObjectType, parameters));
             }
 
             if (parameters.Count == 3)
             {
-                return new Func4ObjectReturnMethodInvoker(() => CreateMethodInvoker<Func<object?, object?, object?, object?, object?>>(method, Constants.Func4ObjectType, parameters));
+                return new Func4ObjectReturnMethodInvoker(() => CreateFuncInvoker<Func<object?, object?, object?, object?, object?>>(method, Constants.Func4ObjectType, parameters));
             }
 
             if (parameters.Count == 4)
             {
-                return new Func5ObjectReturnMethodInvoker(() => CreateMethodInvoker<Func<object?, object?, object?, object?, object?, object?>>(method, Constants.Func5ObjectType, parameters));
+                return new Func5ObjectReturnMethodInvoker(() => CreateFuncInvoker<Func<object?, object?, object?, object?, object?, object?>>(method, Constants.Func5ObjectType, parameters));
             }
 
             if (parameters.Count == 5)
             {
-                return new Func6ObjectReturnMethodInvoker(() => CreateMethodInvoker<Func<object?, object?, object?, object?, object?, object?, object?>>(method, Constants.Func6ObjectType, parameters));
+                return new Func6ObjectReturnMethodInvoker(() => CreateFuncInvoker<Func<object?, object?, object?, object?, object?, object?, object?>>(method, Constants.Func6ObjectType, parameters));
             }
 
             return new MethodInfoDelegateInvoker(method);
@@ -147,10 +146,19 @@ namespace Kimono
         /// <param name="method">The method.</param>
         /// <param name="delegateType">Type of the delegate.</param>
         /// <param name="parameters">The parameters.</param>
-        /// <param name="returnsVoid">if set to <c>true</c> [returns void].</param>
         /// <returns>TDelegate.</returns>
-        protected abstract TDelegate CreateMethodInvoker<TDelegate>(MethodInfo method, Type delegateType, IReadOnlyList<RuntimeParameter> parameters, bool returnsVoid = false)
+        protected abstract TDelegate CreateActionInvoker<TDelegate>(MethodInfo method, Type delegateType, IReadOnlyList<RuntimeParameter> parameters)
             where TDelegate : Delegate;
 
+        /// <summary>
+        /// Generates the method invoker.
+        /// </summary>
+        /// <typeparam name="TDelegate">The type of the t delegate.</typeparam>
+        /// <param name="method">The method.</param>
+        /// <param name="delegateType">Type of the delegate.</param>
+        /// <param name="parameters">The parameters.</param>
+        /// <returns>TDelegate.</returns>
+        protected abstract TDelegate CreateFuncInvoker<TDelegate>(MethodInfo method, Type delegateType, IReadOnlyList<RuntimeParameter> parameters)
+            where TDelegate : Delegate;
     }
 }

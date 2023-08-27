@@ -47,7 +47,8 @@ namespace Kimono.Emit
 
         IEmitter IEmitter.Pop()
         {
-            throw new NotImplementedException();
+            _emitter.Emit(OpCodes.Pop);
+            return this;
         }
 
         /// <inheritdoc />
@@ -61,6 +62,12 @@ namespace Kimono.Emit
         IEmitter IEmitter.Ret()
         {
             _emitter.Emit(OpCodes.Ret);
+            return this;
+        }
+
+        IEmitter IEmitter.Box(Type type)
+        {
+            _emitter.Emit(OpCodes.Box, type);
             return this;
         }
 
@@ -86,6 +93,23 @@ namespace Kimono.Emit
         IEmitter IEmitter.CastTo(Type type)
         {
             _emitter.Emit(OpCodes.Castclass, type);
+            return this;
+        }
+
+        Label IEmitter.Label()
+        {
+            return _emitter.DefineLabel();
+        }
+
+        IEmitter IEmitter.Mark(Label label)
+        {
+            _emitter.MarkLabel(label);
+            return this;
+        }
+
+        IEmitter IEmitter.DeclareLocal(Type type)
+        {
+            _emitter.DeclareLocal(type);
             return this;
         }
     }

@@ -18,7 +18,7 @@ namespace Overmock
         /// <returns>ISetup&lt;T&gt;.</returns>
         public static ISetupMocks<T, TReturn> OverMock<T, TReturn>(Expression<Func<T, TReturn>> expression) where T : class where TReturn : class
         {
-            return Mock<T>().Overmock(expression);
+            return Mock<T>().OverMock(expression);
         }
 
         /// <summary>
@@ -31,7 +31,7 @@ namespace Overmock
         /// <returns>ISetup&lt;T&gt;.</returns>
         public static ISetupMocks<T, TReturn> OverMock<T, TReturn>(T target, Expression<Func<T, TReturn>> expression) where T : class where TReturn : class
         {
-            return GetOvermock(target).Overmock(expression);
+            return GetOvermock(target).OverMock(expression);
         }
 
         /// <summary>
@@ -44,7 +44,7 @@ namespace Overmock
         /// <returns>ISetup&lt;T&gt;.</returns>
         public static ISetupMocks<T, TReturn> OverMock<T, TReturn>(IOvermock<T> overmock, Expression<Func<T, TReturn>> expression) where T : class where TReturn : class
         {
-            return overmock.Overmock(expression);
+            return overmock.OverMock(expression);
         }
     }
 }

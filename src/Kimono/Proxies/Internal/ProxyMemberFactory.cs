@@ -5,7 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 
-namespace Kimono.Internal
+namespace Kimono.Proxies.Internal
 {
     internal class ProxyMemberFactory
     {

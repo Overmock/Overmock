@@ -7,22 +7,6 @@ namespace Overmock
     /// </summary>
     public interface ISetup : IFluentInterface
     {
-        /// <summary>
-        /// Converts to becalled.
-        /// </summary>
-        void ToBeCalled();
-
-        /// <summary>
-        /// Converts to becalled.
-        /// </summary>
-        /// <param name="times">The times.</param>
-        void ToBeCalled(Times times);
-
-        /// <summary>
-        /// Specifies the exception to throw when the overmocked member is called.
-        /// </summary>
-        /// <param name="exception">The exception to throw.</param>
-        void ToThrow(Exception exception);
     }
 
     /// <summary>
@@ -39,17 +23,34 @@ namespace Overmock
         IOvermock<T> Overmock { get; }
 
         /// <summary>
+        /// Converts to becalled.
+        /// </summary>
+        IOvermock<T> ToBeCalled();
+
+        /// <summary>
+        /// Converts to becalled.
+        /// </summary>
+        /// <param name="times">The times.</param>
+        IOvermock<T> ToBeCalled(Times times);
+
+        /// <summary>
+        /// Specifies the exception to throw when the overmocked member is called.
+        /// </summary>
+        /// <param name="exception">The exception to throw.</param>
+        IOvermock<T> ToThrow(Exception exception);
+
+        /// <summary>
         /// Converts to call.
         /// </summary>
         /// <param name="action">The action.</param>
-        void ToCall(Action<OvermockContext> action);
+        IOvermock<T> ToCall(Action<OvermockContext> action);
 
         /// <summary>
         /// Converts to call.
         /// </summary>
         /// <param name="action">The action.</param>
         /// <param name="times">The times.</param>
-        void ToCall(Action<OvermockContext> action, Times times);
+        IOvermock<T> ToCall(Action<OvermockContext> action, Times times);
     }
 
     /// <summary>
@@ -67,14 +68,14 @@ namespace Overmock
         /// Converts to call.
         /// </summary>
         /// <param name="callback">The callback.</param>
-        void ToCall(Func<OvermockContext, TReturn> callback);
+        IOvermock<T> ToCall(Func<OvermockContext, TReturn> callback);
 
         /// <summary>
         /// Converts to call.
         /// </summary>
         /// <param name="callback">The callback.</param>
         /// <param name="times">The times.</param>
-        void ToCall(Func<OvermockContext, TReturn> callback, Times times);
+        IOvermock<T> ToCall(Func<OvermockContext, TReturn> callback, Times times);
     }
 
     /// <summary>

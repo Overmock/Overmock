@@ -1,5 +1,6 @@
 ﻿using Kimono.Emit;
 using Kimono.Proxies;
+using Kimono.Proxies.Internal;
 using System;
 using System.Collections.Generic;
 using System.Linq;

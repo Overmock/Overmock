@@ -12,4 +12,12 @@ namespace Kimono.Tests.Proxies
         {
         }
     }
+
+    public class ICallVoidNoArgs
+    {
+        public void CallVoidNoArgs(object obj)
+        {
+            ((IVoidNoArgs)obj).VoidNoArgs();
+        }
+    }
 }

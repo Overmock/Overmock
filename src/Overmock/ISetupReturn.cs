@@ -12,12 +12,12 @@ namespace Overmock
         /// Sets the value used as the result when calling this overmock's object.
         /// </summary>
         /// <param name="resultProvider">The result provider.</param>
-        void ToReturn(Func<TReturn> resultProvider);
+        IOvermock ToReturn(Func<TReturn> resultProvider);
 
         /// <summary>
         /// Sets the value used as the result when calling this overmock's object.
         /// </summary>
         /// <param name="result">The result.</param>
-        void ToReturn(TReturn result);
+        IOvermock ToReturn(TReturn result);
     }
 }

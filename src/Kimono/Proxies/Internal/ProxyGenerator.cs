@@ -1,7 +1,7 @@
 ﻿using Kimono.Proxies;
 using System;
 
-namespace Kimono.Internal
+namespace Kimono.Proxies.Internal
 {
     /// <summary>
     /// Class ProxyGenerator.

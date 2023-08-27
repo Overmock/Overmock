@@ -1,4 +1,5 @@
 ﻿using Overmock.Mocking;
+using Overmock.Mocking.Internal;
 using System;
 
 namespace Overmock
@@ -10,57 +11,8 @@ namespace Overmock
     /// <seealso cref="ISetup" />
     internal class SetupOvermock : ISetup
     {
-        /// <summary>
-        /// The callable
-        /// </summary>
-        private readonly ICallable _callable;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="SetupOvermock"/> class.
-        /// </summary>
-        /// <param name="callable">The callable.</param>
-        public SetupOvermock(ICallable callable)
-        {
-            _callable = callable;
-        }
-
-        /// <inheritdoc />
-        public void ToThrow(Exception exception)
-        {
-            _callable.Throws(exception);
-        }
-
-        /// <summary>
-        /// Converts to call.
-        /// </summary>
-        /// <param name="action">The action.</param>
-        public void ToCall(Action<OvermockContext> action)
-        {
-            _callable.Calls(action, Times.Any);
-        }
-
-        /// <summary>
-        /// Converts to call.
-        /// </summary>
-        /// <param name="action">The action.</param>
-        /// <param name="times">The times.</param>
-        public void ToCall(Action<OvermockContext> action, Times times)
-        {
-            _callable.Calls(action, times);
-        }
-
-        /// <inheritdoc />
-        public void ToBeCalled()
-        {
-            _callable.Calls(c => { }, Times.Any);
-        }
-
-        /// <inheritdoc />
-        public void ToBeCalled(Times times)
-        {
-            _callable.Calls(c => { }, times);
-        }
     }
+
     /// <summary>
     /// Class SetupOvermock.
     /// Implements the <see cref="SetupOvermock" />
@@ -69,24 +21,72 @@ namespace Overmock
     /// <typeparam name="T"></typeparam>
     /// <seealso cref="SetupOvermock" />
     /// <seealso cref="ISetup{T}" />
-    internal sealed class SetupOvermock<T> : SetupOvermock, ISetup<T> where T : class
+    internal class SetupOvermock<T> : SetupOvermock, ISetup<T> where T : class
     {
         private readonly IOvermock<T> _overmock;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SetupOvermock{T}"/> class.
+        /// The callable
+        /// </summary>
+        private readonly ICallable _callable;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SetupOvermock"/> class.
         /// </summary>
         /// <param name="overmock"></param>
         /// <param name="callable">The callable.</param>
-        internal SetupOvermock(IOvermock<T> overmock, ICallable<T> callable) : base(callable)
+        public SetupOvermock(IOvermock<T> overmock, ICallable callable)
         {
             _overmock = overmock;
+            _callable = callable;
         }
 
         /// <summary>
-        /// /
+        /// The target overmock be configured.
         /// </summary>
         public IOvermock<T> Overmock => _overmock;
+
+        /// <inheritdoc />
+        public IOvermock<T> ToThrow(Exception exception)
+        {
+            _callable.Throws(exception);
+            return _overmock;
+        }
+
+        /// <summary>
+        /// Converts to call.
+        /// </summary>
+        /// <param name="action">The action.</param>
+        public IOvermock<T> ToCall(Action<OvermockContext> action)
+        {
+            _callable.Calls(action, Times.Any);
+            return _overmock;
+        }
+
+        /// <summary>
+        /// Converts to call.
+        /// </summary>
+        /// <param name="action">The action.</param>
+        /// <param name="times">The times.</param>
+        public IOvermock<T> ToCall(Action<OvermockContext> action, Times times)
+        {
+            _callable.Calls(action, times);
+            return _overmock;
+        }
+
+        /// <inheritdoc />
+        public IOvermock<T> ToBeCalled()
+        {
+            _callable.Calls(c => { }, Times.Any);
+            return _overmock;
+        }
+
+        /// <inheritdoc />
+        public IOvermock<T> ToBeCalled(Times times)
+        {
+            _callable.Calls(c => { }, times);
+            return _overmock;
+        }
     }
 
     /// <summary>
@@ -98,7 +98,7 @@ namespace Overmock
     /// <typeparam name="TReturn">The type of the t return.</typeparam>
     /// <seealso cref="SetupOvermock" />
     /// <seealso cref="ISetup{T, TReturn}" />
-    internal class SetupOvermock<T, TReturn> : SetupOvermock, ISetup<T, TReturn> where T : class
+    internal class SetupOvermock<T, TReturn> : SetupOvermock<T>, ISetup<T, TReturn> where T : class
     {
         private readonly IReturnable<TReturn> _returnable;
         private readonly IOvermock<T> _overmock;
@@ -108,42 +108,51 @@ namespace Overmock
         /// </summary>
         /// <param name="overmock"></param>
         /// <param name="returnable">The returnable.</param>
-        internal SetupOvermock(IOvermock<T> overmock, IReturnable<TReturn> returnable) : base(returnable)
+        internal SetupOvermock(IOvermock<T> overmock, IReturnable<TReturn> returnable) : base(overmock, returnable)
         {
             _overmock = overmock;
             _returnable = returnable;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public IOvermock<T> Overmock => _overmock;
-
         /// <inheritdoc />
-        public void ToCall(Func<OvermockContext, TReturn> callback)
+        public IOvermock<T> ToCall(Func<OvermockContext, TReturn> callback)
         {
             _returnable.Calls(callback, Times.Any);
+            return _overmock;
         }
 
         /// <inheritdoc />
-        public void ToCall(Func<OvermockContext, TReturn> callback, Times times)
+        public IOvermock<T> ToCall(Func<OvermockContext, TReturn> callback, Times times)
         {
             _returnable.Calls(callback, times);
+            return _overmock;
         }
 
         /// <inheritdoc />
-        public void ToReturn(TReturn result)
+        public IOvermock ToReturn(TReturn result)
         {
             _returnable.Returns(result);
+            return _overmock;
         }
 
         /// <summary>
         /// Converts to return.
         /// </summary>
         /// <param name="returnProvider">The return provider.</param>
-        public void ToReturn(Func<TReturn> returnProvider)
+        public IOvermock ToReturn(Func<TReturn> returnProvider)
         {
             _returnable.Returns(returnProvider);
+            return _overmock;
+        }
+
+        IOvermock<T> ISetup<T>.ToCall(Action<OvermockContext> action)
+        {
+            return (IOvermock<T>)ToCall(action, Times.Any);
+        }
+
+        IOvermock<T> ISetup<T>.ToCall(Action<OvermockContext> action, Times times)
+        {
+            return (IOvermock<T>)ToCall(action, times);
         }
     }
 
