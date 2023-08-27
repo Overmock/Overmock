@@ -1,5 +1,5 @@
 using DataCompany.Framework;
-using Overmock.Examples.Storage;
+using FakeCompany.Api.Storage;
 using System.Diagnostics;
 
 var builder = WebApplication.CreateBuilder(args);

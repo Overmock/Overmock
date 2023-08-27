@@ -1,6 +1,6 @@
-﻿using Overmock.Tests.Mocks.Methods;
+﻿using Overmocked.Tests.Mocks.Methods;
 
-namespace Overmock.Tests
+namespace Overmocked.Tests
 {
     [TestClass]
     public class ISetupMocksTests

@@ -1,4 +1,4 @@
-﻿namespace Overmock
+﻿namespace Overmocked
 {
     /// <summary>
     /// Represents a member that can setup a return value.

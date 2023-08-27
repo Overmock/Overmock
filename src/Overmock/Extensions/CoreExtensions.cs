@@ -2,7 +2,7 @@
 using System;
 using System.Globalization;
 
-namespace Overmock
+namespace Overmocked
 {
     /// <summary>
     /// Class OvermockExtensions.

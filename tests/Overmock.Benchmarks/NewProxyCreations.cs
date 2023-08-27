@@ -1,10 +1,10 @@
 ﻿using Castle.DynamicProxy;
 using Kimono;
-using Overmock.Benchmarks.Interceptors;
-using Overmock.Benchmarks.Models;
+using Overmocked.Benchmarks.Interceptors;
+using Overmocked.Benchmarks.Models;
 using System.Reflection;
 
-namespace Overmock.Benchmarks
+namespace Overmocked.Benchmarks
 {
     public class NewProxyCreations : INewProxyCreations
     {

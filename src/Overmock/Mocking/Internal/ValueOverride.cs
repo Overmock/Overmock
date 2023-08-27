@@ -1,5 +1,5 @@
 ﻿
-namespace Overmock.Mocking.Internal
+namespace Overmocked.Mocking.Internal
 {
     /// <summary>
     /// Class ValueOverride.

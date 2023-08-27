@@ -1,6 +1,6 @@
-﻿using Overmock.Tests.Mocks.Methods.Async;
+﻿using Overmocked.Tests.Mocks.Methods.Async;
 
-namespace Overmock.Tests
+namespace Overmocked.Tests
 {
     [TestClass]
     public partial class AsyncMethodsWithNoParamsTests

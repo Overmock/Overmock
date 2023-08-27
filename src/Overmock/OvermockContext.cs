@@ -1,6 +1,6 @@
 ﻿using Kimono;
 
-namespace Overmock
+namespace Overmocked
 {
     /// <summary>
     /// Class OvermockContext.

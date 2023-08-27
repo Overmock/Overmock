@@ -1,8 +1,8 @@
-﻿using Overmock.Mocking;
-using Overmock.Mocking.Internal;
+﻿using Overmocked.Mocking;
+using Overmocked.Mocking.Internal;
 using System;
 
-namespace Overmock
+namespace Overmocked
 {
     /// <summary>
     /// Class SetupOvermock.

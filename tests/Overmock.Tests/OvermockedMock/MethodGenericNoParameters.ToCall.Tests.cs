@@ -1,6 +1,6 @@
-﻿using Overmock.Tests.Mocks;
+﻿using Overmocked.Tests.Mocks;
 
-namespace Overmock.Tests.OvermockedMock
+namespace Overmocked.Tests.OvermockedMock
 {
     public partial class GenericMethodNoParametersTests
     {

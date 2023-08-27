@@ -1,6 +1,6 @@
-﻿using Overmock.Tests.Mocks.Mixed;
+﻿using Overmocked.Tests.Mocks.Mixed;
 
-namespace Overmock.Tests
+namespace Overmocked.Tests
 {
     [TestClass]
     public partial class MixedMethodsAndPropertiesTests

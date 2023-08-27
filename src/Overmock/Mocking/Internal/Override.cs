@@ -1,4 +1,4 @@
-﻿namespace Overmock.Mocking.Internal
+﻿namespace Overmocked.Mocking.Internal
 {
     internal abstract class Override : IOverride
     {

@@ -1,4 +1,4 @@
-﻿namespace Overmock.Tests
+﻿namespace Overmocked.Tests
 {
     public partial class PropertyGetTests
     {

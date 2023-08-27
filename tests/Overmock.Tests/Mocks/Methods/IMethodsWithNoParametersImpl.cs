@@ -1,6 +1,6 @@
 ﻿using Kimono.Proxies;
 
-namespace Overmock.Tests.Mocks.Methods
+namespace Overmocked.Tests.Mocks.Methods
 {
     public class IMethodsWithNoParametersImpl : ProxyBase<IMethodsWithNoParameters>, IMethodsWithNoParameters
     {

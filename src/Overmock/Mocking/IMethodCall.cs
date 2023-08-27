@@ -1,7 +1,7 @@
 ﻿using System.Linq.Expressions;
 using System.Reflection;
 
-namespace Overmock.Mocking
+namespace Overmocked.Mocking
 {
     /// <summary>
     /// Interface IMethodCall

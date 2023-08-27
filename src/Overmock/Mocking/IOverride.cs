@@ -1,5 +1,5 @@
 ﻿
-namespace Overmock.Mocking
+namespace Overmocked.Mocking
 {
     /// <summary>
     /// Represents a specific override of an overmock.

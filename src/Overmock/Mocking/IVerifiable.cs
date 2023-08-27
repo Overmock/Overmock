@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace Overmock.Mocking
+namespace Overmocked.Mocking
 {
     /// <summary>
     /// Interface IVerifiable

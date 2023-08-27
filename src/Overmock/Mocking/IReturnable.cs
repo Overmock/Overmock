@@ -1,6 +1,6 @@
 ﻿    using System;
 
-namespace Overmock.Mocking
+namespace Overmocked.Mocking
 {
     /// <summary>
     /// Interface IReturnable

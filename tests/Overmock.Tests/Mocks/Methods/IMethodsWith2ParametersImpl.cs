@@ -1,5 +1,5 @@
 ﻿
-namespace Overmock.Tests.Mocks.Methods
+namespace Overmocked.Tests.Mocks.Methods
 {
     public class IMethodsWith2ParametersImpl : IMethodsWith2Parameters
     {

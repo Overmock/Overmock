@@ -1,6 +1,6 @@
 ﻿using DataCompany.Framework;
 
-namespace Overmock.Examples.Storage
+namespace FakeCompany.Api.Storage
 {
     public class UserStory : Entity
     {
@@ -10,28 +10,29 @@ namespace Overmock.Examples.Storage
     }
     public class UserStoryFactory : EntityCollection<UserStory>
     {
+        private static int NextId => Collection.Count;
+
         public UserStoryFactory(IDataConnection connection) : base(connection)
         {
             connection.Connect("user", "secret");
         }
-        private static int NextId => Collection.Count;
 
         protected override UserStory Create(UserStory model)
         {
+            var story = new UserStory
+            {
+                Id = NextId,
+                Title = model.Title,
+                Description = model.Description,
+                Points = model.Points
+            };
+
             lock (SyncRoot)
             {
-                var story = new UserStory
-                {
-                    Id = NextId,
-                    Title = model.Title,
-                    Description = model.Description,
-                    Points = model.Points
-                };
-
                 Collection.Add(story);
-
-                return story;
             }
+
+            return story;
         }
     }
     public interface IUserStoryService

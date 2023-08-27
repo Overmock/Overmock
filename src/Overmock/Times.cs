@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Globalization;
 
-namespace Overmock
+namespace Overmocked
 {
     /// <summary>
     /// Struct Times

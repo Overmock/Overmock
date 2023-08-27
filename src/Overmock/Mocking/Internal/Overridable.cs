@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Reflection;
 
-namespace Overmock.Mocking.Internal
+namespace Overmocked.Mocking.Internal
 {
     /// <summary>
     /// Class Overridable.

@@ -1,7 +1,7 @@
 ﻿using BenchmarkDotNet.Attributes;
-using Overmock.Benchmarks.Models;
+using Overmocked.Benchmarks.Models;
 
-namespace Overmock.Benchmarks
+namespace Overmocked.Benchmarks
 {
     [MemoryDiagnoser]
     public class NewProxyCreationBenchmark : INewProxyCreations

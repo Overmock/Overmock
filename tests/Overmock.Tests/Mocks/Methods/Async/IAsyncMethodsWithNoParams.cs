@@ -1,4 +1,4 @@
-﻿namespace Overmock.Tests.Mocks.Methods.Async
+﻿namespace Overmocked.Tests.Mocks.Methods.Async
 {
     public interface IAsyncMethodsWithNoParams
     {

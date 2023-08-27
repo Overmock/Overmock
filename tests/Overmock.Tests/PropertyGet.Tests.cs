@@ -1,7 +1,7 @@
-﻿using Overmock.Tests.Mocks;
-using Overmock.Tests.Mocks.Properties;
+﻿using Overmocked.Tests.Mocks;
+using Overmocked.Tests.Mocks.Properties;
 
-namespace Overmock.Tests
+namespace Overmocked.Tests
 {
     [TestClass]
     public partial class PropertyGetTests

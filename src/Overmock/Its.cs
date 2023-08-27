@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Overmock
+namespace Overmocked
 {
     /// <summary>
     /// Class Value.

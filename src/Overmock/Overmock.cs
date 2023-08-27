@@ -1,8 +1,8 @@
 ﻿using Kimono;
 using Kimono.Interceptors;
 using Kimono.Proxies;
-using Overmock.Mocking;
-using Overmock.Mocking.Internal;
+using Overmocked.Mocking;
+using Overmocked.Mocking.Internal;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +10,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-namespace Overmock
+namespace Overmocked
 {
     /// <summary>
     /// Allows for mocking classes and interfaces.

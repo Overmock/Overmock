@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Version>0.0.7</Version>
+    <Version>0.0.8</Version>
     <!--<TargetFramework>net6.0</TargetFramework>-->
     <TargetFrameworks>net7.0;net6.0;netstandard2.1;</TargetFrameworks>
     <!--<ImplicitUsings>enable</ImplicitUsings>-->
@@ -9,7 +9,7 @@
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <AnalysisLevel>7.0-recommended</AnalysisLevel>
     <IncludeSymbols>True</IncludeSymbols>
-    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <RootNamespace>Overmocked</RootNamespace>
 	<!--<ServerGarbageCollection>true</ServerGarbageCollection>-->
 
     <!-- Nuget -->
@@ -17,6 +17,7 @@
     <Description>Overmock is a mocking framework that allows for very robust mocking configuration and validation.</Description>
     <IsPackable>true</IsPackable>
     <PackageId>Overmock</PackageId>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <IncludeReferencedProjects>true</IncludeReferencedProjects>
     <EnablePackageValidation>true</EnablePackageValidation>
     <PackageIcon>overmock-package-icon.png</PackageIcon>
@@ -42,14 +43,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="IFluentInterface" Version="2.1.0" />
-  </ItemGroup>
-
-  <ItemGroup>
 	  <ProjectReference Include="..\Kimono\Kimono.csproj" />
   </ItemGroup>
   
   <ItemGroup>
+    <PackageReference Include="IFluentInterface" Version="2.1.0" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All"/>
   </ItemGroup>
 </Project>

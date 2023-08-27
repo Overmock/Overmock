@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Overmock.Mocking.Internal
+namespace Overmocked.Mocking.Internal
 {
     /// <summary>
     /// Class Callable.
