@@ -55,11 +55,6 @@ namespace Kimono
 
         internal InvocationContext GetInvocationContext(IInterceptor interceptor, object[] parameters)
         {
-            //if (_invocationContext is null)
-            //{
-            //    _invocationContext = new InvocationContext(this, interceptor, _parameters.ToArray(), parameters);
-            //}
-
             return new InvocationContext(this, interceptor, _parameters.ToArray(), parameters);
         }
 

@@ -45,6 +45,11 @@ namespace Kimono.Proxies
             IReadOnlyList<RuntimeParameter> parameters,
             Action<MethodInfo, IEmitter, Type[]> resultEmitter) where TDelegate : Delegate
         {
+            //if (methodInfo.IsGenericMethod)
+            //{
+
+            //}
+
             var parameterArray = parameters.Select(p => p.Type).ToArray();
             var dynamicMethod = CreateDynamicMethod(methodInfo, parameterArray, returnType);
 
@@ -67,6 +72,11 @@ namespace Kimono.Proxies
                 {
                     emitter.Emit(OpCodes.Unbox_Any, parameterArray[i]);
                 }
+
+                //if (parameterArray[i].IsGenericParameter)
+                //{
+                //    emitter.Emit(OpCodes.Constrained, parameterArray[i]);
+                //}
             }
 
             emitter.Invoke(methodInfo);

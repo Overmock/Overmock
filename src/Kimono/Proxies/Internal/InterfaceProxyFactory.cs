@@ -49,7 +49,7 @@ namespace Kimono.Internal
 
         private ModuleBuilder DynamicModule { get; }
 
-        public static IDelegateFactory DelegateFactory => FactoryProvider.DelegateFactory;
+        //public IDelegateFactory DelegateFactory => FactoryProvider.DelegateFactory;
 
         private IProxyMethodFactory MethodFactory { get; }
 

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Diagnostics;
+using System.Reflection;
 
 namespace Kimono.Proxies
 {
@@ -57,6 +59,8 @@ namespace Kimono.Proxies
         /// <returns>System.Nullable&lt;System.Object&gt;.</returns>
         protected object? HandleMethodCall(int methodId, params object[] parameters)
         {
+            //var stack = new StackTrace();
+            //var callingMethod = stack.GetFrame(1).GetMethod();
             return _interceptor.MemberInvoked(_proxyContext, this, methodId, parameters);
         }
 

@@ -67,32 +67,43 @@ namespace Kimono
         {
             if (parameters.Count == 0)
             {
-                return new ActionObjectMethodInvoker(() => CreateActionInvoker<Action<object?>>(method, Constants.Action1ObjectType, parameters));
+                return new ActionObjectMethodInvoker(() =>
+                    CreateActionInvoker<Action<object?>>(method, Constants.Action1ObjectType, parameters));
             }
 
             if (parameters.Count == 1)
             {
-                return new Action2ObjectMethodInvoker(() => CreateActionInvoker<Action<object?, object?>>(method, Constants.Action2ObjectType, parameters));
+                return new Action2ObjectMethodInvoker(() =>
+                    CreateActionInvoker<Action<object?, object?>>(method, Constants.Action2ObjectType, parameters)
+                );
             }
 
             if (parameters.Count == 2)
             {
-                return new Action3ObjectMethodInvoker(() => CreateActionInvoker<Action<object?, object?, object?>>(method, Constants.Action3ObjectType, parameters));
+                return new Action3ObjectMethodInvoker(() =>
+                    CreateActionInvoker<Action<object?, object?, object?>>(method, Constants.Action3ObjectType, parameters)
+                );
             }
 
             if (parameters.Count == 3)
             {
-                return new Action4ObjectMethodInvoker(() => CreateActionInvoker<Action<object?, object?, object?, object?>>(method, Constants.Action4ObjectType, parameters));
+                return new Action4ObjectMethodInvoker(() =>
+                    CreateActionInvoker<Action<object?, object?, object?, object?>>(method, Constants.Action4ObjectType, parameters)
+                );
             }
 
             if (parameters.Count == 4)
             {
-                return new Action5ObjectMethodInvoker(() => CreateActionInvoker<Action<object?, object?, object?, object?, object?>>(method, Constants.Action5ObjectType, parameters));
+                return new Action5ObjectMethodInvoker(() =>
+                    CreateActionInvoker<Action<object?, object?, object?, object?, object?>>(method, Constants.Action5ObjectType, parameters)
+                );
             }
 
             if (parameters.Count == 5)
             {
-                return new Action6ObjectMethodInvoker(() => CreateActionInvoker<Action<object?, object?, object?, object?, object?, object?>>(method, Constants.Action6ObjectType, parameters));
+                return new Action6ObjectMethodInvoker(() =>
+                    CreateActionInvoker<Action<object?, object?, object?, object?, object?, object?>>(method, Constants.Action6ObjectType, parameters)
+                );
             }
 
             return new MethodInfoDelegateInvoker(method);
@@ -113,27 +124,37 @@ namespace Kimono
 
             if (parameters.Count == 1)
             {
-                return new Func2ObjectReturnMethodInvoker(() => CreateFuncInvoker<Func<object?, object?, object?>>(method, Constants.Func2ObjectType, parameters));
+                return new Func2ObjectReturnMethodInvoker(() => 
+                    CreateFuncInvoker<Func<object?, object?, object?>>(method, Constants.Func2ObjectType, parameters)
+                );
             }
 
             if (parameters.Count == 2)
             {
-                return new Func3ObjectReturnMethodInvoker(() => CreateFuncInvoker<Func<object?, object?, object?, object?>>(method, Constants.Func3ObjectType, parameters));
+                return new Func3ObjectReturnMethodInvoker(() =>
+                    CreateFuncInvoker<Func<object?, object?, object?, object?>>(method, Constants.Func3ObjectType, parameters)
+                );
             }
 
             if (parameters.Count == 3)
             {
-                return new Func4ObjectReturnMethodInvoker(() => CreateFuncInvoker<Func<object?, object?, object?, object?, object?>>(method, Constants.Func4ObjectType, parameters));
+                return new Func4ObjectReturnMethodInvoker(() =>
+                    CreateFuncInvoker<Func<object?, object?, object?, object?, object?>>(method, Constants.Func4ObjectType, parameters)
+                );
             }
 
             if (parameters.Count == 4)
             {
-                return new Func5ObjectReturnMethodInvoker(() => CreateFuncInvoker<Func<object?, object?, object?, object?, object?, object?>>(method, Constants.Func5ObjectType, parameters));
+                return new Func5ObjectReturnMethodInvoker(() =>
+                    CreateFuncInvoker<Func<object?, object?, object?, object?, object?, object?>>(method, Constants.Func5ObjectType, parameters)
+                );
             }
 
             if (parameters.Count == 5)
             {
-                return new Func6ObjectReturnMethodInvoker(() => CreateFuncInvoker<Func<object?, object?, object?, object?, object?, object?, object?>>(method, Constants.Func6ObjectType, parameters));
+                return new Func6ObjectReturnMethodInvoker(() =>
+                    CreateFuncInvoker<Func<object?, object?, object?, object?, object?, object?, object?>>(method, Constants.Func6ObjectType, parameters)
+                );
             }
 
             return new MethodInfoDelegateInvoker(method);
