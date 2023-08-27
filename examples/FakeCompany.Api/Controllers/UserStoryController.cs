@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
-using Overmock.Examples.Storage;
+using FakeCompany.Api.Storage;
 
-namespace Overmock.Examples.Controllers
+namespace FakeCompany.Api.Controllers
 {
 	[ApiController]
 	[Route("[controller]")]

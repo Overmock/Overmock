@@ -1,8 +1,8 @@
-﻿using Overmock.Mocking;
+﻿using Overmocked.Mocking;
 using System.Collections.Generic;
 using System.ComponentModel;
 
-namespace Overmock
+namespace Overmocked
 {
     /// <summary>
     /// An interface that represents an overmocked type.

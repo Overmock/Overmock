@@ -1,7 +1,7 @@
 ﻿using System.Linq.Expressions;
 using System.Reflection;
 
-namespace Overmock.Mocking.Internal
+namespace Overmocked.Mocking.Internal
 {
     /// <summary>
     /// Class MethodCall.

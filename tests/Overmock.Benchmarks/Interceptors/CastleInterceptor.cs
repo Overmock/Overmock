@@ -1,6 +1,6 @@
 ﻿using Castle.DynamicProxy;
 
-namespace Overmock.Benchmarks.Interceptors
+namespace Overmocked.Benchmarks.Interceptors
 {
     public class CastleInterceptor : IInterceptor
     {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Overmock
+namespace Overmocked
 {
     /// <summary>
     /// The base exception for all overmock exceptions.

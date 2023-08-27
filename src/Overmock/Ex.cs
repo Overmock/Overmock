@@ -1,7 +1,7 @@
-﻿using Overmock.Mocking;
+﻿using Overmocked.Mocking;
 using System;
 
-namespace Overmock
+namespace Overmocked
 {
     /// <summary>
     /// Class Ex.

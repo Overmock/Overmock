@@ -1,4 +1,4 @@
-﻿namespace Overmock
+﻿namespace Overmocked
 {
     /// <summary>
     /// Interface IExpectAnyInvocation

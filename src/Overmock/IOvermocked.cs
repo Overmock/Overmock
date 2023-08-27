@@ -1,8 +1,8 @@
-﻿using Overmock.Mocking;
+﻿using Overmocked.Mocking;
 using System.Collections.Generic;
 using System.ComponentModel;
 
-namespace Overmock
+namespace Overmocked
 {
     /// <summary>
     /// Provides the methods to get overmocked properties and methods.

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 
-namespace Overmock.Mocking.Internal
+namespace Overmocked.Mocking.Internal
 {
     /// <summary>
     /// Class Verifiable.

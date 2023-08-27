@@ -1,7 +1,7 @@
-﻿using Overmock.Mocking;
+﻿using Overmocked.Mocking;
 using System.ComponentModel;
 
-namespace Overmock
+namespace Overmocked
 {
     /// <summary>
     /// Provides methods to add overmocked properties and methods.

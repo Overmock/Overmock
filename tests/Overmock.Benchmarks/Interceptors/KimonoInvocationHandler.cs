@@ -1,6 +1,6 @@
 ﻿using Kimono;
 
-namespace Overmock.Benchmarks.Interceptors
+namespace Overmocked.Benchmarks.Interceptors
 {
     public class KimonoInvocationHandler : IInvocationHandler
     {

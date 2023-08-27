@@ -1,6 +1,6 @@
 ﻿using Kimono.Proxies;
 
-namespace Overmock.Tests.Mocks.Properties
+namespace Overmocked.Tests.Mocks.Properties
 {
     public interface IPropertiesWithGet
     {

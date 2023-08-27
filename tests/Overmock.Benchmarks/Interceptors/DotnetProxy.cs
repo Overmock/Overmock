@@ -1,7 +1,7 @@
-﻿using Overmock.Benchmarks.Models;
+﻿using Overmocked.Benchmarks.Models;
 using System.Reflection;
 
-namespace Overmock.Benchmarks.Interceptors
+namespace Overmocked.Benchmarks.Interceptors
 {
     public class DotnetProxy : DispatchProxy
     {

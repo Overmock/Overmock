@@ -1,4 +1,4 @@
-﻿namespace Overmock.Tests.Mocks
+﻿namespace Overmocked.Tests.Mocks
 {
     public class Model
     {

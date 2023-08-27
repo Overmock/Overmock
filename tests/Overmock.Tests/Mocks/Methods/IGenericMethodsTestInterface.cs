@@ -1,4 +1,4 @@
-﻿namespace Overmock.Tests.Mocks.Methods
+﻿namespace Overmocked.Tests.Mocks.Methods
 {
     public interface IGenericMethodsTestInterface
     {

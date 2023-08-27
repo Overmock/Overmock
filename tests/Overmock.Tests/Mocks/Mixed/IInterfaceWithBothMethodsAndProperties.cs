@@ -1,4 +1,4 @@
-﻿namespace Overmock.Tests.Mocks.Mixed
+﻿namespace Overmocked.Tests.Mocks.Mixed
 {
     public interface IInterfaceWithBothMethodsAndProperties
     {

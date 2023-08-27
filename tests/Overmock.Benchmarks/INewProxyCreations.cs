@@ -1,4 +1,4 @@
-﻿namespace Overmock.Benchmarks
+﻿namespace Overmocked.Benchmarks
 {
     public interface INewProxyCreations
     {

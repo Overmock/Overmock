@@ -1,8 +1,8 @@
-﻿using Overmock.Mocking.Internal;
+﻿using Overmocked.Mocking.Internal;
 using System;
 using System.Linq.Expressions;
 
-namespace Overmock
+namespace Overmocked
 {
     /// <summary>
     /// Contains extension methods used to override mocked members
@@ -23,7 +23,7 @@ namespace Overmock
 
             if (expression.Body is MethodCallExpression method)
             {
-                var methodCall = global::Overmock.Overmock.RegisterMethod(
+                var methodCall = global::Overmocked.Overmock.RegisterMethod(
                     overmockable,
                     new MethodCall<T>(method)
                 );
@@ -57,7 +57,7 @@ namespace Overmock
 
             if (expression.Body is MethodCallExpression method)
             {
-                var methodCall = global::Overmock.Overmock.RegisterMethod(
+                var methodCall = global::Overmocked.Overmock.RegisterMethod(
                     overmockable,
                     new MethodCall<T, TResult>(method)
                 );
@@ -66,7 +66,7 @@ namespace Overmock
 
             if (expression.Body is MemberExpression property)
             {
-                var propertyCall = global::Overmock.Overmock.RegisterProperty(
+                var propertyCall = global::Overmocked.Overmock.RegisterProperty(
                     overmockable,
                     new PropertyCall<T, TResult>(property)
                 );
@@ -91,7 +91,7 @@ namespace Overmock
 
             if (expression.Body is MethodCallExpression method)
             {
-                var methodCall = global::Overmock.Overmock.RegisterMethod(
+                var methodCall = global::Overmocked.Overmock.RegisterMethod(
                     overmockable,
                     new MethodCall<T, TResult>(method)
                 );
@@ -100,7 +100,7 @@ namespace Overmock
 
             if (expression.Body is MemberExpression property)
             {
-                var propertyCall = global::Overmock.Overmock.RegisterProperty(
+                var propertyCall = global::Overmocked.Overmock.RegisterProperty(
                     overmockable,
                     new PropertyCall<T, TResult>(property)
                 );

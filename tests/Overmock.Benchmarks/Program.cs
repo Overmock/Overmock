@@ -1,5 +1,5 @@
 ﻿using BenchmarkDotNet.Running;
-using Overmock.Benchmarks;
+using Overmocked.Benchmarks;
 
 BenchmarkRunner.Run<InterceptorMethodCallBenchmark>();
 BenchmarkRunner.Run<NewProxyCreationBenchmark>();

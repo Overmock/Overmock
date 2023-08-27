@@ -1,5 +1,5 @@
 ﻿
-namespace Overmock
+namespace Overmocked
 {
     /// <summary>
     /// Contains methods used for configuring an overmock.

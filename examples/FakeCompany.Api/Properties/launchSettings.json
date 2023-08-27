@@ -9,7 +9,7 @@
     }
   },
   "profiles": {
-    "Overmock.Examples": {
+    "FakeCompany.Api": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,

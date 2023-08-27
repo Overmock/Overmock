@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Overmock.Examples
+namespace FakeCompany.Api
 {
 	public class Response
 	{

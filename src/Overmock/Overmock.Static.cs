@@ -1,12 +1,12 @@
 ﻿using Kimono;
 using Kimono.Proxies;
-using Overmock.Mocking;
+using Overmocked.Mocking;
 using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading;
 
-namespace Overmock
+namespace Overmocked
 {
     /// <summary>
     /// Contains methods used for configuring an overmock.
@@ -18,7 +18,7 @@ namespace Overmock
         private static IInvocationHandler? _invocationHandler;
 
         /// <summary>
-        /// Initializes static members of the <see cref="global::Overmock.Overmock"/> class.
+        /// Initializes static members of the <see cref="global::Overmocked.Overmock"/> class.
         /// </summary>
         static Overmock()
         {

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Reflection;
 
-namespace Overmock.Mocking
+namespace Overmocked.Mocking
 {
     /// <summary>
     /// Interface IOverridable

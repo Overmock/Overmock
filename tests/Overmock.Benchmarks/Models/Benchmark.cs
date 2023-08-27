@@ -1,4 +1,4 @@
-﻿namespace Overmock.Benchmarks.Models
+﻿namespace Overmocked.Benchmarks.Models
 {
     public class Benchmark : IBenchmark
     {

@@ -1,4 +1,4 @@
-﻿namespace Overmock.Tests.Examples
+﻿namespace Overmocked.Tests.Examples
 {
     [TestClass]
     public class ExampleTestsForReadMe

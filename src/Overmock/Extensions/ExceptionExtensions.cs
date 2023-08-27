@@ -1,5 +1,5 @@
 ﻿
-namespace Overmock
+namespace Overmocked
 {
     /// <summary>
     /// Class OvermockExtensions.
