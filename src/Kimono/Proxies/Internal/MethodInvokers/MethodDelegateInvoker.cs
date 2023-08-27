@@ -5,14 +5,14 @@ namespace Kimono.Proxies.Internal.MethodInvokers
     internal abstract class MethodDelegateInvoker<TDelegate> : IDelegateInvoker where TDelegate : Delegate
     {
         private TDelegate? _invokeMethod;
-        private readonly Func<TDelegate> _delegeteGenerator;
+        private readonly Func<TDelegate> _delegateGenerator;
 
-        public MethodDelegateInvoker(Func<TDelegate> delegeteGenerator)
+        public MethodDelegateInvoker(Func<TDelegate> delegateGenerator)
         {
-            _delegeteGenerator = delegeteGenerator;
+            _delegateGenerator = delegateGenerator;
         }
 
-        public TDelegate? InvokeMethod => _invokeMethod ??= _delegeteGenerator();
+        public TDelegate? InvokeMethod => _invokeMethod ??= _delegateGenerator();
 
         public abstract object? Invoke(object? target, params object?[] parameters);
     }

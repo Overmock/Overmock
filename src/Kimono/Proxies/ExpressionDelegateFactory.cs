@@ -6,16 +6,35 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-namespace Kimono.Proxies.Internal
+namespace Kimono.Proxies
 {
-    internal sealed class ExpressionDelegateFactory : DelegateFactory
+    /// <summary>
+    /// Uses Expressions to compile delegates used to invoke members on proxies.
+    /// </summary>
+    public sealed class ExpressionDelegateFactory : DelegateFactory
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TDelegate"></typeparam>
+        /// <param name="method"></param>
+        /// <param name="delegateType"></param>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
         protected override TDelegate CreateActionInvoker<TDelegate>(MethodInfo method, Type delegateType, IReadOnlyList<RuntimeParameter> parameters)
         {
             var (methodCallExpression, parameterExpressions) = GenerateMethodCall(method, parameters);
             return GenerateFinalDelegate<TDelegate>(methodCallExpression, parameterExpressions);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TDelegate"></typeparam>
+        /// <param name="method"></param>
+        /// <param name="delegateType"></param>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
         protected override TDelegate CreateFuncInvoker<TDelegate>(MethodInfo method, Type delegateType, IReadOnlyList<RuntimeParameter> parameters)
         {
             var (methodCallExpression, parameterExpressions) = GenerateMethodCall(method, parameters);

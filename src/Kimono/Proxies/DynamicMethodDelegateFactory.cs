@@ -5,15 +5,34 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 
-namespace Kimono.Proxies.Internal
+namespace Kimono.Proxies
 {
-    internal sealed class DynamicMethodDelegateFactory : DelegateFactory
+    /// <summary>
+    /// 
+    /// </summary>
+    public sealed class DynamicMethodDelegateFactory : DelegateFactory
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TDelegate"></typeparam>
+        /// <param name="method"></param>
+        /// <param name="delegateType"></param>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
         protected override TDelegate CreateActionInvoker<TDelegate>(MethodInfo method, Type delegateType, IReadOnlyList<RuntimeParameter> parameters)
         {
             return CreateInvocation<TDelegate>(method, delegateType, Constants.VoidType, parameters, GenerateActionInvocation);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TDelegate"></typeparam>
+        /// <param name="method"></param>
+        /// <param name="delegateType"></param>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
         protected override TDelegate CreateFuncInvoker<TDelegate>(MethodInfo method, Type delegateType, IReadOnlyList<RuntimeParameter> parameters)
         {
             return CreateInvocation<TDelegate>(method, delegateType, Constants.ObjectType, parameters, GenerateFuncInvocation);

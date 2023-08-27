@@ -41,8 +41,7 @@ namespace Kimono.Internal
 
             DynamicModule = DynamicAssembly.DefineDynamicModule(Name);
 
-            DelegateFactory = FactoryProvider.DelegateFactory;
-            MethodFactory = methodFactory ?? new ProxyMethodFactory(DelegateFactory);
+            MethodFactory = methodFactory ?? new ProxyMethodFactory();
             PropertyFactory = propertyFactory ?? new ProxyPropertyFactory();
         }
 
@@ -50,7 +49,7 @@ namespace Kimono.Internal
 
         private ModuleBuilder DynamicModule { get; }
 
-        public IDelegateFactory DelegateFactory { get; }
+        public static IDelegateFactory DelegateFactory => FactoryProvider.DelegateFactory;
 
         private IProxyMethodFactory MethodFactory { get; }
 

@@ -9,14 +9,14 @@ namespace Kimono.Proxies.Internal
 {
     internal class ProxyMemberFactory
     {
-        private readonly IDelegateFactory _delegateDelegateGenerator;
+        private readonly IDelegateFactory? _delegateDelegateGenerator;
 
         public ProxyMemberFactory(IDelegateFactory? delegateDelegateGenerator = null)
         {
-            _delegateDelegateGenerator = delegateDelegateGenerator ?? FactoryProvider.DelegateFactory;
+            _delegateDelegateGenerator = delegateDelegateGenerator;
         }
 
-        protected IDelegateFactory DelegateFactory => _delegateDelegateGenerator;
+        protected IDelegateFactory DelegateFactory => _delegateDelegateGenerator ?? FactoryProvider.DelegateFactory;
 
         /// <summary>
         /// Creates the method.
@@ -85,7 +85,82 @@ namespace Kimono.Proxies.Internal
                 emitter.Emit(OpCodes.Ldc_I4, parameters.Length);
                 emitter.Emit(OpCodes.Newarr, Constants.ObjectType);
 
-                for (int i = 0; i < parameters.Length - 1; i++)
+                for (int i = 0; i < parameters.Length; i++)
+                {
+                    emitter.Emit(OpCodes.Dup);
+                    emitter.Emit(OpCodes.Ldc_I4, i);
+                    emitter.Emit(OpCodes.Ldarg, i + 1);
+
+                    if (parameters[i].IsValueType)
+                    {
+                        emitter.Emit(OpCodes.Box, parameters[i]);
+                    }
+
+                    emitter.Emit(OpCodes.Stelem_Ref);
+                }
+            }
+            else
+            {
+                emitter.EmitCall(OpCodes.Call, Constants.EmptyObjectArrayMethod, null);
+            }
+
+            emitter.Emit(OpCodes.Callvirt, Constants.ProxyTypeHandleMethodCallMethod);
+
+            if (returnIsNotVoid)
+            {
+                if (returnType.IsValueType)
+                {
+                    emitter.Emit(OpCodes.Unbox_Any, returnType);
+                }
+                else
+                {
+                    emitter.Emit(OpCodes.Castclass, returnType);
+
+                    emitter.Emit(OpCodes.Stloc_0);
+                    emitter.Emit(OpCodes.Br_S, returnLabel);
+
+                    emitter.MarkLabel(returnLabel);
+                    emitter.Emit(OpCodes.Ldloc_0);
+                }
+            }
+            else
+            {
+                emitter.Emit(OpCodes.Pop);
+            }
+
+            emitter.Emit(OpCodes.Ret);
+        }
+
+        /// <summary>
+        /// Emits the method body.
+        /// </summary>
+        /// <param name="context">The context.</param>
+        /// <param name="emitter">The emitter.</param>
+        /// <param name="returnType">Type of the return.</param>
+        /// <param name="parameters">The parameters.</param>
+        /// <param name="methodId">The method identifier.</param>
+        protected static void EmitMethodBody2(IProxyContextBuilder context, ILGenerator emitter, Type returnType, Type[] parameters, int methodId)
+        {
+            var returnIsNotVoid = returnType != Constants.VoidType;
+
+            if (returnIsNotVoid)
+            {
+                emitter.DeclareLocal(returnType);
+            }
+
+            var returnLabel = emitter.DefineLabel();
+
+            emitter.Emit(OpCodes.Nop);
+            emitter.Emit(OpCodes.Ldarg_0);
+
+            emitter.Emit(OpCodes.Ldc_I4, methodId);
+
+            if (parameters.Length > 0)
+            {
+                emitter.Emit(OpCodes.Ldc_I4, parameters.Length);
+                emitter.Emit(OpCodes.Newarr, Constants.ObjectType);
+
+                for (int i = 0; i < parameters.Length; i++)
                 {
                     emitter.Emit(OpCodes.Dup);
                     emitter.Emit(OpCodes.Ldc_I4, i);
@@ -109,7 +184,7 @@ namespace Kimono.Proxies.Internal
                 emitter.EmitCall(OpCodes.Call, Constants.EmptyObjectArrayMethod, null);
             }
 
-            emitter.EmitCall(OpCodes.Call, Constants.ProxyTypeHandleMethodCallMethod, null);
+            emitter.Emit(OpCodes.Callvirt, Constants.ProxyTypeHandleMethodCallMethod);
 
             if (returnIsNotVoid)
             {
