@@ -3,7 +3,7 @@
     /// <summary>
     /// Interface IExpectAnyInvocation
     /// </summary>
-    public interface IExpectAnyInvocation
+    public interface IExpectAnyInvocation : IFluentInterface
     {
         /// <summary>
         /// Expects any.
