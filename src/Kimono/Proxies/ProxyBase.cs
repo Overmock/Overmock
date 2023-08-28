@@ -55,13 +55,12 @@ namespace Kimono.Proxies
         /// Handles the method call.
         /// </summary>
         /// <param name="methodId">The method identifier.</param>
+        /// <param name="genericParameters"></param>
         /// <param name="parameters">The parameters.</param>
         /// <returns>System.Nullable&lt;System.Object&gt;.</returns>
-        protected object? HandleMethodCall(int methodId, params object[] parameters)
+        protected object? HandleMethodCall(int methodId, Type[] genericParameters, params object[] parameters)
         {
-            //var stack = new StackTrace();
-            //var callingMethod = stack.GetFrame(1).GetMethod();
-            return _interceptor.MemberInvoked(_proxyContext, this, methodId, parameters);
+            return _interceptor.MemberInvoked(_proxyContext, this, methodId, genericParameters, parameters);
         }
 
         /// <summary>

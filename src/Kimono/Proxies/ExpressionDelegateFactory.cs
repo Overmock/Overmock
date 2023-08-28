@@ -18,12 +18,13 @@ namespace Kimono.Proxies
         /// </summary>
         /// <typeparam name="TDelegate"></typeparam>
         /// <param name="method"></param>
+        /// <param name="context"></param>
         /// <param name="delegateType"></param>
         /// <param name="parameters"></param>
         /// <returns></returns>
-        protected override TDelegate CreateActionInvoker<TDelegate>(MethodInfo method, Type delegateType, IReadOnlyList<RuntimeParameter> parameters)
+        protected override TDelegate CreateActionInvoker<TDelegate>(MethodInfo method, IInvocationContext context, Type delegateType, IReadOnlyList<RuntimeParameter> parameters)
         {
-            var (methodCallExpression, parameterExpressions) = GenerateMethodCall(method, parameters);
+            var (methodCallExpression, parameterExpressions) = GenerateMethodCall(method, context, parameters);
             return GenerateFinalDelegate<TDelegate>(methodCallExpression, parameterExpressions);
         }
 
@@ -32,12 +33,13 @@ namespace Kimono.Proxies
         /// </summary>
         /// <typeparam name="TDelegate"></typeparam>
         /// <param name="method"></param>
+        /// <param name="context"></param>
         /// <param name="delegateType"></param>
         /// <param name="parameters"></param>
         /// <returns></returns>
-        protected override TDelegate CreateFuncInvoker<TDelegate>(MethodInfo method, Type delegateType, IReadOnlyList<RuntimeParameter> parameters)
+        protected override TDelegate CreateFuncInvoker<TDelegate>(MethodInfo method, IInvocationContext context, Type delegateType, IReadOnlyList<RuntimeParameter> parameters)
         {
-            var (methodCallExpression, parameterExpressions) = GenerateMethodCall(method, parameters);
+            var (methodCallExpression, parameterExpressions) = GenerateMethodCall(method, context, parameters);
 
             return GenerateFinalDelegate<TDelegate>(
                 methodCallExpression,
@@ -46,8 +48,9 @@ namespace Kimono.Proxies
             );
         }
 
-        private static (MethodCallExpression, ParameterExpression[]) GenerateMethodCall(MethodInfo method, IReadOnlyList<RuntimeParameter> parameters)
+        private static (MethodCallExpression, ParameterExpression[]) GenerateMethodCall(MethodInfo method, IInvocationContext context, IReadOnlyList<RuntimeParameter> parameters)
         {
+            method = PrepareGenericMethod(method, context.GenericParameters);
 #if NET7_0
             var span = CollectionsMarshal.AsSpan(parameters.ToList());
 #else

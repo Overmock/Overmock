@@ -53,7 +53,8 @@ namespace Kimono
         /// <param name="context">The context.</param>
         /// <param name="proxy">The proxy.</param>
         /// <param name="methodId">The method identifier.</param>
+        /// <param name="genericParameters"></param>
         /// <param name="parameters">The parameters.</param>
-        object? MemberInvoked(ProxyContext context, IProxy proxy, int methodId, object[] parameters);
+        object? MemberInvoked(ProxyContext context, IProxy proxy, int methodId, Type[] genericParameters, object[] parameters);
     }
 }

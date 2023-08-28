@@ -200,31 +200,31 @@ namespace Kimono.Tests
             Assert.IsNotNull(model);
         }
 
-        //[TestMethod]
-        //public void ITGArgsTArgsInt_Test()
-        //{
-        //    var called = false;
-        //    var target = new ITGArgsTArgsIntClass();
-        //    var overmock = new TargetedCallbackInterceptor<ITGArgsTArgsInt>(target, c => {
-        //        called = true;
-        //        c.Invoke();
-        //        c.ReturnValue = new Model();
-        //    });
+        [TestMethod]
+        public void ITGArgsTArgsInt_Test()
+        {
+            var called = false;
+            var target = new ITGenTArgsIntClass();
+            var overmock = new TargetedCallbackInterceptor<ITGenTArgsInt>(target, c => {
+                called = true;
+                c.Invoke();
+                c.ReturnValue = new Model();
+            });
 
-        //    var subject = overmock.Proxy;
+            var subject = overmock.Proxy;
 
-        //    var model = subject.TGArgsTArgsInt<Model>(52);
+            var model = subject.TGenTArgsInt<Model>(52);
 
-        //    Assert.IsTrue(called);
-        //    Assert.IsNotNull(model);
-        //}
+            Assert.IsTrue(called);
+            Assert.IsNotNull(model);
+        }
 
         //[TestMethod]
         //public void ITGArgsTArgsTInt_Test()
         //{
         //    var called = false;
-        //    var target = new ITGArgsTArgsTIntClass();
-        //    var overmock = new TargetedCallbackInterceptor<ITGArgsTArgsTInt>(target, c => {
+        //    var target = new ITGenTArgsTIntClass();
+        //    var overmock = new TargetedCallbackInterceptor<ITGenTArgsTInt>(target, c => {
         //        called = true;
         //        c.Invoke();
         //        c.ReturnValue = new Model();
@@ -232,7 +232,7 @@ namespace Kimono.Tests
 
         //    var subject = overmock.Proxy;
 
-        //    var model = subject.TGArgsTArgsTInt(new Model(), 52);
+        //    var model = subject.TGenTArgsTInt(new Model(), 52);
 
         //    Assert.IsTrue(called);
         //    Assert.IsNotNull(model);

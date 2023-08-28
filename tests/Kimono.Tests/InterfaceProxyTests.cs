@@ -1,4 +1,4 @@
-using Kimono.Tests.ProxyMembers;
+using Kimono.Tests.Proxies;
 
 namespace Kimono.Tests
 {

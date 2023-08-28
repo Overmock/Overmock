@@ -21,7 +21,7 @@ namespace Kimono
         /// <summary>
         /// The assembly identifier
         /// </summary>
-        public static readonly string AssemblyId = Guid.NewGuid().ToString();
+        public static readonly string AssemblyId = "877ef3f9-fc39-4567-b896-818479eec435";// Guid.NewGuid().ToString();
 
         /// <summary>
         /// The assembly DLL name format
@@ -89,6 +89,11 @@ namespace Kimono
         public static readonly Type TypeType = typeof(Type);
 
         /// <summary>
+        /// The array type
+        /// </summary>
+        public static readonly Type TypeArrayType = typeof(Type[]);
+
+        /// <summary>
         /// The kimono context type
         /// </summary>
         public static readonly Type ProxyContextType = typeof(ProxyContext);
@@ -131,6 +136,11 @@ namespace Kimono
         /// The empty object array method
         /// </summary>
         public static readonly MethodInfo EmptyObjectArrayMethod = EmptyArrayMethod(ObjectType);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public static readonly FieldInfo EmptyTypesField = typeof(Type).GetField(nameof(Type.EmptyTypes), BindingFlags.Static | BindingFlags.Public)!;
 
         /// <summary>
         /// The method base type get current method
@@ -196,6 +206,8 @@ namespace Kimono
         /// The func type taking 6 objects.
         /// </summary>
         public static readonly Type Func6ObjectType = typeof(Func<object?, object?, object?, object?, object?, object?, object?>);
+
+        public static readonly MethodInfo GetTypeFromHandleMethod = TypeType.GetMethod(nameof(Type.GetTypeFromHandle), BindingFlags.Static | BindingFlags.Public)!;
 
         /// <summary>
         /// Gets the proxy type handle method call method.

@@ -60,9 +60,9 @@ namespace Kimono
         protected abstract object? GetTarget();
 
         /// <inheritdoc />
-        object? IInterceptor.MemberInvoked(ProxyContext proxyContext, IProxy proxy, int methodId, object[] parameters)
+        object? IInterceptor.MemberInvoked(ProxyContext proxyContext, IProxy proxy, int methodId, Type[] genericParameters, object[] parameters)
         {
-            var context = proxyContext.GetInvocationContext(methodId, proxy, parameters);
+            var context = proxyContext.GetInvocationContext(methodId, proxy, genericParameters, parameters);
 
             MemberInvoked(context);
 

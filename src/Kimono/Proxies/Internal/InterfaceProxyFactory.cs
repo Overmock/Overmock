@@ -1,8 +1,10 @@
 ﻿using Kimono.Emit;
 using Kimono.Proxies;
 using Kimono.Proxies.Internal;
+using Lokad.ILPack;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -12,7 +14,7 @@ namespace Kimono.Internal
 {
     /// <summary>
     /// Class InterfaceProxyFactory.
-    /// Implements the <see cref="Proxies.ProxyFactory" />
+    /// Implements the <see cref="ProxyFactory" />
     /// </summary>
     /// <seealso cref="Proxies.ProxyFactory" />
     internal sealed class InterfaceProxyFactory : ProxyFactory
@@ -95,6 +97,19 @@ namespace Kimono.Internal
             var proxyType = Constants.ProxyType.MakeGenericType(interceptor.TargetType);
             var typeBuilder = DynamicModule.DefineType(Constants.AssemblyAndTypeNameFormat.ApplyFormat(interceptor.TypeName), attributes, proxyType);
             return new ProxyContextBuilder(interceptor, typeBuilder, proxyType);
+        }
+
+        private void WriteAssembly()
+        {
+            var generator = new AssemblyGenerator();
+            var fileName = Path.Combine("c://git/github/Overmock/Dynamic/", DynamicAssembly.GetName().Name!);
+
+            if (File.Exists(fileName))
+            {
+                File.Delete(fileName);
+            }
+
+            File.WriteAllBytes(fileName, generator.GenerateAssemblyBytes(DynamicAssembly));
         }
 
         private void ImplementConstructor(ProxyContextBuilder context, ConstructorInfo baseConstructor)

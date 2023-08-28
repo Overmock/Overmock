@@ -67,42 +67,42 @@ namespace Kimono
         {
             if (parameters.Count == 0)
             {
-                return new ActionObjectMethodInvoker(() =>
-                    CreateActionInvoker<Action<object?>>(method, Constants.Action1ObjectType, parameters));
+                return new ActionObjectMethodInvoker(c =>
+                    CreateActionInvoker<Action<object?>>(method, c, Constants.Action1ObjectType, parameters));
             }
 
             if (parameters.Count == 1)
             {
-                return new Action2ObjectMethodInvoker(() =>
-                    CreateActionInvoker<Action<object?, object?>>(method, Constants.Action2ObjectType, parameters)
+                return new Action2ObjectMethodInvoker(c =>
+                    CreateActionInvoker<Action<object?, object?>>(method, c, Constants.Action2ObjectType, parameters)
                 );
             }
 
             if (parameters.Count == 2)
             {
-                return new Action3ObjectMethodInvoker(() =>
-                    CreateActionInvoker<Action<object?, object?, object?>>(method, Constants.Action3ObjectType, parameters)
+                return new Action3ObjectMethodInvoker(c =>
+                    CreateActionInvoker<Action<object?, object?, object?>>(method, c, Constants.Action3ObjectType, parameters)
                 );
             }
 
             if (parameters.Count == 3)
             {
-                return new Action4ObjectMethodInvoker(() =>
-                    CreateActionInvoker<Action<object?, object?, object?, object?>>(method, Constants.Action4ObjectType, parameters)
+                return new Action4ObjectMethodInvoker(c =>
+                    CreateActionInvoker<Action<object?, object?, object?, object?>>(method, c, Constants.Action4ObjectType, parameters)
                 );
             }
 
             if (parameters.Count == 4)
             {
-                return new Action5ObjectMethodInvoker(() =>
-                    CreateActionInvoker<Action<object?, object?, object?, object?, object?>>(method, Constants.Action5ObjectType, parameters)
+                return new Action5ObjectMethodInvoker(c =>
+                    CreateActionInvoker<Action<object?, object?, object?, object?, object?>>(method, c, Constants.Action5ObjectType, parameters)
                 );
             }
 
             if (parameters.Count == 5)
             {
-                return new Action6ObjectMethodInvoker(() =>
-                    CreateActionInvoker<Action<object?, object?, object?, object?, object?, object?>>(method, Constants.Action6ObjectType, parameters)
+                return new Action6ObjectMethodInvoker(c =>
+                    CreateActionInvoker<Action<object?, object?, object?, object?, object?, object?>>(method, c, Constants.Action6ObjectType, parameters)
                 );
             }
 
@@ -119,41 +119,43 @@ namespace Kimono
         {
             if (parameters.Count == 0)
             {
-                return new FuncObjectReturnMethodInvoker(() => CreateFuncInvoker<Func<object?, object?>>(method, Constants.Func1ObjectType, parameters));
+                return new FuncObjectReturnMethodInvoker(c =>
+                    CreateFuncInvoker<Func<object?, object?>>(method, c, Constants.Func1ObjectType, parameters)
+                );
             }
 
             if (parameters.Count == 1)
             {
-                return new Func2ObjectReturnMethodInvoker(() => 
-                    CreateFuncInvoker<Func<object?, object?, object?>>(method, Constants.Func2ObjectType, parameters)
+                return new Func2ObjectReturnMethodInvoker(c => 
+                    CreateFuncInvoker<Func<object?, object?, object?>>(method, c, Constants.Func2ObjectType, parameters)
                 );
             }
 
             if (parameters.Count == 2)
             {
-                return new Func3ObjectReturnMethodInvoker(() =>
-                    CreateFuncInvoker<Func<object?, object?, object?, object?>>(method, Constants.Func3ObjectType, parameters)
+                return new Func3ObjectReturnMethodInvoker(c =>
+                    CreateFuncInvoker<Func<object?, object?, object?, object?>>(method, c, Constants.Func3ObjectType, parameters)
                 );
             }
 
             if (parameters.Count == 3)
             {
-                return new Func4ObjectReturnMethodInvoker(() =>
-                    CreateFuncInvoker<Func<object?, object?, object?, object?, object?>>(method, Constants.Func4ObjectType, parameters)
+                return new Func4ObjectReturnMethodInvoker(c =>
+                    CreateFuncInvoker<Func<object?, object?, object?, object?, object?>>(method, c, Constants.Func4ObjectType, parameters)
                 );
             }
 
             if (parameters.Count == 4)
             {
-                return new Func5ObjectReturnMethodInvoker(() =>
-                    CreateFuncInvoker<Func<object?, object?, object?, object?, object?, object?>>(method, Constants.Func5ObjectType, parameters)
+                return new Func5ObjectReturnMethodInvoker(c =>
+                    CreateFuncInvoker<Func<object?, object?, object?, object?, object?, object?>>(method, c, Constants.Func5ObjectType, parameters)
                 );
             }
 
             if (parameters.Count == 5)
             {
-                return new Func6ObjectReturnMethodInvoker(() =>
-                    CreateFuncInvoker<Func<object?, object?, object?, object?, object?, object?, object?>>(method, Constants.Func6ObjectType, parameters)
+                return new Func6ObjectReturnMethodInvoker(c =>
+                    CreateFuncInvoker<Func<object?, object?, object?, object?, object?, object?, object?>>(method, c, Constants.Func6ObjectType, parameters)
                 );
             }
 
@@ -161,14 +163,32 @@ namespace Kimono
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="methodInfo"></param>
+        /// <param name="genericParameters"></param>
+        /// <returns></returns>
+        protected static MethodInfo PrepareGenericMethod(MethodInfo methodInfo, Type[] genericParameters)
+        {
+            if (methodInfo.IsGenericMethod)
+            {
+                var genericMethod = methodInfo.MakeGenericMethod(genericParameters);
+                methodInfo = genericMethod;
+            }
+
+            return methodInfo;
+        }
+
+        /// <summary>
         /// Generates the method invoker.
         /// </summary>
         /// <typeparam name="TDelegate">The type of the t delegate.</typeparam>
         /// <param name="method">The method.</param>
+        /// <param name="context"></param>
         /// <param name="delegateType">Type of the delegate.</param>
         /// <param name="parameters">The parameters.</param>
         /// <returns>TDelegate.</returns>
-        protected abstract TDelegate CreateActionInvoker<TDelegate>(MethodInfo method, Type delegateType, IReadOnlyList<RuntimeParameter> parameters)
+        protected abstract TDelegate CreateActionInvoker<TDelegate>(MethodInfo method, IInvocationContext context, Type delegateType, IReadOnlyList<RuntimeParameter> parameters)
             where TDelegate : Delegate;
 
         /// <summary>
@@ -176,10 +196,11 @@ namespace Kimono
         /// </summary>
         /// <typeparam name="TDelegate">The type of the t delegate.</typeparam>
         /// <param name="method">The method.</param>
+        /// <param name="context"></param>
         /// <param name="delegateType">Type of the delegate.</param>
         /// <param name="parameters">The parameters.</param>
         /// <returns>TDelegate.</returns>
-        protected abstract TDelegate CreateFuncInvoker<TDelegate>(MethodInfo method, Type delegateType, IReadOnlyList<RuntimeParameter> parameters)
+        protected abstract TDelegate CreateFuncInvoker<TDelegate>(MethodInfo method, IInvocationContext context, Type delegateType, IReadOnlyList<RuntimeParameter> parameters)
             where TDelegate : Delegate;
     }
 }
