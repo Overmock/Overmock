@@ -1,7 +1,6 @@
 ﻿using Kimono.Emit;
 using Kimono.Proxies;
 using Kimono.Proxies.Internal;
-using Lokad.ILPack;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -99,18 +98,18 @@ namespace Kimono.Internal
             return new ProxyContextBuilder(interceptor, typeBuilder, proxyType);
         }
 
-        private void WriteAssembly()
-        {
-            var generator = new AssemblyGenerator();
-            var fileName = Path.Combine("c://git/github/Overmock/Dynamic/", DynamicAssembly.GetName().Name!);
+        //private void WriteAssembly()
+        //{
+        //    var generator = new Lokad.ILPack.AssemblyGenerator();
+        //    var fileName = Path.Combine("c://git/github/Overmock/Dynamic/", DynamicAssembly.GetName().Name!);
 
-            if (File.Exists(fileName))
-            {
-                File.Delete(fileName);
-            }
+        //    if (File.Exists(fileName))
+        //    {
+        //        File.Delete(fileName);
+        //    }
 
-            File.WriteAllBytes(fileName, generator.GenerateAssemblyBytes(DynamicAssembly));
-        }
+        //    File.WriteAllBytes(fileName, generator.GenerateAssemblyBytes(DynamicAssembly));
+        //}
 
         private void ImplementConstructor(ProxyContextBuilder context, ConstructorInfo baseConstructor)
         {
