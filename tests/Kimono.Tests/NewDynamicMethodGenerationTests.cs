@@ -180,5 +180,62 @@ namespace Kimono.Tests
 
             Assert.IsTrue(called);
         }
+
+        [TestMethod]
+        public void IModelArgsInt_Test()
+        {
+            var called = false;
+            var target = new ModelArgsIntClass();
+            var overmock = new TargetedCallbackInterceptor<IModelArgsInt>(target, c =>
+            {
+                called = true;
+                c.Invoke();
+            });
+
+            var subject = overmock.Proxy;
+            
+            var model = subject.ModelArgsInt(52);
+
+            Assert.IsTrue(called);
+            Assert.IsNotNull(model);
+        }
+
+        [TestMethod]
+        public void ITGArgsTArgsInt_Test()
+        {
+            var called = false;
+            var target = new ITGenTArgsIntClass();
+            var overmock = new TargetedCallbackInterceptor<ITGenTArgsInt>(target, c => {
+                called = true;
+                c.Invoke();
+                c.ReturnValue = new Model();
+            });
+
+            var subject = overmock.Proxy;
+
+            var model = subject.TGenTArgsInt<Model>(52);
+
+            Assert.IsTrue(called);
+            Assert.IsNotNull(model);
+        }
+
+        //[TestMethod]
+        //public void ITGArgsTArgsTInt_Test()
+        //{
+        //    var called = false;
+        //    var target = new ITGenTArgsTIntClass();
+        //    var overmock = new TargetedCallbackInterceptor<ITGenTArgsTInt>(target, c => {
+        //        called = true;
+        //        c.Invoke();
+        //        c.ReturnValue = new Model();
+        //    });
+
+        //    var subject = overmock.Proxy;
+
+        //    var model = subject.TGenTArgsTInt(new Model(), 52);
+
+        //    Assert.IsTrue(called);
+        //    Assert.IsNotNull(model);
+        //}
     }
 }

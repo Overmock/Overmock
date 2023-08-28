@@ -193,7 +193,7 @@ namespace Kimono.Emit
         /// Nops this instance.
         /// </summary>
         /// <returns>IEmitter.</returns>
-        IEmitter DeclareLocal(Type type);
+        LocalBuilder DeclareLocal(Type type);
     }
 
     /// <summary>

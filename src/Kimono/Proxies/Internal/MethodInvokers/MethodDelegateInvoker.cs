@@ -5,27 +5,36 @@ namespace Kimono.Proxies.Internal.MethodInvokers
     internal abstract class MethodDelegateInvoker<TDelegate> : IDelegateInvoker where TDelegate : Delegate
     {
         private TDelegate? _invokeMethod;
-        private readonly Func<TDelegate> _delegeteGenerator;
+        private readonly Func<IInvocationContext, TDelegate> _delegateGenerator;
 
-        public MethodDelegateInvoker(Func<TDelegate> delegeteGenerator)
+        public MethodDelegateInvoker(Func<IInvocationContext, TDelegate> delegateGenerator)
         {
-            _delegeteGenerator = delegeteGenerator;
+            _delegateGenerator = delegateGenerator;
         }
 
-        public TDelegate? InvokeMethod => _invokeMethod ??= _delegeteGenerator();
+        public TDelegate? InvokeMethod => _invokeMethod;
 
-        public abstract object? Invoke(object? target, params object?[] parameters);
-    }
+        public Func<IInvocationContext, TDelegate> DelegateGenerator => _delegateGenerator;
 
-    internal sealed class ObjectArrayArgsDelegateInvoker : MethodDelegateInvoker<Func<object?, object?[], object?>>
-    {
-        public ObjectArrayArgsDelegateInvoker(Func<Func<object?, object?[], object?>> delegeteGenerator) : base(delegeteGenerator)
+        public virtual object? Invoke(object? target, IInvocationContext context, params object?[] parameters)
         {
+            var generator = DelegateGenerator;
+
+            if (context.Method.IsGenericMethod)
+            {
+                _invokeMethod = generator(context);
+
+                return InvokeCore(target, parameters);
+            }
+
+            if (_invokeMethod is null)
+            {
+                _invokeMethod = generator(context);
+            }
+
+            return InvokeCore(target, parameters);
         }
 
-        public override object? Invoke(object? target, object?[] parameters)
-        {
-            return InvokeMethod(target, parameters);
-        }
+        protected abstract object? InvokeCore(object? target, params object?[] parameters);
     }
 }

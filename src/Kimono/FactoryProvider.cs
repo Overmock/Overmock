@@ -52,7 +52,37 @@ namespace Kimono
         /// <returns>IProxyFactoryProvider.</returns>
         public static IDelegateFactory Use(IDelegateFactory factory)
         {
-            return Interlocked.Exchange(ref _delegateFactory, factory);
+            Interlocked.Exchange(ref _delegateFactory, factory);
+            
+            return _delegateFactory;
+        }
+
+        /// <summary>
+        /// Configures the <see cref="ProxyFactory"/> to use Expressions to compile delegates.
+        /// </summary>
+        /// <returns></returns>
+        public static IDelegateFactory UseExpressionDelegates()
+        {
+            if (_delegateFactory is DynamicMethodDelegateFactory)
+            {
+                Use(new ExpressionDelegateFactory());
+            }
+
+            return _delegateFactory;
+        }
+
+        /// <summary>
+        /// Configures the <see cref="ProxyFactory"/> to use Expressions to compile delegates.
+        /// </summary>
+        /// <returns></returns>
+        public static IDelegateFactory UseDynamicMethodDelegates()
+        {
+            if (_delegateFactory is ExpressionDelegateFactory)
+            {
+                Use(new DynamicMethodDelegateFactory());
+            }
+
+            return _delegateFactory;
         }
 
         /// <summary>

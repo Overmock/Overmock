@@ -5,27 +5,51 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 
-namespace Kimono.Proxies.Internal
+namespace Kimono.Proxies
 {
-    internal sealed class DynamicMethodDelegateFactory : DelegateFactory
+    /// <summary>
+    /// 
+    /// </summary>
+    public sealed class DynamicMethodDelegateFactory : DelegateFactory
     {
-        protected override TDelegate CreateActionInvoker<TDelegate>(MethodInfo method, Type delegateType, IReadOnlyList<RuntimeParameter> parameters)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TDelegate"></typeparam>
+        /// <param name="method"></param>
+        /// <param name="context"></param>
+        /// <param name="delegateType"></param>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
+        protected override TDelegate CreateActionInvoker<TDelegate>(MethodInfo method, IInvocationContext context, Type delegateType, IReadOnlyList<RuntimeParameter> parameters)
         {
-            return CreateInvocation<TDelegate>(method, delegateType, Constants.VoidType, parameters, GenerateActionInvocation);
+            return CreateInvocation<TDelegate>(context, method, delegateType, Constants.VoidType, parameters, GenerateActionInvocation);
         }
 
-        protected override TDelegate CreateFuncInvoker<TDelegate>(MethodInfo method, Type delegateType, IReadOnlyList<RuntimeParameter> parameters)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TDelegate"></typeparam>
+        /// <param name="method"></param>
+        /// <param name="context"></param>
+        /// <param name="delegateType"></param>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
+        protected override TDelegate CreateFuncInvoker<TDelegate>(MethodInfo method, IInvocationContext context, Type delegateType, IReadOnlyList<RuntimeParameter> parameters)
         {
-            return CreateInvocation<TDelegate>(method, delegateType, Constants.ObjectType, parameters, GenerateFuncInvocation);
+            return CreateInvocation<TDelegate>(context, method, delegateType, Constants.ObjectType, parameters, GenerateFuncInvocation);
         }
 
         private static TDelegate CreateInvocation<TDelegate>(
+            IInvocationContext context,
             MethodInfo methodInfo,
             Type delegateType,
             Type returnType,
             IReadOnlyList<RuntimeParameter> parameters,
             Action<MethodInfo, IEmitter, Type[]> resultEmitter) where TDelegate : Delegate
         {
+            methodInfo = PrepareGenericMethod(methodInfo, context.GenericParameters);
+
             var parameterArray = parameters.Select(p => p.Type).ToArray();
             var dynamicMethod = CreateDynamicMethod(methodInfo, parameterArray, returnType);
 
@@ -48,6 +72,11 @@ namespace Kimono.Proxies.Internal
                 {
                     emitter.Emit(OpCodes.Unbox_Any, parameterArray[i]);
                 }
+
+                //if (parameterArray[i].IsGenericParameter)
+                //{
+                //    emitter.Emit(OpCodes.Constrained, parameterArray[i]);
+                //}
             }
 
             emitter.Invoke(methodInfo);

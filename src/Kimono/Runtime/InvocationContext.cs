@@ -10,6 +10,7 @@ namespace Kimono
     public sealed class InvocationContext : IInvocationContext
     {
         private readonly IInterceptor _interceptor;
+        private readonly Type[] _genericParameters;
         private readonly RuntimeContext _runtimeContext;
         private readonly Func<Parameters> _parametersProvider;
 
@@ -24,12 +25,14 @@ namespace Kimono
         /// </summary>
         /// <param name="runtimeContext">The runtime context.</param>
         /// <param name="interceptor">The interceptor.</param>
+        /// <param name="genericParameters"></param>
         /// <param name="parameters">The parameters.</param>
         /// <param name="parameterValues">The parameter values.</param>
-        public InvocationContext(RuntimeContext runtimeContext, IInterceptor interceptor, RuntimeParameter[] parameters, object[] parameterValues)
+        public InvocationContext(RuntimeContext runtimeContext, IInterceptor interceptor, Type[] genericParameters, RuntimeParameter[] parameters, object[] parameterValues)
         {
             _runtimeContext = runtimeContext;
             _interceptor = interceptor;
+            _genericParameters = genericParameters;
             _parameterValuesProvider = () => parameterValues;
             _parametersProvider = () => new Parameters(parameters, parameterValues);
         }
@@ -57,6 +60,11 @@ namespace Kimono
         /// </summary>
         /// <value>The method.</value>
         public MethodInfo Method => _runtimeContext.ProxiedMember.Method;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public Type[] GenericParameters => _genericParameters;
 
         /// <summary>
         /// Gets the parameters.
@@ -118,7 +126,7 @@ namespace Kimono
             // If the target's null then we don't have one to call;
             if (target is null) { return; }
 
-            var returnValue = invoker.Invoke(target, _parameterValuesProvider());
+            var returnValue = invoker.Invoke(target, this, _parameterValuesProvider());
 
             _targetInvoked = true;
 

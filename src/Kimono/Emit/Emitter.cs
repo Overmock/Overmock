@@ -107,10 +107,9 @@ namespace Kimono.Emit
             return this;
         }
 
-        IEmitter IEmitter.DeclareLocal(Type type)
+        LocalBuilder IEmitter.DeclareLocal(Type type)
         {
-            _emitter.DeclareLocal(type);
-            return this;
+            return _emitter.DeclareLocal(type);
         }
     }
 }

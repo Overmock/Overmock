@@ -6,19 +6,40 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-namespace Kimono.Proxies.Internal
+namespace Kimono.Proxies
 {
-    internal sealed class ExpressionDelegateFactory : DelegateFactory
+    /// <summary>
+    /// Uses Expressions to compile delegates used to invoke members on proxies.
+    /// </summary>
+    public sealed class ExpressionDelegateFactory : DelegateFactory
     {
-        protected override TDelegate CreateActionInvoker<TDelegate>(MethodInfo method, Type delegateType, IReadOnlyList<RuntimeParameter> parameters)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TDelegate"></typeparam>
+        /// <param name="method"></param>
+        /// <param name="context"></param>
+        /// <param name="delegateType"></param>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
+        protected override TDelegate CreateActionInvoker<TDelegate>(MethodInfo method, IInvocationContext context, Type delegateType, IReadOnlyList<RuntimeParameter> parameters)
         {
-            var (methodCallExpression, parameterExpressions) = GenerateMethodCall(method, parameters);
+            var (methodCallExpression, parameterExpressions) = GenerateMethodCall(method, context, parameters);
             return GenerateFinalDelegate<TDelegate>(methodCallExpression, parameterExpressions);
         }
 
-        protected override TDelegate CreateFuncInvoker<TDelegate>(MethodInfo method, Type delegateType, IReadOnlyList<RuntimeParameter> parameters)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TDelegate"></typeparam>
+        /// <param name="method"></param>
+        /// <param name="context"></param>
+        /// <param name="delegateType"></param>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
+        protected override TDelegate CreateFuncInvoker<TDelegate>(MethodInfo method, IInvocationContext context, Type delegateType, IReadOnlyList<RuntimeParameter> parameters)
         {
-            var (methodCallExpression, parameterExpressions) = GenerateMethodCall(method, parameters);
+            var (methodCallExpression, parameterExpressions) = GenerateMethodCall(method, context, parameters);
 
             return GenerateFinalDelegate<TDelegate>(
                 methodCallExpression,
@@ -27,8 +48,9 @@ namespace Kimono.Proxies.Internal
             );
         }
 
-        private static (MethodCallExpression, ParameterExpression[]) GenerateMethodCall(MethodInfo method, IReadOnlyList<RuntimeParameter> parameters)
+        private static (MethodCallExpression, ParameterExpression[]) GenerateMethodCall(MethodInfo method, IInvocationContext context, IReadOnlyList<RuntimeParameter> parameters)
         {
+            method = PrepareGenericMethod(method, context.GenericParameters);
 #if NET7_0
             var span = CollectionsMarshal.AsSpan(parameters.ToList());
 #else

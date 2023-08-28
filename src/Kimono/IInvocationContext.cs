@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 
 namespace Kimono
 {
@@ -36,6 +37,11 @@ namespace Kimono
         /// </summary>
         /// <value>The method.</value>
         MethodInfo Method { get; }
+
+        /// <summary>
+        /// Gets the generic parameters used to call this invocation.
+        /// </summary>
+        Type[] GenericParameters { get; }
 
         /// <summary>
         /// Gets the parameters.

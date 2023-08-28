@@ -4,11 +4,11 @@ namespace Kimono.Proxies.Internal.MethodInvokers
 {
     internal sealed class ActionMethodInvoker : MethodDelegateInvoker<Action>
     {
-        public ActionMethodInvoker(Func<Action> invokeMethod) : base(invokeMethod)
+        public ActionMethodInvoker(Func<IInvocationContext, Action> invokeMethod) : base(invokeMethod)
         {
         }
 
-        public sealed override object? Invoke(object? target, params object?[] parameters)
+        protected sealed override object? InvokeCore(object? target, params object?[] parameters)
         {
             InvokeMethod();
 

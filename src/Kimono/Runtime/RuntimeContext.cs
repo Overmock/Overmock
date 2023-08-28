@@ -1,5 +1,6 @@
 ﻿using Kimono.Proxies;
 using Kimono.Proxies.Internal.MethodInvokers;
+using System;
 using System.Collections.Generic;
 
 namespace Kimono
@@ -53,14 +54,9 @@ namespace Kimono
             _methodInvoker = methodInvoker;
         }
 
-        internal InvocationContext GetInvocationContext(IInterceptor interceptor, object[] parameters)
+        internal InvocationContext GetInvocationContext(IInterceptor interceptor, Type[] genericParameters, object[] parameters)
         {
-            //if (_invocationContext is null)
-            //{
-            //    _invocationContext = new InvocationContext(this, interceptor, _parameters.ToArray(), parameters);
-            //}
-
-            return new InvocationContext(this, interceptor, _parameters.ToArray(), parameters);
+            return new InvocationContext(this, interceptor, genericParameters, _parameters.ToArray(), parameters);
         }
 
         internal IDelegateInvoker GetMethodInvoker()

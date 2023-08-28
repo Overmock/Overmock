@@ -3,6 +3,7 @@ using Kimono.Proxies;
 using Kimono.Proxies.Internal;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -12,7 +13,7 @@ namespace Kimono.Internal
 {
     /// <summary>
     /// Class InterfaceProxyFactory.
-    /// Implements the <see cref="Proxies.ProxyFactory" />
+    /// Implements the <see cref="ProxyFactory" />
     /// </summary>
     /// <seealso cref="Proxies.ProxyFactory" />
     internal sealed class InterfaceProxyFactory : ProxyFactory
@@ -41,8 +42,7 @@ namespace Kimono.Internal
 
             DynamicModule = DynamicAssembly.DefineDynamicModule(Name);
 
-            DelegateFactory = FactoryProvider.DelegateFactory;
-            MethodFactory = methodFactory ?? new ProxyMethodFactory(DelegateFactory);
+            MethodFactory = methodFactory ?? new ProxyMethodFactory();
             PropertyFactory = propertyFactory ?? new ProxyPropertyFactory();
         }
 
@@ -50,7 +50,7 @@ namespace Kimono.Internal
 
         private ModuleBuilder DynamicModule { get; }
 
-        public IDelegateFactory DelegateFactory { get; }
+        //public IDelegateFactory DelegateFactory => FactoryProvider.DelegateFactory;
 
         private IProxyMethodFactory MethodFactory { get; }
 
@@ -97,6 +97,19 @@ namespace Kimono.Internal
             var typeBuilder = DynamicModule.DefineType(Constants.AssemblyAndTypeNameFormat.ApplyFormat(interceptor.TypeName), attributes, proxyType);
             return new ProxyContextBuilder(interceptor, typeBuilder, proxyType);
         }
+
+        //private void WriteAssembly()
+        //{
+        //    var generator = new Lokad.ILPack.AssemblyGenerator();
+        //    var fileName = Path.Combine("c://git/github/Overmock/Dynamic/", DynamicAssembly.GetName().Name!);
+
+        //    if (File.Exists(fileName))
+        //    {
+        //        File.Delete(fileName);
+        //    }
+
+        //    File.WriteAllBytes(fileName, generator.GenerateAssemblyBytes(DynamicAssembly));
+        //}
 
         private void ImplementConstructor(ProxyContextBuilder context, ConstructorInfo baseConstructor)
         {

@@ -4,11 +4,11 @@ namespace Kimono.Proxies.Internal.MethodInvokers
 {
     internal sealed class Func2ObjectReturnMethodInvoker : MethodDelegateInvoker<Func<object?, object?, object?>>
     {
-        public Func2ObjectReturnMethodInvoker(Func<Func<object?, object?, object?>> invokeMethod) : base(invokeMethod)
+        public Func2ObjectReturnMethodInvoker(Func<IInvocationContext, Func<object?, object?, object?>> invokeMethod) : base(invokeMethod)
         {
         }
 
-        public sealed override object? Invoke(object? target, params object?[] parameters)
+        protected sealed override object? InvokeCore(object? target, params object?[] parameters)
         {
             return InvokeMethod(target, parameters[0]);
         }
