@@ -57,5 +57,16 @@ namespace Kimono
         {
             return Constants.Format(() => format, args);
         }
+
+        /// <summary>
+        /// Applies the format.
+        /// </summary>
+        /// <param name="format">The format.</param>
+        /// <param name="s1"></param>
+        /// <returns>System.String.</returns>
+        internal static string ApplyFormat(this string format, string s1)
+        {
+            return Constants.Format(format, s1);
+        }
     }
 }
