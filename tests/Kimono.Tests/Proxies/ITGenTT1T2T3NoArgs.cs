@@ -20,7 +20,7 @@ namespace Kimono.Tests.Proxies
             Type t2 = typeof(T2);
             Type t3 = typeof(T3);
             const int methodId = 90001;
-            return (T)HandleMethodCall(methodId, new[] { t, t1, t2, t3 }, id);
+            return (T)HandleMethodCall(methodId, new[] { t, t1, t2, t3 }, new object[] { id });
         }
     }
 }

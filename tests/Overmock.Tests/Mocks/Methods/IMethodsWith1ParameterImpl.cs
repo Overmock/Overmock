@@ -27,7 +27,7 @@ namespace Overmocked.Tests.Mocks.Methods
 
         public Model ModelMethodWithFuncOfListOfModel(int id)
         {
-            return (Model)(HandleMethodCall(52, Type.EmptyTypes, id));
+            return (Model)(HandleMethodCall(52, Type.EmptyTypes, new object[] { id }));
         }
 
         public void VoidMethodWithInt(int id)

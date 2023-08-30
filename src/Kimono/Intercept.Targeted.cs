@@ -14,6 +14,19 @@ namespace Kimono
         /// Intercepts the specified implementation.
         /// </summary>
         /// <typeparam name="T">The type of the t interface.</typeparam>
+        /// <param name="implementation">The implementation.</param>
+        /// <param name="memberInvoked">The member invoked.</param>
+        /// <returns>TypeInterceptor&lt;TInterface&gt;.</returns>
+        public static T WithCallback<T>(T implementation, InvocationAction memberInvoked)
+            where T : class
+        {
+            return new TargetedCallbackInterceptor<T>(implementation, memberInvoked);
+        }
+
+        /// <summary>
+        /// Intercepts the specified implementation.
+        /// </summary>
+        /// <typeparam name="T">The type of the t interface.</typeparam>
         /// <typeparam name="TTarget">The type of the t implementation.</typeparam>
         /// <param name="implementation">The implementation.</param>
         /// <param name="memberInvoked">The member invoked.</param>

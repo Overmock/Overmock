@@ -58,7 +58,7 @@ namespace Kimono.Proxies
         /// <param name="genericParameters"></param>
         /// <param name="parameters">The parameters.</param>
         /// <returns>System.Nullable&lt;System.Object&gt;.</returns>
-        protected object? HandleMethodCall(int methodId, Type[] genericParameters, params object[] parameters)
+        protected object? HandleMethodCall(int methodId, Type[] genericParameters, object[] parameters)
         {
             return _interceptor.MemberInvoked(_proxyContext, this, methodId, genericParameters, parameters);
         }

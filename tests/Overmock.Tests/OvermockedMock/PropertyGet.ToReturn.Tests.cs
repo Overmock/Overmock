@@ -2,16 +2,16 @@
 {
     public partial class PropertyGetTests
     {
-        //[TestMethod]
-        //public void IntPropertyToReturnTest()
-        //{
-        //    Overmock.Mock(_overmock, t => t.Int)
-        //        .ToReturn(20);
+        [TestMethod]
+        public void IntPropertyToReturnTest()
+        {
+            Overmock.Mock(_overmock, t => t.Int)
+                .ToReturn(20);
 
-        //    var test = _overmock.Int;
+            var test = _overmock.Target.Int;
 
-        //    Assert.AreEqual(20, test);
-        //}
+            Assert.AreEqual(20, test);
+        }
 
         [TestMethod]
         public void StringPropertyToReturnTest()

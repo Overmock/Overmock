@@ -19,7 +19,7 @@ namespace Overmocked.Tests.Mocks.Properties
         {
         }
 
-        public int Int => (int)HandleMethodCall(1, Type.EmptyTypes);
+        public int Int => (int)HandleMethodCall(1, Type.EmptyTypes, null);
 
         public Model Model => throw new NotImplementedException();
 

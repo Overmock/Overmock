@@ -22,7 +22,7 @@ namespace Kimono.Tests.Proxies
         public string DoSomething(string name)
         {
             const int methodId = 90001;
-            return (string)HandleMethodCall(methodId, Type.EmptyTypes, name)!;
+            return (string)HandleMethodCall(methodId, Type.EmptyTypes, new[] { name })!;
         }
 
         public string MethodWithReturn(string name, object param)
