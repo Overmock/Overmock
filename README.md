@@ -30,7 +30,7 @@ public class ExampleTestsForReadMe
             _log = log;
             _repo = repo;
         }
-        public void SaveModel(Model model)
+        public Model SaveModel(Model model)
         {
             try
             {
@@ -39,6 +39,7 @@ public class ExampleTestsForReadMe
                 {
                     _log.Log("Failed to save");
                 }
+                return model;
             }
             catch (Exception ex)
             {
@@ -53,16 +54,15 @@ public class ExampleTestsForReadMe
     {
         var id = 22;
         var wasSaved = false;
-        var log = Overmocked.ExpectAnyInvocation<ILog>();
-        var repository = Overmocked.Interface<IRepository>();
+        var log = Overmock.AnyInvocation<ILog>();
+        var repository = Overmock.Mock<IRepository>()
+            .Mock(r => r.Save(Its.Any<Model>()))
+            .ToCall(c => {
+                wasSaved = true;
+                return c.Get<Model>("model")?.Id == id;
+            }, Times.Once);
 
-        repository.Override(r => r.Save(Its.Any<Model>())).ToCall(c =>
-        {
-            wasSaved = true;
-            return c.Get<Model>("model")?.Id == id;
-        }, Times.Once);
-
-        var service = new Service(log.Target, repository.Target);
+        var service = new Service(log, repository.Target);
         service.SaveModel(new Model { Id = id });
 
         Assert.IsTrue(wasSaved);
@@ -72,12 +72,12 @@ public class ExampleTestsForReadMe
     public void ThrowsExceptionWhenSaveFailsTest()
     {
         var expected = "Failed to save";
-        var log = Overmocked.ExpectAnyInvocation<ILog>();
-        var repository = Overmocked.Interface<IRepository>();
+        var log = Overmock.AnyInvocation<ILog>();
+        var repository = Overmock.Mock<IRepository>();
+        Overmock.Mock(repository, r => r.Save(Its.Any<Model>()))
+            .ToThrow(new Exception(expected));
 
-        repository.Override(r => r.Save(Its.Any<Model>())).ToThrow(new Exception(expected));
-
-        var service = new Service(log.Target, repository.Target);
+        var service = new Service(log, repository.Target);
 
         try
         {
