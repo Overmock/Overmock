@@ -33,7 +33,7 @@ namespace Kimono.Interceptors.Internal
 
             public InvocationChainHandler(Func<IEnumerator<InvocationChainAction>> handlersProvider)
             {
-                _chainProvider = handlersProvider;
+                _chainProvider = handlersProvider!;
             }
 
             public void Handle(IInvocationContext context)

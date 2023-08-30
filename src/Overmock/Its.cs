@@ -13,7 +13,9 @@ namespace Overmocked
     public abstract class Value<T> : IEquatable<T>, IFluentInterface
     {
         /// <inheritdoc />
+#pragma warning disable CS8767 // Nullability of reference types in type of parameter doesn't match implicitly implemented member (possibly because of nullability attributes).
         public abstract bool Equals(T other);
+#pragma warning restore CS8767 // Nullability of reference types in type of parameter doesn't match implicitly implemented member (possibly because of nullability attributes).
     }
 
     /// <summary>
@@ -193,7 +195,9 @@ namespace Overmocked
         /// <param name="other">The other.</param>
         /// <returns><c>true</c> if XXXX, <c>false</c> otherwise.</returns>
         /// <exception cref="NotImplementedException"></exception>
+#pragma warning disable CS8769 // Nullability of reference types in type of parameter doesn't match implemented member (possibly because of nullability attributes).
         bool IEquatable<T>.Equals(T other)
+#pragma warning restore CS8769 // Nullability of reference types in type of parameter doesn't match implemented member (possibly because of nullability attributes).
         {
             return other != null && other.Equals(this);
         }

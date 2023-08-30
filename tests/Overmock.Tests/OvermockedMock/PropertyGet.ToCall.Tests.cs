@@ -1,23 +1,22 @@
-﻿namespace Overmocked.Tests.OvermockedMock
+﻿using Overmocked.Tests.Mocks.Properties;
+
+namespace Overmocked.Tests.OvermockedMock
 {
     public partial class PropertyGetTests
     {
-        //[TestMethod]
-        //public void IntPropertyToCallTest()
-        //{
-        //    var called = false;
+        [TestMethod]
+        public void IntPropertyToCallTest()
+        {
+            var called = false;
+            var target = _overmock.Target;
 
-        //    Overmock.Mock(_overmock, t => t.Int)
-        //        .ToCall(c => called = true);
+            Overmock.Mock(target, r => r.Int)
+                .ToCall(c => called = true);
 
-        //    Overmock.Mock(_overmock, t => t.GetHashCode()).ToBeCalled();
+            var model = _overmock.Target.Int;
 
-        //    var model = _overmock.Int;
-
-        //    Assert.ThrowsException<UnhandledMemberException>(() => _overmock.Equals(null));
-
-        //    Assert.IsTrue(called);
-        //}
+            Assert.IsTrue(called);
+        }
 
         [TestMethod]
         public void StringPropertyToCallTest()

@@ -238,5 +238,16 @@ namespace Kimono
         {
             return string.Format(CurrentCulture, formatProvider(), args);
         }
+
+        /// <summary>
+        /// Formats the specified format provider.
+        /// </summary>
+        /// <param name="formatProvider">The format provider.</param>
+        /// <param name="s1"></param>
+        /// <returns>System.String.</returns>
+        public static string Format(string formatProvider, string s1)
+        {
+            return string.Format(CurrentCulture, formatProvider, s1);
+        }
     }
 }

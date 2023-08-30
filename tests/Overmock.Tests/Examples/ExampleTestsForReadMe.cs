@@ -67,7 +67,8 @@
         {
             var expected = "Failed to save";
             var log = Overmock.AnyInvocation<ILog>();
-            var repository = Overmock.Mock<IRepository>(r => r.Save(Its.Any<Model>()))
+            var repository = Overmock.Mock<IRepository>();
+            Overmock.Mock(repository, r => r.Save(Its.Any<Model>()))
                 .ToThrow(new Exception(expected));
 
             var service = new Service(log, repository.Target);

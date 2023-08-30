@@ -94,7 +94,11 @@ namespace Kimono.Internal
             const TypeAttributes attributes = TypeAttributes.Class | TypeAttributes.Public;
 
             var proxyType = Constants.ProxyType.MakeGenericType(interceptor.TargetType);
-            var typeBuilder = DynamicModule.DefineType(Constants.AssemblyAndTypeNameFormat.ApplyFormat(interceptor.TypeName), attributes, proxyType);
+            var typeBuilder = DynamicModule.DefineType(
+                ProxyName.GetName(interceptor),
+                attributes,
+                proxyType
+            );
             return new ProxyContextBuilder(interceptor, typeBuilder, proxyType);
         }
 
