@@ -19,6 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\Kimono.Core\Kimono.Core.csproj" />
     <ProjectReference Include="..\..\src\Kimono.Extensions.DependencyInjection\Kimono.Extensions.DependencyInjection.csproj" />
     <ProjectReference Include="..\..\src\Kimono\Kimono.csproj" />
   </ItemGroup>

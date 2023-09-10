@@ -4,8 +4,8 @@ namespace Kimono.Core
 {
     public interface IProxyFactory
     {
-        IDelegateFactory DelegateFactory { get; }
+        IDelegateFactory MethodFactory { get; }
 
-        T CreateInterfaceProxy<T>() where T : class;
+        T CreateInterfaceProxy<T>(IInterceptor<T> interceptor) where T : class;
     }
 }

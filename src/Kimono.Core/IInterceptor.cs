@@ -8,4 +8,12 @@
     {
         object? HandleInvocation(int methodId, IProxy<T> proxyBase, object[] parameters);
     }
+
+    public class Interceptor<T> : IInterceptor<T>
+    {
+        public object? HandleInvocation(int methodId, IProxy<T> proxyBase, object[] parameters)
+        {
+            return null;
+        }
+    }
 }

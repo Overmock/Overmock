@@ -24,7 +24,7 @@ namespace Kimono.Core
             _interceptor = interceptor;
         }
 
-        public IInterceptor<T> Interceptor => throw new System.NotImplementedException();
+        public IInterceptor<T> Interceptor => _interceptor;
 
         protected object? HandleMethodCall(int methodId, object[] parameters)
         {

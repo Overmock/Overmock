@@ -11,14 +11,14 @@ namespace Kimono.Core.Internal
     internal sealed class ProxyGenerator<T> : IProxyGenerator<T> where T : class
     {
         private readonly ProxyContext _proxyContext;
-        private readonly Func<ProxyContext, IInterceptor, T> _createProxy;
+        private readonly Func<IInterceptor<T>, T> _createProxy;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ProxyGenerator{T}"/> class.
         /// </summary>
         /// <param name="proxyContext">The proxy context.</param>
         /// <param name="createProxy">The create proxy delegate.</param>
-        public ProxyGenerator(ProxyContext proxyContext, Func<ProxyContext, IInterceptor, T> createProxy)
+        public ProxyGenerator(ProxyContext proxyContext, Func<IInterceptor<T>, T> createProxy)
         {
             _proxyContext = proxyContext;
             _createProxy = createProxy;
@@ -29,9 +29,9 @@ namespace Kimono.Core.Internal
         /// </summary>
         /// <param name="interceptor">The interceptor.</param>
         /// <returns>The generated proxy.</returns>
-        public object GenerateProxy(IInterceptor interceptor)
+        object IProxyGenerator.GenerateProxy(IInterceptor interceptor)
         {
-            return _createProxy.Invoke(_proxyContext, interceptor);
+            return (T)GenerateProxy((IInterceptor<T>)interceptor);
         }
 
         /// <summary>
@@ -41,11 +41,7 @@ namespace Kimono.Core.Internal
         /// <returns><typeparamref name="T" />.</returns>
         public T GenerateProxy(IInterceptor<T> interceptor)
         {
-            return (T)GenerateProxy((IInterceptor)interceptor);
+            return _createProxy.Invoke(interceptor);
         }
-    }
-
-    public class ProxyContext
-    {
     }
 }

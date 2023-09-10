@@ -10,6 +10,7 @@ namespace Kimono.Core
         private readonly MethodInfo _targetMethod;
 
         private ParameterInfo[]? _parameters;
+        private Type[]? _parameterTypes;
         private List<ParameterInfo>? _inputs;
         private List<ParameterInfo>? _outs;
         private List<Type>? _generics;
@@ -22,6 +23,8 @@ namespace Kimono.Core
         public MethodInfo TargetMethod => _targetMethod;
 
         public ParameterInfo[] Parameters => _parameters ??= _targetMethod.GetParameters();
+
+        public Type[] ParameterTypes => _parameterTypes ??= Parameters.Select(p => p.ParameterType).ToArray();
 
         public IReadOnlyList<ParameterInfo> InputParameters =>
             _inputs ??= GetParameters();

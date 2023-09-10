@@ -35,7 +35,7 @@ namespace Kimono.Core
         /// Redeclaration that hides the <see cref="object.ToString()"/> method from IntelliSense.
         /// </summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
-        string ToString();
+        string? ToString();
 
         /// <summary>
         /// Redeclaration that hides the <see cref="object.Equals(object)"/> method from IntelliSense.
