@@ -332,16 +332,16 @@ namespace Kimono.Core
             if (method.IsGenericMethod)
             {
                 var arguments = metadata.GenericParameters;
-                var locals = new LocalBuilder[arguments.Count];
+                var locals = new LocalBuilder[arguments.Length];
 
-                for (int i = 0; i < arguments.Count; i++)
+                for (int i = 0; i < arguments.Length; i++)
                 {
                     locals[i] = emitter.DeclareLocal(Types.Type);
                 }
 
                 emitter.Nop();
 
-                for (int i = 0; i < arguments.Count; i++)
+                for (int i = 0; i < arguments.Length; i++)
                 {
                     emitter.IlGenerator.Emit(OpCodes.Ldtoken, arguments[i]);
                     emitter.IlGenerator.Emit(OpCodes.Call, Methods.GetTypeFromHandle);
@@ -385,10 +385,10 @@ namespace Kimono.Core
             {
                 var arguments = metadata.GenericParameters;
 
-                emitter.IlGenerator.Emit(OpCodes.Ldc_I4, arguments.Count);
+                emitter.IlGenerator.Emit(OpCodes.Ldc_I4, arguments.Length);
                 emitter.IlGenerator.Emit(OpCodes.Newarr, Types.Type);
 
-                for (int i = 0; i < arguments.Count; i++)
+                for (int i = 0; i < arguments.Length; i++)
                 {
                     emitter.IlGenerator.Emit(OpCodes.Dup);
                     emitter.IlGenerator.Emit(OpCodes.Ldc_I4, i);

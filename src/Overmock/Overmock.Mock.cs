@@ -1,4 +1,5 @@
 ﻿using Kimono;
+using Kimono.Core;
 using System;
 using System.Linq.Expressions;
 
@@ -16,7 +17,7 @@ namespace Overmocked
         /// <returns>The overmocked <typeparamref name="T" />.</returns>
         public static IOvermock<T> Mock<T>() where T : class
         {
-            return new Overmock<T>(_invocationHandler);
+            return new Overmock<T>();//_invocationHandler);
         }
 
         /// <summary>
@@ -25,7 +26,7 @@ namespace Overmocked
         /// <typeparam name="T">The type of interface.</typeparam>
         /// <param name="secondaryHandler">The secondary handler.</param>
         /// <returns>The overmocked <typeparamref name="T" />.</returns>
-        public static IOvermock<T> Mock<T>(IInvocationHandler secondaryHandler) where T : class
+        public static IOvermock<T> Mock<T>(IInterceptor<T> secondaryHandler) where T : class
         {
             return new Overmock<T>(secondaryHandler);
         }

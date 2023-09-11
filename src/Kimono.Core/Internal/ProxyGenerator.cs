@@ -41,12 +41,14 @@ namespace Kimono.Core.Internal
         /// <returns><typeparamref name="T" />.</returns>
         public T GenerateProxy(IInterceptor<T> interceptor)
         {
+            var result = _createProxy.Invoke(interceptor);
+
             if (interceptor is IProxyContainer container)
             {
                 container.SetProxyContext(_proxyContext);
             }
 
-            return _createProxy.Invoke(interceptor);
+            return result;
         }
     }
 }

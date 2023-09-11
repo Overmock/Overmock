@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Kimono.Delegates;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -8,16 +9,18 @@ namespace Kimono.Core
     public sealed class MethodMetadata
     {
         private readonly MethodInfo _targetMethod;
-
+        private readonly bool _isProperty;
         private ParameterInfo[]? _parameters;
         private Type[]? _parameterTypes;
         private List<ParameterInfo>? _inputs;
         private List<ParameterInfo>? _outs;
-        private List<Type>? _generics;
+        private Type[]? _generics;
+        private IDelegateInvoker? _invoker;
 
-        private MethodMetadata(MethodInfo targetMethod)
+        private MethodMetadata(MethodInfo targetMethod, bool isProperty)
         {
             _targetMethod = targetMethod;
+            _isProperty = isProperty;
         }
 
         public MethodInfo TargetMethod => _targetMethod;
@@ -34,11 +37,23 @@ namespace Kimono.Core
 
         public Type ReturnType => _targetMethod.ReturnType;
 
-        public IReadOnlyList<Type> GenericParameters => _generics ??= CreateList(
+        public Type[] GenericParameters => _generics ??= CreateList(
             _targetMethod.ContainsGenericParameters
                 ? _targetMethod.GetGenericArguments()
                 : Array.Empty<Type>()
-        );
+        ).ToArray();
+
+        public bool IsProperty => _isProperty;
+
+        public static MethodMetadata FromMethodInfo(MethodInfo targetMethod, bool isProperty = false)
+        {
+            return new MethodMetadata(targetMethod, isProperty);
+        }
+
+        public void UseInvoker(IDelegateInvoker invoker)
+        {
+            _invoker = invoker;
+        }
 
         private List<ParameterInfo> GetParameters(bool inParameters = true)
         {
@@ -49,27 +64,14 @@ namespace Kimono.Core
             );
         }
 
-        public static MethodMetadata FromMethod(MethodInfo targetMethod)
-        {
-            return new MethodMetadata(targetMethod);
-        }
-
         private List<T> CreateList<T>(T[] array)
         {
             return new List<T>(array);
         }
-    }
 
-    public interface IParameterCollection
-    {
-
-    }
-
-    public sealed class ParameterCollection : IParameterCollection
-    {
-        public ParameterCollection()
+        internal IDelegateInvoker? GetInvoker()
         {
-
+            return _invoker;
         }
     }
 }

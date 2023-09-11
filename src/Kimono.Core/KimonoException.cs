@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 namespace Kimono.Core
 {
     [Serializable]
-    internal class KimonoException : Exception
+    public class KimonoException : Exception
     {
         public KimonoException()
         {

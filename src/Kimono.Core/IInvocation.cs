@@ -14,5 +14,9 @@ namespace Kimono.Core
         MethodInfo Method { get; }
 
         object? ReturnValue { get; set; }
+
+        bool IsProperty { get; }
+
+        void Invoke(bool setReturnValue = true);
     }
 }

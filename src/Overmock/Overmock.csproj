@@ -43,7 +43,7 @@
   </ItemGroup>
 
   <ItemGroup>
-	  <ProjectReference Include="..\Kimono\Kimono.csproj" />
+	  <ProjectReference Include="..\Kimono.Core\Kimono.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(Configuration)'=='Debug'">

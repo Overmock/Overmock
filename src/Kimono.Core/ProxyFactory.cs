@@ -82,10 +82,13 @@ namespace Kimono.Core
                 var context = new ProxyContext();
 
                 var methodId = MethodId.Create();
-                context.SetMethods(CreateMethods(methodId, typeBuilder, targetType, methods));
+
+                var methodMetadatas = new List<MethodMetadata>(methods.Count + properties.Count);
+                CreateMethods(methodMetadatas, methodId, typeBuilder, targetType, methods);
+                CreateProperties(methodMetadatas, methodId, typeBuilder, targetType, properties);
 
                 //properties
-                CreateProperties(context, typeBuilder, targetType, properties);
+                context.SetMethods(methodMetadatas.ToArray());
 
                 var proxyType = typeBuilder.CreateType();
                 var proxyConstructor = proxyType.GetConstructor(ctorParameters)!;
@@ -125,7 +128,7 @@ namespace Kimono.Core
             typeBuilder.AddInterfaceImplementation(interfaceType);
 
             var methods = GetBaseMethods();
-            var properties = new List<PropertyInfo>(interfaceType.GetProperties());
+            var properties = new List<PropertyInfo>();
 
             AddMethodsRecursive(methods, interfaceType);
             AddPropertiesRecursive(properties, interfaceType);
@@ -194,7 +197,7 @@ namespace Kimono.Core
             }
         }
 
-        private MethodMetadata[] CreateMethods(MethodId methodId, TypeBuilder typeBuilder, Type targetType, List<MethodInfo> methods)
+        private void CreateMethods(List<MethodMetadata> metadatas, MethodId methodId, TypeBuilder typeBuilder, Type targetType, List<MethodInfo> methods, bool areProperties = false)
         {
             if (Types.Disposable.IsAssignableFrom(targetType))
             {
@@ -205,11 +208,9 @@ namespace Kimono.Core
                 MethodFactory.EmitProxyDisposeMethod(Emitter.For(methodBuilder.GetILGenerator()), Methods.Dispose);
             }
 
-            var metadataArray = new MethodMetadata[methods.Count];
-
             methods.ForEach(methodInfo => {
-                var metadata = MethodMetadata.FromMethod(methodInfo);
-                metadataArray[methodId] = metadata;
+                var metadata = MethodMetadata.FromMethodInfo(methodInfo, areProperties);
+                metadatas.Insert(methodId, metadata);
 
                 var parameterTypes = metadata.ParameterTypes;
                 var methodBuilder = typeBuilder.DefineMethod(
@@ -234,14 +235,29 @@ namespace Kimono.Core
                 }
 
                 MethodFactory.EmitProxyMethod(emitter, methodId, metadata);
+                metadata.UseInvoker(MethodFactory.CreateDelegateInvoker(metadata));
                 methodId++;
             });
-
-            return metadataArray;
         }
 
-        private void CreateProperties(ProxyContext context, TypeBuilder typeBuilder, Type targetType, List<PropertyInfo> properties)
+        private void CreateProperties(List<MethodMetadata> metadatas, MethodId methodId, TypeBuilder typeBuilder, Type targetType, List<PropertyInfo> properties)
         {
+            var metadataArray = new List<MethodInfo>(properties.Count);
+
+            properties.ForEach(propertyInfo =>
+            {
+                if (propertyInfo.CanRead)
+                {
+                    metadataArray.Add(propertyInfo.GetGetMethod()!);
+                }
+
+                if (propertyInfo.CanWrite)
+                {
+                    metadataArray.Add(propertyInfo.GetSetMethod()!);
+                }
+            });
+
+            CreateMethods(metadatas, methodId, typeBuilder, targetType, metadataArray, true);
         }
         
         private static class Names

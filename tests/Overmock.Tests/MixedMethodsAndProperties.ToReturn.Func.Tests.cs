@@ -49,8 +49,6 @@ namespace Overmocked.Tests
             {
                 Assert.AreEqual(exception.Message, ex.Message);
             }
-
-
         }
     }
 }
