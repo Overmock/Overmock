@@ -20,7 +20,7 @@ namespace Kimono.Core
 
             Assembly = AssemblyBuilder.DefineDynamicAssembly(
                 assemblyName,
-                AssemblyBuilderAccess.Run);
+                AssemblyBuilderAccess.RunAndCollect);
 
             Module = Assembly.DefineDynamicModule(Names.ModuleName);
         }
@@ -56,38 +56,43 @@ namespace Kimono.Core
             const BindingFlags bindingFlags = BindingFlags.NonPublic | BindingFlags.Instance;
 
             var targetType = typeof(T);
-            var proxyBaseType = Types.ProxyBase.MakeGenericType(targetType);
+            var generator = Cache.GetGenerator(targetType) as IProxyGenerator<T>;
 
-            var typeBuilder = Module.DefineType(
-                string.Format(Names.TypeName, typeof(T).Name),
-                TypeAttributes.Public | TypeAttributes.Sealed,
-                proxyBaseType);
+            if (generator is null)
+            {
+                var proxyBaseType = Types.ProxyBase.MakeGenericType(targetType);
 
-            //ctor
-            var ctorParameters = Types.ProxyBaseCtorParameterTypes<T>();
-            var baseConstructor = proxyBaseType.GetConstructor(
-                bindingFlags, null,
-                ctorParameters,
-                null
-            )!;
+                var typeBuilder = Module.DefineType(
+                    string.Format(Names.TypeName, targetType.Name),
+                    TypeAttributes.Public | TypeAttributes.Sealed,
+                    proxyBaseType);
 
-            ImplementConstructor(typeBuilder, ctorParameters, baseConstructor);
+                //ctor
+                var ctorParameters = Types.ProxyBaseCtorParameterTypes<T>();
+                var baseConstructor = proxyBaseType.GetConstructor(
+                    bindingFlags, null,
+                    ctorParameters,
+                    null
+                )!;
 
-            (var methods, var properties) = AddInterfaceImplementations(typeBuilder, targetType);
+                ImplementConstructor(typeBuilder, ctorParameters, baseConstructor);
 
-            var context = new ProxyContext();
+                (var methods, var properties) = AddInterfaceImplementations(typeBuilder, targetType);
 
-            var methodId = MethodId.Create();
-            CreateMethods(context, methodId, typeBuilder, targetType, methods);
+                var context = new ProxyContext();
 
-            //properties
-            CreateProperties(context, typeBuilder, targetType, properties);
+                var methodId = MethodId.Create();
+                context.SetMethods(CreateMethods(methodId, typeBuilder, targetType, methods));
 
-            var proxyType = typeBuilder.CreateType();
-            var proxyConstructor = proxyType.GetConstructor(ctorParameters)!;
-            var generator =  Cache.SetGenerator(targetType,
-                new ProxyGenerator<T>(context, MethodFactory.CreateProxyConstructorDelegate<T>(proxyType, targetType, proxyConstructor)
-            ));
+                //properties
+                CreateProperties(context, typeBuilder, targetType, properties);
+
+                var proxyType = typeBuilder.CreateType();
+                var proxyConstructor = proxyType.GetConstructor(ctorParameters)!;
+                generator = Cache.SetGenerator(targetType,
+                    new ProxyGenerator<T>(context, MethodFactory.CreateProxyConstructorDelegate<T>(proxyType, targetType, proxyConstructor)
+                ));
+            }
 
             return generator.GenerateProxy(interceptor);
         }
@@ -157,6 +162,7 @@ namespace Kimono.Core
         {
             return new List<MethodInfo>(Types.Object.GetMethods()).FindAll(method => method.IsVirtual);
         }
+
         /// <summary>
         /// Defines the generic parameters.
         /// </summary>
@@ -188,7 +194,7 @@ namespace Kimono.Core
             }
         }
 
-        private void CreateMethods(ProxyContext context, MethodId methodId, TypeBuilder typeBuilder, Type targetType, List<MethodInfo> methods)
+        private MethodMetadata[] CreateMethods(MethodId methodId, TypeBuilder typeBuilder, Type targetType, List<MethodInfo> methods)
         {
             if (Types.Disposable.IsAssignableFrom(targetType))
             {
@@ -199,8 +205,12 @@ namespace Kimono.Core
                 MethodFactory.EmitProxyDisposeMethod(Emitter.For(methodBuilder.GetILGenerator()), Methods.Dispose);
             }
 
+            var metadataArray = new MethodMetadata[methods.Count];
+
             methods.ForEach(methodInfo => {
                 var metadata = MethodMetadata.FromMethod(methodInfo);
+                metadataArray[methodId] = metadata;
+
                 var parameterTypes = metadata.ParameterTypes;
                 var methodBuilder = typeBuilder.DefineMethod(
                     methodInfo.Name,
@@ -217,7 +227,6 @@ namespace Kimono.Core
                 }
 
                 var emitter = methodBuilder.GetEmitter();
-                var returnType = methodInfo.ReturnType;
 
                 if (methodInfo.IsGenericMethod)
                 {
@@ -225,7 +234,10 @@ namespace Kimono.Core
                 }
 
                 MethodFactory.EmitProxyMethod(emitter, methodId, metadata);
+                methodId++;
             });
+
+            return metadataArray;
         }
 
         private void CreateProperties(ProxyContext context, TypeBuilder typeBuilder, Type targetType, List<PropertyInfo> properties)
@@ -234,7 +246,7 @@ namespace Kimono.Core
         
         private static class Names
         {
-            public const string DllName = "KimonoProxies.{0}.dll";
+            public const string DllName = "KimonoProxies.dll";
             public const string Namesapce = "KimonoProxies.{0}";
             public const string ModuleName = "KimonoProxies";
             public const string TypeName = "Proxy-{0}";

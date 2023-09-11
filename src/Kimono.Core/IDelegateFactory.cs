@@ -45,7 +45,7 @@ namespace Kimono.Core
         /// <returns>System.Nullable&lt;IDelegateInvoker&gt;.</returns>
         public IDelegateInvoker CreateFunctionInvoker(MethodMetadata metadata);
         
-        public DynamicMethod CreateDynamicMethod(MethodMetadata metadata);
+        //public DynamicMethod CreateDynamicMethod(MethodMetadata metadata);
 
         void EmitProxyMethod(IEmitter emitter, MethodId methodId, MethodMetadata metadata);
 

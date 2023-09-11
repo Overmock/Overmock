@@ -33,6 +33,11 @@ namespace Kimono.Core
         public static readonly Type TypeArray = typeof(Type[]);
 
         /// <summary>
+        /// The Generic <see cref="ProxyBase"/>
+        /// </summary>
+        public static readonly Type ProxyBaseNonGeneric = typeof(ProxyBase);
+
+        /// <summary>
         /// The Generic <see cref="ProxyBase{}"/>
         /// </summary>
         public static readonly Type ProxyBase = typeof(ProxyBase<>);

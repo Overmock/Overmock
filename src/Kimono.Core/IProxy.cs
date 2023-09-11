@@ -1,9 +1,10 @@
 ﻿
+using System;
+
 namespace Kimono.Core
 {
     public interface IProxy
     {
-
     }
 
     public interface IProxy<T> : IProxy
@@ -14,11 +15,16 @@ namespace Kimono.Core
     public abstract class ProxyBase : IProxy
     {
         protected ProxyBase() { }
+
+        protected abstract object? HandleMethodCall(int methodId, Type[] genericParameters, object[] parameters);
+
+        protected abstract void HandleDisposeCall();
     }
 
-    public abstract class ProxyBase<T> : IProxy<T>
+    public abstract class ProxyBase<T> : ProxyBase, IProxy<T>
     {
         private readonly IInterceptor<T> _interceptor;
+        
         protected ProxyBase(IInterceptor<T> interceptor)
         {
             _interceptor = interceptor;
@@ -26,9 +32,17 @@ namespace Kimono.Core
 
         public IInterceptor<T> Interceptor => _interceptor;
 
-        protected object? HandleMethodCall(int methodId, object[] parameters)
+        protected sealed override object? HandleMethodCall(int methodId, Type[] genericParameters, object[] parameters)
         {
-            return _interceptor.HandleInvocation(methodId, this, parameters);
+            return _interceptor.HandleInvocation(methodId, this, genericParameters, parameters);
+        }
+
+        protected sealed override void HandleDisposeCall()
+        {
+            if (_interceptor is IDisposable dispose)
+            {
+                dispose.Dispose();
+            }
         }
     }
 }

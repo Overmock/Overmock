@@ -25,5 +25,11 @@ namespace Overmocked.Benchmarks
         [Arguments(1_000_000)]
         //[Arguments(100_000_000)]
         public void NewCastle(int count) => _creations.NewCastle(count);
+
+        [Benchmark]
+        [Arguments(1_000)]
+        [Arguments(1_000_000)]
+        //[Arguments(100_000_000)]
+        public void NewKimonoCore(int count) => _creations.NewKimonoCore(count);
     }
 }

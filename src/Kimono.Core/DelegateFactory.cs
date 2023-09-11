@@ -185,7 +185,7 @@ namespace Kimono.Core
             var returnLabel = emitter.IlGenerator.DefineLabel();
 
             emitter.IlGenerator.Emit(OpCodes.Ldarg_0);
-            emitter.IlGenerator.Emit(OpCodes.Ldc_I4, methodId.NextInt());
+            emitter.IlGenerator.Emit(OpCodes.Ldc_I4, methodId.Current);
 
             EmitGenericLocalFieldTypes(emitter, metadata);
 
@@ -254,7 +254,7 @@ namespace Kimono.Core
 
         public void EmitProxyConstructor(IEmitter emitter, ConstructorInfo baseConstructor)
         {
-            emitter.Load(0).Load(1).Load(2)
+            emitter.Load(0).Load(1)
                 .BaseCtor(baseConstructor)
                 .Ret();
         }
@@ -344,7 +344,7 @@ namespace Kimono.Core
                 for (int i = 0; i < arguments.Count; i++)
                 {
                     emitter.IlGenerator.Emit(OpCodes.Ldtoken, arguments[i]);
-                    emitter.IlGenerator.Emit(OpCodes.Call, Methods.GetTypeFromHandleMethod);
+                    emitter.IlGenerator.Emit(OpCodes.Call, Methods.GetTypeFromHandle);
                     emitter.IlGenerator.Emit(OpCodes.Stloc, i);
                 }
 
@@ -428,7 +428,7 @@ namespace Kimono.Core
 
         protected static class Methods
         {
-            public static readonly MethodInfo GetTypeFromHandleMethod =
+            public static readonly MethodInfo GetTypeFromHandle =
                 Types.Type.GetMethod(nameof(Type.GetTypeFromHandle), BindingFlags.Static | BindingFlags.Public)!;
 
             /// <summary>
@@ -443,14 +443,14 @@ namespace Kimono.Core
             /// </summary>
             /// <returns>MethodInfo.</returns>
             public static MethodInfo HandleMethodCall =
-                Types.ProxyBase.GetMethod("HandleMethodCall", BindingFlags.Instance | BindingFlags.NonPublic)!;
+                Types.ProxyBaseNonGeneric.GetMethod("HandleMethodCall", BindingFlags.Instance | BindingFlags.NonPublic)!;
 
             /// <summary>
             /// Gets the proxy type handle method call method.
             /// </summary>
             /// <returns>MethodInfo.</returns>
             public static MethodInfo HandleDisposeCall =
-                Types.ProxyBase.GetMethod("HandleDisposeCall", BindingFlags.Instance | BindingFlags.NonPublic)!;
+                Types.ProxyBaseNonGeneric.GetMethod("HandleDisposeCall", BindingFlags.Instance | BindingFlags.NonPublic)!;
         }
     }
 }

@@ -4,7 +4,7 @@ namespace Kimono.Tests.Proxies
 {
     public interface IInterface
     {
-        string Name { get; }
+        //string Name { get; }
 
         string DoSomething(string name);
 

@@ -11,7 +11,9 @@ namespace Kimono.Tests.Core
         {
             var factory = ProxyFactory.Create();
 
-            factory.CreateInterfaceProxy(new Kimono.Core.Interceptor<IRepository>());
+            var proxy = factory.CreateInterfaceProxy(new Kimono.Core.Interceptor<IVoidNoArgs>());
+
+            proxy.VoidNoArgs();
         }
     }
 }

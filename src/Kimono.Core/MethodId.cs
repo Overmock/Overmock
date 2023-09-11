@@ -1,5 +1,8 @@
-﻿namespace Kimono.Core
+﻿using System.Diagnostics;
+
+namespace Kimono.Core
 {
+    [DebuggerDisplay(null, Name = "Current")]
     public class MethodId
     {
         private int _current;
@@ -33,6 +36,11 @@
         public int NextInt()
         {
             return ++_current;
+        }
+
+        public override string ToString()
+        {
+            return Current.ToString();
         }
     }
 }
