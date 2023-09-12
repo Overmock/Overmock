@@ -1,6 +1,4 @@
-﻿using Overmocked.Tests.Mocks.Properties;
-
-namespace Overmocked.Tests.OvermockedMock
+﻿namespace Overmocked.Tests.OvermockedMock
 {
     public partial class PropertyGetTests
     {

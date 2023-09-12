@@ -1,5 +1,4 @@
 ﻿using Kimono.Emit;
-using Kimono.Proxies;
 using Kimono.Proxies.Internal.MethodInvokers;
 using System;
 using System.Collections.Generic;

@@ -35,5 +35,16 @@ namespace Overmocked.Benchmarks
                 var castleProxy = generator.CreateInterfaceProxyWithTarget<IBenchmark>(_benchmarkClass, new[] { new CastleInterceptor() });
             }
         }
+
+        public void NewKimonoCore(int count)
+        {
+            var interceptor = new Kimono.Core.Interceptor<IBenchmark>();
+            var factory = Kimono.Core.ProxyFactory.Create();
+
+            for (int i = 0; i < count; i++)
+            {
+                var kimonoProxy = factory.CreateInterfaceProxy(interceptor);
+            }
+        }
     }
 }

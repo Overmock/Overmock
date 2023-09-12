@@ -1,4 +1,4 @@
-﻿using Kimono;
+﻿using Kimono.Core;
 using System.Diagnostics;
 using System.Globalization;
 
@@ -78,7 +78,7 @@ namespace Overmocked
         /// Throws if invalid.
         /// </summary>
         /// <param name="count">The count.</param>
-        /// <exception cref="Kimono.KimonoException">Method called: Expected: {_times}, Actual: {count}</exception>
+        /// <exception cref="KimonoException">Method called: Expected: {_times}, Actual: {count}</exception>
         internal void ThrowIfInvalid(int count)
         {
             // -1 represents inifinity.

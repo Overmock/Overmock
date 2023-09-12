@@ -4,4 +4,5 @@ using Overmocked.Benchmarks;
 BenchmarkRunner.Run<InterceptorMethodCallBenchmark>();
 BenchmarkRunner.Run<NewProxyCreationBenchmark>();
 
-//InterceptorMethodCalls.Kimono(1000); Console.ReadLine();
+//new NewProxyCreationBenchmark().NewKimonoCore(10);
+//InterceptorMethodCalls.KimonoCore(10); Console.ReadLine();

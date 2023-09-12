@@ -12,8 +12,9 @@ namespace Kimono.Proxies.Internal
 
             if (interceptor.TargetType.IsGenericTypeDefinition)
             {
-                var name = interceptor.TypeName;
-                return nameFormat.ApplyFormat(ReplaceInvalidCharacters(name));
+                return nameFormat.ApplyFormat(
+                    ReplaceInvalidCharacters(interceptor.TypeName)
+                );
             }
 
             return nameFormat.ApplyFormat(interceptor.TypeName);
