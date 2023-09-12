@@ -3,7 +3,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Reflection.Emit;
 
-namespace Kimono.Emit
+namespace Kimono.Core.Msil
 {
     /// <summary>
     /// Interface IEmitter

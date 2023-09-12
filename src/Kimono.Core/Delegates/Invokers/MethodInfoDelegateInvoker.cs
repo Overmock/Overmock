@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 
-namespace Kimono.Core.Internal.MethodInvokers
+namespace Kimono.Core.Delegates.Invokers
 {
     internal sealed class MethodInfoDelegateInvoker : MethodDelegateInvoker<Func<object?, object?[], object?>>
     {

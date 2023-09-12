@@ -2,7 +2,7 @@
 using System.Reflection;
 using System.Reflection.Emit;
 
-namespace Kimono.Emit
+namespace Kimono.Core.Msil
 {
     /// <summary>
     /// Class Emitter. This class cannot be inherited.

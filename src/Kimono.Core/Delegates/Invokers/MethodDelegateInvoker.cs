@@ -1,7 +1,7 @@
 ﻿using Kimono.Delegates;
 using System;
 
-namespace Kimono.Core.Internal.MethodInvokers
+namespace Kimono.Core.Delegates.Invokers
 {
     internal abstract class MethodDelegateInvoker<TDelegate> : IDelegateInvoker where TDelegate : Delegate
     {

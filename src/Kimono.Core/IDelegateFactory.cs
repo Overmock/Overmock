@@ -1,8 +1,7 @@
 ﻿using Kimono.Delegates;
-using Kimono.Emit;
+using Kimono.Core.Msil;
 using System;
 using System.Reflection;
-using System.Reflection.Emit;
 
 namespace Kimono.Core
 {

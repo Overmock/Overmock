@@ -1,5 +1,4 @@
-﻿using Kimono;
-using Kimono.Core;
+﻿using Kimono.Core;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;

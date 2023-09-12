@@ -2,8 +2,10 @@
 
 namespace Kimono.Tests.Examples
 {
+    [TestClass]
     public class KimonoExamples
     {
+        [TestMethod]
         public void NoTargetWithCallbackInterceptorExample()
         {
             var interceptor = Intercept.WithCallback<IRepository>(context => {
@@ -20,6 +22,7 @@ namespace Kimono.Tests.Examples
 
             interceptor.Save(new Model { Id = 20 });
         }
+        [TestMethod]
         public void TargetWithCallbackInterceptorExample()
         {
             var interceptor = Intercept.WithCallback<IRepository, Repository>(new Repository(), context => {
@@ -36,18 +39,21 @@ namespace Kimono.Tests.Examples
 
             interceptor.Save(new Model { Id = 20 });
         }
+        [TestMethod]
         public void NoTargetWithHandlersInterceptorExample()
         {
             var interceptor = Intercept.WithHandlers<IRepository>(new BazReturnInvocationHandler());
 
             interceptor.Save(new Model { Id = 20 });
         }
+        [TestMethod]
         public void TargetWithHandlersInterceptorExample()
         {
             var interceptor = Intercept.WithHandlers<IRepository, Repository>(new Repository(), new BazReturnInvocationHandler());
 
             interceptor.Save(new Model { Id = 20 });
         }
+        [TestMethod]
         public void NoTargetWithInvocationChainInterceptorExample()
         {
             var interceptor = Intercept.WithChain<IRepository, Repository>(new Repository(), builder => {
@@ -69,6 +75,7 @@ namespace Kimono.Tests.Examples
 
             interceptor.Save(new Model { Id = 20 });
         }
+        [TestMethod]
         public void TargetWithInvocationChainInterceptorExample()
         {
             var interceptor = Intercept.WithInovcationChain<IRepository>(builder => {

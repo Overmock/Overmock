@@ -4,7 +4,7 @@ using Kimono.Tests.Proxies;
 namespace Kimono.Tests.Core
 {
     [TestClass]
-    public class NewDynamicMethodGenerationTests
+    public class CoreNewDynamicMethodGenerationTests
     {
         private readonly IProxyFactory _factory = ProxyFactory.Create();
         [TestMethod]
@@ -200,43 +200,43 @@ namespace Kimono.Tests.Core
             Assert.IsNotNull(model);
         }
 
-        //[TestMethod]
-        //public void ITGArgsTArgsInt_Test()
-        //{
-        //    var called = false;
-        //    var target = new ITGenTArgsIntClass();
-        //    var overmock = new TestInterceptor<ITGenTArgsInt>(target, c => {
-        //        called = true;
-        //        c.Invoke();
-        //        c.ReturnValue = new Model();
-        //    });
+        [TestMethod]
+        public void ITGArgsTArgsInt_Test()
+        {
+            var called = false;
+            var target = new ITGenTArgsIntClass();
+            var overmock = new TestInterceptor<ITGenTArgsInt>(target, c => {
+                called = true;
+                c.Invoke();
+                c.ReturnValue = new Model();
+            });
 
-        //    var subject = _factory.CreateInterfaceProxy(overmock);
+            var subject = _factory.CreateInterfaceProxy(overmock);
 
-        //    var model = subject.TGenTArgsInt<Model>(52);
+            var model = subject.TGenTArgsInt<Model>(52);
 
-        //    Assert.IsTrue(called);
-        //    Assert.IsNotNull(model);
-        //}
+            Assert.IsTrue(called);
+            Assert.IsNotNull(model);
+        }
 
-        //[TestMethod]
-        //public void ITGArgsTArgsTInt_Test()
-        //{
-        //    var called = false;
-        //    var target = new ITGenTArgsTIntClass();
-        //    var overmock = new TestInterceptor<ITGenTArgsTInt>(target, c => {
-        //        called = true;
-        //        c.Invoke();
-        //        c.ReturnValue = new Model();
-        //    });
+        [TestMethod]
+        public void ITGArgsTArgsTInt_Test()
+        {
+            var called = false;
+            var target = new ITGenTArgsTIntClass();
+            var overmock = new TestInterceptor<ITGenTArgsTInt>(target, c => {
+                called = true;
+                c.Invoke();
+                c.ReturnValue = new Model();
+            });
 
-        //    var subject = _factory.CreateInterfaceProxy(overmock);
+            var subject = _factory.CreateInterfaceProxy(overmock);
 
-        //    var model = subject.TGenTArgsTInt(new Model(), 52);
+            var model = subject.TGenTArgsTInt(new Model(), 52);
 
-        //    Assert.IsTrue(called);
-        //    Assert.IsNotNull(model);
-        //}
+            Assert.IsTrue(called);
+            Assert.IsNotNull(model);
+        }
 
         private sealed class TestInterceptor<T> : Kimono.Core.Interceptor<T> where T : class
         {

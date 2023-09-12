@@ -1,10 +1,9 @@
-﻿using Kimono.Core;
-using System;
+﻿using System;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Reflection.Emit;
 
-namespace Kimono.Emit
+namespace Kimono.Core.Msil
 {
     /// <summary>
     /// Class Emitter. This class cannot be inherited.

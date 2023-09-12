@@ -1,5 +1,4 @@
 ﻿using Overmocked.Mocking;
-using Overmocked.Mocking.Internal;
 using System;
 
 namespace Overmocked

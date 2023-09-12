@@ -1,6 +1,4 @@
-﻿using System.Reflection.Emit;
-
-namespace Kimono.Core
+﻿namespace Kimono.Core
 {
     public interface IProxyFactory
     {

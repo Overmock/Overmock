@@ -1,5 +1,4 @@
-﻿using Kimono;
-using Kimono.Core;
+﻿using Kimono.Core;
 using System;
 using System.Linq.Expressions;
 

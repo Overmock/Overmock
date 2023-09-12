@@ -1,10 +1,8 @@
-﻿using Kimono;
-using Kimono.Core;
+﻿using Kimono.Core;
 using Overmocked.Mocking;
 using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Threading;
 
 namespace Overmocked
 {
@@ -15,7 +13,7 @@ namespace Overmocked
     {
         private static readonly ConcurrentQueue<IOvermock> _overmocks = new ConcurrentQueue<IOvermock>();
 
-        //private static IInterceptor? _invocationHandler;
+        private static IInterceptor? _invocationHandler;
 
         /// <summary>
         /// Initializes static members of the <see cref="global::Overmocked.Overmock"/> class.
@@ -24,10 +22,10 @@ namespace Overmocked
         {
         }
 
-        /// <summary>
-        /// Uses the specified handler.
-        /// </summary>
-        /// <param name="handler">The handler.</param>
+        ///// <summary>
+        ///// Uses the specified handler.
+        ///// </summary>
+        ///// <param name="handler">The handler.</param>
         //public static void Use(IInvocationHandler handler)
         //{
         //    Interlocked.Exchange(ref _invocationHandler, handler);

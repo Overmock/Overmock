@@ -3,7 +3,7 @@ using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-namespace Kimono.Emit
+namespace Kimono.Core.Msil
 {
     public abstract partial class Emitter : IEmitter
     {

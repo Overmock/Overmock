@@ -1,7 +1,6 @@
 ﻿using Kimono.Core;
-using Kimono.Emit;
+using Kimono.Core.Msil;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;

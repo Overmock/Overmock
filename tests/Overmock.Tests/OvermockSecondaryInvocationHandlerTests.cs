@@ -1,6 +1,4 @@
 ﻿using Kimono;
-using Overmocked.Tests.Mocks;
-using Overmocked.Tests.Mocks.Methods;
 
 namespace Overmocked.Tests
 {

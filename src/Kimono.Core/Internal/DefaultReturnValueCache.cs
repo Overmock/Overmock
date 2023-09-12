@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 
-namespace Kimono.Runtime
+namespace Kimono.Core.Internal
 {
     /// <summary>
     /// Class DefaultReturnValueCache.

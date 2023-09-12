@@ -31,6 +31,13 @@ namespace Kimono.Core
 
         public void Invoke(bool setReturnValue = true)
         {
+            var target = Target;
+            
+            if (target == null)
+            {
+                return;
+            }
+
             var value = _invoker?.Invoke(Target, this, Parameters);
 
             if (setReturnValue)

@@ -1,6 +1,5 @@
 ﻿using Kimono.Core.Internal;
-using Kimono.Emit;
-using Microsoft.VisualBasic;
+using Kimono.Core.Msil;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -61,13 +60,12 @@ namespace Kimono.Core
             if (generator is null)
             {
                 var proxyBaseType = Types.ProxyBase.MakeGenericType(targetType);
-
+                var context = new ProxyContext();
+                var methodId = MethodId.Create();
                 var typeBuilder = Module.DefineType(
                     string.Format(Names.TypeName, targetType.Name),
                     TypeAttributes.Public | TypeAttributes.Sealed,
                     proxyBaseType);
-
-                //ctor
                 var ctorParameters = Types.ProxyBaseCtorParameterTypes<T>();
                 var baseConstructor = proxyBaseType.GetConstructor(
                     bindingFlags, null,
@@ -75,29 +73,32 @@ namespace Kimono.Core
                     null
                 )!;
 
-                ImplementConstructor(typeBuilder, ctorParameters, baseConstructor);
-
-                (var methods, var properties) = AddInterfaceImplementations(typeBuilder, targetType);
-
-                var context = new ProxyContext();
-
-                var methodId = MethodId.Create();
-
-                var methodMetadatas = new List<MethodMetadata>(methods.Count + properties.Count);
-                CreateMethods(methodMetadatas, methodId, typeBuilder, targetType, methods);
-                CreateProperties(methodMetadatas, methodId, typeBuilder, targetType, properties);
-
-                //properties
-                context.SetMethods(methodMetadatas.ToArray());
+                context.SetMethods(CreateInterfaceProxy(
+                    interceptor, targetType, methodId, typeBuilder, ctorParameters, baseConstructor
+                ));
 
                 var proxyType = typeBuilder.CreateType();
                 var proxyConstructor = proxyType.GetConstructor(ctorParameters)!;
                 generator = Cache.SetGenerator(targetType,
-                    new ProxyGenerator<T>(context, MethodFactory.CreateProxyConstructorDelegate<T>(proxyType, targetType, proxyConstructor)
+                    new ProxyGenerator<T>(context,
+                        MethodFactory.CreateProxyConstructorDelegate<T>(proxyType, targetType, proxyConstructor)
                 ));
             }
 
             return generator.GenerateProxy(interceptor);
+        }
+
+        private MethodMetadata[] CreateInterfaceProxy<T>(IInterceptor<T> interceptor, Type targetType, MethodId methodId, TypeBuilder typeBuilder, Type[] ctorParameters, ConstructorInfo baseConstructor) where T : class
+        {
+            (var methods, var properties) = AddInterfaceImplementations(typeBuilder, targetType);
+
+            ImplementConstructor(typeBuilder, ctorParameters, baseConstructor);
+
+            var methodMetadatas = new List<MethodMetadata>(methods.Count + properties.Count);
+            CreateMethods(methodMetadatas, methodId, typeBuilder, targetType, methods, false, interceptor.BuildInvoker);
+            CreateProperties(methodMetadatas, methodId, typeBuilder, targetType, properties);
+            
+            return methodMetadatas.ToArray();
         }
 
         private void ImplementConstructor(TypeBuilder typeBuilder, Type[] parameterTypes, ConstructorInfo baseConstructor)
@@ -197,7 +198,7 @@ namespace Kimono.Core
             }
         }
 
-        private void CreateMethods(List<MethodMetadata> metadatas, MethodId methodId, TypeBuilder typeBuilder, Type targetType, List<MethodInfo> methods, bool areProperties = false)
+        private void CreateMethods(List<MethodMetadata> metadatas, MethodId methodId, TypeBuilder typeBuilder, Type targetType, List<MethodInfo> methods, bool areProperties = false, bool buildInvoker = false)
         {
             if (Types.Disposable.IsAssignableFrom(targetType))
             {
@@ -235,12 +236,17 @@ namespace Kimono.Core
                 }
 
                 MethodFactory.EmitProxyMethod(emitter, methodId, metadata);
-                metadata.UseInvoker(MethodFactory.CreateDelegateInvoker(metadata));
+
+                if (buildInvoker)
+                {
+                    metadata.UseInvoker(MethodFactory.CreateDelegateInvoker(metadata));
+                }
+
                 methodId++;
             });
         }
 
-        private void CreateProperties(List<MethodMetadata> metadatas, MethodId methodId, TypeBuilder typeBuilder, Type targetType, List<PropertyInfo> properties)
+        private void CreateProperties(List<MethodMetadata> metadatas, MethodId methodId, TypeBuilder typeBuilder, Type targetType, List<PropertyInfo> properties, bool buildInvoker = false)
         {
             var metadataArray = new List<MethodInfo>(properties.Count);
 
@@ -257,7 +263,7 @@ namespace Kimono.Core
                 }
             });
 
-            CreateMethods(metadatas, methodId, typeBuilder, targetType, metadataArray, true);
+            CreateMethods(metadatas, methodId, typeBuilder, targetType, metadataArray, true, buildInvoker);
         }
         
         private static class Names

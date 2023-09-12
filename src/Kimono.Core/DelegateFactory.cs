@@ -1,9 +1,7 @@
-﻿using Kimono.Core.Internal.MethodInvokers;
+﻿using Kimono.Core.Delegates.Invokers;
 using Kimono.Delegates;
-using Kimono.Emit;
-using Microsoft.VisualBasic;
+using Kimono.Core.Msil;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;

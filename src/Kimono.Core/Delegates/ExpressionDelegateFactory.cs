@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -51,11 +49,7 @@ namespace Kimono.Core.Delegates
         private static (MethodCallExpression, ParameterExpression[]) GenerateMethodCall(MethodMetadata metadata, IInvocation invocation, ParameterInfo[] parameters)
         {
             var method = PrepareGenericMethod(metadata, invocation.GenericParameters);
-#if NET7_0
             var span = parameters.AsSpan();
-#else
-            var span = parameters.ToArray().AsSpan();
-#endif
             var parameterExpressions = new ParameterExpression[span.Length + 1];
             var convertedParameters = new UnaryExpression[span.Length];
             ref var reference = ref MemoryMarshal.GetReference(span);

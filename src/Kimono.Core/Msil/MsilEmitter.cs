@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection.Emit;
 
-namespace Kimono.Emit
+namespace Kimono.Core.Msil
 {
     /// <summary>
     /// Class MsilEmitter.

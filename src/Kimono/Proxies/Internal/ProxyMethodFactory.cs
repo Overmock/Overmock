@@ -1,5 +1,4 @@
 ﻿using Kimono.Emit;
-using Kimono.Proxies;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;

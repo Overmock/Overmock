@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Kimono.Emit
+namespace Kimono.Core.Msil
 {
     /// <summary>
     /// Interface ICallPropertGetOrSetEmitter

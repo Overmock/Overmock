@@ -1,5 +1,4 @@
-﻿using Kimono;
-using Kimono.Core;
+﻿using Kimono.Core;
 using Overmocked.Mocking;
 using System;
 
