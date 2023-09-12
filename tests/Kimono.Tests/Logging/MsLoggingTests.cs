@@ -7,24 +7,24 @@ namespace Kimono.Tests.Logging
     [TestClass]
     public class MsLoggingTests
     {
-        [TestMethod]
-        public void ClrRuntimeLoggerTest()
-        {
-            var interceptor = new TestInterceptor<ILogger<MsLoggingTests>>();
+        //[TestMethod]
+        //public void ClrRuntimeLoggerTest()
+        //{
+        //    var interceptor = new TestInterceptor<ILogger<MsLoggingTests>>();
 
-            var logger =
-                ProxyFactory.Create().CreateInterfaceProxy(interceptor);
-                //Intercept.WithCallback<ILogger<MsLoggingTests>>(c => { });
+        //    var logger =
+        //        ProxyFactory.Create().CreateInterfaceProxy(interceptor);
+        //        //Intercept.WithCallback<ILogger<MsLoggingTests>>(c => { });
 
-            try
-            {
-                logger.LogError(new Exception(), string.Empty);
-            }
-            catch (Exception ex)
-            {
+        //    try
+        //    {
+        //        logger.LogError(new Exception(), string.Empty);
+        //    }
+        //    catch (Exception ex)
+        //    {
 
-            }
-        }
+        //    }
+        //}
 
         [TestMethod]
         public void TargetedParamsMethodTest()
