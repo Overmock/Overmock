@@ -12,9 +12,8 @@ namespace Kimono.Tests.Logging
         //{
         //    var interceptor = new TestInterceptor<ILogger<MsLoggingTests>>();
 
-        //    var logger =
+        //    var logger = //Intercept.WithCallback<ILogger<MsLoggingTests>>(c => { });
         //        ProxyFactory.Create().CreateInterfaceProxy(interceptor);
-        //        //Intercept.WithCallback<ILogger<MsLoggingTests>>(c => { });
 
         //    try
         //    {
@@ -29,9 +28,12 @@ namespace Kimono.Tests.Logging
         [TestMethod]
         public void TargetedParamsMethodTest()
         {
-            var target = Intercept.WithCallback<IParams>(c => { });
+            var interceptor = new TestInterceptor<IParams>();
 
-            target.Params("test", 1, new Model());
+            var logger = //Intercept.WithCallback<ILogger<MsLoggingTests>>(c => { });
+                ProxyFactory.Create().CreateInterfaceProxy(interceptor);
+
+            logger.Params("test", 1, new Model());
         }
 
         [TestMethod]
