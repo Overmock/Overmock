@@ -40,7 +40,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Kimono\Kimono.Old.csproj" />
+    <ProjectReference Include="..\Kimono.Core\Kimono.csproj" />
   </ItemGroup>
 
   <ItemGroup>
