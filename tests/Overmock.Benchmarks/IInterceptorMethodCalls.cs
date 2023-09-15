@@ -4,6 +4,7 @@
     {
         void Castle(int count);
         void Dotnet(int count);
-        void Kimono(int count);
+        //void Kimono(int count);
+        void KimonoCore(int count);
     }
 }

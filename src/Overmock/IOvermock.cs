@@ -1,6 +1,4 @@
 ﻿using Overmocked.Mocking;
-using System.Collections.Generic;
-using System.ComponentModel;
 
 namespace Overmocked
 {

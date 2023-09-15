@@ -1,5 +1,4 @@
-﻿using Kimono.Proxies;
-using System;
+﻿using System;
 using System.Reflection.Emit;
 
 namespace Kimono.Proxies.Internal

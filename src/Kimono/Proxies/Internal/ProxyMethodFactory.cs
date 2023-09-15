@@ -1,5 +1,4 @@
 ﻿using Kimono.Emit;
-using Kimono.Proxies;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -46,7 +45,7 @@ namespace Kimono.Proxies.Internal
         {
             DelegateFactory.EmitConstructor(emitter, baseConstructor);
         }
-
+        
         private void CreateMethods(IProxyContextBuilder context, IEnumerable<MethodInfo> methods)
         {
             if (Constants.DisposableType.IsAssignableFrom(context.Interceptor.TargetType))

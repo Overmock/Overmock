@@ -18,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Kimono\Kimono.csproj" />
+    <ProjectReference Include="..\..\src\Kimono.Core\Kimono.csproj" />
   </ItemGroup>
 
 </Project>

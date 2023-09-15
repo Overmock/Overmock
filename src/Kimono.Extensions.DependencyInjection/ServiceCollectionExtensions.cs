@@ -1,6 +1,6 @@
 ﻿using Kimono;
-using Kimono.Interceptors;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using System;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -9,8 +9,9 @@ namespace Microsoft.Extensions.DependencyInjection
     /// </summary>
     public static class ServiceCollectionExtensions
     {
+        private static readonly IProxyFactory _proxyFactory = ProxyFactory.Create();
         /// <summary>
-        /// Adds a scoped <typeparamref name="TImplementation"/> and a scoped <see cref="CallbackInterceptor{TInterface}"/> proxy that wraps the
+        /// Adds a scoped <typeparamref name="TImplementation"/> and a scoped <see cref="Interceptor{TInterface}"/> proxy that wraps the
         /// <typeparamref name="TImplementation"/> and calls the <paramref name="memberInvoked"/> when a member is invoked on the <typeparamref name="TInterface"/>.
         /// </summary>
         /// <typeparam name="TInterface">The type of the t interface.</typeparam>
@@ -18,13 +19,29 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="services">The services.</param>
         /// <param name="memberInvoked">The callback to invoke when a member on <typeparamref name="TInterface"/> is to be invoked.</param>
         /// <returns>IServiceCollection.</returns>
-        public static IServiceCollection AddScopedProxy<TInterface, TImplementation>(this IServiceCollection services, InvocationAction memberInvoked)
+        public static IServiceCollection AddScopedProxy<TInterface, TImplementation>(this IServiceCollection services, Action<IInvocation> memberInvoked)
             where TInterface : class
             where TImplementation : class, TInterface
         {
             services.TryAddScoped<TImplementation>();
-            return services.AddScoped<TInterface>(s =>
-                Intercept.WithCallback<TInterface, TImplementation>(s.GetRequiredService<TImplementation>(), memberInvoked));
+            return services.AddScoped(s => _proxyFactory.CreateInterfaceProxy(
+                new CallbackInterceptor<TInterface>(s.GetRequiredService<TImplementation>(), memberInvoked))
+            );
+        }
+
+        private sealed class CallbackInterceptor<T> : Interceptor<T> where T : class
+        {
+            private readonly Action<IInvocation> _callback;
+
+            public CallbackInterceptor(T implementation, Action<IInvocation> callback) : base(implementation)
+            {
+                _callback = callback;
+            }
+
+            protected override void HandleInvocation(IInvocation invocation)
+            {
+                _callback?.Invoke(invocation);
+            }
         }
     }
 }

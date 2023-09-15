@@ -4,6 +4,7 @@
     {
         void NewCastle(int count);
         void NewDotnet(int count);
-        void NewKimono(int count);
+        //void NewKimono(int count);
+        void NewKimonoCore(int count);
     }
 }

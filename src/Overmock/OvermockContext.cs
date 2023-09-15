@@ -1,4 +1,7 @@
 ﻿using Kimono;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 
 namespace Overmocked
 {
@@ -10,13 +13,13 @@ namespace Overmocked
         /// <summary>
         /// The invocation context
         /// </summary>
-        private readonly IInvocationContext _invocationContext;
+        private readonly IInvocation _invocationContext;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="OvermockContext"/> class.
         /// </summary>
         /// <param name="invocationContext">The invocation context.</param>
-        public OvermockContext(IInvocationContext invocationContext)
+        public OvermockContext(IInvocation invocationContext)
         {
             _invocationContext = invocationContext;
         }

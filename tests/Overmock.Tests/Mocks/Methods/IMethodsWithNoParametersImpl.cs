@@ -1,4 +1,4 @@
-﻿using Kimono.Proxies;
+﻿using Kimono;
 
 namespace Overmocked.Tests.Mocks.Methods
 {
@@ -6,7 +6,7 @@ namespace Overmocked.Tests.Mocks.Methods
     {
         public string Name { get; set; }
 
-        public IMethodsWithNoParametersImpl() : base(new ProxyContext(), null)
+        public IMethodsWithNoParametersImpl() : base(null)
         {
         }
 

@@ -1,5 +1,4 @@
 ﻿using Kimono;
-using Kimono.Proxies;
 using Overmocked.Mocking;
 using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
@@ -14,8 +13,7 @@ namespace Overmocked
     public static partial class Overmock
     {
         private static readonly ConcurrentQueue<IOvermock> _overmocks = new ConcurrentQueue<IOvermock>();
-
-        private static IInvocationHandler? _invocationHandler;
+        private static IInvocationHandler _invocationHandler;
 
         /// <summary>
         /// Initializes static members of the <see cref="global::Overmocked.Overmock"/> class.

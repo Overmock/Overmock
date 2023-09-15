@@ -1,4 +1,5 @@
-﻿using Kimono.Tests.Proxies;
+﻿using Kimono;
+using Kimono.Tests.Proxies;
 using Microsoft.Extensions.Logging;
 
 namespace Kimono.Tests.Logging
@@ -9,7 +10,10 @@ namespace Kimono.Tests.Logging
         //[TestMethod]
         //public void ClrRuntimeLoggerTest()
         //{
-        //    var logger = Intercept.WithCallback<ILogger<MsLoggingTests>>(c => { });
+        //    var interceptor = new TestInterceptor<ILogger<MsLoggingTests>>();
+
+        //    var logger = //Intercept.WithCallback<ILogger<MsLoggingTests>>(c => { });
+        //        ProxyFactory.Create().CreateInterfaceProxy(interceptor);
 
         //    try
         //    {
@@ -24,15 +28,19 @@ namespace Kimono.Tests.Logging
         [TestMethod]
         public void TargetedParamsMethodTest()
         {
-            var target = Intercept.WithCallback<IParams>(c => { });
+            var interceptor = new TestInterceptor<IParams>();
 
-            target.Params("test", 1, new Model());
+            var logger = ProxyFactory.Create().CreateInterfaceProxy(interceptor);
+
+            logger.Params("test", 1, new Model());
         }
 
         [TestMethod]
         public void ParamsMethodTest()
         {
-            var target = Intercept.WithCallback<IParams>(new ParamsClass(), c => { c.Invoke(); });
+            var interceptor = new TestCallbackInterceptor<IParams>(new ParamsClass(), c => { c.Invoke(); });
+
+            var target = ProxyFactory.Create().CreateInterfaceProxy(interceptor);
 
             target.Params("test", 1, new Model());
         }
@@ -52,8 +60,14 @@ namespace Kimono.Tests.Logging
 
         //    target.Test(new Exception(), string.Empty, "hello", "world");
         //}
-    }
 
+        private sealed class TestInterceptor<T> : Interceptor<T> where T : class
+        {
+            protected override void HandleInvocation(IInvocation invocation)
+            {
+            }
+        }
+    }
 
     public interface IParams
     {

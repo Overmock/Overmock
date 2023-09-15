@@ -2,15 +2,12 @@
 
   <PropertyGroup>
     <Version>0.0.9-RC02</Version>
-    <!--<TargetFramework>net6.0</TargetFramework>-->
     <TargetFrameworks>net7.0;net6.0;netstandard2.1;</TargetFrameworks>
-    <!--<ImplicitUsings>enable</ImplicitUsings>-->
     <Nullable>enable</Nullable>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <AnalysisLevel>7.0-recommended</AnalysisLevel>
     <IncludeSymbols>True</IncludeSymbols>
     <RootNamespace>Overmocked</RootNamespace>
-	<!--<ServerGarbageCollection>true</ServerGarbageCollection>-->
 
     <!-- Nuget -->
     <Title>Overmock</Title>
@@ -43,7 +40,7 @@
   </ItemGroup>
 
   <ItemGroup>
-	  <ProjectReference Include="..\Kimono\Kimono.csproj" />
+	  <ProjectReference Include="..\Kimono.Core\Kimono.csproj" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(Configuration)'=='Debug'">

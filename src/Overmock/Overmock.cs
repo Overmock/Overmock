@@ -1,12 +1,9 @@
 ﻿using Kimono;
-using Kimono.Interceptors;
-using Kimono.Proxies;
 using Overmocked.Mocking;
 using Overmocked.Mocking.Internal;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -18,11 +15,13 @@ namespace Overmocked
     /// <typeparam name="T">The type going to be mocked.</typeparam>
     public class Overmock<T> : Verifiable<T>, IOvermock<T>, IOvermockable, IOvermocked, IExpectAnyInvocation, IEquatable<Overmock<T>> where T : class
     {
+        private static readonly IProxyFactory _proxyFactory = ProxyFactory.Create();
+
         private readonly List<IMethodCall> _methods = new List<IMethodCall>();
         private readonly List<IPropertyCall> _properties = new List<IPropertyCall>();
 
-        private readonly IInvocationHandler _invocationHandler;
         private readonly Interceptor<T> _interceptor;
+        private readonly T _target;
         private bool _overrideAll;
 
         /// <summary>
@@ -31,16 +30,14 @@ namespace Overmocked
         /// <exception cref="InvalidOperationException">Type '{Type.Name}' cannot be a sealed class or enum.</exception>
         public Overmock(IInvocationHandler? handler = null)
         {
-            _invocationHandler = new OvermockInstanceInvocationHandler(() => _overrideAll, _methods.ToArray, _properties.ToArray);
+            //_invocationHandler = new OvermockInstanceInvocationHandler(() => _overrideAll, _methods.ToArray, _properties.ToArray);
+            _interceptor = new OvermockInterceptor(() => _overrideAll, _methods.ToArray, _properties.ToArray, handler);
+            _target = _proxyFactory.CreateInterfaceProxy(_interceptor);
 
             if (Type.IsSealed || Type.IsEnum)
             {
                 throw new InvalidOperationException($"Type '{Type.Name}' cannot be a sealed class or enum.");
             }
-
-            _interceptor = handler == null
-                ? (Interceptor<T>)new HandlerInterceptor<T>(_invocationHandler)
-                : (Interceptor<T>)new HandlersInterceptor<T>(new[] { _invocationHandler, handler });
 
             Overmock.Register(this);
         }
@@ -64,9 +61,8 @@ namespace Overmocked
                 _properties = (List<IPropertyCall>)((IOvermocked)overmock).GetProperties();
             }
 
-            _interceptor = new HandlerInterceptor<T>(_invocationHandler ??=
-                new OvermockInstanceInvocationHandler(() => _overrideAll, _methods.ToArray, _properties.ToArray)
-            );
+            _interceptor = new OvermockInterceptor(() => _overrideAll, _methods.ToArray, _properties.ToArray, null);
+            _target = _proxyFactory.CreateInterfaceProxy(_interceptor);
 
             Overmock.Register(this);
         }
@@ -89,7 +85,7 @@ namespace Overmocked
         {
             get
             {
-                return ((Interceptor<T>)_interceptor).Proxy;
+                return _target;
             }
         }
 
@@ -201,20 +197,22 @@ namespace Overmocked
             _overrideAll = true;
         }
 
-        private sealed class OvermockInstanceInvocationHandler : IInvocationHandler
+        private sealed class OvermockInterceptor : Interceptor<T>
         {
             private readonly Func<bool> _expectAnyProvider;
             private readonly Func<IMethodCall[]> _methodsProvider;
             private readonly Func<IPropertyCall[]> _propertiesProvider;
+            private readonly IInvocationHandler? _handler;
 
-            internal OvermockInstanceInvocationHandler(Func<bool> expectAnyProvider, Func<IMethodCall[]> methodsProvider, Func<IPropertyCall[]> propertiesProvider)
+            internal OvermockInterceptor(Func<bool> expectAnyProvider, Func<IMethodCall[]> methodsProvider, Func<IPropertyCall[]> propertiesProvider, IInvocationHandler? handler = null)
             {
                 _expectAnyProvider = expectAnyProvider;
                 _methodsProvider = methodsProvider;
                 _propertiesProvider = propertiesProvider;
+                _handler = handler;
             }
 
-            internal static bool HandleMembers<TInfo, TCall>(IInvocationContext context, TInfo info, Span<TCall> overridables, Func<TInfo, TCall, bool> predicate) where TCall : IOverridable
+            internal static bool HandleMembers<TInfo, TCall>(IInvocation context, TInfo info, Span<TCall> overridables, Func<TInfo, TCall, bool> predicate, IInvocationHandler? handler = null) where TCall : IOverridable
             {
                 ref var reference = ref MemoryMarshal.GetReference(overridables);
 
@@ -227,40 +225,108 @@ namespace Overmocked
                     if (!predicate(info, call)) { continue; }
 
                     var overmock = call.GetOverrides().First();
-                    context.ReturnValue = overmock.Handle(new OvermockContext(context));
+                    var overmockContext = new OvermockContext(context);
+
+                    handler?.Handle(overmockContext);
+                    context.ReturnValue = overmock.Handle(overmockContext);
                     return true;
                 }
 
                 return false;
             }
 
-            /// <exclude />
-            public void Handle(IInvocationContext context)
+            protected override void HandleInvocation(IInvocation invocation)
             {
-                if (HandleMethods(context, _methodsProvider())) { return; }
+                if (HandleMethods(invocation, _methodsProvider())) { return; }
 
                 var handled = false;
 
-                if (context.Member is PropertyInfo property)
+                if (invocation.IsProperty)
                 {
-                    handled = HandleProperties(context, property, _propertiesProvider());
+                    handled = HandleProperties(invocation, _propertiesProvider());
                 }
 
                 if (!handled && !_expectAnyProvider())
                 {
-                    throw new UnhandledMemberException(context.MemberName);
+                    throw new UnhandledMemberException(invocation.Method.Name);
                 }
             }
 
-            private static bool HandleMethods(IInvocationContext context, Span<IMethodCall> methods)
+            private static bool HandleMethods(IInvocation context, Span<IMethodCall> methods, IInvocationHandler? handler = null)
             {
-                return HandleMembers(context, context.Method, methods, (info, call) => info == call.BaseMethod);
+                return HandleMembers(context, context.Method, methods, (info, call) => info == call.BaseMethod, handler);
             }
 
-            private static bool HandleProperties(IInvocationContext context, PropertyInfo propertyInfo, Span<IPropertyCall> properties)
+            private static bool HandleProperties(IInvocation context, Span<IPropertyCall> properties, IInvocationHandler? handler = null)
             {
-                return HandleMembers(context, propertyInfo, properties, (info, call) => info == call.PropertyInfo);
+                return HandleMembers(context, context.Method, properties, (info, call) => {
+                    var property = call.PropertyInfo;
+                    return info == property.GetGetMethod()
+                        || info == property.GetSetMethod();
+                }, handler);
             }
         }
+
+        //private sealed class OvermockInstanceInvocationHandler : IInvocationHandler
+        //{
+        //    private readonly Func<bool> _expectAnyProvider;
+        //    private readonly Func<IMethodCall[]> _methodsProvider;
+        //    private readonly Func<IPropertyCall[]> _propertiesProvider;
+
+        //    internal OvermockInstanceInvocationHandler(Func<bool> expectAnyProvider, Func<IMethodCall[]> methodsProvider, Func<IPropertyCall[]> propertiesProvider)
+        //    {
+        //        _expectAnyProvider = expectAnyProvider;
+        //        _methodsProvider = methodsProvider;
+        //        _propertiesProvider = propertiesProvider;
+        //    }
+
+        //    internal static bool HandleMembers<TInfo, TCall>(IInvocationContext context, TInfo info, Span<TCall> overridables, Func<TInfo, TCall, bool> predicate) where TCall : IOverridable
+        //    {
+        //        ref var reference = ref MemoryMarshal.GetReference(overridables);
+
+        //        if (reference == null) { return false; }
+
+        //        for (int i = 0; i < overridables.Length; i++)
+        //        {
+        //            ref var call = ref Unsafe.Add(ref reference, i);
+
+        //            if (!predicate(info, call)) { continue; }
+
+        //            var overmock = call.GetOverrides().First();
+        //            context.ReturnValue = overmock.Handle(new OvermockContext(context));
+        //            return true;
+        //        }
+
+        //        return false;
+        //    }
+
+        //    /// <exclude />
+        //    public void Handle(IInvocationContext context)
+        //    {
+        //        if (HandleMethods(context, _methodsProvider())) { return; }
+
+        //        var handled = false;
+
+        //        if (context.Member is PropertyInfo property)
+        //        {
+        //            handled = HandleProperties(context, property, _propertiesProvider());
+        //        }
+
+        //        if (!handled && !_expectAnyProvider())
+        //        {
+        //            throw new UnhandledMemberException(context.MemberName);
+        //        }
+        //    }
+
+        //    private static bool HandleMethods(IInvocationContext context, Span<IMethodCall> methods)
+        //    {
+        //        return HandleMembers(context, context.Method, methods, (info, call) => info == call.BaseMethod);
+        //    }
+
+        //    private static bool HandleProperties(IInvocationContext context, PropertyInfo propertyInfo, Span<IPropertyCall> properties)
+        //    {
+        //        return HandleMembers(context, propertyInfo, properties, (info, call) => info == call.PropertyInfo);
+        //    }
+        //}
     }
 }

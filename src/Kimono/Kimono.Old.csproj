@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <Version>0.0.9-RC02</Version>
-     <!--<TargetFramework>net6.0</TargetFramework>--> 
+    <!--<TargetFramework>net6.0</TargetFramework>--> 
     <TargetFrameworks>net7.0;net6.0;netstandard2.1</TargetFrameworks>
     <!-- <ImplicitUsings>enable</ImplicitUsings> -->
     <Nullable>enable</Nullable>
@@ -10,7 +10,7 @@
     <AnalysisLevel>7.0-recommended</AnalysisLevel>
     <IncludeSymbols>True</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-	<!--<ServerGarbageCollection>true</ServerGarbageCollection>-->
+	  <!--<ServerGarbageCollection>true</ServerGarbageCollection>-->
 	  
     <!-- Nuget -->
     <Title>Kimono</Title>
