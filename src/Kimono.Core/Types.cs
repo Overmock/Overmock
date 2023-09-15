@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 
-namespace Kimono.Core
+namespace Kimono
 {
     internal static class Types
     {

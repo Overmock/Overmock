@@ -6,6 +6,9 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Overmock", "src\Overmock\Overmock.csproj", "{B7671A6C-3A27-46AD-A208-09B5702879AC}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Overmock.Tests", "tests\Overmock.Tests\Overmock.Tests.csproj", "{3924F495-CAD5-4A38-AA51-6DA1FA5AD6ED}"
+	ProjectSection(ProjectDependencies) = postProject
+		{C98608B3-9A26-4FE7-A324-EEC89B28A8DC} = {C98608B3-9A26-4FE7-A324-EEC89B28A8DC}
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C0BFD13F-48EE-40EA-8AF1-FB2055D0C416}"
 	ProjectSection(SolutionItems) = preProject
@@ -30,7 +33,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{
 		.github\workflows\publish.yml = .github\workflows\publish.yml
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kimono", "src\Kimono\Kimono.csproj", "{94FEF884-701E-4617-8C81-1450DDE2B3B9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kimono.Old", "src\Kimono\Kimono.Old.csproj", "{94FEF884-701E-4617-8C81-1450DDE2B3B9}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kimono.Tests", "tests\Kimono.Tests\Kimono.Tests.csproj", "{24772482-461A-4FC0-AD27-A61BDAE6E250}"
 EndProject
@@ -38,7 +41,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Overmock.Benchmarks", "test
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kimono.Extensions.DependencyInjection", "src\Kimono.Extensions.DependencyInjection\Kimono.Extensions.DependencyInjection.csproj", "{E9021865-88B2-4094-9C7C-7DE40F61FB0A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kimono.Core", "src\Kimono.Core\Kimono.Core.csproj", "{C98608B3-9A26-4FE7-A324-EEC89B28A8DC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kimono", "src\Kimono.Core\Kimono.csproj", "{C98608B3-9A26-4FE7-A324-EEC89B28A8DC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

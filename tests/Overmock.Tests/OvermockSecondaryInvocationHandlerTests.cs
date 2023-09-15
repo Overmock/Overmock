@@ -1,4 +1,6 @@
 ﻿using Kimono;
+using Overmocked.Tests.Mocks;
+using Overmocked.Tests.Mocks.Methods;
 
 namespace Overmocked.Tests
 {
@@ -26,7 +28,7 @@ namespace Overmocked.Tests
         //[TestMethod]
         //public void OvermockCallsGlobalHandlerTest()
         //{
-        //    //Overmock.Use(new TestInvocationHandler());
+        //    Overmock.Use(new TestInvocationHandler());
 
         //    var overmock = Overmock.Mock<IMethodsWith2Parameters>();
 
@@ -37,12 +39,12 @@ namespace Overmocked.Tests
 
         //    Assert.IsTrue(result);
 
-        //    //Overmock.Use(null);
+        //    Overmock.Use(null);
         //}
 
         private class TestInvocationHandler : IInvocationHandler
         {
-            public void Handle(IInvocationContext context)
+            public void Handle(OvermockContext context)
             {
                 context.ReturnValue = true;
             }

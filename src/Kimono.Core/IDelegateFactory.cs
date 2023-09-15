@@ -1,9 +1,9 @@
 ﻿using Kimono.Delegates;
-using Kimono.Core.Msil;
+using Kimono.Msil;
 using System;
 using System.Reflection;
 
-namespace Kimono.Core
+namespace Kimono
 {
     /// <summary>
     /// When implemented, creates compiled delegates.

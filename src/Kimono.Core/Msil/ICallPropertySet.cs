@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Kimono.Core.Msil
+namespace Kimono.Msil
 {
     /// <summary>
     /// Interface ICallPropertySetter

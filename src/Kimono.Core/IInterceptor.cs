@@ -1,7 +1,7 @@
-﻿using Kimono.Core.Internal;
+﻿using Kimono.Internal;
 using System;
 
-namespace Kimono.Core
+namespace Kimono
 {
     public interface IInterceptor : IFluentInterface
 	{

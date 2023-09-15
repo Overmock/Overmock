@@ -1,4 +1,4 @@
-﻿using Kimono.Core;
+﻿using Kimono;
 using Kimono.Tests.Proxies;
 using Microsoft.Extensions.Logging;
 
@@ -30,8 +30,7 @@ namespace Kimono.Tests.Logging
         {
             var interceptor = new TestInterceptor<IParams>();
 
-            var logger = //Intercept.WithCallback<ILogger<MsLoggingTests>>(c => { });
-                ProxyFactory.Create().CreateInterfaceProxy(interceptor);
+            var logger = ProxyFactory.Create().CreateInterfaceProxy(interceptor);
 
             logger.Params("test", 1, new Model());
         }
@@ -39,7 +38,9 @@ namespace Kimono.Tests.Logging
         [TestMethod]
         public void ParamsMethodTest()
         {
-            var target = Intercept.WithCallback<IParams>(new ParamsClass(), c => { c.Invoke(); });
+            var interceptor = new TestCallbackInterceptor<IParams>(new ParamsClass(), c => { c.Invoke(); });
+
+            var target = ProxyFactory.Create().CreateInterfaceProxy(interceptor);
 
             target.Params("test", 1, new Model());
         }
@@ -60,11 +61,10 @@ namespace Kimono.Tests.Logging
         //    target.Test(new Exception(), string.Empty, "hello", "world");
         //}
 
-        private sealed class TestInterceptor<T> : Kimono.Core.Interceptor<T> where T : class
+        private sealed class TestInterceptor<T> : Interceptor<T> where T : class
         {
             protected override void HandleInvocation(IInvocation invocation)
             {
-
             }
         }
     }

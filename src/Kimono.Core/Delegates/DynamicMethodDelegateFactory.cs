@@ -1,5 +1,5 @@
-﻿using Kimono.Core;
-using Kimono.Core.Msil;
+﻿using Kimono;
+using Kimono.Msil;
 using System;
 using System.Linq;
 using System.Reflection;

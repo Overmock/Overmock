@@ -1,7 +1,7 @@
 ﻿
 using System;
 
-namespace Kimono.Core
+namespace Kimono
 {
     public interface IProxy
     {

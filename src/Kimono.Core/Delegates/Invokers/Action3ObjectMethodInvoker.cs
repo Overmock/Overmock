@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Kimono.Core.Delegates.Invokers
+namespace Kimono.Delegates.Invokers
 {
     internal sealed class Action3ObjectMethodInvoker : MethodDelegateInvoker<Action<object?, object?, object?>>
     {

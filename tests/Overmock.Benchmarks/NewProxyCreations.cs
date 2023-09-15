@@ -10,13 +10,13 @@ namespace Overmocked.Benchmarks
     {
         private static readonly Benchmark _benchmarkClass = new Benchmark();
 
-        public void NewKimono(int count)
-        {
-            for (int i = 0; i < count; i++)
-            {
-                var kimonoProxy = Intercept.WithHandler<IBenchmark, Benchmark>(_benchmarkClass, new KimonoInvocationHandler());
-            }
-        }
+        //public void NewKimono(int count)
+        //{
+        //    for (int i = 0; i < count; i++)
+        //    {
+        //        var kimonoProxy = Intercept.WithHandler<IBenchmark, Benchmark>(_benchmarkClass, new KimonoInvocationHandler());
+        //    }
+        //}
 
         public void NewDotnet(int count)
         {
@@ -38,8 +38,8 @@ namespace Overmocked.Benchmarks
 
         public void NewKimonoCore(int count)
         {
-            var interceptor = new Kimono.Core.Interceptor<IBenchmark>();
-            var factory = Kimono.Core.ProxyFactory.Create();
+            var interceptor = new Interceptor<IBenchmark>();
+            var factory = ProxyFactory.Create();
 
             for (int i = 0; i < count; i++)
             {

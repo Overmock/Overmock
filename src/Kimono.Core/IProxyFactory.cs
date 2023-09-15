@@ -1,4 +1,4 @@
-﻿namespace Kimono.Core
+﻿namespace Kimono
 {
     public interface IProxyFactory
     {

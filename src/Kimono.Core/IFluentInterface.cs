@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System;
 
-namespace Kimono.Core
+namespace Kimono
 {
     /// <summary>
     /// Interface that is used to build fluent interfaces by hiding methods declared by <see cref="object"/> from IntelliSense.

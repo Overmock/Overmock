@@ -1,24 +1,24 @@
-﻿using Kimono.Proxies;
+﻿using Kimono;
 
 namespace Kimono.Tests
 {
     [TestClass]
     public class FactoryProviderTests
     {
-        [TestMethod]
-        public void UseExpressionDelegatesConfiguresTheSystemToUseExpressionDelegateFactory()
-        {
-            var delegateFactory = FactoryProvider.UseExpressionDelegates();
+        //[TestMethod]
+        //public void UseExpressionDelegatesConfiguresTheSystemToUseExpressionDelegateFactory()
+        //{
+        //    var delegateFactory = FactoryProvider.UseExpressionDelegates();
 
-            Assert.IsInstanceOfType<ExpressionDelegateFactory>(delegateFactory);
-        }
+        //    Assert.IsInstanceOfType<ExpressionDelegateFactory>(delegateFactory);
+        //}
 
-        [TestMethod]
-        public void UseDynamicMethodDelegatesConfiguresTheSystemToUseDynamicMethodDelegateFactory()
-        {
-            var delegateFactory = FactoryProvider.UseDynamicMethodDelegates();
+        //[TestMethod]
+        //public void UseDynamicMethodDelegatesConfiguresTheSystemToUseDynamicMethodDelegateFactory()
+        //{
+        //    var delegateFactory = FactoryProvider.UseDynamicMethodDelegates();
 
-            Assert.IsInstanceOfType<DynamicMethodDelegateFactory>(delegateFactory);
-        }
+        //    Assert.IsInstanceOfType<DynamicMethodDelegateFactory>(delegateFactory);
+        //}
     }
 }

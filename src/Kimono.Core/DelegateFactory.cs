@@ -1,13 +1,13 @@
-﻿using Kimono.Core.Delegates.Invokers;
+﻿using Kimono.Delegates.Invokers;
 using Kimono.Delegates;
-using Kimono.Core.Msil;
+using Kimono.Msil;
 using System;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Threading;
 
-namespace Kimono.Core
+namespace Kimono
 {
     public class DelegateFactory : IDelegateFactory
     {

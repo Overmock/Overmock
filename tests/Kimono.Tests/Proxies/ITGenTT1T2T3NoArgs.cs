@@ -1,4 +1,4 @@
-﻿using Kimono.Proxies;
+﻿using Kimono;
 
 namespace Kimono.Tests.Proxies
 {
@@ -9,7 +9,7 @@ namespace Kimono.Tests.Proxies
 
     public class ITGenTT1T2T3NoArgsClass : ProxyBase<ITGenTT1T2T3NoArgs>, ITGenTT1T2T3NoArgs
     {
-        public ITGenTT1T2T3NoArgsClass(ProxyContext proxyContext, IInterceptor interceptor) : base(proxyContext, interceptor)
+        public ITGenTT1T2T3NoArgsClass(IInterceptor<ITGenTT1T2T3NoArgs> interceptor) : base(interceptor)
         {
         }
 

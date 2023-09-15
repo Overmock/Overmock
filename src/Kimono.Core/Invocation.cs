@@ -1,8 +1,11 @@
 ﻿using Kimono.Delegates;
 using System;
+using System.Collections.Generic;
 using System.Reflection;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
-namespace Kimono.Core
+namespace Kimono
 {
     internal sealed class Invocation : IInvocation
     {
@@ -28,6 +31,28 @@ namespace Kimono.Core
         public Type ReturnType { get; internal set; }
 
         public bool IsProperty { get; internal set; }
+
+        public T GetParameter<T>(string name)
+        {
+            ref var reference = ref MemoryMarshal.GetReference(ParameterTypes.AsSpan());
+
+            for (int i = 0; i < ParameterTypes.Length; i++)
+            {
+                ref var param = ref Unsafe.Add(ref reference, i);
+
+                if (param.Name == name)
+                {
+                    return (T)Parameters[i]!;
+                }
+            }
+
+            throw new KeyNotFoundException(name);
+        }
+
+        public T GetParameter<T>(int index)
+        {
+            return (T)Parameters[index]!;
+        }
 
         public void Invoke(bool setReturnValue = true)
         {

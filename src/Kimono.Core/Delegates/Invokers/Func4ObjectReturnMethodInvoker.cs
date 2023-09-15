@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Kimono.Core.Delegates.Invokers
+namespace Kimono.Delegates.Invokers
 {
     internal sealed class Func4ObjectReturnMethodInvoker : MethodDelegateInvoker<Func<object?, object?, object?, object?, object?>>
     {

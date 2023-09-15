@@ -1,12 +1,12 @@
-﻿using Kimono.Core.Internal;
-using Kimono.Core.Msil;
+﻿using Kimono.Internal;
+using Kimono.Msil;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 
-namespace Kimono.Core
+namespace Kimono
 {
     /// <summary>
     /// 

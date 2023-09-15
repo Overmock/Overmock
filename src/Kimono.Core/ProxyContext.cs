@@ -2,7 +2,7 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-namespace Kimono.Core
+namespace Kimono
 {
     public class ProxyContext
     {

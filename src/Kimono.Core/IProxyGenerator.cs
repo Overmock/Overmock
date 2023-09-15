@@ -1,4 +1,4 @@
-﻿namespace Kimono.Core
+﻿namespace Kimono
 {
     /// <summary>
     /// Interface IProxyGenerator

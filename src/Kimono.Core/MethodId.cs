@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 
-namespace Kimono.Core
+namespace Kimono
 {
     [DebuggerDisplay(null, Name = "Current")]
     public class MethodId
