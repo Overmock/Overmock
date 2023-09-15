@@ -43,7 +43,7 @@ namespace Kimono
         {
             ref var metadata = ref _proxyContext.GetMethod(methodId);
 
-            var invocation = new Invocation(metadata.GetInvoker()!)
+            var invocation = new Invocation(metadata.GetDelegateInvoker()!)
             {
                 GenericParameters = genericParameters,
                 Method = metadata.TargetMethod,

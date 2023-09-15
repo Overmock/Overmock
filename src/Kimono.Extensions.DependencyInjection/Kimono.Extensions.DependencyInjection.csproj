@@ -2,14 +2,12 @@
 
   <PropertyGroup>
     <Version>0.0.9-RC02</Version>
-    <TargetFrameworks>net7.0;net6.0;netstandard2.1;</TargetFrameworks>
-    <!--<ImplicitUsings>enable</ImplicitUsings>-->
+    <TargetFrameworks>net7.0;net6.0;netstandard2.1</TargetFrameworks>
     <Nullable>enable</Nullable>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <AnalysisLevel>7.0-recommended</AnalysisLevel>
     <IncludeSymbols>True</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-	<!--<ServerGarbageCollection>true</ServerGarbageCollection>-->
     
     <!-- Nuget -->
     <Title>Kimono.Extensions.DependencyInjection</Title>

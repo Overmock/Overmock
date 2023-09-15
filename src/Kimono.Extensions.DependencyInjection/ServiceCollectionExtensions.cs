@@ -29,7 +29,7 @@ namespace Microsoft.Extensions.DependencyInjection
             );
         }
 
-        private class CallbackInterceptor<T> : Interceptor<T> where T : class
+        private sealed class CallbackInterceptor<T> : Interceptor<T> where T : class
         {
             private readonly Action<IInvocation> _callback;
 

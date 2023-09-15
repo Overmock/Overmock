@@ -64,14 +64,14 @@ namespace Kimono
             );
         }
 
-        private List<T> CreateList<T>(T[] array)
-        {
-            return new List<T>(array);
-        }
-
-        internal IDelegateInvoker? GetInvoker()
+        internal IDelegateInvoker? GetDelegateInvoker()
         {
             return _invoker;
+        }
+
+        private static List<T> CreateList<T>(T[] array)
+        {
+            return new List<T>(array);
         }
     }
 }
