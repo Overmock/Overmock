@@ -1,31 +1,49 @@
-﻿using Kimono.Core.Internal;
+﻿using Kimono.Internal;
 using System;
 using System.Reflection;
 
-namespace Kimono.Core
+namespace Kimono
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class Interceptor<T> : IInterceptor<T>, IProxyContainer where T : class
     {   
         private ProxyContext? _proxyContext;
         private readonly T? _target;
 
-        public bool BuildInvoker => !(_target is null);
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="target"></param>
         public Interceptor(T? target = null)
         {
             _target = target;
         }
 
-        //public static implicit operator T(Interceptor<T> interceptor)
-        //{
-        //    return interceptor._proxy!;
-        //}
+        /// <summary>
+        /// 
+        /// </summary>
+        bool IInterceptor<T>.BuildInvoker => !(_target is null);
 
-        public object? HandleInvocation(int methodId, Type[] genericParameters, object[] parameters)
+        /// <summary>
+        /// 
+        /// </summary>
+        protected T? Target => _target;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="methodId"></param>
+        /// <param name="genericParameters"></param>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
+        object? IInterceptor.HandleInvocation(int methodId, Type[] genericParameters, object[] parameters)
         {
             ref var metadata = ref _proxyContext.GetMethod(methodId);
 
-            var invocation = new Invocation(metadata.GetInvoker()!)
+            var invocation = new Invocation(metadata.GetDelegateInvoker()!)
             {
                 GenericParameters = genericParameters,
                 Method = metadata.TargetMethod,
@@ -46,11 +64,16 @@ namespace Kimono.Core
             return invocation.ReturnValue;
         }
 
+        /// <inheritdoc />
         void IProxyContainer.SetProxyContext(ProxyContext context)
         {
             _proxyContext ??= context;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="invocation"></param>
         protected virtual void HandleInvocation(IInvocation invocation)
         {
             invocation.Invoke();
@@ -58,7 +81,7 @@ namespace Kimono.Core
 
         private static class Types
         {
-            public static ParameterInfo[] EmptyParameters = new ParameterInfo[0];
+            public static ParameterInfo[] EmptyParameters = Array.Empty<ParameterInfo>();
         }
     }
 }

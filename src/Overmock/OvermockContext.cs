@@ -1,4 +1,4 @@
-﻿using Kimono.Core;
+﻿using Kimono;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -14,7 +14,6 @@ namespace Overmocked
         /// The invocation context
         /// </summary>
         private readonly IInvocation _invocationContext;
-        private List<ParameterInfo> _parameters;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="OvermockContext"/> class.
@@ -24,10 +23,6 @@ namespace Overmocked
         {
             _invocationContext = invocationContext;
         }
-        //public OvermockContext(IInvocationContext invocationContext)
-        //{
-        //    _invocationContext = invocationContext;
-        //}
 
         /// <summary>
         /// Gets the specified name.
@@ -37,10 +32,7 @@ namespace Overmocked
         /// <returns>T.</returns>
         public T Get<T>(string name)
         {
-            var parameter = (_parameters ??= _invocationContext.ParameterTypes.ToList())
-                .FindIndex(p => p.Name == name);
-
-            return (T)_invocationContext.Parameters[parameter]!;
+            return _invocationContext.GetParameter<T>(name);
         }
 
         /// <summary>

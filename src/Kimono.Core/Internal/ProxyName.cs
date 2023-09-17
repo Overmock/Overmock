@@ -1,4 +1,4 @@
-﻿namespace Kimono.Core.Internal
+﻿namespace Kimono.Internal
 {
     internal static class ProxyName
     {

@@ -1,4 +1,4 @@
-﻿using Kimono.Proxies;
+﻿using Kimono;
 
 namespace Overmocked.Tests.Mocks.Properties
 {
@@ -15,7 +15,7 @@ namespace Overmocked.Tests.Mocks.Properties
 
     public class IPropertiesWithGetImpl : ProxyBase<IPropertiesWithGet>, IPropertiesWithGet
     {
-        public IPropertiesWithGetImpl() : base(new ProxyContext(), null)
+        public IPropertiesWithGetImpl() : base(null)
         {
         }
 

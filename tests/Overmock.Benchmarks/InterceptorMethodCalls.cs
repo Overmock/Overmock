@@ -1,6 +1,5 @@
 ﻿using Castle.DynamicProxy;
 using Kimono;
-using Kimono.Core;
 using Overmocked.Benchmarks.Interceptors;
 using Overmocked.Benchmarks.Models;
 using System.Reflection;
@@ -10,7 +9,7 @@ namespace Overmocked.Benchmarks
     public class InterceptorMethodCalls : IInterceptorMethodCalls
     {
         private static readonly Benchmark _benchmarkClass = new Benchmark();
-        private static readonly IBenchmark _kimonoProxy;
+//        private static readonly IBenchmark _kimonoProxy;
         private static readonly IBenchmark _kimonoProxyCore;
         private static readonly IBenchmark _dispatchProxy;
         private static readonly IBenchmark _castleProxy;
@@ -18,9 +17,9 @@ namespace Overmocked.Benchmarks
         
         static InterceptorMethodCalls()
         {
-            _kimonoProxy = Intercept.WithHandlers<IBenchmark, Benchmark>(_benchmarkClass, new KimonoInvocationHandler());
+ //           _kimonoProxy = Intercept.WithHandlers<IBenchmark, Benchmark>(_benchmarkClass, new KimonoInvocationHandler());
 
-            var interceptor = new Kimono.Core.Interceptor<IBenchmark>();
+            var interceptor = new Kimono.Interceptor<IBenchmark>();
             _kimonoProxyCore = ProxyFactory.Create().CreateInterfaceProxy(interceptor);
 
             _dispatchProxy = DispatchProxy.Create<IBenchmark, DotnetProxy>();
@@ -50,13 +49,13 @@ namespace Overmocked.Benchmarks
             }
         }
 
-        public static void Kimono(int count)
-        {
-            for (int i = 0; i < count; i++)
-            {
-                _kimonoProxy.VoidWith3Params("hello", 20, _list);
-            }
-        }
+        //public static void Kimono(int count)
+        //{
+        //    for (int i = 0; i < count; i++)
+        //    {
+        //        _kimonoProxy.VoidWith3Params("hello", 20, _list);
+        //    }
+        //}
 
         public static void KimonoCore(int count)
         {
@@ -70,7 +69,7 @@ namespace Overmocked.Benchmarks
 
         void IInterceptorMethodCalls.Dotnet(int count) => Dotnet(count);
 
-        void IInterceptorMethodCalls.Kimono(int count) => Kimono(count);
+        //void IInterceptorMethodCalls.Kimono(int count) => Kimono(count);
 
         void IInterceptorMethodCalls.KimonoCore(int count) => KimonoCore(count);
     }

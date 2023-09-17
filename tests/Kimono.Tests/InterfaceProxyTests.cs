@@ -5,7 +5,7 @@ namespace Kimono.Tests
     [TestClass]
     public class InterfaceProxyTests
     {
-        private IInterface _interface = new InterfaceImpl();
+        private readonly IProxyFactory _factory = ProxyFactory.Create();
 
         public InterfaceProxyTests()
         {
@@ -21,13 +21,11 @@ namespace Kimono.Tests
         [TestMethod]
         public void ProxyCallsMemberInvokedForMethod()
         {
-            var proxy = new InterfaceProxy(_interface);
+            var proxy = new InterfaceProxy(new InterfaceImpl());
 
-            Assert.AreNotEqual(_interface, proxy.Proxy);
+            var @interface = _factory.CreateInterfaceProxy(proxy);
 
-            _interface = proxy.Proxy;
-
-            _interface.DoSomething("hello world");
+            @interface.DoSomething("hello world");
         }
 
 
@@ -36,8 +34,10 @@ namespace Kimono.Tests
         {
             var called = false;
 
-            var proxy = Intercept.WithCallback<IInterface>(c => called = c.MemberName == "DoSomething");
-            proxy.DoSomething("hello world");
+            var proxy = new TestCallbackInterceptor<IInterface>(callback: c => called = c.Method.Name == "DoSomething");
+            var @interface = _factory.CreateInterfaceProxy(proxy);
+            
+            @interface.DoSomething("hello world");
 
             Assert.IsTrue(called);
         }
@@ -47,12 +47,14 @@ namespace Kimono.Tests
         {
             var called = false;
 
-            var proxy = Intercept.WithCallback<IInterface>(c => {
-                called = c.MemberName == "MethodWithReturn";
-                c.ReturnValue = c.Parameters.Get("name");
+            var proxy = new TestCallbackInterceptor<IInterface>(callback: c => {
+                called = c.Method.Name == "MethodWithReturn";
+                c.ReturnValue = c.GetParameter<string>("name");
             });
 
-            var actual = proxy.MethodWithReturn("hello world", new object());
+            var @interface = _factory.CreateInterfaceProxy(proxy);
+
+            var actual = @interface.MethodWithReturn("hello world", new object());
 
             Assert.IsTrue(called);
 

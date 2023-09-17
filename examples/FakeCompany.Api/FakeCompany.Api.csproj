@@ -7,8 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Kimono" Version="0.0.8" />
-    <PackageReference Include="Kimono.Extensions.DependencyInjection" Version="0.0.8" />
+    <PackageReference Include="Kimono" Version="0.0.9-RC03" />
+    <PackageReference Include="Kimono.Extensions.DependencyInjection" Version="0.0.9-RC03" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
   </ItemGroup>
 

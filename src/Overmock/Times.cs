@@ -1,4 +1,4 @@
-﻿using Kimono.Core;
+﻿using Kimono;
 using System.Diagnostics;
 using System.Globalization;
 

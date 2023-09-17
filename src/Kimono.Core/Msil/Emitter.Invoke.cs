@@ -3,7 +3,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Reflection.Emit;
 
-namespace Kimono.Core.Msil
+namespace Kimono.Msil
 {
     /// <summary>
     /// Class Emitter. This class cannot be inherited.

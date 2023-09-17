@@ -1,4 +1,4 @@
-﻿using Kimono.Core;
+﻿using Kimono;
 using Kimono.Tests.Proxies;
 
 namespace Kimono.Tests.Core
@@ -238,7 +238,7 @@ namespace Kimono.Tests.Core
             Assert.IsNotNull(model);
         }
 
-        private sealed class TestInterceptor<T> : Kimono.Core.Interceptor<T> where T : class
+        private sealed class TestInterceptor<T> : Interceptor<T> where T : class
         {
             private readonly Action<IInvocation> _callback;
 

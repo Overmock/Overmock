@@ -1,4 +1,4 @@
-﻿using Kimono.Core;
+﻿using Kimono;
 using Kimono.Tests.Proxies;
 
 namespace Kimono.Tests.Core
@@ -11,7 +11,7 @@ namespace Kimono.Tests.Core
         {
             var factory = ProxyFactory.Create();
 
-            var proxy = factory.CreateInterfaceProxy(new Kimono.Core.Interceptor<IVoidNoArgs>());
+            var proxy = factory.CreateInterfaceProxy(new Interceptor<IVoidNoArgs>());
 
             proxy.VoidNoArgs();
         }

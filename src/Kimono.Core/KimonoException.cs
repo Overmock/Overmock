@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace Kimono.Core
+namespace Kimono
 {
     [Serializable]
     public class KimonoException : Exception

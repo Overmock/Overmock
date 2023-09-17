@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 
-namespace Kimono.Core.Msil
+namespace Kimono.Msil
 {
     /// <summary>
     /// Class PropertGetAndSetEmitter.

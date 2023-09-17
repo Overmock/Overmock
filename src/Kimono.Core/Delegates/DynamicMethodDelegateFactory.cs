@@ -1,5 +1,5 @@
-﻿using Kimono.Core;
-using Kimono.Core.Msil;
+﻿using Kimono;
+using Kimono.Msil;
 using System;
 using System.Linq;
 using System.Reflection;
@@ -16,10 +16,9 @@ namespace Kimono.Delegates
         /// 
         /// </summary>
         /// <typeparam name="TDelegate"></typeparam>
-        /// <param name="method"></param>
-        /// <param name="context"></param>
+        /// <param name="metadata"></param>
         /// <param name="delegateType"></param>
-        /// <param name="parameters"></param>
+        /// <param name="context"></param>
         /// <returns></returns>
         protected override TDelegate CreateActionInvoker<TDelegate>(MethodMetadata metadata, Type delegateType, IInvocation context)
         {
@@ -30,10 +29,9 @@ namespace Kimono.Delegates
         /// 
         /// </summary>
         /// <typeparam name="TDelegate"></typeparam>
-        /// <param name="method"></param>
-        /// <param name="context"></param>
+        /// <param name="metadata"></param>
         /// <param name="delegateType"></param>
-        /// <param name="parameters"></param>
+        /// <param name="context"></param>
         /// <returns></returns>
         protected override TDelegate CreateFuncInvoker<TDelegate>(MethodMetadata metadata, Type delegateType, IInvocation context)
         {

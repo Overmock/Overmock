@@ -1,10 +1,10 @@
-﻿using Kimono.Proxies;
+﻿using Kimono;
 
 namespace Overmocked.Tests.Mocks.Methods
 {
     public class GenericMethodsTestInterface : ProxyBase<IGenericMethodsTestInterface>, IGenericMethodsTestInterface
     {
-        public GenericMethodsTestInterface() : base(new ProxyContext(), null)
+        public GenericMethodsTestInterface() : base(null)
         {
         }
 

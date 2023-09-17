@@ -51,7 +51,7 @@ namespace FakeCompany.Api.Controllers
 		}
 
 		[HttpDelete]
-		public Response<UserStory> Delete(UserStory model)
+		public Response<bool> Delete(UserStory model)
 		{
 			try
 			{

@@ -2,53 +2,53 @@
 
   <PropertyGroup>
     <Version>0.0.9</Version>
-    <TargetFrameworks>net7.0;net6.0;netstandard2.1;</TargetFrameworks>
+    <TargetFrameworks>net7.0;net6.0;netstandard2.1</TargetFrameworks>
     <Nullable>enable</Nullable>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <AnalysisLevel>7.0-recommended</AnalysisLevel>
     <IncludeSymbols>True</IncludeSymbols>
-    <RootNamespace>Overmocked</RootNamespace>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
 
     <!-- Nuget -->
-    <Title>Overmock</Title>
-    <Description>Overmock is a mocking framework that allows for very robust mocking configuration and validation.</Description>
+    <Title>Kimono</Title>
+    <Description>Kimono is a proxy generation framework that allows for creating proxies for objects and intercepting methods and property invocations.</Description>
     <IsPackable>true</IsPackable>
-    <PackageId>Overmock</PackageId>
-    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <PackageId>Kimono</PackageId>
     <IncludeReferencedProjects>true</IncludeReferencedProjects>
     <EnablePackageValidation>true</EnablePackageValidation>
-    <PackageIcon>overmock-package-icon.png</PackageIcon>
     <PackageProjectUrl>https://github.com/Overmock</PackageProjectUrl>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageReadmeFile>\README.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/Overmock/Overmock</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageReleaseNotes>This is a first release and is meant for internal usages until further notice.</PackageReleaseNotes>
+    <PackageReleaseNotes>This is a first release using Expressions to compiled delegates to invoke the proxied method.</PackageReleaseNotes>
     <PackageTags>proxies;dynamic proxy;dynamicproxy;mocking;mock;unit tests;unit testing;unittesting;unittest;mocking framework;overmock;overmocked;</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="..\..\README.md">
-      <Pack>True</Pack>
-      <PackagePath>\</PackagePath>
-    </None>
-    <None Include="..\..\overmock-package-icon.png">
+    <None Include=".\README.md">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
   </ItemGroup>
 
+  <ItemGroup Condition="'$(TargetFramework)'=='netstandard2.1' OR '$(TargetFramework)'=='net6.0'">
+    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
+    <PackageReference Include="System.Runtime.InteropServices" Version="4.3.0" />
+  </ItemGroup>
+
   <ItemGroup>
-	  <ProjectReference Include="..\Kimono.Core\Kimono.csproj" />
+    <PackageReference Include="IFluentInterface" Version="2.1.0" />
+    <!--<PackageReference Include="Lokad.ILPack" Version="0.2.0" />-->
   </ItemGroup>
 
   <ItemGroup Condition="'$(Configuration)'=='Debug'">
     <PackageReference Include="ClrHeapAllocationAnalyzer" Version="3.0.0" />
   </ItemGroup>
-  
+
   <ItemGroup>
-    <PackageReference Include="IFluentInterface" Version="2.1.0" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
   </ItemGroup>
 </Project>
+

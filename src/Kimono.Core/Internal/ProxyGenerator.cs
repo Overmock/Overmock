@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Kimono.Core.Internal
+namespace Kimono.Internal
 {
     /// <summary>
     /// Class ProxyGenerator.

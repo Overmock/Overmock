@@ -1,39 +1,70 @@
-﻿
-using System;
+﻿using System;
 
-namespace Kimono.Core
+namespace Kimono
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    [Serializable]
     public abstract class ProxyBase : IProxy
     {
-        protected ProxyBase() { }
+        private readonly IInterceptor _interceptor;
 
-        protected abstract object? HandleMethodCall(int methodId, Type[] genericParameters, object[] parameters);
-
-        protected abstract void HandleDisposeCall();
-    }
-
-    public abstract class ProxyBase<T> : ProxyBase, IProxy<T>
-    {
-        private readonly IInterceptor<T> _interceptor;
-
-        protected ProxyBase(IInterceptor<T> interceptor)
+        /// <summary>
+        /// 
+        /// </summary>
+        protected ProxyBase(IInterceptor interceptor)
         {
             _interceptor = interceptor;
         }
 
-        public IInterceptor<T> Interceptor => _interceptor;
+        /// <summary>
+        /// 
+        /// </summary>
+        public IInterceptor Interceptor => _interceptor;
 
-        protected sealed override object? HandleMethodCall(int methodId, Type[] genericParameters, object[] parameters)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="methodId"></param>
+        /// <param name="genericParameters"></param>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
+        protected abstract object? HandleMethodCall(int methodId, Type[] genericParameters, object[] parameters);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        protected void HandleDisposeCall()
         {
-            return _interceptor.HandleInvocation(methodId, genericParameters, parameters);
+            (_interceptor as IDisposable)?.Dispose();
+        }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public abstract class ProxyBase<T> : ProxyBase, IProxy<T>
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="interceptor"></param>
+        protected ProxyBase(IInterceptor interceptor) : base(interceptor)
+        {
         }
 
-        protected sealed override void HandleDisposeCall()
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="methodId"></param>
+        /// <param name="genericParameters"></param>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
+        protected sealed override object? HandleMethodCall(int methodId, Type[] genericParameters, object[] parameters)
         {
-            if (_interceptor is IDisposable dispose)
-            {
-                dispose.Dispose();
-            }
+            return Interceptor.HandleInvocation(methodId, genericParameters, parameters);
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using Kimono.Proxies;
+﻿using Kimono;
 
 namespace Kimono.Tests.Proxies
 {
@@ -13,7 +13,7 @@ namespace Kimono.Tests.Proxies
 
     public class InterfaceImpl : ProxyBase<IInterface>, IInterface
     {
-        public InterfaceImpl() : base(new ProxyContext(), null)
+        public InterfaceImpl() : base(null)
         {
         }
 
@@ -37,7 +37,7 @@ namespace Kimono.Tests.Proxies
         {
         }
 
-        protected override void MemberInvoked(IInvocationContext context)
+        protected override void HandleInvocation(IInvocation context)
         {
         }
     }

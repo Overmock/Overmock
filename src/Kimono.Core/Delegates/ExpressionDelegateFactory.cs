@@ -4,7 +4,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-namespace Kimono.Core.Delegates
+namespace Kimono.Delegates
 {
     /// <summary>
     /// Uses Expressions to compile delegates used to invoke members on proxies.
