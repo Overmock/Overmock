@@ -45,14 +45,14 @@ namespace Kimono
         /// <summary>
         /// The kimono context type
         /// </summary>
-        public static Type IInterceptorType<T>() => typeof(IInterceptor<T>);
+        public static Type IInterceptorType => typeof(IInterceptor);
 
         /// <summary>
         /// The proxy type
         /// </summary>
-        public static Type[] ProxyBaseCtorParameterTypes<T>() => new Type[]
+        public static Type[] ProxyBaseCtorParameterTypes => new Type[]
         {
-                IInterceptorType<T>()
+                IInterceptorType
         };
         /// <summary>
         /// The action type taking one object.
@@ -103,13 +103,12 @@ namespace Kimono
         /// </summary>
         public static readonly Type Func6ObjectType = typeof(Func<object?, object?, object?, object?, object?, object?, object?>);
         /// <summary>
-        /// The <see cref="Func{ProxyContext, IInterceptor, T}"/> type
-        /// </summary>
-        public static Type GetFuncProxyContextIInterceptorTType<T>() => typeof(Func<IInterceptor<T>, T>);
-
-        /// <summary>
         /// 
         /// </summary>
-        public static readonly MethodInfo GetTypeFromHandleMethod = Type.GetMethod(nameof(Type.GetTypeFromHandle), BindingFlags.Static | BindingFlags.Public)!;
+        public static readonly MethodInfo GetTypeFromHandle = Type.GetMethod(nameof(Type.GetTypeFromHandle), BindingFlags.Static | BindingFlags.Public)!;
+        /// <summary>
+        /// The <see cref="Func{IInterceptor, T}"/> type
+        /// </summary>
+        public static Type GetFuncProxyContextIInterceptorTType<T>() => typeof(Func<IInterceptor, T>);
     }
 }

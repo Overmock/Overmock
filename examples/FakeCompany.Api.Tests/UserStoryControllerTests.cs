@@ -12,9 +12,9 @@ namespace FakeCompany.Api.Tests
 
         public UserStoryControllerTests()
         {
-            _userStory.Id = 420;
+            _userStory.Id = 52;
             _userStory.Title = "- test -";
-            _userStory.Points = 52;
+            _userStory.Points = 5252;
             _userStory.Description = "- description -";
             _userStories.Add(_userStory);
         }
@@ -40,11 +40,38 @@ namespace FakeCompany.Api.Tests
                 .ToReturn(_userStory);
 
             var controller = new UserStoryController(_serviceMock.Target);
-            var response = controller.Get(420);
+            var response = controller.Get(52);
 
             Assert.NotNull(response);
             Assert.True(response.Success);
-            Assert.Equal(420, response.Result.Id);
+            Assert.Equal(52, response.Result.Id);
+        }
+
+        [Fact]
+        public void PostReturnsTheCorrectUserStory()
+        {
+            Overmock.Mock(_serviceMock, m => m.Save(Its.Any<UserStory>()))
+                .ToReturn(_userStory);
+
+            var controller = new UserStoryController(_serviceMock.Target);
+            var response = controller.Post(_userStory);
+
+            Assert.NotNull(response);
+            Assert.True(response.Success);
+            Assert.Equal(52, response.Result.Id);
+        }
+
+        [Fact]
+        public void DeleteReturnsSuccessWhenDeletingTheUserStoryIsSuccessful()
+        {
+            Overmock.Mock(_serviceMock, m => m.Delete(Its.Any<UserStory>()))
+                .ToReturn(true);
+
+            var controller = new UserStoryController(_serviceMock.Target);
+            var response = controller.Delete(_userStory);
+
+            Assert.NotNull(response);
+            Assert.True(response.Success);
         }
     }
 }

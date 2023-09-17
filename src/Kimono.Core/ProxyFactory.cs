@@ -2,6 +2,7 @@
 using Kimono.Msil;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
@@ -34,14 +35,26 @@ namespace Kimono
             Cache = cache;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        public IDelegateFactory MethodFactory { get; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public IProxyCache Cache { get; }
+
         private static AssemblyBuilder Assembly { get; }
 
         private static ModuleBuilder Module { get; }
 
-        public IDelegateFactory MethodFactory { get; }
-
-        public IProxyCache Cache { get; }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="factory"></param>
+        /// <param name="cache"></param>
+        /// <returns></returns>
         public static IProxyFactory Create(IDelegateFactory? factory = null, IProxyCache? cache = null)
         {
             return new ProxyFactory(
@@ -50,6 +63,12 @@ namespace Kimono
             );
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="interceptor"></param>
+        /// <returns></returns>
         public T CreateInterfaceProxy<T>(IInterceptor<T> interceptor) where T : class
         {
             const BindingFlags bindingFlags = BindingFlags.NonPublic | BindingFlags.Instance;
@@ -60,20 +79,19 @@ namespace Kimono
             if (generator is null)
             {
                 var proxyBaseType = Types.ProxyBase.MakeGenericType(targetType);
-                var context = new ProxyContext();
                 var methodId = MethodId.Create();
                 var typeBuilder = Module.DefineType(
-                    string.Format(Names.TypeName, targetType.Name),
+                    string.Format(CultureInfo.CurrentCulture, Names.TypeName, targetType.Name),
                     TypeAttributes.Public | TypeAttributes.Sealed,
                     proxyBaseType);
-                var ctorParameters = Types.ProxyBaseCtorParameterTypes<T>();
+                var ctorParameters = Types.ProxyBaseCtorParameterTypes;
                 var baseConstructor = proxyBaseType.GetConstructor(
                     bindingFlags, null,
                     ctorParameters,
                     null
                 )!;
 
-                context.SetMethods(CreateInterfaceProxy(
+                var context = ProxyContext.Create(CreateInterfaceProxy(
                     interceptor, targetType, methodId, typeBuilder, ctorParameters, baseConstructor
                 ));
 
@@ -167,11 +185,6 @@ namespace Kimono
             return new List<MethodInfo>(Types.Object.GetMethods()).FindAll(method => method.IsVirtual);
         }
 
-        /// <summary>
-        /// Defines the generic parameters.
-        /// </summary>
-        /// <param name="methodInfo">The method information.</param>
-        /// <param name="methodBuilder">The method builder.</param>
         private static void DefineGenericParameters(MethodMetadata metadata, MethodBuilder methodBuilder)
         {
             var genericParameters = metadata.GenericParameters;
@@ -200,13 +213,12 @@ namespace Kimono
 
         private void CreateMethods(List<MethodMetadata> metadatas, MethodId methodId, TypeBuilder typeBuilder, Type targetType, List<MethodInfo> methods, bool areProperties = false, bool buildInvoker = false)
         {
-            if (Types.Disposable.IsAssignableFrom(targetType))
+            if (Types.Disposable.IsAssignableFrom(targetType) && methods.Remove(Methods.Dispose))
             {
-                methods.Remove(Methods.Dispose);
-
                 var disposeMethod = Methods.Dispose;
                 var methodBuilder = typeBuilder.DefineMethod(disposeMethod.Name, disposeMethod.Attributes ^ MethodAttributes.Abstract);
-                MethodFactory.EmitProxyDisposeMethod(Emitter.For(methodBuilder.GetILGenerator()), Methods.Dispose);
+
+                MethodFactory.EmitProxyDisposeMethod(Emitter.For(methodBuilder.GetILGenerator()));
             }
 
             methods.ForEach(methodInfo => {

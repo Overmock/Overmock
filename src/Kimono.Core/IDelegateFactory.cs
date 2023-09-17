@@ -22,8 +22,7 @@ namespace Kimono
         /// <summary>
         /// Generates the delegate invoker.
         /// </summary>
-        /// <param name="method">The method.</param>
-        /// <param name="parameters"></param>
+        /// <param name="metadata"></param>
         /// <returns>IMethodDelegateInvoker.</returns>
         /// <exception cref="NotImplementedException"></exception>
         public IDelegateInvoker CreateDelegateInvoker(MethodMetadata metadata);
@@ -31,27 +30,46 @@ namespace Kimono
         /// <summary>
         /// Creates the action invoker.
         /// </summary>
-        /// <param name="method">The method.</param>
-        /// <param name="parameters">The parameters.</param>
+        /// <param name="metadata"></param>
         /// <returns>System.Nullable&lt;IDelegateInvoker&gt;.</returns>
         public IDelegateInvoker CreateActionInvoker(MethodMetadata metadata);
 
         /// <summary>
         /// Creates the function invoker.
         /// </summary>
-        /// <param name="method">The method.</param>
-        /// <param name="parameters">The parameters.</param>
+        /// <param name="metadata"></param>
         /// <returns>System.Nullable&lt;IDelegateInvoker&gt;.</returns>
         public IDelegateInvoker CreateFunctionInvoker(MethodMetadata metadata);
-        
-        //public DynamicMethod CreateDynamicMethod(MethodMetadata metadata);
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="emitter"></param>
+        /// <param name="methodId"></param>
+        /// <param name="metadata"></param>
         void EmitProxyMethod(IEmitter emitter, MethodId methodId, MethodMetadata metadata);
 
-        void EmitProxyDisposeMethod(IEmitter emitter, MethodInfo handleDisposeMethod);
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="emitter"></param>
+        /// <param name="baseConstructor"></param>
         void EmitProxyConstructor(IEmitter emitter, ConstructorInfo baseConstructor);
 
-        Func<IInterceptor<T>, T> CreateProxyConstructorDelegate<T>(Type proxyType, Type targetType, ConstructorInfo proxyConstructor) where T : class;
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="emitter"></param>
+        void EmitProxyDisposeMethod(IEmitter emitter);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="proxyType"></param>
+        /// <param name="targetType"></param>
+        /// <param name="proxyConstructor"></param>
+        /// <returns></returns>
+        Func<IInterceptor, T> CreateProxyConstructorDelegate<T>(Type proxyType, Type targetType, ConstructorInfo proxyConstructor) where T : class;
     }
 }
