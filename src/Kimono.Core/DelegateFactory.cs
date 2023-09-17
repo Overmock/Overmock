@@ -6,19 +6,35 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Threading;
+using System.Globalization;
+using Microsoft.VisualBasic;
 
 namespace Kimono
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class DelegateFactory : IDelegateFactory
     {
         private static IDelegateFactory _current = new DynamicMethodDelegateFactory();
 
+        /// <summary>
+        /// 
+        /// </summary>
         public DelegateFactory()
         {
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public static IDelegateFactory Current => _current;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="factory"></param>
+        /// <returns></returns>
         public static IDelegateFactory Use(IDelegateFactory factory)
         {
             return Interlocked.Exchange(ref _current, factory);
@@ -44,8 +60,7 @@ namespace Kimono
         /// <summary>
         /// Generates the delegate invoker.
         /// </summary>
-        /// <param name="method">The method.</param>
-        /// <param name="parameters"></param>
+        /// <param name="metadata">The method metadata.</param>
         /// <returns>IMethodDelegateInvoker.</returns>
         /// <exception cref="NotImplementedException"></exception>
         public IDelegateInvoker CreateDelegateInvoker(MethodMetadata metadata)
@@ -61,9 +76,8 @@ namespace Kimono
         /// <summary>
         /// Creates the action invoker.
         /// </summary>
-        /// <param name="method">The method.</param>
-        /// <param name="parameters">The parameters.</param>
-        /// <returns>System.Nullable&lt;IDelegateInvoker&gt;.</returns>
+        /// <param name="metadata">The method metadata.</param>
+        /// <returns></returns>
         public IDelegateInvoker CreateActionInvoker(MethodMetadata metadata)
         {
             var parameters = metadata.Parameters;
@@ -116,9 +130,8 @@ namespace Kimono
         /// <summary>
         /// Creates the function invoker.
         /// </summary>
-        /// <param name="method">The method.</param>
-        /// <param name="parameters">The parameters.</param>
-        /// <returns>System.Nullable&lt;IDelegateInvoker&gt;.</returns>
+        /// <param name="metadata">The method metadata.</param>
+        /// <returns></returns>
         public IDelegateInvoker CreateFunctionInvoker(MethodMetadata metadata)
         {
             var parameters = metadata.Parameters;
@@ -168,6 +181,12 @@ namespace Kimono
             return new MethodInfoDelegateInvoker(metadata.TargetMethod);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="emitter"></param>
+        /// <param name="methodId"></param>
+        /// <param name="metadata"></param>
         public void EmitProxyMethod(IEmitter emitter, MethodId methodId, MethodMetadata metadata)
         {
             var returnType = metadata.ReturnType;
@@ -245,11 +264,23 @@ namespace Kimono
             emitter.Emit(OpCodes.Ret);
         }
 
-        public void EmitProxyDisposeMethod(IEmitter emitter, MethodInfo handleDisposeMethod)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="emitter"></param>
+        /// <param name="targetType"></param>
+        public void EmitProxyDisposeMethod(IEmitter emitter)
         {
-            throw new NotImplementedException();
+            emitter.Nop().Load(0)
+                .Invoke(Methods.HandleDisposeCall)
+                .Nop().Ret();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="emitter"></param>
+        /// <param name="baseConstructor"></param>
         public void EmitProxyConstructor(IEmitter emitter, ConstructorInfo baseConstructor)
         {
             emitter.Load(0).Load(1)
@@ -257,22 +288,29 @@ namespace Kimono
                 .Ret();
         }
 
-        public Func<IInterceptor<T>, T> CreateProxyConstructorDelegate<T>(Type proxyType, Type targetType, ConstructorInfo proxyConstructor) where T : class
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="proxyType"></param>
+        /// <param name="targetType"></param>
+        /// <param name="proxyConstructor"></param>
+        /// <returns></returns>
+        public Func<IInterceptor, T> CreateProxyConstructorDelegate<T>(Type proxyType, Type targetType, ConstructorInfo proxyConstructor) where T : class
         {
             var dynamicMethod = new DynamicMethod(
-                string.Format(Names.DynamicMethodName, proxyType.Name),
+                string.Format(CultureInfo.CurrentCulture, Names.DynamicMethodName, proxyType.Name),
                 targetType,
-                Types.ProxyBaseCtorParameterTypes<T>(),
+                Types.ProxyBaseCtorParameterTypes,
                 proxyType
             );
 
             var iLGenerator = dynamicMethod.GetILGenerator();
             iLGenerator.Emit(OpCodes.Ldarg_0);
-            //iLGenerator.Emit(OpCodes.Ldarg_1);
             iLGenerator.Emit(OpCodes.Newobj, proxyConstructor);
             iLGenerator.Emit(OpCodes.Ret);
 
-            return (Func<IInterceptor<T>, T>)dynamicMethod.CreateDelegate(
+            return (Func<IInterceptor, T>)dynamicMethod.CreateDelegate(
                 Types.GetFuncProxyContextIInterceptorTType<T>()    
             );
         }
@@ -280,7 +318,7 @@ namespace Kimono
         /// <summary>
         /// Prepares the current method with the provided generic parameters.
         /// </summary>
-        /// <param name="methodInfo"></param>
+        /// <param name="metadata"></param>
         /// <param name="genericParameters"></param>
         /// <returns></returns>
         protected static MethodInfo PrepareGenericMethod(MethodMetadata metadata, Type[] genericParameters)
@@ -298,10 +336,9 @@ namespace Kimono
         /// Generates the method invoker.
         /// </summary>
         /// <typeparam name="TDelegate">The type of the t delegate.</typeparam>
-        /// <param name="method">The method.</param>
-        /// <param name="context"></param>
+        /// <param name="metadata">The method.</param>
         /// <param name="delegateType">Type of the delegate.</param>
-        /// <param name="parameters">The parameters.</param>
+        /// <param name="invocation">The invocation.</param>
         /// <returns>TDelegate.</returns>
         protected virtual TDelegate CreateActionInvoker<TDelegate>(MethodMetadata metadata, Type delegateType, IInvocation invocation)
             where TDelegate : Delegate
@@ -313,10 +350,9 @@ namespace Kimono
         /// Generates the method invoker.
         /// </summary>
         /// <typeparam name="TDelegate">The type of the t delegate.</typeparam>
-        /// <param name="method">The method.</param>
-        /// <param name="context"></param>
+        /// <param name="metadata">The method metadata.</param>
         /// <param name="delegateType">Type of the delegate.</param>
-        /// <param name="parameters">The parameters.</param>
+        /// <param name="invocation">The invocation.</param>
         /// <returns>TDelegate.</returns>
         protected virtual TDelegate CreateFuncInvoker<TDelegate>(MethodMetadata metadata, Type delegateType, IInvocation invocation)
             where TDelegate : Delegate
@@ -324,6 +360,22 @@ namespace Kimono
             return (TDelegate)metadata.TargetMethod.CreateDelegate(typeof(TDelegate));
         }
 
+        ///// <summary>
+        ///// 
+        ///// </summary>
+        ///// <param name="metadata"></param>
+        ///// <returns></returns>
+        //public DynamicMethod CreateDynamicMethod(MethodMetadata metadata)
+        //{
+        //    return new DynamicMethod(
+        //        Names.DynamicMethodName,
+        //        Types.Object,
+        //        metadata.Parameters.Select(p => Types.Object)
+        //            .Concat(Types.SingleObjectArray)
+        //            .ToArray()
+        //    );
+        //}
+        
         private static LocalBuilder[] EmitGenericParameters(IEmitter emitter, MethodMetadata metadata)
         {
             var method = metadata.TargetMethod;
@@ -400,19 +452,14 @@ namespace Kimono
             emitter.IlGenerator.Emit(OpCodes.Ldsfld, Fields.EmptyTypes);
         }
 
-        public DynamicMethod CreateDynamicMethod(MethodMetadata metadata)
+        /// <summary>
+        /// 
+        /// </summary>
+        internal protected static class Names
         {
-            return new DynamicMethod(
-                Names.DynamicMethodName,
-                Types.Object,
-                metadata.Parameters.Select(p => Types.Object)
-                    .Concat(Types.SingleObjectArray)
-                    .ToArray()
-            );
-        }
-
-        protected static class Names
-        {
+            /// <summary>
+            /// 
+            /// </summary>
             public const string DynamicMethodName = "KimonoDM_{0}";
         }
 
@@ -424,8 +471,14 @@ namespace Kimono
             public static readonly FieldInfo EmptyTypes = typeof(Type).GetField(nameof(Type.EmptyTypes), BindingFlags.Static | BindingFlags.Public)!;
         }
 
-        protected static class Methods
+        /// <summary>
+        /// 
+        /// </summary>
+        internal protected static class Methods
         {
+            /// <summary>
+            /// 
+            /// </summary>
             public static readonly MethodInfo GetTypeFromHandle =
                 Types.Type.GetMethod(nameof(Type.GetTypeFromHandle), BindingFlags.Static | BindingFlags.Public)!;
 
@@ -440,14 +493,14 @@ namespace Kimono
             /// Gets the proxy type handle method call method.
             /// </summary>
             /// <returns>MethodInfo.</returns>
-            public static MethodInfo HandleMethodCall =
+            public static readonly MethodInfo HandleMethodCall =
                 Types.ProxyBaseNonGeneric.GetMethod("HandleMethodCall", BindingFlags.Instance | BindingFlags.NonPublic)!;
 
             /// <summary>
             /// Gets the proxy type handle method call method.
             /// </summary>
             /// <returns>MethodInfo.</returns>
-            public static MethodInfo HandleDisposeCall =
+            public static readonly MethodInfo HandleDisposeCall =
                 Types.ProxyBaseNonGeneric.GetMethod("HandleDisposeCall", BindingFlags.Instance | BindingFlags.NonPublic)!;
         }
     }

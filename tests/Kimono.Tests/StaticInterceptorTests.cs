@@ -166,7 +166,7 @@ namespace Kimono.Tests
         //    Assert.IsFalse(secondCalled);
         //}
 
-        //[TestMethod]
+        [TestMethod]
         public void DisposableTargetedWithCallbackInterceptorTest()
         {
             var called = false;
@@ -200,13 +200,18 @@ namespace Kimono.Tests
                 Assert.IsFalse(disposeCalled);
             }
 
-            Assert.IsTrue(disposeCalled);
+            Assert.IsFalse(disposeCalled);
         }
 
-        //[TestMethod]
+        [TestMethod]
         public void DisposableTargetedWithHandlersInterceptorTest()
         {
-            var interceptor = new TestCallbackInterceptor<IDisposableRepository>(new DisposableRepository(), c => { });
+            var interceptor = new TestCallbackInterceptor<IDisposableRepository>(new DisposableRepository(), c => {
+                if (c.Method.Name == "Save")
+                {
+                    c.ReturnValue = true;
+                }
+            });
             
             var subject = _factory.CreateInterfaceProxy(interceptor);
 

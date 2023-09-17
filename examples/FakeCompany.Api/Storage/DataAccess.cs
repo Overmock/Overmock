@@ -40,7 +40,7 @@ namespace FakeCompany.Api.Storage
         IEnumerable<UserStory> GetAll();
         UserStory Get(int id);
         UserStory Save(UserStory model);
-        UserStory Delete(UserStory model);
+        bool Delete(UserStory model);
 		IEnumerable<UserStory> SaveAll(IEnumerable<UserStory> value);
 	}
     public class UserStoryService : IUserStoryService
@@ -48,7 +48,7 @@ namespace FakeCompany.Api.Storage
         private readonly EntityCollection<UserStory> _collection;
         public UserStoryService(EntityCollection<UserStory> collection) => _collection = collection;
 
-        public UserStory Delete(UserStory model)
+        public bool Delete(UserStory model)
         {
             return _collection.Delete(model);
         }

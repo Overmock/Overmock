@@ -17,7 +17,7 @@
 
     internal sealed class DisposableTestCallbackInterceptor<T> : TestCallbackInterceptor<T>, IDisposable where T : class, IDisposable
     {
-        public DisposableTestCallbackInterceptor(T target, Action<IInvocation> callback) : base(target)
+        public DisposableTestCallbackInterceptor(T target, Action<IInvocation> callback) : base(target, callback)
         {
         }
 

@@ -5,7 +5,7 @@ namespace Kimono.Tests
     [TestClass]
     public class InterfaceProxyTests
     {
-        private IProxyFactory _factory = ProxyFactory.Create();
+        private readonly IProxyFactory _factory = ProxyFactory.Create();
 
         public InterfaceProxyTests()
         {
