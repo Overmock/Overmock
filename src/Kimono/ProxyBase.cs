@@ -26,34 +26,10 @@ namespace Kimono
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="methodId"></param>
-        /// <param name="genericParameters"></param>
-        /// <param name="parameters"></param>
-        /// <returns></returns>
-        protected abstract object? HandleMethodCall(int methodId, Type[] genericParameters, object[] parameters);
-
-        /// <summary>
-        /// 
-        /// </summary>
         protected void HandleDisposeCall()
         {
             (_interceptor as IDisposable)?.Dispose();
         }
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    public abstract class ProxyBase<T> : ProxyBase, IProxy<T>
-    {
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="interceptor"></param>
-        protected ProxyBase(IInterceptor interceptor) : base(interceptor)
-        {
-        }
 
         /// <summary>
         /// 
@@ -62,7 +38,7 @@ namespace Kimono
         /// <param name="genericParameters"></param>
         /// <param name="parameters"></param>
         /// <returns></returns>
-        protected sealed override object? HandleMethodCall(int methodId, Type[] genericParameters, object[] parameters)
+        protected object? HandleMethodCall(int methodId, Type[] genericParameters, object[] parameters)
         {
             return Interceptor.HandleInvocation(methodId, genericParameters, parameters);
         }

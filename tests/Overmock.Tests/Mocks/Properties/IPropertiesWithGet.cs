@@ -13,7 +13,7 @@ namespace Overmocked.Tests.Mocks.Properties
         public List<Model> ListOfModels { get; }
     }
 
-    public class IPropertiesWithGetImpl : ProxyBase<IPropertiesWithGet>, IPropertiesWithGet
+    public class IPropertiesWithGetImpl : ProxyBase, IPropertiesWithGet
     {
         public IPropertiesWithGetImpl() : base(null)
         {
