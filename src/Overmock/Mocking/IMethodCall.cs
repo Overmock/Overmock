@@ -23,6 +23,11 @@ namespace Overmocked.Mocking
         MethodInfo BaseMethod { get; }
 
         /// <summary>
+        /// Represents the <see cref="IMatch"/>s associated with this method call.
+        /// </summary>
+        IMatch[] Matches { get; }
+
+        /// <summary>
         /// Gets the method.
         /// </summary>
         /// <value>The method.</value>

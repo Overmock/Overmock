@@ -1,8 +1,12 @@
 ﻿using Kimono;
+using Overmocked.Expressions;
 using Overmocked.Mocking;
+using Overmocked.Mocking.Internal;
+using System;
 using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading;
 
 namespace Overmocked
@@ -13,6 +17,7 @@ namespace Overmocked
     public static partial class Overmock
     {
         private static readonly ConcurrentQueue<IOvermock> _overmocks = new ConcurrentQueue<IOvermock>();
+        private static readonly Func<IMatchExpressionVisitor> _expressionVisitorFactory = () => new MatchExpressionVisitor();
         private static IInvocationHandler _invocationHandler;
 
         /// <summary>
@@ -89,14 +94,19 @@ namespace Overmocked
             return _overmocks.FirstOrDefault(o => o == target);
         }
 
-        internal static IMethodCall<T> RegisterMethod<T>(IOvermockable overmock, IMethodCall<T> method) where T : class
+        private static TMethodCall RegisterMethod<TMethodCall>(IOvermockable overmock, TMethodCall method) where TMethodCall : IMethodCall
         {
             return overmock.AddMethod(method);
         }
 
-        internal static IMethodCall<T, TReturn> RegisterMethod<T, TReturn>(IOvermockable overmock, IMethodCall<T, TReturn> method) where T : class
+        internal static IMethodCall<T> RegisterMethod<T>(IOvermockable overmock, MethodCallExpression method) where T : class
         {
-            return overmock.AddMethod(method);
+            return RegisterMethod(overmock, new MethodCall<T>(method, _expressionVisitorFactory().VisitMethod(method)));
+        }
+
+        internal static IMethodCall<T, TReturn> RegisterMethod<T, TReturn>(IOvermockable overmock, MethodCallExpression method) where T : class
+        {
+            return RegisterMethod(overmock, new MethodCall<T, TReturn>(method, _expressionVisitorFactory().VisitMethod(method)));
         }
 
         internal static IPropertyCall<T, TProperty> RegisterProperty<T, TProperty>(IOvermockable overmock, IPropertyCall<T, TProperty> property) where T : class
