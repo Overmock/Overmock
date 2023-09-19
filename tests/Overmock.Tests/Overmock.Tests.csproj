@@ -20,7 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Kimono.Core\Kimono.csproj" />
+    <ProjectReference Include="..\..\src\Kimono\Kimono.csproj" />
     <ProjectReference Include="..\..\src\Overmock\Overmock.csproj" />
   </ItemGroup>
 

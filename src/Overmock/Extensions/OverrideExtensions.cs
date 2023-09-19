@@ -23,21 +23,9 @@ namespace Overmocked
 
             if (expression.Body is MethodCallExpression method)
             {
-                var methodCall = global::Overmocked.Overmock.RegisterMethod(
-                    overmockable,
-                    new MethodCall<T>(method)
-                );
+                var methodCall = Overmock.RegisterMethod<T>(overmockable, method);
                 return new SetupOvermock<T>(overmock, methodCall);
             }
-
-            //if (expression.Body is MemberExpression property)
-            //{
-            //    var propertyCall = Over.RegisterProperty(
-            //        overmock,
-            //        new PropertyCall<T>(property)
-            //    );
-            //    return new SetupOvermock<T, TResult>(overmock, propertyCall);
-            //}
 
             throw new ArgumentException("Parameter must be a method call expression.");
         }
@@ -57,16 +45,13 @@ namespace Overmocked
 
             if (expression.Body is MethodCallExpression method)
             {
-                var methodCall = global::Overmocked.Overmock.RegisterMethod(
-                    overmockable,
-                    new MethodCall<T, TResult>(method)
-                );
+                var methodCall = Overmock.RegisterMethod<T, TResult>(overmockable, method);
                 return new SetupOvermock<T, TResult>(overmock, methodCall);
             }
 
             if (expression.Body is MemberExpression property)
             {
-                var propertyCall = global::Overmocked.Overmock.RegisterProperty(
+                var propertyCall = Overmock.RegisterProperty(
                     overmockable,
                     new PropertyCall<T, TResult>(property)
                 );
@@ -91,16 +76,13 @@ namespace Overmocked
 
             if (expression.Body is MethodCallExpression method)
             {
-                var methodCall = global::Overmocked.Overmock.RegisterMethod(
-                    overmockable,
-                    new MethodCall<T, TResult>(method)
-                );
+                var methodCall = Overmock.RegisterMethod<T, TResult>(overmockable, method);
                 return new SetupOvermockWithMockReturns<T, TResult>(overmock, methodCall);
             }
 
             if (expression.Body is MemberExpression property)
             {
-                var propertyCall = global::Overmocked.Overmock.RegisterProperty(
+                var propertyCall = Overmock.RegisterProperty(
                     overmockable,
                     new PropertyCall<T, TResult>(property)
                 );

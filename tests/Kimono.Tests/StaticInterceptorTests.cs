@@ -37,7 +37,7 @@ namespace Kimono.Tests
 
             var subject = _factory.CreateInterfaceProxy(interceptor);
 
-            var returnedTrue = subject.Save(new Model { Id = 69 });
+            var returnedTrue = subject.Save(new Model { Id = 52 });
 
             Assert.IsTrue(returnedTrue);
         }
@@ -111,7 +111,7 @@ namespace Kimono.Tests
         //{
         //    var interceptor = Intercept.WithHandlers<IRepository, Repository>(new Repository(), new TestHandler());
 
-        //    var returnedTrue = interceptor.Save(new Model { Id = 69 });
+        //    var returnedTrue = interceptor.Save(new Model { Id = 52 });
 
         //    Assert.IsTrue(returnedTrue);
         //}
@@ -136,7 +136,7 @@ namespace Kimono.Tests
         //        });
         //    });
 
-        //    var returnedTrue = interceptor.Save(new Model { Id = 69 });
+        //    var returnedTrue = interceptor.Save(new Model { Id = 52 });
 
         //    Assert.IsTrue(returnedTrue);
         //    Assert.IsTrue(firstCalled);
@@ -159,7 +159,7 @@ namespace Kimono.Tests
         //        });
         //    });
 
-        //    var returnedTrue = interceptor.Save(new Model { Id = 69 });
+        //    var returnedTrue = interceptor.Save(new Model { Id = 52 });
 
         //    Assert.IsFalse(returnedTrue);
         //    Assert.IsTrue(firstCalled);

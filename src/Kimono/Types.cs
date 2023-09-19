@@ -38,11 +38,6 @@ namespace Kimono
         public static readonly Type ProxyBaseNonGeneric = typeof(ProxyBase);
 
         /// <summary>
-        /// The Generic <see cref="ProxyBase{}"/>
-        /// </summary>
-        public static readonly Type ProxyBase = typeof(ProxyBase<>);
-
-        /// <summary>
         /// The kimono context type
         /// </summary>
         public static Type IInterceptorType => typeof(IInterceptor);

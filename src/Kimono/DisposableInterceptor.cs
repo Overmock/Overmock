@@ -1,39 +1,56 @@
-﻿using Kimono.Interceptors.Internal;
-using Kimono.Proxies;
-using System;
+﻿using System;
 
 namespace Kimono
 {
     /// <summary>
-    /// Class DisposableInterceptor.
-    /// Implements the <see cref="Interceptor{T}" />
-    /// Implements the <see cref="IDisposableInterceptor" />
+    /// 
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    /// <seealso cref="Interceptor{T}" />
-    /// <seealso cref="IDisposableInterceptor" />
-    public abstract class DisposableInterceptor<T> : Interceptor<T>, IDisposableInterceptor where T : class, IDisposable
+    public abstract class DisposableInterceptor<T> : Interceptor<T>, IDisposableInterceptor<T> where T : class, IDisposable
     {
+        private bool _disposed;
+
         /// <summary>
-        /// Initializes a new instance of the <see cref="DisposableInterceptor{T}" /> class.
+        /// 
         /// </summary>
-        /// <param name="target">The target.</param>
-        /// <param name="disposer">The disposer.</param>
-        protected DisposableInterceptor(T target, ITargetDisposer<T>? disposer = null) : base(target)
+        public DisposableInterceptor(T target) : base(target)
         {
-            Disposer = disposer ?? new TargetDisposer<T>(target);
         }
 
         /// <summary>
-        /// Gets the disposer responsible for disposing of the <see cref="Interceptor{T}.Target"/>.
+        /// 
         /// </summary>
-        /// <value>The disposer responsible for disposing of the <see cref="Interceptor{T}.Target"/>.</value>
-        protected ITargetDisposer<T> Disposer { get; }
+        ~DisposableInterceptor()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: false);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="disposing"></param>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!_disposed)
+            {
+                Disposing(disposing);
+
+                _disposed = true;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="disposing"></param>
+        protected abstract void Disposing(bool disposing);
 
         /// <inheritdoc />
         public void Dispose()
         {
-            Disposer.Dispose(true);
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: true);
             GC.SuppressFinalize(this);
         }
     }

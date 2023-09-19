@@ -2,7 +2,7 @@
 
 namespace Overmocked.Tests.Mocks.Methods
 {
-    public class GenericMethodsTestInterface : ProxyBase<IGenericMethodsTestInterface>, IGenericMethodsTestInterface
+    public class GenericMethodsTestInterface : ProxyBase, IGenericMethodsTestInterface
     {
         public GenericMethodsTestInterface() : base(null)
         {

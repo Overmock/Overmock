@@ -23,8 +23,18 @@ namespace Overmocked.Tests
         {
             var overmock = Overmock.Mock<IMethodsWith2Parameters>();
 
-            overmock.Mock(p => p.BoolMethodWithStringAndModel(Its.Any<string>(), Its.Any<Model>()))
-                .ToCall(c => c.Get<string>("name"));
+            overmock.Mock(p => p.BoolMethodWithStringAndModel(Its.Any<string>(), Its.This(_model2)))
+                .ToCall(c => c.Get<string>("name") == null);
+            overmock.Target.BoolMethodWithStringAndModel("hello world", _model2);
+        }
+
+        [TestMethod]
+        public void MethodWith2ParamsWith1Any2Model()
+        {
+            var overmock = Overmock.Mock<IMethodsWith2Parameters>();
+
+            overmock.Mock(p => p.BoolMethodWithStringAndModel(Its.This("hello world"), new Model()))
+                .ToCall(c => c.Get<string>("name") == null);
             overmock.Target.BoolMethodWithStringAndModel("hello world", _model2);
         }
     }

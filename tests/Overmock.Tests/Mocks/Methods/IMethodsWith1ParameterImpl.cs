@@ -3,7 +3,7 @@ using Kimono;
 
 namespace Overmocked.Tests.Mocks.Methods
 {
-    public class IMethodsWith1ParameterImpl : ProxyBase<IMethodsWith1Parameter>, IMethodsWith1Parameter
+    public class IMethodsWith1ParameterImpl : ProxyBase, IMethodsWith1Parameter
     {
         public IMethodsWith1ParameterImpl(IInterceptor<IMethodsWith1Parameter> interceptor) : base(interceptor)
         {
