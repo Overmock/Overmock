@@ -32,8 +32,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kimono.Tests", "tests\Kimon
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kimono.Extensions.DependencyInjection", "src\Kimono.Extensions.DependencyInjection\Kimono.Extensions.DependencyInjection.csproj", "{E9021865-88B2-4094-9C7C-7DE40F61FB0A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kimono.Core", "src\Kimono.Core\Kimono.Core.csproj", "{25A38873-1D08-4427-851D-DE51FAEA2DA8}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

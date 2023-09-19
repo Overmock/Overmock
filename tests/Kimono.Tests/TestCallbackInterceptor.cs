@@ -15,15 +15,26 @@
         }
     }
 
-    internal sealed class DisposableTestCallbackInterceptor<T> : TestCallbackInterceptor<T>, IDisposable where T : class, IDisposable
+    internal sealed class DisposableTestCallbackInterceptor<T> : DisposableInterceptor<T>, IDisposable where T : class, IDisposable
     {
-        public DisposableTestCallbackInterceptor(T target, Action<IInvocation> callback) : base(target, callback)
+        private readonly Action<IInvocation> _callback;
+
+        public DisposableTestCallbackInterceptor(T target, Action<IInvocation> callback) : base(target)
         {
+            _callback = callback;
         }
 
-        public void Dispose()
+        protected override void HandleInvocation(IInvocation invocation)
         {
-            Target?.Dispose();
+            _callback.Invoke(invocation);
+        }
+
+        protected override void Disposing(bool disposing)
+        {
+            if (disposing)
+            {
+                Target?.Dispose();
+            }
         }
     }
 }

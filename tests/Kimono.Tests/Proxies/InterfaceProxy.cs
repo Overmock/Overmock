@@ -11,7 +11,7 @@ namespace Kimono.Tests.Proxies
         string MethodWithReturn(string name, object param);
     }
 
-    public class InterfaceImpl : ProxyBase<IInterface>, IInterface
+    public class InterfaceImpl : ProxyBase, IInterface
     {
         public InterfaceImpl() : base(null)
         {

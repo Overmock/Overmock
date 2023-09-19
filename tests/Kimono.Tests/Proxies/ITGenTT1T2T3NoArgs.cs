@@ -7,7 +7,7 @@ namespace Kimono.Tests.Proxies
         T TGArgsTArgsInt<T, T1, T2, T3>(int id);
     }
 
-    public class ITGenTT1T2T3NoArgsClass : ProxyBase<ITGenTT1T2T3NoArgs>, ITGenTT1T2T3NoArgs
+    public class ITGenTT1T2T3NoArgsClass : ProxyBase, ITGenTT1T2T3NoArgs
     {
         public ITGenTT1T2T3NoArgsClass(IInterceptor<ITGenTT1T2T3NoArgs> interceptor) : base(interceptor)
         {

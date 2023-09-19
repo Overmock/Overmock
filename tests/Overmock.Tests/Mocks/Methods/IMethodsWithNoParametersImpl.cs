@@ -2,7 +2,7 @@
 
 namespace Overmocked.Tests.Mocks.Methods
 {
-    public class IMethodsWithNoParametersImpl : ProxyBase<IMethodsWithNoParameters>, IMethodsWithNoParameters
+    public class IMethodsWithNoParametersImpl : ProxyBase, IMethodsWithNoParameters
     {
         public string Name { get; set; }
 

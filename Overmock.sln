@@ -39,7 +39,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Overmock.Benchmarks", "test
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kimono.Extensions.DependencyInjection", "src\Kimono.Extensions.DependencyInjection\Kimono.Extensions.DependencyInjection.csproj", "{E9021865-88B2-4094-9C7C-7DE40F61FB0A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kimono", "src\Kimono.Core\Kimono.csproj", "{C98608B3-9A26-4FE7-A324-EEC89B28A8DC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kimono", "src\Kimono\Kimono.csproj", "{C98608B3-9A26-4FE7-A324-EEC89B28A8DC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -78,7 +78,7 @@ namespace Kimono
 
             if (generator is null)
             {
-                var proxyBaseType = Types.ProxyBase.MakeGenericType(targetType);
+                var proxyBaseType = Types.ProxyBaseNonGeneric;
                 var methodId = MethodId.Create();
                 var typeBuilder = Module.DefineType(
                     string.Format(CultureInfo.CurrentCulture, Names.TypeName, targetType.Name),

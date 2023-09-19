@@ -1,4 +1,5 @@
-﻿using System.Linq.Expressions;
+﻿using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Reflection;
 
 namespace Overmocked.Mocking.Internal
@@ -17,14 +18,17 @@ namespace Overmocked.Mocking.Internal
         /// The expression
         /// </summary>
         private readonly MethodCallExpression _expression;
+        private readonly IMatch[] _parameters;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MethodCall{T}"/> class.
         /// </summary>
         /// <param name="expression">The expression.</param>
-        internal MethodCall(MethodCallExpression expression) : base(expression.Method.Name)
+        /// <param name="parameters"></param>
+        internal MethodCall(MethodCallExpression expression, params IMatch[] parameters) : base(expression.Method.Name)
         {
             _expression = expression;
+            _parameters = parameters;
             BaseMethod = _expression.Method.IsGenericMethod
                 ? _expression.Method.GetGenericMethodDefinition()
                 : _expression.Method;
@@ -41,6 +45,9 @@ namespace Overmocked.Mocking.Internal
         /// </summary>
         /// <value>The method.</value>
         public MethodInfo Method => _expression.Method;
+
+        /// <inheritdoc />
+        public IMatch[] Matches => _parameters;
 
         /// <summary>
         /// Gets the expression.
@@ -79,14 +86,17 @@ namespace Overmocked.Mocking.Internal
         /// The expression
         /// </summary>
         private readonly MethodCallExpression _expression;
+        private readonly IMatch[] _parameters;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MethodCall{T, TReturn}"/> class.
         /// </summary>
         /// <param name="expression">The expression.</param>
-        internal MethodCall(MethodCallExpression expression) : base(expression.Method.Name)
+        /// <param name="parameters"></param>
+        internal MethodCall(MethodCallExpression expression, params IMatch[] parameters) : base(expression.Method.Name)
         {
             _expression = expression;
+            _parameters = parameters;
             BaseMethod = _expression.Method.IsGenericMethod
                 ? _expression.Method.GetGenericMethodDefinition()
                 : _expression.Method;
@@ -103,6 +113,9 @@ namespace Overmocked.Mocking.Internal
         /// </summary>
         /// <value>The method.</value>
         public MethodInfo Method => _expression.Method;
+
+        /// <inheritdoc />
+        public IMatch[] Matches => _parameters;
 
         /// <summary>
         /// Gets the expression.

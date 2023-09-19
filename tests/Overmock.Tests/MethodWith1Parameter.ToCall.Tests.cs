@@ -41,7 +41,7 @@ namespace Overmocked.Tests
         {
             var called = false;
 
-            _overmock.Mock(t => t.ModelMethodWithFuncOfListOfModel(Its.Any<int>()))
+            _overmock.Mock(t => t.ModelMethodWithFuncOfListOfModel(Its.This(52)))
                 .ToCall(c => called = true);
 
             var target = _overmock.Target;
