@@ -33,15 +33,17 @@ namespace Overmocked.Tests
         }
 
         [TestMethod]
-        public void ThisAsParameterFieldTest()
+        public void ThisAsParameterAndThisFieldTest()
         {
-            var fifty2 = Its.Matching<int>(p => p == 52);
+            var matchesTrue = Its.Matching<bool>(p => p == true);
             var overmock = Overmock.Mock<IMethodsWith2Parameters>();
+            overmock.Mock(m => m.ListOfModelMethodWithNoParams(matchesTrue, 52.02m))
+                .ToBeCalled();
 
-            //fifty and _testing are "DisplayClass" and "MatchTests" fields.
-            overmock.Mock(m => m.VoidMethodWithIntAndString(fifty2, _testing));
+            overmock.Target.ListOfModelMethodWithNoParams(true, 52.02m);
 
-            Assert.IsTrue(fifty2.Matches(52));
+            Assert.IsTrue(matchesTrue.Matches(true));
+            Assert.IsFalse(matchesTrue.Matches(false));
         }
 
         [TestMethod]
@@ -49,11 +51,43 @@ namespace Overmocked.Tests
         {
             var fifty2 = Its.Matching<int>(p => p == 52);
             var overmock = Overmock.Mock<IMethodsWith2Parameters>();
+            overmock.Mock(m => m.VoidMethodWithIntAndString(fifty2, _testing))
+                .ToBeCalled();
 
-            //fifty and _testing are "DisplayClass" and "MatchTests" fields.
-            overmock.Mock(m => m.VoidMethodWithIntAndString(fifty2, _testing));
+            overmock.Target.VoidMethodWithIntAndString(52, "testing");
 
             Assert.IsTrue(fifty2.Matches(52));
+            Assert.IsTrue(_testing.Matches("testing"));
+        }
+
+        [TestMethod]
+        public void ThisAsParameterAndThisFieldTestThrowsExceptionWhenPassedWrongValues()
+        {
+            var matchesTrue = Its.Matching<bool>(p => p == true);
+            var overmock = Overmock.Mock<IMethodsWith2Parameters>();
+            overmock.Mock(m => m.ListOfModelMethodWithNoParams(matchesTrue, 52.02m))
+                .ToBeCalled();
+
+            Assert.ThrowsException<OvermockException>(() =>
+                overmock.Target.ListOfModelMethodWithNoParams(false, 52.02m));
+
+            Assert.IsTrue(matchesTrue.Matches(true));
+            Assert.IsFalse(matchesTrue.Matches(false));
+        }
+
+        [TestMethod]
+        public void LocalParameterAndThisFieldTestThrowsExceptionWhenPassedWrongValues()
+        {
+            var matchesTrue = Its.Matching<bool>(p => p == true);
+            var overmock = Overmock.Mock<IMethodsWith2Parameters>();
+            overmock.Mock(m => m.ListOfModelMethodWithNoParams(matchesTrue, 52.02m))
+                .ToBeCalled();
+
+            Assert.ThrowsException<OvermockException>(() =>
+                overmock.Target.ListOfModelMethodWithNoParams(true, 152.02m));
+
+            Assert.IsTrue(matchesTrue.Matches(true));
+            Assert.IsFalse(matchesTrue.Matches(false));
         }
 
 
