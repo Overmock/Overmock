@@ -29,6 +29,7 @@ namespace Kimono
         /// 
         /// </summary>
         /// <param name="delegateFactory"></param>
+        /// <param name="cache"></param>
         public ProxyFactory(IDelegateFactory delegateFactory, IProxyCache cache)
         {
             MethodFactory = delegateFactory;

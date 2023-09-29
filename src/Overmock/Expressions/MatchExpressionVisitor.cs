@@ -7,7 +7,7 @@ using System.Reflection.Metadata;
 
 namespace Overmocked.Expressions
 {
-    internal class MatchExpressionVisitor : ExpressionVisitor, IMatchExpressionVisitor
+    internal sealed class MatchExpressionVisitor : ExpressionVisitor, IMatchExpressionVisitor
     {
         private readonly List<IMatch> _matches = new List<IMatch>();
 
@@ -77,7 +77,7 @@ namespace Overmocked.Expressions
                     }
                     else if (expression is MemberExpression member)
                     {
-                        var field = (System.Reflection.FieldInfo)member.Member;
+                        var field = (FieldInfo)member.Member;
 
                         if (member.Expression is ConstantExpression parentObject)
                         {

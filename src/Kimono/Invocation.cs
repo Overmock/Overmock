@@ -20,15 +20,15 @@ namespace Kimono
 
         public object? Target { get; internal set; }
 
-        public Type[] GenericParameters { get; internal set; }
+        public Type[]? GenericParameters { get; internal set; }
 
-        public ParameterInfo[] ParameterTypes { get; internal set; }
+        public ParameterInfo[]? ParameterTypes { get; internal set; }
 
-        public object?[] Parameters { get; internal set; }
+        public object?[]? Parameters { get; internal set; }
 
-        public MethodInfo Method { get; internal set; }
+        public MethodInfo? Method { get; internal set; }
 
-        public Type ReturnType { get; internal set; }
+        public Type? ReturnType { get; internal set; }
 
         public bool IsProperty { get; internal set; }
 
@@ -63,7 +63,7 @@ namespace Kimono
                 return;
             }
 
-            var value = _invoker?.Invoke(Target, this, Parameters);
+            var value = _invoker?.Invoke(Target, this, Parameters!);
 
             if (setReturnValue)
             {

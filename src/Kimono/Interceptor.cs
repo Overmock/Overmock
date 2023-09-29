@@ -8,7 +8,7 @@ namespace Kimono
     /// 
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class Interceptor<T> : IInterceptor<T>, IProxyContainer where T : class
+    public class Interceptor<T> : IInterceptor<T>, IProxyContextSetter where T : class
     {   
         private ProxyContext? _proxyContext;
         private readonly T? _target;
@@ -65,7 +65,7 @@ namespace Kimono
         }
 
         /// <inheritdoc />
-        void IProxyContainer.SetProxyContext(ProxyContext context)
+        void IProxyContextSetter.SetProxyContext(ProxyContext context)
         {
             _proxyContext ??= context;
         }
