@@ -1,4 +1,6 @@
-﻿namespace Kimono
+﻿using System;
+
+namespace Kimono
 {
     /// <summary>
     /// 
@@ -9,6 +11,14 @@
         /// 
         /// </summary>
         IDelegateFactory MethodFactory { get; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="callback"></param>
+        /// <returns></returns>
+        T CreateInterfaceProxy<T>(Action<IInvocation> callback) where T : class;
 
         /// <summary>
         /// 
