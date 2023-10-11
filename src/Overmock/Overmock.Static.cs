@@ -18,11 +18,8 @@ namespace Overmocked
     {
         private static readonly ConcurrentQueue<IOvermock> _overmocks = new ConcurrentQueue<IOvermock>();
         private static readonly Func<IMatchExpressionVisitor> _expressionVisitorFactory = () => new MatchExpressionVisitor();
-        private static IInvocationHandler _invocationHandler;
+        private static IInvocationHandler? _invocationHandler;
 
-        /// <summary>
-        /// Initializes static members of the <see cref="global::Overmocked.Overmock"/> class.
-        /// </summary>
         static Overmock()
         {
         }

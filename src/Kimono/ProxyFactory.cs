@@ -29,6 +29,7 @@ namespace Kimono
         /// 
         /// </summary>
         /// <param name="delegateFactory"></param>
+        /// <param name="cache"></param>
         public ProxyFactory(IDelegateFactory delegateFactory, IProxyCache cache)
         {
             MethodFactory = delegateFactory;
@@ -104,6 +105,25 @@ namespace Kimono
             }
 
             return generator.GenerateProxy(interceptor);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="callback"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public T CreateInterfaceProxy<T>(Action<IInvocation> callback) where T : class
+        {
+            var builder = new InterceptorBuilder();
+
+            builder.Add((next, invocation) => {
+                callback?.Invoke(invocation);
+                next(invocation);
+            });
+
+            return CreateInterfaceProxy<T>(builder.Build<T>());
         }
 
         private MethodMetadata[] CreateInterfaceProxy<T>(IInterceptor<T> interceptor, Type targetType, MethodId methodId, TypeBuilder typeBuilder, Type[] ctorParameters, ConstructorInfo baseConstructor) where T : class
@@ -277,7 +297,7 @@ namespace Kimono
 
             CreateMethods(metadatas, methodId, typeBuilder, targetType, metadataArray, true, buildInvoker);
         }
-        
+
         private static class Names
         {
             public const string DllName = "KimonoProxies.dll";

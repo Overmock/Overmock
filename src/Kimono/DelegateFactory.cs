@@ -2,12 +2,10 @@
 using Kimono.Delegates;
 using Kimono.Msil;
 using System;
-using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Threading;
 using System.Globalization;
-using Microsoft.VisualBasic;
 
 namespace Kimono
 {
@@ -268,7 +266,6 @@ namespace Kimono
         /// 
         /// </summary>
         /// <param name="emitter"></param>
-        /// <param name="targetType"></param>
         public void EmitProxyDisposeMethod(IEmitter emitter)
         {
             emitter.Nop().Load(0)
@@ -321,12 +318,16 @@ namespace Kimono
         /// <param name="metadata"></param>
         /// <param name="genericParameters"></param>
         /// <returns></returns>
-        protected static MethodInfo PrepareGenericMethod(MethodMetadata metadata, Type[] genericParameters)
+        protected static MethodInfo PrepareGenericMethod(MethodMetadata metadata, Type[]? genericParameters)
         {
             if (metadata.TargetMethod.IsGenericMethod)
             {
-                var genericMethod = metadata.TargetMethod.MakeGenericMethod(genericParameters);
-                return genericMethod;
+                if (genericParameters is null)
+                {
+                    throw new ArgumentNullException(nameof(genericParameters));
+                }
+
+                return metadata.TargetMethod.MakeGenericMethod(genericParameters);
             }
 
             return metadata.TargetMethod;

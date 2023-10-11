@@ -11,22 +11,22 @@ namespace Kimono
         /// <summary>
         /// 
         /// </summary>
-        Type[] GenericParameters { get; }
+        Type[]? GenericParameters { get; }
 
         /// <summary>
         /// 
         /// </summary>
-        ParameterInfo[] ParameterTypes { get; }
+        ParameterInfo[]? ParameterTypes { get; }
 
         /// <summary>
         /// 
         /// </summary>
-        object?[] Parameters { get; }
+        object?[]? Parameters { get; }
         
         /// <summary>
         /// 
         /// </summary>
-        MethodInfo Method { get; }
+        MethodInfo? Method { get; }
 
         /// <summary>
         /// 

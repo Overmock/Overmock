@@ -2,18 +2,19 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using System.Reflection;
 
 namespace Overmocked.Expressions
 {
-    internal class MatchExpressionVisitor : ExpressionVisitor, IMatchExpressionVisitor
+    internal sealed class MatchExpressionVisitor : ExpressionVisitor, IMatchExpressionVisitor
     {
         private readonly List<IMatch> _matches = new List<IMatch>();
 
         public IMatch[] VisitMethod(MethodCallExpression methodExpression)
         {
+            // TODO: Need to re"visit" this. I don't like the current implementation 
             var method = methodExpression.Method;
             var arguments = methodExpression.Arguments;
-            //var parameters = method.GetParameters();
 
             for (int i = 0; i < arguments.Count; i++)
             {
@@ -25,22 +26,15 @@ namespace Overmocked.Expressions
 
                     if (unary.Operand is MethodCallExpression methodCall)
                     {
-                        VisitMethodCall(methodCall);
+                        _matches.Add(GetMethodMatch(methodCall));
                     }
                     else if (expression is MemberExpression member)
                     {
-                        var field = (System.Reflection.FieldInfo)member.Member;
+                        var field = (FieldInfo)member.Member;
 
                         if (member.Expression is ConstantExpression constant)
                         {
-                            if (constant.Value is IMatch match)
-                            {
-                                _matches.Add(match);
-                            }
-                            else
-                            {
-                                _matches.Add((IMatch)field.GetValue(constant.Value)!);
-                            }
+                            _matches.Add(GetConstantMatch(constant, field));
                         }
                         else
                         {
@@ -52,6 +46,10 @@ namespace Overmocked.Expressions
                         _matches.Add(new Any<object>());
                     }
                 }
+                else if (expression is ConstantExpression constant)
+                {
+                    _matches.Add(GetConstantMatch(constant, null));
+                }
                 else
                 {
                     _matches.Add(new Any<object>());
@@ -61,7 +59,7 @@ namespace Overmocked.Expressions
             return _matches.ToArray();
         }
 
-        protected override Expression VisitMethodCall(MethodCallExpression node)
+        private static IMatch GetMethodMatch(MethodCallExpression node)
         {
             if (Types.Match.IsAssignableFrom(node.Type))
             {
@@ -72,15 +70,13 @@ namespace Overmocked.Expressions
                 {
                     Expression? expression = arguments[i];
 
-                    var visitedExpression = Visit(expression);
-
-                    if (visitedExpression is ConstantExpression constant)
+                    if (expression is ConstantExpression constant)
                     {
                         parameters[i] = constant.Value;
                     }
                     else if (expression is MemberExpression member)
                     {
-                        var field = (System.Reflection.FieldInfo)member.Member;
+                        var field = (FieldInfo)member.Member;
 
                         if (member.Expression is ConstantExpression parentObject)
                         {
@@ -89,10 +85,24 @@ namespace Overmocked.Expressions
                     }
                 }
 
-                _matches.Add((IMatch)node.Method.Invoke(null, parameters)!);
+                return (IMatch)node.Method.Invoke(null, parameters)!;
             }
 
-            return base.VisitMethodCall(node);
+            return new Any<object>();
+        }
+
+        private static IMatch GetConstantMatch(ConstantExpression constant, FieldInfo? field = null)
+        {
+            if (constant.Value is IMatch match)
+            {
+                return match;
+            }
+            else if (!(field is null))
+            {
+                return (IMatch)field.GetValue(constant.Value)!;
+            }
+
+            return new This<object?>(constant.Value);
         }
 
         private static class Types

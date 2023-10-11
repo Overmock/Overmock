@@ -53,33 +53,28 @@ namespace Kimono.Tests
         //    Assert.IsTrue(returnedTrue);
         //}
 
-        //[TestMethod]
-        //public void WithInovcationChainInterceptorTest()
-        //{
-        //    var called = false;
-        //    var saveCalled = false;
+        [TestMethod]
+        public void WithInovcationChainInterceptorTest()
+        {
+            var called = false;
+            var saveCalled = false;
 
-        //    var interceptor = Intercept.WithInovcationChain<IRepository>(builder => {
-        //        builder.Add((next, context) => {
-        //            called = true;
+            var interceptor = _factory.CreateInterfaceProxy<IRepository>(invocation => {
+                called = true;
 
-        //            next(context);
-        //        })
-        //        .Add((next, context) => {
-        //            if (context.MemberName == "Save")
-        //            {
-        //                saveCalled = true;
-        //                context.ReturnValue = saveCalled;
-        //            }
-        //        });
-        //    });
+                if (invocation.Method.Name == "Save")
+                {
+                    saveCalled = true;
+                    invocation.ReturnValue = true;
+                }
+            });
 
-        //    var returnedTrue = interceptor.Save(new Model { Id = 69 });
+            var returnedTrue = interceptor.Save(new Model { Id = 69 });
 
-        //    Assert.IsTrue(returnedTrue);
-        //    Assert.IsTrue(called);
-        //    Assert.IsTrue(saveCalled);
-        //}
+            Assert.IsTrue(returnedTrue);
+            Assert.IsTrue(called);
+            Assert.IsTrue(saveCalled);
+        }
 
         [TestMethod]
         public void TargetedWithCallbackInterceptorTest()

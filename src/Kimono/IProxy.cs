@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Kimono
+﻿namespace Kimono
 {
     /// <summary>
     /// 

@@ -6,6 +6,9 @@ using System.Reflection;
 
 namespace Kimono
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public sealed class MethodMetadata
     {
         private readonly MethodInfo _targetMethod;
@@ -23,33 +26,67 @@ namespace Kimono
             _isProperty = isProperty;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public MethodInfo TargetMethod => _targetMethod;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public ParameterInfo[] Parameters => _parameters ??= _targetMethod.GetParameters();
-
+        
+        /// <summary>
+        /// 
+        /// </summary>
         public Type[] ParameterTypes => _parameterTypes ??= Parameters.Select(p => p.ParameterType).ToArray();
 
+        /// <summary>
+        /// 
+        /// </summary>
         public IReadOnlyList<ParameterInfo> InputParameters =>
             _inputs ??= GetParameters();
 
+        /// <summary>
+        /// 
+        /// </summary>
         public IReadOnlyList<ParameterInfo> OutParameters =>
             _outs ??= GetParameters(false);
 
+        /// <summary>
+        /// 
+        /// </summary>
         public Type ReturnType => _targetMethod.ReturnType;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public Type[] GenericParameters => _generics ??= CreateList(
             _targetMethod.ContainsGenericParameters
                 ? _targetMethod.GetGenericArguments()
                 : Array.Empty<Type>()
         ).ToArray();
 
+        /// <summary>
+        /// 
+        /// </summary>
         public bool IsProperty => _isProperty;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="targetMethod"></param>
+        /// <param name="isProperty"></param>
+        /// <returns></returns>
         public static MethodMetadata FromMethodInfo(MethodInfo targetMethod, bool isProperty = false)
         {
             return new MethodMetadata(targetMethod, isProperty);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="invoker"></param>
         public void UseInvoker(IDelegateInvoker invoker)
         {
             _invoker = invoker;

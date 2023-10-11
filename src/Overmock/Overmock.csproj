@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Version>0.0.10-RC01</Version>
+    <Version>0.0.10</Version>
     <TargetFrameworks>net7.0;net6.0;netstandard2.1;</TargetFrameworks>
     <Nullable>enable</Nullable>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>

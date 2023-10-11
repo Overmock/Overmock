@@ -15,10 +15,9 @@ namespace Kimono.Delegates
         /// 
         /// </summary>
         /// <typeparam name="TDelegate"></typeparam>
-        /// <param name="method"></param>
-        /// <param name="invocation"></param>
+        /// <param name="metadata"></param>
         /// <param name="delegateType"></param>
-        /// <param name="parameters"></param>
+        /// <param name="invocation"></param>
         /// <returns></returns>
         protected override TDelegate CreateActionInvoker<TDelegate>(MethodMetadata metadata, Type delegateType, IInvocation invocation)
         {
@@ -30,10 +29,9 @@ namespace Kimono.Delegates
         /// 
         /// </summary>
         /// <typeparam name="TDelegate"></typeparam>
-        /// <param name="method"></param>
-        /// <param name="context"></param>
+        /// <param name="metadata"></param>
         /// <param name="delegateType"></param>
-        /// <param name="parameters"></param>
+        /// <param name="invocation"></param>
         /// <returns></returns>
         protected override TDelegate CreateFuncInvoker<TDelegate>(MethodMetadata metadata, Type delegateType, IInvocation invocation)
         {

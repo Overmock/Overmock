@@ -53,9 +53,14 @@ namespace Overmocked
             return false;
         }
 
-        private static void HandleParameterMatching(IMatch[] matches, object?[] parameters)
+        private static void HandleParameterMatching(IMatch[] matches, object?[]? parameters)
         {
-            if (parameters.Length != matches.Length)
+            if (matches.Length > 0 && parameters is null)
+            {
+                throw new ArgumentNullException(nameof(parameters));
+            }
+
+            if (matches.Length != parameters.Length)
             {
                 throw new InvalidOperationException(
                     $"Parameters matching collection sizes do not match. Parameters.Length: {parameters.Length}, Matches.Length: {matches.Length}"

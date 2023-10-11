@@ -1,5 +1,4 @@
-﻿using Kimono;
-using Kimono.Msil;
+﻿using Kimono.Msil;
 using System;
 using System.Linq;
 using System.Reflection;
@@ -18,11 +17,11 @@ namespace Kimono.Delegates
         /// <typeparam name="TDelegate"></typeparam>
         /// <param name="metadata"></param>
         /// <param name="delegateType"></param>
-        /// <param name="context"></param>
+        /// <param name="invocation"></param>
         /// <returns></returns>
-        protected override TDelegate CreateActionInvoker<TDelegate>(MethodMetadata metadata, Type delegateType, IInvocation context)
+        protected override TDelegate CreateActionInvoker<TDelegate>(MethodMetadata metadata, Type delegateType, IInvocation invocation)
         {
-            return CreateInvocation<TDelegate>(context, metadata, delegateType, Types.Void, metadata.Parameters, GenerateActionInvocation);
+            return CreateInvocation<TDelegate>(invocation, metadata, delegateType, Types.Void, metadata.Parameters, GenerateActionInvocation);
         }
 
         /// <summary>
@@ -31,11 +30,11 @@ namespace Kimono.Delegates
         /// <typeparam name="TDelegate"></typeparam>
         /// <param name="metadata"></param>
         /// <param name="delegateType"></param>
-        /// <param name="context"></param>
+        /// <param name="invocation"></param>
         /// <returns></returns>
-        protected override TDelegate CreateFuncInvoker<TDelegate>(MethodMetadata metadata, Type delegateType, IInvocation context)
+        protected override TDelegate CreateFuncInvoker<TDelegate>(MethodMetadata metadata, Type delegateType, IInvocation invocation)
         {
-            return CreateInvocation<TDelegate>(context, metadata, delegateType, Types.Object, metadata.Parameters, GenerateFuncInvocation);
+            return CreateInvocation<TDelegate>(invocation, metadata, delegateType, Types.Object, metadata.Parameters, GenerateFuncInvocation);
         }
 
         private static TDelegate CreateInvocation<TDelegate>(
@@ -70,11 +69,6 @@ namespace Kimono.Delegates
                 {
                     emitter.Emit(OpCodes.Unbox_Any, parameterArray[i]);
                 }
-
-                //if (parameterArray[i].IsGenericParameter)
-                //{
-                //    emitter.Emit(OpCodes.Constrained, parameterArray[i]);
-                //}
             }
 
             emitter.Invoke(methodInfo);
@@ -87,10 +81,10 @@ namespace Kimono.Delegates
         private static DynamicMethod CreateDynamicMethod(MethodInfo method, Type[] parameters, Type returnType)
         {
             return new DynamicMethod(
-                string.Format(Names.DynamicMethodName, method.Name),
+                string.Format(Culture.Current, Names.DynamicMethodName, method.Name),
                 returnType, parameters.Length > 0
-                    ? parameters.Select(p => Types.Object).Concat(new[] { Types.Object }).ToArray()
-                    : new[] { Types.Object }
+                    ? parameters.Select(p => Types.Object).Concat(Types.SingleObjectArray).ToArray()
+                    : Types.SingleObjectArray
             );
         }
 

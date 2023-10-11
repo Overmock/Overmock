@@ -15,7 +15,7 @@ namespace Overmocked.Matchable
         /// <summary>
         /// 
         /// </summary>
-        public T Value => this;
+        public virtual T Value => default!;
 
         /// <summary>
         /// 

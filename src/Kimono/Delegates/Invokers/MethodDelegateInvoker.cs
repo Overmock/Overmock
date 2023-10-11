@@ -1,5 +1,4 @@
-﻿using Kimono.Delegates;
-using System;
+﻿using System;
 
 namespace Kimono.Delegates.Invokers
 {

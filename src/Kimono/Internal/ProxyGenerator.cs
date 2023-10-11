@@ -43,9 +43,9 @@ namespace Kimono.Internal
         {
             var result = _createProxy.Invoke(interceptor);
 
-            if (interceptor is IProxyContainer container)
+            if (interceptor is IProxyContextSetter setter)
             {
-                container.SetProxyContext(_proxyContext);
+                setter.SetProxyContext(_proxyContext);
             }
 
             return result;

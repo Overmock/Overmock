@@ -5,35 +5,6 @@ using Overmocked.Matchable;
 namespace Overmocked
 {
     /// <summary>
-    /// 
-    /// </summary>
-    public interface IMatch
-    {
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        bool Matches(object value);
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <typeparam name="TMatch"></typeparam>
-    public interface IMatch<T> : IMatch, IFluentInterface
-    {
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        bool Matches(T value);
-    }
-
-    /// <summary>
     /// Represents values for mocked methods.
     /// </summary>
     public static class Its
