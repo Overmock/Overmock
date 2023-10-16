@@ -8,10 +8,10 @@ namespace Kimono
     /// </summary>
     public sealed class InterceptorBuilder : IInterceptorBuilder
     {
-        private readonly List<InterceptorAction> _invocationChain = new List<InterceptorAction>();
+        private readonly List<InterceptorBuilderAction> _invocationChain = new List<InterceptorBuilderAction>();
 
         /// <inheritdoc/>
-        public IInterceptorBuilder Add(InterceptorAction action)
+        public IInterceptorBuilder Add(InterceptorBuilderAction action)
         {
             _invocationChain.Add(action);
             return this;
@@ -37,9 +37,9 @@ namespace Kimono
 
         private sealed class InvocationChainHandler<T> : Interceptor<T> where T : class
         {
-            private readonly Func<IEnumerator<InterceptorAction>> _chainProvider;
+            private readonly Func<IEnumerator<InterceptorBuilderAction>> _chainProvider;
 
-            public InvocationChainHandler(Func<IEnumerator<InterceptorAction>> handlersProvider)
+            public InvocationChainHandler(Func<IEnumerator<InterceptorBuilderAction>> handlersProvider)
             {
                 _chainProvider = handlersProvider!;
             }
@@ -62,9 +62,9 @@ namespace Kimono
 
         private sealed class DisposableInvocationChainHandler<T> : DisposableInterceptor<T> where T : class, IDisposable
         {
-            private readonly Func<IEnumerator<InterceptorAction>> _chainProvider;
+            private readonly Func<IEnumerator<InterceptorBuilderAction>> _chainProvider;
 
-            public DisposableInvocationChainHandler(T disposable, Func<IEnumerator<InterceptorAction>> handlersProvider) : base(disposable)
+            public DisposableInvocationChainHandler(T disposable, Func<IEnumerator<InterceptorBuilderAction>> handlersProvider) : base(disposable)
             {
                 _chainProvider = handlersProvider!;
             }

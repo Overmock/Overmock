@@ -12,7 +12,7 @@ namespace Kimono
         /// </summary>
         /// <param name="action">The action.</param>
         /// <returns>IInvocationChainBuilder.</returns>
-        IInterceptorBuilder Add(InterceptorAction action);
+        IInterceptorBuilder Add(InterceptorBuilderAction action);
 
         /// <summary>
         /// Adds the specified action.

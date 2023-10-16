@@ -8,7 +8,7 @@ namespace FakeCompany.Api.Storage
         public string Description { get; set; }
         public int Points { get; set; }
     }
-    public class UserStoryFactory : EntityCollection<UserStory>
+    public class UserStoryFactory : EntityCollection<UserStory>, IUserStoryFactory<UserStory>
     {
         private static int NextId => Collection.Count;
 
@@ -45,8 +45,8 @@ namespace FakeCompany.Api.Storage
 	}
     public class UserStoryService : IUserStoryService
     {
-        private readonly EntityCollection<UserStory> _collection;
-        public UserStoryService(EntityCollection<UserStory> collection) => _collection = collection;
+        private readonly IUserStoryFactory<UserStory> _collection;
+        public UserStoryService(IUserStoryFactory<UserStory> collection) => _collection = collection;
 
         public bool Delete(UserStory model)
         {
