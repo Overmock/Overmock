@@ -8,9 +8,9 @@ namespace Kimono
     public delegate void InvocationAction(IInvocation invocation);
 
     /// <summary>
-    /// Delegate InvocationAction
+    /// Delegate InterceptorBuilderAction
     /// </summary>
     /// <param name="next"></param>
     /// <param name="invocation">The context.</param>
-    public delegate void InterceptorAction(InvocationAction next, IInvocation invocation);
+    public delegate void InterceptorBuilderAction(InvocationAction next, IInvocation invocation);
 }
