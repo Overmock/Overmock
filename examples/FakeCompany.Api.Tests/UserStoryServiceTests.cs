@@ -31,19 +31,32 @@ namespace FakeCompany.Api.Tests
 
             Assert.NotNull(response);
             Assert.Single(response);
+            Assert.Collection(response, us => Assert.Equal(_userStory.Id, us.Id));
         }
 
         [Fact]
         public void GetByIdReturnsTheCorrectUserStory()
         {
-            Overmock.Mock(_serviceMock, m => m.Find(Its.Any<int>()))
+            Overmock.Mock(_serviceMock, m => m.Find(52))
                 .ToReturn(_userStory);
 
             var controller = new UserStoryService(_serviceMock.Target);
             var response = controller.Get(52);
 
             Assert.NotNull(response);
-            Assert.Equal(52, response.Id);
+            Assert.Equal(_userStory.Id, response.Id);
+        }
+
+        [Fact]
+        public void GetByIdReturnsNullUserStoryNotFound()
+        {
+            Overmock.Mock(_serviceMock, m => m.Find(20))
+                .ToReturn((UserStory)null!);
+
+            var controller = new UserStoryService(_serviceMock.Target);
+            var response = controller.Get(20);
+
+            Assert.Null(response);
         }
 
         [Fact]
@@ -56,7 +69,7 @@ namespace FakeCompany.Api.Tests
             var response = controller.Save(_userStory);
 
             Assert.NotNull(response);
-            Assert.Equal(52, response.Id);
+            Assert.Equal(_userStory.Id, response.Id);
         }
 
         [Fact]
