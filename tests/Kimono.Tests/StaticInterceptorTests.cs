@@ -1,4 +1,5 @@
 ﻿using Kimono.Tests.Proxies;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Kimono.Tests
 {
@@ -30,10 +31,10 @@ namespace Kimono.Tests
             Assert.IsTrue(saveCalled);
         }
 
-        //[TestMethod]
+        [TestMethod]
         public void WithHandlersInterceptorTest()
         {
-            var interceptor = new TestCallbackInterceptor<IRepository>(callback: c => { });
+            var interceptor = new TestCallbackInterceptor<IRepository>(callback: c => { c.ReturnValue = true; });
 
             var subject = _factory.CreateInterfaceProxy(interceptor);
 
@@ -42,16 +43,18 @@ namespace Kimono.Tests
             Assert.IsTrue(returnedTrue);
         }
 
-        //[TestMethod]
-        //public void WithHandlersEnumerableInterceptorTest()
-        //{
-        //    var list = new List<IInvocationHandler>() { new TestHandler() };
-        //    var interceptor = Intercept.WithHandlers<IRepository>(list);
+        [TestMethod]
+        public void WithHandlersEnumerableInterceptorTest()
+        {
+            var builder = new InterceptorBuilder();
+            builder.Add(new TestInterceptorHandler());
 
-        //    var returnedTrue = interceptor.Save(new Model { Id = 69 });
+            var interceptor = _factory.CreateInterfaceProxy(builder.Build<IRepository>());
 
-        //    Assert.IsTrue(returnedTrue);
-        //}
+            var returnedTrue = interceptor.Save(new Model { Id = 52 });
+
+            Assert.IsTrue(returnedTrue);
+        }
 
         [TestMethod]
         public void WithInovcationChainInterceptorTest()
@@ -215,32 +218,44 @@ namespace Kimono.Tests
             Assert.IsTrue(returnedTrue);
         }
 
-        //[TestMethod]
-        //public void DisposableTargetedWithInovcationChainInterceptorTest()
-        //{
-        //    var firstCalled = false;
-        //    var secondCalled = false;
+        private class TestInterceptorHandler : IInterceptorHandler
+        {
+            public void Handle(InvocationAction nextHandler, IInvocation invocation)
+            {
+                nextHandler(invocation);
 
-        //    var interceptor = Intercept.DisposableWithInovcationChain<IDisposableRepository, DisposableRepository>(new DisposableRepository(), builder => {
-        //        builder.Add((next, context) => {
-        //            firstCalled = true;
-        //            if (!secondCalled)
-        //            {
-        //                next(context);
-        //            }
-        //        })
-        //        .Add((next, context) => {
-        //            secondCalled = true;
-        //            context.ReturnValue = true;
-        //        });
-        //    });
+                invocation.ReturnValue = true;
+            }
+        }
 
-        //    var returnedTrue = interceptor.Save(new Model { Id = 69 });
+        [TestMethod]
+        public void DisposableTargetedWithInovcationChainInterceptorTest()
+        {
+            var firstCalled = false;
+            var secondCalled = false;
 
-        //    Assert.IsTrue(returnedTrue);
-        //    Assert.IsTrue(firstCalled);
-        //    Assert.IsTrue(secondCalled);
-        //}
+            var interceptorBuilder = new InterceptorBuilder();
+            interceptorBuilder.Add((next, invocation) => {
+                firstCalled = true;
+                if (!secondCalled)
+                {
+                    next(invocation);
+                }
+            }).Add((next, invocation) => {
+                    secondCalled = true;
+                invocation.ReturnValue = true;
+            });
+
+            using (var interceptor = interceptorBuilder.Build<IDisposableRepository>(new DisposableRepository()))
+            {
+                var repository = _factory.CreateInterfaceProxy(interceptor);
+                var returnedTrue = repository.Save(new Model { Id = 52 });
+
+                Assert.IsTrue(returnedTrue);
+                Assert.IsTrue(firstCalled);
+                Assert.IsTrue(secondCalled);
+            }
+        }
 
         //[TestMethod]
         //public void DisposableTargetedWithInovcationChainInterceptorDoesNotCallNextTest()

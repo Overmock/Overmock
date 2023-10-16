@@ -1,4 +1,6 @@
-﻿namespace Kimono
+﻿using System;
+
+namespace Kimono
 {
     /// <summary>
     /// Interface IInvocationChainBuilder
@@ -24,5 +26,13 @@
         /// </summary>
         /// <returns>IInterceptor.</returns>
         IInterceptor<T> Build<T>() where T : class;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="disposable"></param>
+        /// <returns></returns>
+        IDisposableInterceptor<T> Build<T>(T disposable) where T : class, IDisposable;
     }
 }

@@ -1,29 +1,38 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 
-namespace Kimono.Internal
+namespace Kimono
 {
-    internal sealed class InterceptorBuilder : IInterceptorBuilder
+    /// <summary>
+    /// 
+    /// </summary>
+    public sealed class InterceptorBuilder : IInterceptorBuilder
     {
         private readonly List<InterceptorAction> _invocationChain = new List<InterceptorAction>();
 
+        /// <inheritdoc/>
         public IInterceptorBuilder Add(InterceptorAction action)
         {
             _invocationChain.Add(action);
             return this;
         }
 
+        /// <inheritdoc/>
         public IInterceptorBuilder Add(IInterceptorHandler handler)
         {
             return Add(handler.Handle);
         }
 
+        /// <inheritdoc/>
         public IInterceptor<T> Build<T>() where T : class
         {
             return new InvocationChainHandler<T>(() => _invocationChain.GetEnumerator());
+        }
+
+        /// <inheritdoc/>
+        public IDisposableInterceptor<T> Build<T>(T disposable) where T : class, IDisposable
+        {
+            return new DisposableInvocationChainHandler<T>(disposable, () => _invocationChain.GetEnumerator());
         }
 
         private sealed class InvocationChainHandler<T> : Interceptor<T> where T : class
@@ -51,34 +60,36 @@ namespace Kimono.Internal
             }
         }
 
-        private sealed class InvocationChainHandler2<T> : Interceptor<T> where T : class
+        private sealed class DisposableInvocationChainHandler<T> : DisposableInterceptor<T> where T : class, IDisposable
         {
-            private readonly InterceptorAction[] _chain;
+            private readonly Func<IEnumerator<InterceptorAction>> _chainProvider;
 
-            public InvocationChainHandler2(IEnumerable<InterceptorAction> handlers)
+            public DisposableInvocationChainHandler(T disposable, Func<IEnumerator<InterceptorAction>> handlersProvider) : base(disposable)
             {
-                _chain = handlers.ToArray();
+                _chainProvider = handlersProvider!;
+            }
+
+            protected override void Disposing(bool disposing)
+            {
+                if (disposing)
+                {
+                    Target?.Dispose();
+                }
             }
 
             protected override void HandleInvocation(IInvocation invocation)
             {
-                ref var current = ref MemoryMarshal.GetReference(_chain.AsSpan());
+                using var enumerator = _chainProvider();
 
-                if (current == null) { return; }
-
-                Next(invocation, current, 0);
-            }
-
-            private void Next(IInvocation invocation, InterceptorAction firstHandler, int index)
-            {
-                if (index >= _chain.Length) { return; }
-
-                ref var nextHandler = ref Unsafe.Add(ref firstHandler, ++index);
-
-                if (nextHandler != null)
+                void Next(IInvocation invocation)
                 {
-                    nextHandler(c => Next(c, firstHandler, index), invocation);
+                    if (enumerator.MoveNext())
+                    {
+                        enumerator.Current.Invoke(Next, invocation);
+                    }
                 }
+
+                Next(invocation);
             }
         }
     }
