@@ -16,7 +16,7 @@ namespace Overmocked.Matchable
         /// <summary>
         /// 
         /// </summary>
-        public Any() : base(p => true)
+        public Any() : base(p => p is T)
         {
         }
 
@@ -33,7 +33,13 @@ namespace Overmocked.Matchable
         }
 
         /// <inheritdoc />
-        public sealed override bool Matches(T value)
+        public override bool Matches(object value)
+        {
+            return true;
+        }
+
+        /// <inheritdoc />
+        protected sealed override bool MatchesCore(T value)
         {
             return true;
         }
