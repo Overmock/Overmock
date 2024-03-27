@@ -79,29 +79,36 @@ namespace Kimono
 
             if (generator is null)
             {
-                var proxyBaseType = Types.ProxyBaseNonGeneric;
-                var methodId = MethodId.Create();
-                var typeBuilder = Module.DefineType(
-                    string.Format(CultureInfo.CurrentCulture, Names.TypeName, targetType.Name),
-                    TypeAttributes.Public | TypeAttributes.Sealed,
-                    proxyBaseType);
-                var ctorParameters = Types.ProxyBaseCtorParameterTypes;
-                var baseConstructor = proxyBaseType.GetConstructor(
-                    bindingFlags, null,
-                    ctorParameters,
-                    null
-                )!;
+                // I don't like having a lock here and need to find an alternative.
+                lock (targetType)
+                {
+                    if (generator is null)
+                    {
+                        var proxyBaseType = Types.ProxyBaseNonGeneric;
+                        var methodId = MethodId.Create();
+                        var typeBuilder = Module.DefineType(
+                            string.Format(CultureInfo.CurrentCulture, Names.TypeName, targetType.Name),
+                            TypeAttributes.Public | TypeAttributes.Sealed,
+                            proxyBaseType);
+                        var ctorParameters = Types.ProxyBaseCtorParameterTypes;
+                        var baseConstructor = proxyBaseType.GetConstructor(
+                            bindingFlags, null,
+                            ctorParameters,
+                            null
+                        )!;
 
-                var context = ProxyContext.Create(CreateInterfaceProxy(
-                    interceptor, targetType, methodId, typeBuilder, ctorParameters, baseConstructor
-                ));
+                        var context = ProxyContext.Create(CreateInterfaceProxy(
+                            interceptor, targetType, methodId, typeBuilder, ctorParameters, baseConstructor
+                        ));
 
-                var proxyType = typeBuilder.CreateType();
-                var proxyConstructor = proxyType.GetConstructor(ctorParameters)!;
-                generator = Cache.SetGenerator(targetType,
-                    new ProxyGenerator<T>(context,
-                        MethodFactory.CreateProxyConstructorDelegate<T>(proxyType, targetType, proxyConstructor)
-                ));
+                        var proxyType = typeBuilder.CreateType();
+                        var proxyConstructor = proxyType.GetConstructor(ctorParameters)!;
+                        generator = Cache.SetGenerator(targetType,
+                            new ProxyGenerator<T>(context,
+                                MethodFactory.CreateProxyConstructorDelegate<T>(proxyType, targetType, proxyConstructor)
+                        ));
+                    }
+                }
             }
 
             return generator.GenerateProxy(interceptor);

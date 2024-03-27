@@ -15,7 +15,7 @@ namespace Overmocked.Matchable
         /// 
         /// </summary>
         /// <param name="value"></param>
-        public MatchExpression(Expression<Func<T, bool>> value)
+        public MatchExpression(Expression<Func<T, bool>> value) : base()
         {
             _value = value.Compile();
         }
@@ -23,24 +23,40 @@ namespace Overmocked.Matchable
         /// <inheritdoc />
         public override bool Equals(T other)
         {
-            return _value.Invoke(other);
+            return MatchesCore(other);
         }
 
         /// <inheritdoc />
-        public virtual bool Matches(T value)
+        public bool Matches(T value)
         {
-            return _value.Invoke(value);
+            return MatchesCore(value);
         }
 
         /// <inheritdoc />
-        public bool Matches(object value)
+        public virtual bool Matches(object value)
         {
-            if (value is T)
+            if (value is T t)
             {
-                return Matches((T)value);
+                return MatchesCore(t);
+            }
+
+            if (value is null)
+            {
+                return MatchesCore(default!);
             }
 
             return false;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        protected virtual bool MatchesCore(T value)
+        {
+            return _value.Invoke(value);
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Overmocked.Matchable;
+using Overmocked.Tests.Mocks;
 using Overmocked.Tests.Mocks.Methods;
 
 namespace Overmocked.Tests
@@ -68,7 +69,7 @@ namespace Overmocked.Tests
             overmock.Mock(m => m.ListOfModelMethodWithNoParams(matchesTrue, 52.02m))
                 .ToBeCalled();
 
-            Assert.ThrowsException<OvermockException>(() =>
+            Assert.ThrowsException<OvermockParameterMatchException>(() =>
                 overmock.Target.ListOfModelMethodWithNoParams(false, 52.02m));
 
             Assert.IsTrue(matchesTrue.Matches(true));
@@ -83,13 +84,39 @@ namespace Overmocked.Tests
             overmock.Mock(m => m.ListOfModelMethodWithNoParams(matchesTrue, 52.02m))
                 .ToBeCalled();
 
-            Assert.ThrowsException<OvermockException>(() =>
+            Assert.ThrowsException<OvermockParameterMatchException>(() =>
                 overmock.Target.ListOfModelMethodWithNoParams(true, 152.02m));
 
             Assert.IsTrue(matchesTrue.Matches(true));
             Assert.IsFalse(matchesTrue.Matches(false));
         }
 
+        [TestMethod]
+        public void ModelAsParameterAndThisFieldTestThrowsExceptionWhenPassedWrongValues()
+        {
+            var matchesAnyModel = Its.Any<Model>();
+            var overmock = Overmock.Mock<IMethodsWith2Parameters>();
+            overmock.Mock(m => m.ListOfModelMethodWithNoParams(matchesAnyModel, 52.02m))
+                .ToBeCalled();
+
+            overmock.Target.ListOfModelMethodWithNoParams(null, 52.02m);
+
+            Assert.IsTrue(matchesAnyModel.Matches(new Model()));
+        }
+
+        [TestMethod]
+        public void LocalModelParameterAndThisFieldTestThrowsExceptionWhenPassedWrongValues()
+        {
+            var matchesTrue = Its.Any<Model>();
+            var overmock = Overmock.Mock<IMethodsWith2Parameters>();
+            overmock.Mock(m => m.ListOfModelMethodWithNoParams(matchesTrue, 52.02m))
+                .ToBeCalled();
+
+            Assert.ThrowsException<OvermockParameterMatchException>(() =>
+                overmock.Target.ListOfModelMethodWithNoParams(null, 152.02m));
+
+            Assert.IsTrue(matchesTrue.Matches(null));
+        }
 
         [TestMethod]
         public void ThisDoesntMatchTest()

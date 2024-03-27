@@ -10,5 +10,7 @@ namespace Overmocked.Tests.Mocks.Methods
         Model ModelMethodWithStringAndListOfModel(string name, List<Model> models);
 
         List<Model> ListOfModelMethodWithNoParams(bool didItHappen, decimal discound);
+
+        List<Model> ListOfModelMethodWithNoParams(Model model, decimal discound);
     }
 }

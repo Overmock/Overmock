@@ -71,7 +71,7 @@ namespace Overmocked
             {
                 if (!matches[i].Matches(parameters[i]!))
                 {
-                    throw new OvermockException($"Parameter '{parameters[i]}' does not match expected value.");
+                    throw new OvermockParameterMatchException(parameters[i]!, matches[i]);
                 }
             }
         }

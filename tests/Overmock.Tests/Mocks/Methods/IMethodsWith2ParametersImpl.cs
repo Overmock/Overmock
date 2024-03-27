@@ -13,6 +13,11 @@ namespace Overmocked.Tests.Mocks.Methods
             throw new NotImplementedException();
         }
 
+        public List<Model> ListOfModelMethodWithNoParams(Model model, decimal discound)
+        {
+            throw new NotImplementedException();
+        }
+
         public Model ModelMethodWithStringAndListOfModel(string name, List<Model> models)
         {
             throw new NotImplementedException();
