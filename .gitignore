@@ -351,3 +351,4 @@ MigrationBackup/
 
 # Where the files get written when debugging the unit tests
 Dynamic/
+.idea/

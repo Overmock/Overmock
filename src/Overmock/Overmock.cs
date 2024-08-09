@@ -3,9 +3,6 @@ using Overmocked.Mocking;
 using Overmocked.Mocking.Internal;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 
 namespace Overmocked
 {
@@ -21,7 +18,6 @@ namespace Overmocked
         private readonly List<IPropertyCall> _properties = new List<IPropertyCall>();
 
         private readonly Interceptor<T> _interceptor;
-        private readonly T _target;
         private bool _overrideAll;
 
         /// <summary>
@@ -32,7 +28,7 @@ namespace Overmocked
         {
             //_invocationHandler = new OvermockInstanceInvocationHandler(() => _overrideAll, _methods.ToArray, _properties.ToArray);
             _interceptor = new OvermockInterceptor<T>(() => _overrideAll, _methods.ToArray, _properties.ToArray, handler);
-            _target = _proxyFactory.CreateInterfaceProxy(_interceptor);
+            Target = _proxyFactory.CreateInterfaceProxy(_interceptor);
 
             if (Type.IsSealed || Type.IsEnum)
             {
@@ -62,7 +58,7 @@ namespace Overmocked
             }
 
             _interceptor = new OvermockInterceptor<T>(() => _overrideAll, _methods.ToArray, _properties.ToArray, null);
-            _target = _proxyFactory.CreateInterfaceProxy(_interceptor);
+            Target = _proxyFactory.CreateInterfaceProxy(_interceptor);
 
             Overmock.Register(this);
         }
@@ -81,13 +77,7 @@ namespace Overmocked
         /// Gets the object.
         /// </summary>
         /// <value>The mocked object.</value>
-        public T Target
-        {
-            get
-            {
-                return _target;
-            }
-        }
+        public T Target { get; }
 
         ///// <summary>
         ///// Performs an implicit conversion from <see cref="Overmock{T}"/> to <typeparamref name="T"/>.
@@ -99,7 +89,7 @@ namespace Overmocked
         //    return overmock.Target;
         //}
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="object.Equals(object?)" />
         public override bool Equals(object? obj)
         {
             if (ReferenceEquals(this, obj))
@@ -115,13 +105,13 @@ namespace Overmocked
             return Target == obj;
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="object.GetHashCode" />
         public override int GetHashCode()
         {
             return Target.GetHashCode();
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc cref="IOvermock{T}.Equals(Overmocked.Overmock{T}?)" />
         public bool Equals(Overmock<T>? obj)
         {
             if (ReferenceEquals(this, obj))

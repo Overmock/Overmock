@@ -1,6 +1,4 @@
-﻿using Kimono;
-
-namespace Kimono.Tests.Proxies
+﻿namespace Kimono.Tests.Proxies
 {
     public interface ITGenTT1T2T3NoArgs
     {

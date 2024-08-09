@@ -1,5 +1,4 @@
-﻿using Kimono;
-using Kimono.Tests.Proxies;
+﻿using Kimono.Tests.Proxies;
 using Microsoft.Extensions.Logging;
 
 namespace Kimono.Tests.Logging

@@ -88,7 +88,7 @@ namespace Overmocked
 
         internal static IOvermock? GetRegistration<T>(IOvermock<T> target) where T : class
         {
-            return _overmocks.FirstOrDefault(o => o == target);
+            return _overmocks.FirstOrDefault(o => Equals(o, target));
         }
 
         private static TMethodCall RegisterMethod<TMethodCall>(IOvermockable overmock, TMethodCall method) where TMethodCall : IMethodCall

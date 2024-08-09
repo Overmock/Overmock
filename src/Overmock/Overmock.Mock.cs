@@ -1,5 +1,4 @@
-﻿using Kimono;
-using System;
+﻿using System;
 using System.Linq.Expressions;
 
 namespace Overmocked

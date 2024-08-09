@@ -31,7 +31,7 @@ namespace Kimono.Internal
         /// <returns>The generated proxy.</returns>
         object IProxyGenerator.GenerateProxy(IInterceptor interceptor)
         {
-            return (T)GenerateProxy((IInterceptor<T>)interceptor);
+            return GenerateProxy((IInterceptor<T>)interceptor);
         }
 
         /// <summary>

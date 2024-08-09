@@ -1,5 +1,4 @@
 ﻿using Kimono.Tests.Proxies;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace Kimono.Tests
 {

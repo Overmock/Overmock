@@ -1,6 +1,4 @@
-﻿using Kimono;
-
-namespace Kimono.Tests
+﻿namespace Kimono.Tests
 {
     [TestClass]
     public class FactoryProviderTests
