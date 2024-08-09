@@ -1,5 +1,4 @@
 ﻿using BenchmarkDotNet.Attributes;
-using Overmocked.Benchmarks.Models;
 
 namespace Overmocked.Benchmarks
 {

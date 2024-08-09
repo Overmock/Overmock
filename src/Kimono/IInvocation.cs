@@ -9,6 +9,11 @@ namespace Kimono
     public interface IInvocation
     {
         /// <summary>
+        /// The name of the member being invoked.
+        /// </summary>
+        public string MemberName => Method?.Name ?? string.Empty;
+
+        /// <summary>
         /// 
         /// </summary>
         Type[]? GenericParameters { get; }

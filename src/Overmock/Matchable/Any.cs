@@ -1,7 +1,4 @@
-﻿using System;
-using System.Linq.Expressions;
-
-namespace Overmocked.Matchable
+﻿namespace Overmocked.Matchable
 {
     /// <summary>
     /// Class Any.

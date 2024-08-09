@@ -3,6 +3,7 @@ using Kimono;
 using Overmocked.Benchmarks.Interceptors;
 using Overmocked.Benchmarks.Models;
 using System.Reflection;
+using IInterceptor = Castle.DynamicProxy.IInterceptor;
 
 namespace Overmocked.Benchmarks
 {
@@ -32,7 +33,7 @@ namespace Overmocked.Benchmarks
 
             for (int i = 0; i < count; i++)
             {
-                var castleProxy = generator.CreateInterfaceProxyWithTarget<IBenchmark>(_benchmarkClass, new[] { new CastleInterceptor() });
+                var castleProxy = generator.CreateInterfaceProxyWithTarget<IBenchmark>(_benchmarkClass, new CastleInterceptor());
             }
         }
 

@@ -30,11 +30,11 @@ namespace Kimono.Tests
 
 
         [TestMethod]
-        public void ProxyCallsMethod()
+        public void ProxyCallsCallback()
         {
             var called = false;
 
-            var proxy = new TestCallbackInterceptor<IInterface>(callback: c => called = c.Method.Name == "DoSomething");
+            var proxy = new TestCallbackInterceptor<IInterface>(callback: c => called = c.MemberName == "DoSomething");
             var @interface = _factory.CreateInterfaceProxy(proxy);
             
             @interface.DoSomething("hello world");
@@ -43,12 +43,12 @@ namespace Kimono.Tests
         }
 
         [TestMethod]
-        public void ProxyCallsMethodWithParameters()
+        public void ProxyCallsCallbackWithParameters()
         {
             var called = false;
 
             var proxy = new TestCallbackInterceptor<IInterface>(callback: c => {
-                called = c.Method.Name == "MethodWithReturn";
+                called = c.MemberName == "MethodWithReturn";
                 c.ReturnValue = c.GetParameter<string>("name");
             });
 
