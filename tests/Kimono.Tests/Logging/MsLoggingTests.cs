@@ -11,8 +11,7 @@ namespace Kimono.Tests.Logging
         //{
         //    var interceptor = new TestInterceptor<ILogger<MsLoggingTests>>();
 
-        //    var logger = //Intercept.WithCallback<ILogger<MsLoggingTests>>(c => { });
-        //        ProxyFactory.Create().CreateInterfaceProxy(interceptor);
+        //    var logger = ProxyFactory.Create().CreateInterfaceProxy(interceptor);
 
         //    try
         //    {
