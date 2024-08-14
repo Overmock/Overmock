@@ -49,22 +49,13 @@ namespace Kimono
         private readonly ConcurrentDictionary<Type, T> _cache = new ConcurrentDictionary<Type, T>();
 
         /// <inheritdoc />
-        public virtual bool Contains(Type type)
-        {
-            return _cache.ContainsKey(type);
-        }
+        public virtual bool Contains(Type type) => _cache.ContainsKey(type);
 
         /// <inheritdoc />
-        public virtual bool TryGet(Type type, out T? value)
-        {
-            return _cache.TryGetValue(type, out value);
-        }
+        public virtual bool TryGet(Type type, out T? value) => _cache.TryGetValue(type, out value);
 
         /// <inheritdoc />
-        public virtual bool TrySet(Type type, T value)
-        {
-            return _cache.TryAdd(type, value);
-        }
+        public virtual bool TrySet(Type type, T value) => _cache.TryAdd(type, value);
 
         /// <inheritdoc />
         public T? GetValueOrDefault(Type type) => _cache.GetValueOrDefault(type);

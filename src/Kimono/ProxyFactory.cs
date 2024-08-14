@@ -64,76 +64,77 @@ namespace Kimono
             );
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="interceptor"></param>
-        /// <returns></returns>
+        /// <inheritdoc />
         public T CreateInterfaceProxy<T>(IInterceptor<T> interceptor) where T : class
         {
-            const BindingFlags bindingFlags = BindingFlags.NonPublic | BindingFlags.Instance;
+            var generator = Cache.GetGenerator<T>();
 
-            var targetType = typeof(T);
-            var generator = Cache.GetGenerator(targetType) as IProxyGenerator<T>;
-            
-            if (generator is null)
+            if (generator == null)
             {
-                generator = new LazyProxyGenerator<T>(() =>
-                {
-                    var proxyBaseType = Types.ProxyBaseNonGeneric;
-                    var methodId = MethodId.Create();
-                    var typeBuilder = Module.DefineType(
-                        string.Format(CultureInfo.CurrentCulture, Names.TypeName, targetType.Name),
-                        TypeAttributes.Public | TypeAttributes.Sealed,
-                        proxyBaseType);
-                    var ctorParameters = Types.ProxyBaseCtorParameterTypes;
-                    var baseConstructor = proxyBaseType.GetConstructor(
-                        bindingFlags, null,
-                        ctorParameters,
-                        null
-                    )!;
-
-                    var context = ProxyContext.Create(CreateInterfaceProxy(
-                        interceptor, targetType, methodId, typeBuilder, ctorParameters, baseConstructor
-                    ));
-
-                    var proxyType = typeBuilder.CreateType();
-                    var proxyConstructor = proxyType.GetConstructor(ctorParameters)!;
-
-                    return new ProxyGenerator<T>(context,
-                        MethodFactory.CreateProxyConstructorDelegate<T>(proxyType, targetType, proxyConstructor)
-                    );
-                });
-
-                generator = Cache.SetGenerator(targetType, generator);
+                generator = Cache.SetGenerator(
+                    new LazyProxyGenerator<T>(() => CreateProxyGenerator(interceptor))
+                );
             }
 
             return generator.GenerateProxy(interceptor);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="callback"></param>
-        /// <returns></returns>
-        /// <exception cref="NotImplementedException"></exception>
+        /// <inheritdoc />
         public T CreateInterfaceProxy<T>(Action<IInvocation> callback) where T : class
         {
             var builder = new InterceptorBuilder();
 
             builder.Add((next, invocation) => {
-                callback?.Invoke(invocation);
+                callback.Invoke(invocation);
                 next(invocation);
             });
 
-            return CreateInterfaceProxy<T>(builder.Build<T>());
+            return CreateInterfaceProxy(builder.Build<T>());
         }
 
-        private MethodMetadata[] CreateInterfaceProxy<T>(IInterceptor<T> interceptor, Type targetType, MethodId methodId, TypeBuilder typeBuilder, Type[] ctorParameters, ConstructorInfo baseConstructor) where T : class
+        /// <inheritdoc />
+        public IProxyGenerator<T> CreateProxyGenerator<T>(IInterceptor<T> interceptor) where T : class
         {
-            (var methods, var properties) = AddInterfaceImplementations(typeBuilder, targetType);
+            const BindingFlags bindingFlags = BindingFlags.NonPublic | BindingFlags.Instance;
+            
+            var targetType = typeof(T);
+            var proxyBaseType = Types.ProxyBaseNonGeneric;
+            var methodId = MethodId.Create();
+            var typeBuilder = Module.DefineType(
+                string.Format(CultureInfo.CurrentCulture, Names.TypeName, targetType.Name),
+                TypeAttributes.Public | TypeAttributes.Sealed,
+                proxyBaseType);
+
+            var ctorParameters = Types.ProxyBaseCtorParameterTypes;
+            var baseConstructor = proxyBaseType.GetConstructor(
+                bindingFlags, null,
+                ctorParameters,
+                null
+            )!;
+
+            var metadatas = BuildTypeMetadata(
+                interceptor,
+                targetType,
+                methodId,
+                typeBuilder,
+                ctorParameters,
+                baseConstructor
+            );
+
+            var proxyType = typeBuilder.CreateType() ?? throw new KimonoException($"Failed to create proxy type for: {targetType}");
+
+            return new ProxyGenerator<T>(ProxyContext.Create(metadatas),
+                MethodFactory.CreateProxyConstructorDelegate<T>(
+                    proxyType,
+                    targetType,
+                    proxyType.GetConstructor(ctorParameters)!
+                )
+            );
+        }
+
+        private MethodMetadata[] BuildTypeMetadata<T>(IInterceptor<T> interceptor, Type targetType, MethodId methodId, TypeBuilder typeBuilder, Type[] ctorParameters, ConstructorInfo baseConstructor) where T : class
+        {
+            var (methods, properties) = AddInterfaceImplementations(typeBuilder, targetType);
 
             ImplementConstructor(typeBuilder, ctorParameters, baseConstructor);
 

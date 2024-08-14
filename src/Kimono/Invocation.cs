@@ -32,6 +32,8 @@ namespace Kimono
 
         public bool IsProperty { get; internal set; }
 
+        public bool TargetInvoked { get; private set; }
+
         public T GetParameter<T>(string name)
         {
             ref var reference = ref MemoryMarshal.GetReference(ParameterTypes.AsSpan());
@@ -51,7 +53,17 @@ namespace Kimono
 
         public T GetParameter<T>(int index)
         {
-            return (T)Parameters[index]!;
+            if (Parameters?.Length > index)
+            {
+                var parameter = Parameters[index];
+
+                if (parameter is T value)
+                {
+                    return value;
+                }
+            }
+
+            return default!;
         }
 
         public void Invoke(bool setReturnValue = true)
@@ -63,7 +75,9 @@ namespace Kimono
                 return;
             }
 
-            var value = _invoker?.Invoke(Target, this, Parameters!);
+            var value = _invoker?.Invoke(target, this, Parameters!);
+
+            TargetInvoked = true;
 
             if (setReturnValue)
             {

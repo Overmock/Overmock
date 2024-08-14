@@ -46,6 +46,11 @@ namespace Kimono
         /// <summary>
         /// 
         /// </summary>
+        bool TargetInvoked { get; }
+
+        /// <summary>
+        /// 
+        /// </summary>
         /// <param name="setReturnValue"></param>
         void Invoke(bool setReturnValue = true);
 

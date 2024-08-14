@@ -10,17 +10,15 @@ namespace Kimono
         /// <summary>
         /// Gets the specified type.
         /// </summary>
-        /// <param name="type">The type.</param>
         /// <returns>System.Nullable&lt;IProxyGenerator&gt;.</returns>
-        IProxyGenerator? GetGenerator(Type type);
+        IProxyGenerator<T>? GetGenerator<T>() where T : class;
 
         /// <summary>
         /// Sets the specified type.
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="type">The type.</param>
         /// <param name="value">The value.</param>
         /// <returns>IProxyGenerator.</returns>
-        IProxyGenerator<T> SetGenerator<T>(Type type, IProxyGenerator<T> value) where T : class;
+        IProxyGenerator<T> SetGenerator<T>(IProxyGenerator<T> value) where T : class;
     }
 }

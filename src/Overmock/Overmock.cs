@@ -12,8 +12,6 @@ namespace Overmocked
     /// <typeparam name="T">The type going to be mocked.</typeparam>
     public class Overmock<T> : Verifiable<T>, IOvermock<T>, IOvermockable, IOvermocked, IExpectAnyInvocation, IEquatable<Overmock<T>> where T : class
     {
-        private static readonly IProxyFactory _proxyFactory = ProxyFactory.Create();
-
         private readonly List<IMethodCall> _methods = new List<IMethodCall>();
         private readonly List<IPropertyCall> _properties = new List<IPropertyCall>();
 
@@ -24,11 +22,11 @@ namespace Overmocked
         /// Initializes a new instance of the <see cref="Overmock{T}" /> class.
         /// </summary>
         /// <exception cref="InvalidOperationException">Type '{Type.Name}' cannot be a sealed class or enum.</exception>
-        public Overmock(IInvocationHandler? handler = null)
+        public Overmock(IInvocationHandler? handler = null, IProxyFactory? factory = null)
         {
             //_invocationHandler = new OvermockInstanceInvocationHandler(() => _overrideAll, _methods.ToArray, _properties.ToArray);
             _interceptor = new OvermockInterceptor<T>(() => _overrideAll, _methods.ToArray, _properties.ToArray, handler);
-            Target = _proxyFactory.CreateInterfaceProxy(_interceptor);
+            Target = (factory ?? ProxyFactory.Create()).CreateInterfaceProxy(_interceptor);
 
             if (Type.IsSealed || Type.IsEnum)
             {
@@ -58,7 +56,7 @@ namespace Overmocked
             }
 
             _interceptor = new OvermockInterceptor<T>(() => _overrideAll, _methods.ToArray, _properties.ToArray, null);
-            Target = _proxyFactory.CreateInterfaceProxy(_interceptor);
+            Target = ProxyFactory.Create().CreateInterfaceProxy(_interceptor);
 
             Overmock.Register(this);
         }

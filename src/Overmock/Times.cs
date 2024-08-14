@@ -27,17 +27,17 @@ namespace Overmocked
         /// <summary>
         /// The once
         /// </summary>
-        public readonly static Times Once = new Times(1);
+        public static readonly Times Once = new Times(1);
 
         /// <summary>
         /// The zero
         /// </summary>
-        public readonly static Times Zero = new Times(0);
+        public static readonly Times Zero = new Times(0);
 
         /// <summary>
         /// Any
         /// </summary>
-        public readonly static Times Any = new Times(-1);
+        public static readonly Times Any = new Times(-1);
 
         /// <summary>
         /// Gets the value.
@@ -81,7 +81,7 @@ namespace Overmocked
         /// <exception cref="KimonoException">Method called: Expected: {_times}, Actual: {count}</exception>
         internal void ThrowIfInvalid(int count)
         {
-            // -1 represents inifinity.
+            // -1 represents infinity.
             if (_times == -1)
             {
                 return;
