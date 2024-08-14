@@ -75,7 +75,7 @@ namespace Kimono
                 return;
             }
 
-            var value = _invoker.Invoke(target, this, Parameters!);
+            var value = _invoker?.Invoke(target, this, Parameters!);
 
             TargetInvoked = true;
 
