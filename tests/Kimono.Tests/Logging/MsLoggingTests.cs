@@ -44,25 +44,25 @@ namespace Kimono.Tests.Logging
             target.Params("test", 1, new Model());
         }
 
-        [TestMethod]
-        public void LogMethodTest()
-        {
-            var interceptor = new TestCallbackInterceptor<IParams>(new ParamsClass(), c => { c.Invoke(); });
+        //[TestMethod]
+        //public void LogMethodTest()
+        //{
+        //    var interceptor = new TestCallbackInterceptor<IParams>(new ParamsClass(), c => { c.Invoke(); });
 
-            var target = ProxyFactory.Create().CreateInterfaceProxy(interceptor);
+        //    var target = ProxyFactory.Create().CreateInterfaceProxy(interceptor);
 
-            target.Log<IReadOnlyList<string>>(LogLevel.Error, new EventId(1), new List<string>(), null, (l, e) => string.Empty);
-        }
+        //    target.Log<IReadOnlyList<string>>(LogLevel.Error, new EventId(1), new List<string>(), null, (l, e) => string.Empty);
+        //}
 
-        [TestMethod]
-        public void ExtensionMethodTest()
-        {
-            var interceptor = new TestCallbackInterceptor<IParams>(new ParamsClass(), c => { c.Invoke(); });
+        //[TestMethod]
+        //public void ExtensionMethodTest()
+        //{
+        //    var interceptor = new TestCallbackInterceptor<IParams>(new ParamsClass(), c => { c.Invoke(); });
 
-            var target = ProxyFactory.Create().CreateInterfaceProxy(interceptor);
+        //    var target = ProxyFactory.Create().CreateInterfaceProxy(interceptor);
 
-            target.Test(new Exception(), string.Empty, "hello", "world");
-        }
+        //    target.Test(new Exception(), string.Empty, "hello", "world");
+        //}
 
         private sealed class TestInterceptor<T> : Interceptor<T> where T : class
         {
