@@ -29,8 +29,6 @@ namespace Overmocked
         {
             ref var reference = ref MemoryMarshal.GetReference(overridables);
 
-            if (reference == null) { return false; }
-
             for (int i = 0; i < overridables.Length; i++)
             {
                 ref var call = ref Unsafe.Add(ref reference, i);
@@ -60,10 +58,10 @@ namespace Overmocked
                 throw new ArgumentNullException(nameof(parameters));
             }
 
-            if (matches.Length != parameters.Length)
+            if (matches.Length != parameters?.Length)
             {
                 throw new InvalidOperationException(
-                    $"Parameters matching collection sizes do not match. Parameters.Length: {parameters.Length}, Matches.Length: {matches.Length}"
+                    $"Parameters matching collection sizes do not match. Parameters.Length: {parameters?.Length ?? 0}, Matches.Length: {matches.Length}"
                 );
             }
 
@@ -94,7 +92,7 @@ namespace Overmocked
 
             if (!handled && !_expectAnyProvider())
             {
-                throw new UnhandledMemberException(invocation.Method.Name);
+                throw new UnhandledMemberException(invocation.MemberName);
             }
         }
 

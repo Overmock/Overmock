@@ -12,7 +12,6 @@ namespace Kimono
     public sealed class MethodMetadata
     {
         private readonly MethodInfo _targetMethod;
-        private readonly bool _isProperty;
         private ParameterInfo[]? _parameters;
         private Type[]? _parameterTypes;
         private List<ParameterInfo>? _inputs;
@@ -23,7 +22,7 @@ namespace Kimono
         private MethodMetadata(MethodInfo targetMethod, bool isProperty)
         {
             _targetMethod = targetMethod;
-            _isProperty = isProperty;
+            IsProperty = isProperty;
         }
 
         /// <summary>
@@ -70,7 +69,7 @@ namespace Kimono
         /// <summary>
         /// 
         /// </summary>
-        public bool IsProperty => _isProperty;
+        public bool IsProperty { get; }
 
         /// <summary>
         /// 

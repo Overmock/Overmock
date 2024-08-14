@@ -26,70 +26,50 @@ namespace Kimono
         /// <inheritdoc/>
         public IInterceptor<T> Build<T>() where T : class
         {
-            return new InvocationChainHandler<T>(() => _invocationChain.GetEnumerator());
+            return new InvocationChainHandler<T>(_invocationChain.GetEnumerator());
         }
 
         /// <inheritdoc/>
         public IDisposableInterceptor<T> Build<T>(T disposable) where T : class, IDisposable
         {
-            return new DisposableInvocationChainHandler<T>(disposable, () => _invocationChain.GetEnumerator());
+            return new InvocationChainHandler<T>(disposable, _invocationChain.GetEnumerator());
         }
 
-        private sealed class InvocationChainHandler<T> : Interceptor<T> where T : class
+        private sealed class InvocationChainHandler<T> : Interceptor<T>, IDisposableInterceptor<T> where T : class
         {
-            private readonly Func<IEnumerator<InterceptorBuilderAction>> _chainProvider;
+            private readonly IEnumerator<InterceptorBuilderAction> _chainProvider;
+            private readonly T? _disposableTarget;
 
-            public InvocationChainHandler(Func<IEnumerator<InterceptorBuilderAction>> handlersProvider)
+            public InvocationChainHandler(IEnumerator<InterceptorBuilderAction> handlersProvider) : this(null, handlersProvider)
+            {
+            }
+
+            public InvocationChainHandler(T? disposable, IEnumerator<InterceptorBuilderAction> handlersProvider) : base(disposable)
             {
                 _chainProvider = handlersProvider!;
+                _disposableTarget = disposable;
             }
 
             protected override void HandleInvocation(IInvocation invocation)
             {
-                using var enumerator = _chainProvider();
+                var enumerator = _chainProvider;
 
-                void Next(IInvocation invocation)
+                Next(invocation);
+
+                return;
+
+                void Next(IInvocation inv)
                 {
                     if (enumerator.MoveNext())
                     {
-                        enumerator.Current.Invoke(Next, invocation);
+                        enumerator.Current?.Invoke(Next, inv);
                     }
                 }
-
-                Next(invocation);
-            }
-        }
-
-        private sealed class DisposableInvocationChainHandler<T> : DisposableInterceptor<T> where T : class, IDisposable
-        {
-            private readonly Func<IEnumerator<InterceptorBuilderAction>> _chainProvider;
-
-            public DisposableInvocationChainHandler(T disposable, Func<IEnumerator<InterceptorBuilderAction>> handlersProvider) : base(disposable)
-            {
-                _chainProvider = handlersProvider!;
             }
 
-            protected override void Disposing(bool disposing)
+            public void Dispose()
             {
-                if (disposing)
-                {
-                    Target?.Dispose();
-                }
-            }
-
-            protected override void HandleInvocation(IInvocation invocation)
-            {
-                using var enumerator = _chainProvider();
-
-                void Next(IInvocation invocation)
-                {
-                    if (enumerator.MoveNext())
-                    {
-                        enumerator.Current.Invoke(Next, invocation);
-                    }
-                }
-
-                Next(invocation);
+                (_disposableTarget as IDisposable)?.Dispose();
             }
         }
     }

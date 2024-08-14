@@ -13,7 +13,7 @@ namespace Kimono
         /// <summary>
         /// 
         /// </summary>
-        public DisposableInterceptor(T target) : base(target)
+        protected DisposableInterceptor(T? target) : base(target)
         {
         }
 

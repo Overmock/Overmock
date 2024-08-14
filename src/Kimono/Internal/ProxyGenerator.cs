@@ -11,17 +11,17 @@ namespace Kimono.Internal
     internal sealed class ProxyGenerator<T> : IProxyGenerator<T> where T : class
     {
         private readonly ProxyContext _proxyContext;
-        private readonly Func<IInterceptor<T>, T> _createProxy;
+        private readonly Func<IInterceptor<T>, T> _proxyFactory;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ProxyGenerator{T}"/> class.
         /// </summary>
         /// <param name="proxyContext">The proxy context.</param>
-        /// <param name="createProxy">The create proxy delegate.</param>
-        public ProxyGenerator(ProxyContext proxyContext, Func<IInterceptor<T>, T> createProxy)
+        /// <param name="proxyFactory">The create proxy delegate.</param>
+        public ProxyGenerator(ProxyContext proxyContext, Func<IInterceptor<T>, T> proxyFactory)
         {
             _proxyContext = proxyContext;
-            _createProxy = createProxy;
+            _proxyFactory = proxyFactory;
         }
 
         /// <summary>
@@ -41,7 +41,7 @@ namespace Kimono.Internal
         /// <returns><typeparamref name="T" />.</returns>
         public T GenerateProxy(IInterceptor<T> interceptor)
         {
-            var result = _createProxy.Invoke(interceptor);
+            var result = _proxyFactory.Invoke(interceptor);
 
             if (interceptor is IProxyContextSetter setter)
             {

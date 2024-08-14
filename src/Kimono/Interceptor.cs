@@ -1,6 +1,5 @@
 ﻿using Kimono.Internal;
 using System;
-using System.Reflection;
 
 namespace Kimono
 {
@@ -17,8 +16,10 @@ namespace Kimono
         /// 
         /// </summary>
         /// <param name="target"></param>
-        public Interceptor(T? target = null)
+        /// <param name="proxyContext"></param>
+        public Interceptor(T? target = null, ProxyContext? proxyContext = null)
         {
+            _proxyContext = proxyContext;
             _target = target;
         }
 
@@ -38,9 +39,15 @@ namespace Kimono
         /// <param name="methodId"></param>
         /// <param name="genericParameters"></param>
         /// <param name="parameters"></param>
+        /// <exception cref="InvalidOperationException"></exception>
         /// <returns></returns>
         object? IInterceptor.HandleInvocation(int methodId, Type[] genericParameters, object[] parameters)
         {
+            if (_proxyContext == null)
+            {
+                throw new InvalidOperationException("The proxy context has not been set.");
+            }
+
             ref var metadata = ref _proxyContext.GetMethod(methodId);
 
             var invocation = new Invocation(metadata.GetDelegateInvoker()!)
@@ -77,11 +84,6 @@ namespace Kimono
         protected virtual void HandleInvocation(IInvocation invocation)
         {
             invocation.Invoke();
-        }
-
-        private static class Types
-        {
-            public static ParameterInfo[] EmptyParameters = Array.Empty<ParameterInfo>();
         }
     }
 }

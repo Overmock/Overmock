@@ -6,7 +6,7 @@ namespace Overmocked.Mocking.Internal
     /// Implements the <see cref="IOverride" />
     /// </summary>
     /// <seealso cref="IOverride" />
-    internal sealed class ValueOverride : Verifiable, IOverride
+    internal sealed class ValueOverride : Override, IOverride
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ValueOverride" /> class.
@@ -23,18 +23,13 @@ namespace Overmocked.Mocking.Internal
         /// <value>The value.</value>
         public object Value { get; }
 
-        /// <summary>
-        /// Handles the specified context.
-        /// </summary>
-        /// <param name="context">The context.</param>
-        /// <returns>System.Nullable&lt;System.Object&gt;.</returns>
-        public object? Handle(OvermockContext context)
+        public override void Verify()
         {
-            return Value;
         }
 
-        protected override void Verify()
+        protected override object? HandleCore(OvermockContext context)
         {
+            return Value;
         }
     }
 }

@@ -25,21 +25,18 @@ namespace Kimono.Internal
         /// </summary>
         /// <param name="type">The type.</param>
         /// <returns>System.Nullable&lt;IProxyGenerator&gt;.</returns>
-        public IProxyGenerator? GetGenerator(Type type)
-        {
-            return _cache.GetValueOrDefault(type);
-        }
+        public IProxyGenerator<T>? GetGenerator<T>() where T : class
+            => _cache.GetValueOrDefault(typeof(T)) as IProxyGenerator<T>;
 
         /// <summary>
         /// Sets the specified type.
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="type">The type.</param>
         /// <param name="value">The value.</param>
         /// <returns>IProxyGenerator.</returns>
-        public IProxyGenerator<T> SetGenerator<T>(Type type, IProxyGenerator<T> value) where T : class
+        public IProxyGenerator<T> SetGenerator<T>(IProxyGenerator<T> value) where T : class
         {
-            _cache.TrySet(type, value);
+            _cache.TrySet(typeof(T), value);
 
             return value;
         }
