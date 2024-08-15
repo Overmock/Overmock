@@ -9,8 +9,8 @@ namespace Kimono
     /// <typeparam name="T"></typeparam>
     public class Interceptor<T> : IInterceptor<T>, IProxyContextSetter where T : class
     {   
-        private ProxyContext? _proxyContext;
         private readonly T? _target;
+        private ProxyContext? _proxyContext;
 
         /// <summary>
         /// 
@@ -19,19 +19,17 @@ namespace Kimono
         /// <param name="proxyContext"></param>
         public Interceptor(T? target = null, ProxyContext? proxyContext = null)
         {
-            _proxyContext = proxyContext;
             _target = target;
+            _proxyContext = proxyContext;
         }
 
         /// <summary>
         /// 
         /// </summary>
-        bool IInterceptor<T>.BuildInvoker => !(_target is null);
-
-        /// <summary>
-        /// 
-        /// </summary>
         protected T? Target => _target;
+
+        /// <inheritdoc />
+        bool IInterceptor<T>.ContainsTarget => _target != null;
 
         /// <summary>
         /// 
@@ -41,7 +39,7 @@ namespace Kimono
         /// <param name="parameters"></param>
         /// <exception cref="InvalidOperationException"></exception>
         /// <returns></returns>
-        object? IInterceptor.HandleInvocation(int methodId, Type[] genericParameters, object[] parameters)
+        public object? HandleInvocation(int methodId, Type[] genericParameters, object[] parameters)
         {
             if (_proxyContext == null)
             {
@@ -72,7 +70,7 @@ namespace Kimono
         }
 
         /// <inheritdoc />
-        void IProxyContextSetter.SetProxyContext(ProxyContext context)
+        public void SetProxyContext(ProxyContext context)
         {
             _proxyContext ??= context;
         }

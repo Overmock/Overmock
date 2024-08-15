@@ -13,7 +13,8 @@ namespace Kimono.Tests
             var called = false;
             var saveCalled = false;
 
-            var interceptor = new TestCallbackInterceptor<IRepository>(callback: context => {
+            var interceptor = new TestCallbackInterceptor<IRepository>(callback: context =>
+            {
                 called = true;
                 if (context.Method.Name == "Save")
                 {
@@ -45,8 +46,8 @@ namespace Kimono.Tests
         [TestMethod]
         public void WithHandlersEnumerableInterceptorTest()
         {
-            var builder = new InterceptorBuilder();
-            builder.Add(new TestInterceptorHandler());
+            var builder = new InterceptorBuilder()
+                .AddHandler(new TestInterceptorHandler());
 
             var interceptor = _factory.CreateInterfaceProxy(builder.Build<IRepository>());
 
@@ -56,12 +57,13 @@ namespace Kimono.Tests
         }
 
         [TestMethod]
-        public void WithInovcationChainInterceptorTest()
+        public void WithInvocationChainInterceptorTest()
         {
             var called = false;
             var saveCalled = false;
 
-            var interceptor = _factory.CreateInterfaceProxy<IRepository>(invocation => {
+            var interceptor = _factory.CreateInterfaceProxy<IRepository>(invocation =>
+            {
                 called = true;
 
                 if (invocation.Method.Name == "Save")
@@ -84,7 +86,8 @@ namespace Kimono.Tests
             var called = false;
             var saveCalled = false;
 
-            var interceptor = new TestCallbackInterceptor<IRepository>(new Repository(), context => {
+            var interceptor = new TestCallbackInterceptor<IRepository>(new Repository(), context =>
+            {
                 called = true;
                 if (context.Method.Name == "Save")
                 {
@@ -170,7 +173,8 @@ namespace Kimono.Tests
             var saveCalled = false;
             var disposeCalled = false;
 
-            var interceptor = new DisposableTestCallbackInterceptor<IDisposableRepository>(new DisposableRepository(), context => {
+            var interceptor = new DisposableTestCallbackInterceptor<IDisposableRepository>(new DisposableRepository(), context =>
+            {
                 called = true;
                 if (context.Method.Name == "Save")
                 {
@@ -203,13 +207,14 @@ namespace Kimono.Tests
         [TestMethod]
         public void DisposableTargetedWithHandlersInterceptorTest()
         {
-            var interceptor = new TestCallbackInterceptor<IDisposableRepository>(new DisposableRepository(), c => {
+            var interceptor = new TestCallbackInterceptor<IDisposableRepository>(new DisposableRepository(), c =>
+            {
                 if (c.Method.Name == "Save")
                 {
                     c.ReturnValue = true;
                 }
             });
-            
+
             var subject = _factory.CreateInterfaceProxy(interceptor);
 
             var returnedTrue = subject.Save(new Model { Id = 69 });
@@ -217,35 +222,27 @@ namespace Kimono.Tests
             Assert.IsTrue(returnedTrue);
         }
 
-        private class TestInterceptorHandler : IInterceptorHandler
-        {
-            public void Handle(InvocationAction nextHandler, IInvocation invocation)
-            {
-                nextHandler(invocation);
-
-                invocation.ReturnValue = true;
-            }
-        }
-
         [TestMethod]
-        public void DisposableTargetedWithInovcationChainInterceptorTest()
+        public void DisposableTargetedWithInvocationChainInterceptorTest()
         {
             var firstCalled = false;
             var secondCalled = false;
 
-            var interceptorBuilder = new InterceptorBuilder();
-            interceptorBuilder.Add((next, invocation) => {
-                firstCalled = true;
-                if (!secondCalled)
+            var interceptorBuilder = new InterceptorBuilder()
+                .AddCallback((next, invocation) =>
                 {
-                    next(invocation);
-                }
-            }).Add((next, invocation) => {
+                    firstCalled = true;
+                    if (!secondCalled)
+                    {
+                        next(invocation);
+                    }
+                }).AddCallback((next, invocation) =>
+                {
                     secondCalled = true;
-                invocation.ReturnValue = true;
-            });
+                    invocation.ReturnValue = true;
+                }).Dispose<IDisposableRepository>(new DisposableRepository());
 
-            using (var interceptor = interceptorBuilder.Build<IDisposableRepository>(new DisposableRepository()))
+            using (var interceptor = interceptorBuilder.Build())
             {
                 var repository = _factory.CreateInterfaceProxy(interceptor);
                 var returnedTrue = repository.Save(new Model { Id = 52 });
@@ -256,38 +253,46 @@ namespace Kimono.Tests
             }
         }
 
-        //[TestMethod]
-        //public void DisposableTargetedWithInovcationChainInterceptorDoesNotCallNextTest()
-        //{
-        //    var firstCalled = false;
-        //    var secondCalled = false;
+        [TestMethod]
+        public void DisposableTargetedWithInvocationChainInterceptorTestFromTargetBuilder()
+        {
+            var firstCalled = false;
+            var secondCalled = false;
 
-        //    var interceptor = Intercept.DisposableWithInovcationChain<IDisposableRepository, DisposableRepository>(new DisposableRepository(), builder => {
-        //        builder.Add((next, context) => {
-        //            firstCalled = true;
-        //        })
-        //        .Add((next, context) => {
-        //            secondCalled = true;
-        //            context.ReturnValue = true;
-        //        });
-        //    });
+            var interceptorBuilder = new InterceptorBuilder()
+                .AddCallback((next, invocation) =>
+                {
+                    firstCalled = true;
+                    if (!secondCalled)
+                    {
+                        next(invocation);
+                    }
+                }).AddCallback((next, invocation) =>
+                {
+                    secondCalled = true;
+                    invocation.ReturnValue = true;
+                }).Target<IDisposableRepository>(new DisposableRepository())
+                .DisposeResources();
 
-        //    var returnedTrue = interceptor.Save(new Model { Id = 69 });
+            using (var interceptor = interceptorBuilder.Build())
+            {
+                var repository = _factory.CreateInterfaceProxy(interceptor);
+                var returnedTrue = repository.Save(new Model { Id = 52 });
 
-        //    Assert.IsFalse(returnedTrue);
-        //    Assert.IsTrue(firstCalled);
-        //    Assert.IsFalse(secondCalled);
-        //}
+                Assert.IsTrue(returnedTrue);
+                Assert.IsTrue(firstCalled);
+                Assert.IsTrue(secondCalled);
+            }
+        }
 
-        //private class TestHandler : IInvocationHandler
-        //{
-        //    public void Handle(IInvocationContext context)
-        //    {
-        //        if (context.MemberName == "Save")
-        //        {
-        //            context.ReturnValue = true;
-        //        }
-        //    }
-        //}
+        private class TestInterceptorHandler : IInvocationHandler
+        {
+            public void Handle(InvocationAction nextHandler, IInvocation invocation)
+            {
+                nextHandler(invocation);
+
+                invocation.ReturnValue = true;
+            }
+        }
     }
 }

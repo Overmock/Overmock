@@ -15,20 +15,14 @@ namespace Kimono.Internal
         /// </summary>
         /// <param name="factory"></param>
         public LazyProxyGenerator(Func<IProxyGenerator> factory)
-        {
-            _lazy = new Lazy<IProxyGenerator>(factory);
-        }
+            => _lazy = new Lazy<IProxyGenerator>(factory);
 
         /// <inheritdoc />
         public T GenerateProxy(IInterceptor<T> interceptor)
-        {
-            return ((IProxyGenerator<T>)_lazy.Value).GenerateProxy(interceptor);
-        }
+            => ((IProxyGenerator<T>)_lazy.Value).GenerateProxy(interceptor);
 
         /// <inheritdoc />
         public object GenerateProxy(IInterceptor interceptor)
-        {
-            return GenerateProxy((IInterceptor<T>)interceptor);
-        }
+            => GenerateProxy((IInterceptor<T>)interceptor);
     }
 }

@@ -79,17 +79,20 @@ namespace Kimono
             return generator.GenerateProxy(interceptor);
         }
 
+        /// <inheritdoc/>
+        public T CreateInterfaceProxy<T>(IInterceptorBuilder builder) where T : class
+        {
+            return CreateInterfaceProxy(builder.Build<T>());
+        }
+
         /// <inheritdoc />
         public T CreateInterfaceProxy<T>(Action<IInvocation> callback) where T : class
         {
-            var builder = new InterceptorBuilder();
-
-            builder.Add((next, invocation) => {
-                callback.Invoke(invocation);
-                next(invocation);
-            });
-
-            return CreateInterfaceProxy(builder.Build<T>());
+            return CreateInterfaceProxy<T>(new InterceptorBuilder()
+                .AddCallback((next, invocation) => {
+                    callback.Invoke(invocation);
+                    next(invocation);
+                }).Build<T>());
         }
 
         /// <inheritdoc />
@@ -139,7 +142,7 @@ namespace Kimono
             ImplementConstructor(typeBuilder, ctorParameters, baseConstructor);
 
             var methodMetadatas = new List<MethodMetadata>(methods.Count + properties.Count);
-            CreateMethods(methodMetadatas, methodId, typeBuilder, targetType, methods, false, interceptor.BuildInvoker);
+            CreateMethods(methodMetadatas, methodId, typeBuilder, targetType, methods, false, interceptor.ContainsTarget);
             CreateProperties(methodMetadatas, methodId, typeBuilder, targetType, properties);
             
             return methodMetadatas.ToArray();
@@ -237,7 +240,7 @@ namespace Kimono
             }
         }
 
-        private void CreateMethods(List<MethodMetadata> metadatas, MethodId methodId, TypeBuilder typeBuilder, Type targetType, List<MethodInfo> methods, bool areProperties = false, bool buildInvoker = false)
+        private void CreateMethods(List<MethodMetadata> metadatas, MethodId methodId, TypeBuilder typeBuilder, Type targetType, List<MethodInfo> methods, bool areProperties = false, bool generateInvoker = false)
         {
             if (Types.Disposable.IsAssignableFrom(targetType) && methods.Remove(Methods.Dispose))
             {
@@ -275,7 +278,7 @@ namespace Kimono
 
                 MethodFactory.EmitProxyMethod(emitter, methodId, metadata);
 
-                if (buildInvoker)
+                if (generateInvoker)
                 {
                     metadata.UseInvoker(MethodFactory.CreateDelegateInvoker(metadata));
                 }
