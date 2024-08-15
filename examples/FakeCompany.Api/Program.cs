@@ -17,7 +17,9 @@ builder.Services.AddScopedProxy<IDataConnection, FrameworkDataConnection>(c => {
 		var elapsed = stopwatch.Elapsed;
 	})
 	.AddTransient<EntityCollection<UserStory>, UserStoryFactory>()
-	.AddTransient<IUserStoryService, UserStoryService>();
+	.AddTransient<IUserStoryService, UserStoryService>()
+    .AddScoped<IProjectService, ProjectService>()
+    .AddControllers();
 
 var app = builder.Build();
 
