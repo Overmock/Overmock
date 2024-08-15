@@ -3,7 +3,7 @@ version: 2.1
 jobs:
   build-and-test:
     docker:
-      - image: mcr.microsoft.com/dotnet/sdk:7.0
+      - image: mcr.microsoft.com/dotnet/sdk:8.0
     steps:
       - store_test_results:
           path: ./test-results/
@@ -16,7 +16,7 @@ jobs:
 
   pack:
     docker:
-      - image: mcr.microsoft.com/dotnet/sdk:7.0
+      - image: mcr.microsoft.com/dotnet/sdk:8.0
     parallelism: 1 # figure out later if needed.
     steps:
       - checkout
