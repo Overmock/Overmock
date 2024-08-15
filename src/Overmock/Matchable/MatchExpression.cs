@@ -15,7 +15,7 @@ namespace Overmocked.Matchable
         /// 
         /// </summary>
         /// <param name="value"></param>
-        public MatchExpression(Expression<Func<T, bool>> value) : base()
+        public MatchExpression(Expression<Func<T, bool>> value)
         {
             _value = value.Compile();
         }

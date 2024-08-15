@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Version>0.1.0</Version>
-    <TargetFrameworks>net7.0;net6.0;netstandard2.1;</TargetFrameworks>
+    <Version>0.1.1</Version>
+    <TargetFrameworks>net8.0;net7.0;net6.0;netstandard2.1;</TargetFrameworks>
     <Nullable>enable</Nullable>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <AnalysisLevel>7.0-recommended</AnalysisLevel>
@@ -49,6 +49,6 @@
   
   <ItemGroup>
     <PackageReference Include="IFluentInterface" Version="2.1.0" />
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
   </ItemGroup>
 </Project>

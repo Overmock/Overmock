@@ -24,6 +24,14 @@ namespace Kimono
         T CreateInterfaceProxy<T>(IInterceptor<T> interceptor) where T : class;
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="builder"></param>
+        /// <returns></returns>
+        T CreateInterfaceProxy<T>(IInterceptorBuilder builder) where T : class;
+
+        /// <summary>
         /// Creates a <see cref="IProxyGenerator{T}"/> for the specified interceptor. Note: this ignores any cached generators.
         /// </summary>
         /// <param name="interceptor"></param>

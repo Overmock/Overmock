@@ -19,7 +19,7 @@ namespace Overmocked.Benchmarks
         {
  //           _kimonoProxy = Intercept.WithHandlers<IBenchmark, Benchmark>(_benchmarkClass, new KimonoInvocationHandler());
 
-            var interceptor = new Kimono.Interceptor<IBenchmark>();
+            var interceptor = new Interceptor<IBenchmark>();
             _kimonoProxyCore = ProxyFactory.Create().CreateInterfaceProxy(interceptor);
 
             _dispatchProxy = DispatchProxy.Create<IBenchmark, DotnetProxy>();

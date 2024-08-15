@@ -23,13 +23,13 @@ namespace Kimono
     /// 
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public interface IInterceptor<T> : IInterceptor
+    public interface IInterceptor<out T> : IInterceptor
     {
         /// <summary>
         /// 
         /// </summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
-        bool BuildInvoker { get; }
+        bool ContainsTarget { get; }
     }
 
     /// <summary>
