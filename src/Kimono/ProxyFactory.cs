@@ -214,7 +214,7 @@ namespace Kimono
             return new List<MethodInfo>(Types.Object.GetMethods()).FindAll(method => method.IsVirtual);
         }
 
-        private static void DefineGenericParameters(MethodMetadata metadata, MethodBuilder methodBuilder)
+        private static Type[] DefineGenericParameters(MethodMetadata metadata, MethodBuilder methodBuilder)
         {
             var genericParameters = metadata.GenericParameters;
             var genericParameterBuilders = methodBuilder.DefineGenericParameters(genericParameters.Select(t => t.Name).ToArray());
@@ -238,6 +238,8 @@ namespace Kimono
                     }
                 }
             }
+
+            return genericParameterBuilders.Cast<Type>().ToArray();
         }
 
         private void CreateMethods(List<MethodMetadata> metadatas, MethodId methodId, TypeBuilder typeBuilder, Type targetType, List<MethodInfo> methods, bool areProperties = false, bool generateInvoker = false)
@@ -271,12 +273,13 @@ namespace Kimono
 
                 var emitter = methodBuilder.GetEmitter();
 
+                Type[]? genericParameterTypes = null;
                 if (methodInfo.IsGenericMethod)
                 {
-                    DefineGenericParameters(metadata, methodBuilder);
+                    genericParameterTypes = DefineGenericParameters(metadata, methodBuilder);
                 }
 
-                MethodFactory.EmitProxyMethod(emitter, methodId, metadata);
+                MethodFactory.EmitProxyMethod(emitter, methodId, metadata, genericParameterTypes);
 
                 if (generateInvoker)
                 {

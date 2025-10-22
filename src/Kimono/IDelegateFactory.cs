@@ -42,12 +42,13 @@ namespace Kimono
         public IDelegateInvoker CreateFunctionInvoker(MethodMetadata metadata);
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="emitter"></param>
         /// <param name="methodId"></param>
         /// <param name="metadata"></param>
-        void EmitProxyMethod(IEmitter emitter, MethodId methodId, MethodMetadata metadata);
+        /// <param name="genericParameterTypes"></param>
+        void EmitProxyMethod(IEmitter emitter, MethodId methodId, MethodMetadata metadata, Type[]? genericParameterTypes = null);
 
         /// <summary>
         /// 

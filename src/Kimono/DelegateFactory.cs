@@ -180,17 +180,18 @@ namespace Kimono
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="emitter"></param>
         /// <param name="methodId"></param>
         /// <param name="metadata"></param>
-        public void EmitProxyMethod(IEmitter emitter, MethodId methodId, MethodMetadata metadata)
+        /// <param name="genericParameterTypes"></param>
+        public void EmitProxyMethod(IEmitter emitter, MethodId methodId, MethodMetadata metadata, Type[]? genericParameterTypes = null)
         {
             var returnType = metadata.ReturnType;
             var returnIsNotVoid = returnType != Types.Void;
 
-            var locals = EmitGenericParameters(emitter, metadata);
+            var locals = EmitGenericParameters(emitter, metadata, genericParameterTypes);
 
             if (returnIsNotVoid)
             {
@@ -377,12 +378,13 @@ namespace Kimono
         //    );
         //}
         
-        private static LocalBuilder[] EmitGenericParameters(IEmitter emitter, MethodMetadata metadata)
+        private static LocalBuilder[] EmitGenericParameters(IEmitter emitter, MethodMetadata metadata, Type[]? genericParameterTypes)
         {
             var method = metadata.TargetMethod;
             if (method.IsGenericMethod)
             {
-                var arguments = metadata.GenericParameters;
+                // Use the generic parameter types from the MethodBuilder if provided, otherwise fall back to metadata
+                var arguments = genericParameterTypes ?? metadata.GenericParameters;
                 var locals = new LocalBuilder[arguments.Length];
 
                 for (int i = 0; i < arguments.Length; i++)
