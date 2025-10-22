@@ -180,12 +180,23 @@ namespace Kimono
         }
 
         /// <summary>
-        ///
+        /// Emits IL code for a proxy method that intercepts calls and forwards them to the interceptor.
         /// </summary>
-        /// <param name="emitter"></param>
-        /// <param name="methodId"></param>
-        /// <param name="metadata"></param>
-        /// <param name="genericParameterTypes"></param>
+        /// <remarks>
+        /// This method generates IL that:
+        /// 1. Loads generic type parameters (if any) into local variables using ldtoken/GetTypeFromHandle
+        /// 2. Packages method arguments into an object[] array, boxing value types as needed
+        /// 3. Calls the ProxyBase.HandleMethodCall with the method ID, generic types array, and arguments array
+        /// 4. Unboxes/casts the return value to the appropriate type
+        ///
+        /// For generic methods, it's critical to use the generic parameter types from the MethodBuilder
+        /// (passed via genericParameterTypes) rather than the original method's types, as the ldtoken
+        /// instruction requires types that are valid in the current IL context.
+        /// </remarks>
+        /// <param name="emitter">The IL emitter to write instructions to.</param>
+        /// <param name="methodId">The unique identifier for this method in the proxy.</param>
+        /// <param name="metadata">Metadata about the method being proxied.</param>
+        /// <param name="genericParameterTypes">The generic parameter types from the MethodBuilder (for generic methods).</param>
         public void EmitProxyMethod(IEmitter emitter, MethodId methodId, MethodMetadata metadata, Type[]? genericParameterTypes = null)
         {
             var returnType = metadata.ReturnType;
@@ -378,6 +389,26 @@ namespace Kimono
         //    );
         //}
         
+        /// <summary>
+        /// Emits IL to load generic type parameters into local variables.
+        /// </summary>
+        /// <remarks>
+        /// For generic methods like void Method&lt;T&gt;(), this generates IL to:
+        /// 1. Declare a local variable of type System.Type for each generic parameter
+        /// 2. Load each generic parameter's type using ldtoken and Type.GetTypeFromHandle
+        /// 3. Store the type in the corresponding local variable
+        ///
+        /// These locals are then used by EmitGenericLocalFieldTypes to create a Type[] array
+        /// that gets passed to the interceptor, allowing runtime inspection of the generic types.
+        ///
+        /// CRITICAL: Must use genericParameterTypes (from the MethodBuilder) rather than metadata.GenericParameters
+        /// (from the original method) because ldtoken requires types that exist in the current IL context.
+        /// Using the wrong types causes a BadImageException at runtime.
+        /// </remarks>
+        /// <param name="emitter">The IL emitter to write instructions to.</param>
+        /// <param name="metadata">Metadata about the method being proxied.</param>
+        /// <param name="genericParameterTypes">The generic parameter types from the MethodBuilder.</param>
+        /// <returns>Array of local variables that hold the generic type instances.</returns>
         private static LocalBuilder[] EmitGenericParameters(IEmitter emitter, MethodMetadata metadata, Type[]? genericParameterTypes)
         {
             var method = metadata.TargetMethod;
@@ -387,6 +418,7 @@ namespace Kimono
                 var arguments = genericParameterTypes ?? metadata.GenericParameters;
                 var locals = new LocalBuilder[arguments.Length];
 
+                // Declare local variables for each generic type parameter
                 for (int i = 0; i < arguments.Length; i++)
                 {
                     locals[i] = emitter.DeclareLocal(Types.Type);
@@ -394,6 +426,8 @@ namespace Kimono
 
                 emitter.Nop();
 
+                // Load each generic type into its local variable
+                // IL Pattern: ldtoken T, call Type.GetTypeFromHandle, stloc.N
                 for (int i = 0; i < arguments.Length; i++)
                 {
                     emitter.IlGenerator.Emit(OpCodes.Ldtoken, arguments[i]);
@@ -407,51 +441,55 @@ namespace Kimono
             return Array.Empty<LocalBuilder>();
         }
 
+        /// <summary>
+        /// Emits IL to create a Type[] array containing the generic type parameters.
+        /// </summary>
+        /// <remarks>
+        /// This method reads the generic types from local variables (created by EmitGenericParameters)
+        /// and packages them into a Type[] array on the stack. This array is then passed to
+        /// ProxyBase.HandleMethodCall so the interceptor can inspect the generic types at runtime.
+        ///
+        /// Generated IL pattern for a method with 2 generic parameters:
+        /// <code>
+        /// ldc.i4.2              // Push array length
+        /// newarr System.Type    // Create array
+        /// dup                   // Duplicate array reference
+        /// ldc.i4.0              // Push index 0
+        /// ldloc.0               // Load first generic type from local
+        /// stelem.ref            // Store in array[0]
+        /// dup                   // Duplicate array reference
+        /// ldc.i4.1              // Push index 1
+        /// ldloc.1               // Load second generic type from local
+        /// stelem.ref            // Store in array[1]
+        /// // Array reference remains on stack for HandleMethodCall
+        /// </code>
+        ///
+        /// For non-generic methods, loads Type.EmptyTypes field instead.
+        /// </remarks>
+        /// <param name="emitter">The IL emitter to write instructions to.</param>
+        /// <param name="metadata">Metadata about the method being proxied.</param>
         private static void EmitGenericLocalFieldTypes(IEmitter emitter, MethodMetadata metadata)
         {
-            /*
-            IL_0030: ldc.i4.4
-            IL_0031: newarr [System.Runtime]System.Type
-
-            IL_0036: dup
-            IL_0037: ldc.i4.0
-            IL_0038: ldloc.0
-            IL_0039: stelem.ref
-
-            IL_003a: dup
-            IL_003b: ldc.i4.1
-            IL_003c: ldloc.1
-            IL_003d: stelem.ref
-
-            IL_003e: dup
-            IL_003f: ldc.i4.2
-            IL_0040: ldloc.2
-            IL_0041: stelem.ref
-
-            IL_0042: dup
-            IL_0043: ldc.i4.3
-            IL_0044: ldloc.3
-            IL_0045: stelem.ref
-             */
-
             if (metadata.TargetMethod.IsGenericMethod)
             {
                 var arguments = metadata.GenericParameters;
 
+                // Create Type[] array and populate it with generic types from locals
                 emitter.IlGenerator.Emit(OpCodes.Ldc_I4, arguments.Length);
                 emitter.IlGenerator.Emit(OpCodes.Newarr, Types.Type);
 
                 for (int i = 0; i < arguments.Length; i++)
                 {
-                    emitter.IlGenerator.Emit(OpCodes.Dup);
-                    emitter.IlGenerator.Emit(OpCodes.Ldc_I4, i);
-                    emitter.IlGenerator.Emit(OpCodes.Ldloc, i);
-                    emitter.IlGenerator.Emit(OpCodes.Stelem_Ref);
+                    emitter.IlGenerator.Emit(OpCodes.Dup);           // Duplicate array reference
+                    emitter.IlGenerator.Emit(OpCodes.Ldc_I4, i);     // Push array index
+                    emitter.IlGenerator.Emit(OpCodes.Ldloc, i);      // Load Type from local variable
+                    emitter.IlGenerator.Emit(OpCodes.Stelem_Ref);    // Store in array
                 }
 
                 return;
             }
 
+            // For non-generic methods, use the empty array
             emitter.IlGenerator.Emit(OpCodes.Ldsfld, Fields.EmptyTypes);
         }
 
