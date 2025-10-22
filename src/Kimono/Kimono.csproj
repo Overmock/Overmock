@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Version>0.1.1</Version>
+    <Version>0.1.2</Version>
     <TargetFrameworks>net8.0;net7.0;net6.0;netstandard2.1</TargetFrameworks>
     <Nullable>enable</Nullable>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
@@ -11,7 +11,7 @@
 
     <!-- Nuget -->
     <Title>Kimono</Title>
-    <Description>Kimono is a proxy generation framework that allows for creating proxies for objects and intercepting methods and property invocations.</Description>
+    <Description>Kimono is a high-performance proxy generation framework using IL emission. Supports complex generic methods, property interception, and provides the foundation for the Overmock mocking library.</Description>
     <IsPackable>true</IsPackable>
     <PackageId>Kimono</PackageId>
     <IncludeReferencedProjects>true</IncludeReferencedProjects>
@@ -20,8 +20,8 @@
     <PackageReadmeFile>\README.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/Overmock/Overmock</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageReleaseNotes>Finished up Kimono slim. Rewrite (restructure and some rewrite) and trimming most of the unneeded classes.</PackageReleaseNotes>
-    <PackageTags>proxies;dynamic proxy;dynamicproxy;mocking;mock;unit tests;unit testing;unittesting;unittest;mocking framework;overmock;overmocked;</PackageTags>
+    <PackageReleaseNotes>v0.1.2: Fixed critical BadImageException for ILogger and generic methods. Added comprehensive documentation and removed technical debt. See CHANGELOG.md for details.</PackageReleaseNotes>
+    <PackageTags>proxies;dynamic proxy;dynamicproxy;mocking;mock;unit tests;unit testing;unittesting;unittest;mocking framework;overmock;overmocked;IL;emit;reflection</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
   </PropertyGroup>

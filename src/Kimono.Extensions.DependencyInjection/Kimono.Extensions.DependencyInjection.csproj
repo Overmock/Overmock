@@ -1,17 +1,17 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Version>0.1.1</Version>
+    <Version>0.1.2</Version>
     <TargetFrameworks>net8.0;net7.0;net6.0;netstandard2.1</TargetFrameworks>
     <Nullable>enable</Nullable>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <AnalysisLevel>7.0-recommended</AnalysisLevel>
     <IncludeSymbols>True</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-    
+
     <!-- Nuget -->
     <Title>Kimono.Extensions.DependencyInjection</Title>
-    <Description>Kimono.Extensions.DependencyInjection contains extension methods for adding of interceptors to DI.</Description>
+    <Description>Dependency injection extensions for Kimono proxy framework. Provides extension methods for registering interceptors with Microsoft.Extensions.DependencyInjection.</Description>
     <IsPackable>true</IsPackable>
     <PackageId>Kimono.Extensions.DependencyInjection</PackageId>
     <IncludeReferencedProjects>true</IncludeReferencedProjects>
@@ -20,8 +20,8 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/Overmock/Overmock</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageReleaseNotes>This is a first release and is meant for internal usages until further notice.</PackageReleaseNotes>
-    <PackageTags>proxies;dynamic proxy;dynamicproxy;mocking;mock;unit tests;unit testing;unittesting;unittest;mocking framework;overmock;overmocked;</PackageTags>
+    <PackageReleaseNotes>v0.1.2: Updated to match Kimono 0.1.2 with bug fixes and improved documentation.</PackageReleaseNotes>
+    <PackageTags>proxies;dynamic proxy;dynamicproxy;dependency injection;DI;IoC;microsoft.extensions.dependencyinjection;kimono;overmock</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
   </PropertyGroup>

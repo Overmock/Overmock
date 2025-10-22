@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Version>0.1.1</Version>
+    <Version>0.1.2</Version>
     <TargetFrameworks>net8.0;net7.0;net6.0;netstandard2.1;</TargetFrameworks>
     <Nullable>enable</Nullable>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
@@ -11,7 +11,7 @@
 
     <!-- Nuget -->
     <Title>Overmock</Title>
-    <Description>Overmock is a mocking framework that allows for very robust mocking configuration and validation.</Description>
+    <Description>Overmock is a powerful .NET mocking framework with fluent API, robust parameter matching, and support for complex scenarios including ILogger and generic methods. Built on Kimono for high-performance IL generation.</Description>
     <IsPackable>true</IsPackable>
     <PackageId>Overmock</PackageId>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
@@ -22,8 +22,8 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/Overmock/Overmock</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageReleaseNotes>Added parameter matching functionality.</PackageReleaseNotes>
-    <PackageTags>proxies;dynamic proxy;dynamicproxy;mocking;mock;unit tests;unit testing;unittesting;unittest;mocking framework;overmock;overmocked;</PackageTags>
+    <PackageReleaseNotes>v0.1.2: Fixed critical ILogger mocking bug. Now supports all interfaces with generic methods. Added comprehensive documentation. See CHANGELOG.md for details.</PackageReleaseNotes>
+    <PackageTags>proxies;dynamic proxy;dynamicproxy;mocking;mock;unit tests;unit testing;unittesting;unittest;mocking framework;overmock;overmocked;ilogger;testing</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
   </PropertyGroup>
