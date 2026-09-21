@@ -98,8 +98,13 @@ namespace Kimono
         /// <inheritdoc />
         public IProxyGenerator<T> CreateProxyGenerator<T>(IInterceptor<T> interceptor) where T : class
         {
+            if (interceptor == null)
+            {
+                throw new ArgumentNullException(nameof(interceptor));
+            }
+
             const BindingFlags bindingFlags = BindingFlags.NonPublic | BindingFlags.Instance;
-            
+
             var targetType = typeof(T);
             var proxyBaseType = Types.ProxyBaseNonGeneric;
             var methodId = MethodId.Create();
@@ -116,7 +121,6 @@ namespace Kimono
             )!;
 
             var metadatas = BuildTypeMetadata(
-                interceptor,
                 targetType,
                 methodId,
                 typeBuilder,
@@ -135,16 +139,16 @@ namespace Kimono
             );
         }
 
-        private MethodMetadata[] BuildTypeMetadata<T>(IInterceptor<T> interceptor, Type targetType, MethodId methodId, TypeBuilder typeBuilder, Type[] ctorParameters, ConstructorInfo baseConstructor) where T : class
+        private MethodMetadata[] BuildTypeMetadata(Type targetType, MethodId methodId, TypeBuilder typeBuilder, Type[] ctorParameters, ConstructorInfo baseConstructor)
         {
             var (methods, properties) = AddInterfaceImplementations(typeBuilder, targetType);
 
             ImplementConstructor(typeBuilder, ctorParameters, baseConstructor);
 
             var methodMetadatas = new List<MethodMetadata>(methods.Count + properties.Count);
-            CreateMethods(methodMetadatas, methodId, typeBuilder, targetType, methods, false, interceptor.ContainsTarget);
+            CreateMethods(methodMetadatas, methodId, typeBuilder, targetType, methods);
             CreateProperties(methodMetadatas, methodId, typeBuilder, targetType, properties);
-            
+
             return methodMetadatas.ToArray();
         }
 
@@ -240,7 +244,7 @@ namespace Kimono
             }
         }
 
-        private void CreateMethods(List<MethodMetadata> metadatas, MethodId methodId, TypeBuilder typeBuilder, Type targetType, List<MethodInfo> methods, bool areProperties = false, bool generateInvoker = false)
+        private void CreateMethods(List<MethodMetadata> metadatas, MethodId methodId, TypeBuilder typeBuilder, Type targetType, List<MethodInfo> methods, bool areProperties = false)
         {
             if (Types.Disposable.IsAssignableFrom(targetType) && methods.Remove(Methods.Dispose))
             {
@@ -278,16 +282,20 @@ namespace Kimono
 
                 MethodFactory.EmitProxyMethod(emitter, methodId, metadata);
 
-                if (generateInvoker)
-                {
-                    metadata.UseInvoker(MethodFactory.CreateDelegateInvoker(metadata));
-                }
+                // Invokers are always built. Whether an interceptor has a target is per-instance
+                // state, but the generated type and its MethodMetadata[] are cached per-T for the
+                // life of the process. Gating this on the *first* interceptor's ContainsTarget meant
+                // that whoever proxied T first permanently decided whether every later proxy of T
+                // could call through to its target - a targeted interceptor created after an
+                // untargeted one would silently no-op. Building the invoker only allocates a
+                // deferred generator here; no IL is emitted until the target is actually invoked.
+                metadata.UseInvoker(MethodFactory.CreateDelegateInvoker(metadata));
 
                 methodId++;
             });
         }
 
-        private void CreateProperties(List<MethodMetadata> metadatas, MethodId methodId, TypeBuilder typeBuilder, Type targetType, List<PropertyInfo> properties, bool buildInvoker = false)
+        private void CreateProperties(List<MethodMetadata> metadatas, MethodId methodId, TypeBuilder typeBuilder, Type targetType, List<PropertyInfo> properties)
         {
             var metadataArray = new List<MethodInfo>(properties.Count);
 
@@ -304,7 +312,7 @@ namespace Kimono
                 }
             });
 
-            CreateMethods(metadatas, methodId, typeBuilder, targetType, metadataArray, true, buildInvoker);
+            CreateMethods(metadatas, methodId, typeBuilder, targetType, metadataArray, true);
         }
 
         private static class Names
