@@ -134,5 +134,36 @@ namespace Kimono.Tests
             Assert.ThrowsException<ArgumentNullException>(
                 () => factory.CreateProxyGenerator<ICounter>(null!));
         }
+
+        /// <summary>
+        /// <see cref="InterceptorBase{T}"/> declared no constructors, so it only had the implicit
+        /// parameterless one - there was no way to give a target to the one base class whose whole
+        /// job is to invoke the target when the handler did not.
+        /// </summary>
+        private sealed class CountingInterceptorBase : InterceptorBase<ICounter>
+        {
+            public CountingInterceptorBase(ICounter target) : base(target)
+            {
+            }
+
+            public int Intercepted { get; private set; }
+
+            protected override void HandleInvocationCore(IInvocation invocation) => Intercepted++;
+        }
+
+        [TestMethod]
+        public void InterceptorBaseCanWrapATargetAndFallsThroughToIt()
+        {
+            var target = new Counter();
+            var interceptor = new CountingInterceptorBase(target);
+
+            var proxy = ProxyFactory.Create().CreateInterfaceProxy<ICounter>(interceptor);
+
+            var result = proxy.Increment(3);
+
+            Assert.AreEqual(3, result);
+            Assert.AreEqual(3, target.Total);
+            Assert.AreEqual(1, interceptor.Intercepted);
+        }
     }
 }

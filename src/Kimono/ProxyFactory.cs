@@ -6,6 +6,7 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
+using System.Threading;
 
 namespace Kimono
 {
@@ -35,6 +36,8 @@ namespace Kimono
             MethodFactory = delegateFactory;
             Cache = cache;
         }
+
+        private static int _proxyTypeOrdinal;
 
         private static AssemblyBuilder Assembly { get; }
 
@@ -109,7 +112,7 @@ namespace Kimono
             var proxyBaseType = Types.ProxyBaseNonGeneric;
             var methodId = MethodId.Create();
             var typeBuilder = Module.DefineType(
-                string.Format(CultureInfo.CurrentCulture, Names.TypeName, targetType.Name),
+                CreateProxyTypeName(targetType),
                 TypeAttributes.Public | TypeAttributes.Sealed,
                 proxyBaseType);
 
@@ -137,6 +140,26 @@ namespace Kimono
                     proxyType.GetConstructor(ctorParameters)!
                 )
             );
+        }
+
+        /// <summary>
+        /// Builds a name that is unique within the single process-wide dynamic module.
+        /// <para>
+        /// The simple type name alone is not unique: two interfaces with the same name in different
+        /// namespaces collide, and every closed generic of the same open interface shares one name
+        /// (both <c>IFactory&lt;A&gt;</c> and <c>IFactory&lt;B&gt;</c> are named <c>IFactory`1</c>),
+        /// so <see cref="ModuleBuilder.DefineType(string, TypeAttributes, Type)"/> rejected the
+        /// second one. The counter also lets <see cref="CreateProxyGenerator{T}"/> be called more
+        /// than once for the same type, which its own contract says it supports.
+        /// </para>
+        /// </summary>
+        private static string CreateProxyTypeName(Type targetType)
+        {
+            return string.Format(
+                CultureInfo.InvariantCulture,
+                Names.TypeName,
+                targetType.Name,
+                Interlocked.Increment(ref _proxyTypeOrdinal));
         }
 
         private MethodMetadata[] BuildTypeMetadata(Type targetType, MethodId methodId, TypeBuilder typeBuilder, Type[] ctorParameters, ConstructorInfo baseConstructor)
@@ -320,7 +343,7 @@ namespace Kimono
             public const string DllName = "KimonoProxies.dll";
             public const string Namesapce = "KimonoProxies.{0}";
             public const string ModuleName = "KimonoProxies";
-            public const string TypeName = "Proxy-{0}";
+            public const string TypeName = "Proxy-{0}-{1}";
         }
 
         private static class Methods
