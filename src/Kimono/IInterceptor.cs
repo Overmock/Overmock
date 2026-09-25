@@ -26,7 +26,13 @@ namespace Kimono
     public interface IInterceptor<out T> : IInterceptor
     {
         /// <summary>
-        /// 
+        /// Gets a value indicating whether this interceptor wraps a target instance.
+        /// <para>
+        /// This is informational only. It must NOT be used to decide anything that is baked into
+        /// the generated proxy type, because that type - and its <see cref="MethodMetadata"/> - is
+        /// cached per <typeparamref name="T"/> for the life of the process, while having a target
+        /// is per-interceptor state.
+        /// </para>
         /// </summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
         bool ContainsTarget { get; }
